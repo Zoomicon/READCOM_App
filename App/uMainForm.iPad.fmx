@@ -1,0 +1,20 @@
+inherited MainForm_iPad: TMainForm_iPad
+  ClientHeight = 1004
+  ClientWidth = 768
+  DesignerMasterStyle = 0
+  inherited ZoomableFrame: TZoomableFrame
+    Size.Width = 768.000000000000000000
+    Size.Height = 968.000000000000000000
+    inherited ScrollBox: TScrollBox
+      Size.Width = 768.000000000000000000
+      Size.Height = 968.000000000000000000
+      Viewport.Width = 768.000000000000000000
+      Viewport.Height = 968.000000000000000000
+    end
+  end
+  inherited TrackBar: TTrackBar
+    Position.Y = 968.000000000000000000
+    Size.Width = 768.000000000000000000
+    Size.Height = 36.000000000000000000
+  end
+end

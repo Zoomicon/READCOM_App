@@ -1,0 +1,12 @@
+object ContentFrame: TContentFrame
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object rectBackground: TRectangle
+    Align = Contents
+    Fill.Color = claChocolate
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+  end
+end

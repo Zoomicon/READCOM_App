@@ -1,0 +1,62 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  inline ZoomableFrame: TZoomableFrame
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 461.000000000000000000
+    Size.PlatformDefault = False
+    inherited ScrollBox: TScrollBox
+      Size.Width = 640.000000000000000000
+      Size.Height = 461.000000000000000000
+      OnDblClick = ZoomableFrameScrollBoxDblClick
+      Viewport.Width = 640.000000000000000000
+      Viewport.Height = 461.000000000000000000
+      inherited Layout: TLayout
+        Position.X = 128.000000000000000000
+        Position.Y = 168.000000000000000000
+        inline Story1: TStory
+          Position.X = -115.000000000000000000
+          Position.Y = -106.000000000000000000
+          Size.Width = 729.000000000000000000
+          Size.Height = 528.000000000000000000
+          Size.PlatformDefault = False
+        end
+      end
+    end
+  end
+  object TrackBar: TTrackBar
+    Align = Bottom
+    CanParentFocus = True
+    Max = 10.000000000000000000
+    Min = 0.100000001490116100
+    Orientation = Horizontal
+    Position.Y = 461.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 19.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Value = 0.100000001490116100
+    OnChange = TrackBarChange
+  end
+  object StyleBook: TStyleBook
+    Styles = <
+      item
+        ResourcesBin = {
+          464D585F5354594C4520322E3501060F52656374616E676C65315374796C6502
+          7E00545046300A5452656374616E676C6500095374796C654E616D65060F5265
+          6374616E676C65315374796C6505416C69676E070643656E7465720A53697A65
+          2E57696474680500000000000000F002400B53697A652E486569676874050000
+          00000000408708401453697A652E506C6174666F726D44656661756C74080000}
+      end>
+    Left = 560
+    Top = 8
+  end
+end

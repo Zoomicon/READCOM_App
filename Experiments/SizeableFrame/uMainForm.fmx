@@ -1,0 +1,70 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object BackgroundRectangle: TRectangle
+    Align = Contents
+    Fill.Color = claCadetblue
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    object btnAdd: TButton
+      Align = Bottom
+      Position.Y = 400.000000000000000000
+      Size.Width = 640.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Add Content Frame'
+      OnClick = btnAddClick
+    end
+    inline ContainerFrame: TContainerFrame
+      Align = Fit
+      Size.Width = 640.000000000000000000
+      Size.Height = 299.000000000000000000
+      Size.PlatformDefault = False
+      inherited BackgroundRectangle: TRectangle
+        Size.Width = 640.000000000000000000
+        Size.Height = 299.000000000000000000
+      end
+    end
+    object cbProportional: TCheckBox
+      Align = MostBottom
+      IsChecked = True
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 427.000000000000000000
+      Size.Width = 630.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Proportional resizing'
+      OnChange = cbProportionalChange
+    end
+    object cbEditMode: TCheckBox
+      Align = MostBottom
+      IsChecked = True
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 456.000000000000000000
+      Size.Width = 630.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Edit mode'
+      OnChange = cbEditModeChange
+    end
+  end
+end
