@@ -1,4 +1,4 @@
-program READCOM_App;
+program READCOM.App;
 
 uses
   System.StartUpCopy,
