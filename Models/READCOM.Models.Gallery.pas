@@ -3,9 +3,10 @@ unit READCOM.Models.Gallery;
 interface
   uses
     System.Classes, //for TStream
-    System.Generics.Collections; //for TList<T>
+    System.Generics.Collections; //for TList
 
   type
+
     IGalleryFile = interface
       ['{7DB119EE-76FE-4619-97C8-F5E1605570DB}']
       function IsCached: Boolean;

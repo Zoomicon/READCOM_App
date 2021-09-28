@@ -145,6 +145,7 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="READCOM.Models.dcp"/>
+        <DCCReference Include="Zoomicon.GitStore.dcp"/>
         <DCCReference Include="READCOM.Classes.Gallery.pas"/>
         <DCCReference Include="READCOM.Classes.Cache.pas"/>
         <BuildConfiguration Include="Release">

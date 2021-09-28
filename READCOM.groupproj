@@ -3,11 +3,14 @@
         <ProjectGuid>{D72D9F84-A7BE-49DF-8CD0-E76416CE4FEE}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="Zoomicon.GitStore\Zoomicon.GitStore.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Models\READCOM.Models.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="GalleryLib\READCOM.GalleryLib.dproj">
-            <Dependencies>Models\READCOM.Models.dproj</Dependencies>
+            <Dependencies>Models\READCOM.Models.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="App\READCOM.App.dproj">
             <Dependencies>GalleryLib\READCOM.GalleryLib.dproj;Models\READCOM.Models.dproj</Dependencies>
@@ -20,6 +23,15 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="Zoomicon_GitStore">
+        <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_GitStore:Clean">
+        <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_GitStore:Make">
+        <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj" Targets="Make"/>
+    </Target>
     <Target Name="READCOM_Models">
         <MSBuild Projects="Models\READCOM.Models.dproj"/>
     </Target>
@@ -29,13 +41,13 @@
     <Target Name="READCOM_Models:Make">
         <MSBuild Projects="Models\READCOM.Models.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_GalleryLib" DependsOnTargets="READCOM.Models">
+    <Target Name="READCOM_GalleryLib" DependsOnTargets="READCOM.Models;Zoomicon.GitStore">
         <MSBuild Projects="GalleryLib\READCOM.GalleryLib.dproj"/>
     </Target>
-    <Target Name="READCOM_GalleryLib:Clean" DependsOnTargets="READCOM.Models:Clean">
+    <Target Name="READCOM_GalleryLib:Clean" DependsOnTargets="READCOM.Models:Clean;Zoomicon.GitStore:Clean">
         <MSBuild Projects="GalleryLib\READCOM.GalleryLib.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="READCOM.Models:Make">
+    <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="READCOM.Models:Make;Zoomicon.GitStore:Make">
         <MSBuild Projects="GalleryLib\READCOM.GalleryLib.dproj" Targets="Make"/>
     </Target>
     <Target Name="READCOM_App" DependsOnTargets="READCOM.GalleryLib;READCOM.Models">
@@ -48,13 +60,13 @@
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="READCOM_Models;READCOM_GalleryLib;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_GitStore;READCOM_Models;READCOM_GalleryLib;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="READCOM_Models:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_GitStore:Clean;READCOM_Models:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="READCOM_Models:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_GitStore:Make;READCOM_Models:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

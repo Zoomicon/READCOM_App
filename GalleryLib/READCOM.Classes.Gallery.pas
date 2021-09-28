@@ -3,22 +3,34 @@ unit READCOM.Classes.Gallery;
 interface
   uses
     READCOM.Models.Gallery, //for IGallery, IGalleryFolder, IGalleryFile
+    READCOM.Models.Cache, //for IContentCache
+    Zoomicon.GitStore.Models, //for IGitStore
     System.Classes, //for TStream
-    System.Generics.Collections; //for TList<T>
+    System.Generics.Collections; //for TList
 
   type
     TGallery = class(TInterfacedObject, IGallery)
-      function GetHomeFolder: IGalleryFolder;
+      protected
+        FCache: IContentCache;
+        FStorage: IGitStore;
+      public
+        constructor Create(const Cache: IContentCache; const Storage: IGitStore);
+        //IGallery
+        function GetHomeFolder: IGalleryFolder;
     end;
 
     TGalleryFolder = class(TInterfacedObject, IGalleryFolder)
-      function GetFolders: TList<IGalleryFolder>;
-      function GetFiles: TList<IGalleryFile>;
+      public
+        //IGalleryFolder
+        function GetFolders: TList<IGalleryFolder>;
+        function GetFiles: TList<IGalleryFile>;
     end;
 
     TGalleryFile = class(TInterfacedObject, IGalleryFile)
-      function IsCached: Boolean;
-      function GetContent: TStream;
+      public
+        //IGalleryFile
+        function IsCached: Boolean;
+        function GetContent: TStream;
     end;
 
 implementation
@@ -26,6 +38,12 @@ implementation
     System.SysUtils; //for ENotImplemented
 
 { TGallery }
+
+constructor TGallery.Create(const Cache: IContentCache; const Storage: IGitStore);
+begin
+  FCache := Cache;
+  FStorage := Storage;
+end;
 
 function TGallery.GetHomeFolder: IGalleryFolder;
 begin
