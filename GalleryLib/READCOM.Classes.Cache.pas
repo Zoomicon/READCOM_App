@@ -8,7 +8,7 @@ interface
   type
     TFileCache = class(TInterfacedObject, IContentCache)
       protected
-       function GetFilename(const Key: String): String;
+       function GetFilepath(const Key: String): String;
       public
         {IContentCache}
         function HasContent(const Key: String): Boolean;
@@ -27,7 +27,7 @@ implementation
     System.IOUtils, //for TPath
     System.ZLib; //for TZCompressionStream, TZDecompressionStream
 
-function TFileCache.GetFilename(const Key: String): String;
+function TFileCache.GetFilepath(const Key: String): String;
 begin
   result := TPath.Combine(TPath.Combine(TPath.GetCachePath, UnitName), Key); //using UnitName in the path too since it also contains READCOM in it (in some platforms there's no per-app cache folder)
 end;
@@ -36,17 +36,21 @@ end;
 
 function TFileCache.HasContent(const Key: String): Boolean;
 begin
-  result := FileExists(GetFilename(Key));
+  result := FileExists(GetFilepath(Key));
 end;
 
 function TFileCache.GetContent(const Key: String): TStream;
 begin
-  result := TFileStream.Create(GetFilename(Key), fmOpenRead);
+  result := TFileStream.Create(GetFilepath(Key), fmOpenRead);
 end;
 
 procedure TFileCache.PutContent(const Key: String; const Content: TStream);
 begin
-  var CacheFile := TFileStream.Create(Key, fmOpenWrite);
+  var Filename := GetFilepath(Key);
+
+  TDirectory.CreateDirectory(TPath.GetDirectoryName(Filename)); //create any missing subdirectories
+
+  var CacheFile := TFileStream.Create(Filename, fmOpenWrite); //overwrite any existing file
   try
     CacheFile.CopyFrom(Content);
   finally
