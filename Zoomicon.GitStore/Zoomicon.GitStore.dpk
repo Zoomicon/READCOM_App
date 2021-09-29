@@ -32,6 +32,7 @@ requires
 
 contains
   Zoomicon.GitStore.Models in 'Zoomicon.GitStore.Models.pas',
-  Zoomicon.GitStore.Classes in 'Zoomicon.GitStore.Classes.pas';
+  Zoomicon.GitStore.Classes in 'Zoomicon.GitStore.Classes.pas',
+  Zoomicon.Downloader in 'Zoomicon.Downloader.pas';
 
 end.

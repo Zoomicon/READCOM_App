@@ -27,6 +27,8 @@ interface
     end;
 
     TGalleryFile = class(TInterfacedObject, IGalleryFile)
+      protected
+        FStorageFile : IGitFile;
       public
         //IGalleryFile
         function IsCached: Boolean;
@@ -66,7 +68,10 @@ end;
 
 function TGalleryFile.GetContent: TStream;
 begin
-  raise ENotImplemented.Create('Not implemented');
+  if (FStorageFile <> nil) then
+    result := FStorageFile.Download //TODO: should check compressed cache if any if that file SHA exists and fetch from there (else add the cache at the Git level)
+  else
+    result := nil;
 end;
 
 function TGalleryFile.IsCached: Boolean;

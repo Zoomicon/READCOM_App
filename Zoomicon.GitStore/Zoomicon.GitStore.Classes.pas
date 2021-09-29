@@ -45,7 +45,9 @@ interface
 
 implementation
   uses
+    Zoomicon.Downloader, //for TDownloaderThread
     System.IOUtils, //for TPath
+    System.Net.HttpClient, //for THttpClient
     System.SysUtils; //for ENotImplemented
 
 { TGitItem }
@@ -70,6 +72,7 @@ end;
 
 function TGitFile.Download: TStream;
 begin
+  //var DownloaderThread := TDownloaderThread.Create(...)
   raise ENotImplemented.Create('Not implemented yet');
 end;
 

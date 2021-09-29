@@ -24,7 +24,7 @@ interface
 implementation
   uses
     System.SysUtils, //for ENotImplemented, FileExists
-    System.IOUtils, //for TPath
+    System.IOUtils, //for TPath, TDirectory
     System.ZLib; //for TZCompressionStream, TZDecompressionStream
 
 function TFileCache.GetFilepath(const Key: String): String;
@@ -46,11 +46,11 @@ end;
 
 procedure TFileCache.PutContent(const Key: String; const Content: TStream);
 begin
-  var Filename := GetFilepath(Key);
+  var Filepath := GetFilepath(Key);
 
-  TDirectory.CreateDirectory(TPath.GetDirectoryName(Filename)); //create any missing subdirectories
+  TDirectory.CreateDirectory(TPath.GetDirectoryName(Filepath)); //create any missing subdirectories
 
-  var CacheFile := TFileStream.Create(Filename, fmOpenWrite); //overwrite any existing file
+  var CacheFile := TFileStream.Create(Filepath, fmOpenWrite); //overwrite any existing file
   try
     CacheFile.CopyFrom(Content);
   finally
