@@ -1,4 +1,4 @@
-package READCOM.Models;
+package Zoomicon.Downloader;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -31,7 +31,7 @@ requires
   rtl;
 
 contains
-  READCOM.Models.Gallery in 'READCOM.Models.Gallery.pas',
-  READCOM.Models.Cache in 'READCOM.Models.Cache.pas';
+  Zoomicon.Downloader.Classes in 'Zoomicon.Downloader.Classes.pas',
+  Zoomicon.Downloader.Models in 'Zoomicon.Downloader.Models.pas';
 
 end.

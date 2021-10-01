@@ -1,4 +1,4 @@
-unit READCOM.Models.Cache;
+unit Zoomicon.Cache.Models;
 
 interface
   uses System.Classes; //for TStream
@@ -10,6 +10,11 @@ interface
       function HasContent(const Key: String): Boolean;
       function GetContent(const Key: String): TStream;
       procedure PutContent(const Key: String; const Content: TStream);
+    end;
+
+    IFileCache = interface(IContentCache)
+      ['{FB74770E-59F9-4FDD-AAFE-1ADE32B0A63E}']
+      function GetFilepath(const Key: String): String;
     end;
 
 implementation

@@ -1,22 +1,20 @@
-unit READCOM.Classes.Cache;
+unit Zoomicon.Cache.Classes;
 
 interface
   uses
-    READCOM.Models.Cache, //for IFileBasedContentCache
+    Zoomicon.Cache.Models, //for IContentCache
     System.Classes; //for TStream
 
   type
-    TFileCache = class(TInterfacedObject, IContentCache)
-      protected
-       function GetFilepath(const Key: String): String;
-      public
-        {IContentCache}
+    TFileCache = class(TInterfacedObject, IFileCache)
+       public
+        function GetFilepath(const Key: String): String;
         function HasContent(const Key: String): Boolean;
         function GetContent(const Key: String): TStream; virtual;
         procedure PutContent(const Key: String; const Content: TStream); virtual;
     end;
 
-    TZCompressionFileCache = class(TFileCache)
+    TZCompressedFileCache = class(TFileCache)
       function GetContent(const Key: String): TStream; override;
       procedure PutContent(const Key: String; const Content: TStream); override;
     end;
@@ -41,7 +39,11 @@ end;
 
 function TFileCache.GetContent(const Key: String): TStream;
 begin
-  result := TFileStream.Create(GetFilepath(Key), fmOpenRead);
+  var Filepath := GetFilepath(Key);
+  if FileExists(Filepath) then
+    result := TFileStream.Create(GetFilepath(Key), fmOpenRead)
+  else
+    result := nil;
 end;
 
 procedure TFileCache.PutContent(const Key: String; const Content: TStream);
@@ -60,12 +62,16 @@ end;
 
 { TCompressedFileCache }
 
-function TZCompressionFileCache.GetContent(const Key: String): TStream;
+function TZCompressedFileCache.GetContent(const Key: String): TStream;
 begin
-  result := TZDecompressionStream.Create(inherited GetContent(Key));
+  var ZCompressedContent := inherited GetContent(Key);
+  if Assigned(ZCompressedContent) then
+    result := TZDecompressionStream.Create(ZCompressedContent)
+  else
+    result := nil;
 end;
 
-procedure TZCompressionFileCache.PutContent(const Key: String; const Content: TStream);
+procedure TZCompressedFileCache.PutContent(const Key: String; const Content: TStream);
 begin
   var ZCompressedContent := TZCompressionStream.Create(Content);
   try

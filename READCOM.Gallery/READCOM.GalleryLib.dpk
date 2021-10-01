@@ -1,4 +1,4 @@
-package Zoomicon.GitStore;
+package READCOM.GalleryLib;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -29,11 +29,11 @@ package Zoomicon.GitStore;
 
 requires
   rtl,
-  Zoomicon.Cache,
+  Zoomicon.GitStore,
   Zoomicon.Downloader;
 
 contains
-  Zoomicon.GitStore.Models in 'Zoomicon.GitStore.Models.pas',
-  Zoomicon.GitStore.Classes in 'Zoomicon.GitStore.Classes.pas';
+  READCOM.Gallery.Classes in 'READCOM.Gallery.Classes.pas',
+  READCOM.Gallery.Models in 'READCOM.Gallery.Models.pas';
 
 end.

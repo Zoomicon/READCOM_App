@@ -2,6 +2,8 @@ unit Zoomicon.GitStore.Classes;
 
 interface
   uses
+    Zoomicon.Cache.Models, //for IFileCache
+    Zoomicon.Downloader.Models, //for TDownloadCompletionEvent, IFileDownloader
     Zoomicon.GitStore.Models, //for IGitItem, IGitFile, IGitFolder, IGitStore
     System.Classes, //for TStream
     System.Generics.Collections, //for TList
@@ -9,10 +11,14 @@ interface
 
   type
 
+    TGitStore = class;
+
     TGitItem = class(TInterfacedObject, IGitItem)
       protected
         FSHA: String;
         FPath: String;
+        FGitStore: TGitStore;
+
       public
         constructor Create(SHA: String; Path: String);
         function GetSHA: String;
@@ -20,37 +26,58 @@ interface
     end;
 
     TGitFile = class(TGitItem, IGitFile)
-      function Download: TStream;
+      protected
+        function GetFileURI: TURI;
+
+      public
+        procedure Download(const DownloadCompleteHandler: TDownloadCompletionEvent);
+
+      published
+        property FileURI: TURI read GetFileURI;
     end;
 
     TGitFolder = class(TGitItem, IGitFolder)
-      function GetItems(const recursive: Boolean = false): TList<IGitItem>;
-      function GetFolders(const recursive: Boolean = false): TList<IGitFolder>;
-      function GetFiles(const recursive: Boolean = false): TList<IGitFile>;
+      public
+        function GetItems(const recursive: Boolean = false): TList<IGitItem>;
+        function GetFolders(const recursive: Boolean = false): TList<IGitFolder>;
+        function GetFiles(const recursive: Boolean = false): TList<IGitFile>;
     end;
 
     TGitStore = class(TInterfacedObject, IGitStore)
-      function GetRepositoryURI: TURI;
-      procedure SetRepositoryURI(const Value: TURI);
+      protected
+        FFileCache: IFileCache;
+        FDownloadBranchName: String;
+        FDownloadURI: String;
 
-      function GetAuthKey: String;
-      procedure SetAuthKey(const Value: String);
+      public
+        constructor Create(const TheFileCache: IFileCache = nil);
 
-      function GetBaseFolder: IGitFolder;
+        function GetRepositoryURI: TURI;
+        procedure SetRepositoryURI(const Value: TURI);
 
-      function GetItem(SHA: string): IGitItem;
-      function GetFile(SHA: string): IGitFile;
-      function GetFolder(SHA: string): IGitFolder;
+        function GetAuthKey: String;
+        procedure SetAuthKey(const Value: String);
+
+        function GetBaseFolder: IGitFolder;
+
+        function GetItem(SHA: string): IGitItem;
+        function GetFile(SHA: string): IGitFile;
+        function GetFolder(SHA: string): IGitFolder;
+
+      published
+        property FileCache: IFileCache read FFileCache write FFileCache;
+        property DownloadBranchName: String read FDownloadBranchName write FDownloadBranchName;
+        property DownloadURI: String read FDownloadURI;
     end;
 
 implementation
   uses
-    Zoomicon.Downloader, //for TDownloaderThread
+    Zoomicon.Downloader.Classes, //for TFileDownloader
     System.IOUtils, //for TPath
     System.Net.HttpClient, //for THttpClient
     System.SysUtils; //for ENotImplemented
 
-{ TGitItem }
+{$region 'TGitItem'}
 
 constructor TGitItem.Create(SHA, Path: String);
 begin
@@ -68,15 +95,49 @@ begin
   result := FPath;
 end;
 
-{ TGitFile }
+{$endregion}
 
-function TGitFile.Download: TStream;
+{$region 'TGitFile'}
+
+function TGitFile.GetFileURI: TURI;
 begin
-  //var DownloaderThread := TDownloaderThread.Create(...)
+  result := TURI.Create(FGitStore.DownloadURI + '/' + FGitStore.DownloadBranchName + '/' + FPath);
+end;
+
+procedure TGitFile.Download(const DownloadCompleteHandler: TDownloadCompletionEvent);
+begin
+  if (not Assigned(DownloadCompleteHandler)) or (not Assigned(FGitStore)) then exit;
+
+  var FileCache := FGitStore.FileCache;
+  if Assigned(FileCache) then
+    begin
+    var Content := FileCache.GetContent(FSHA);
+    if Assigned(Content) then
+      begin
+      DownloadCompleteHandler(self, Content);
+      exit;
+      end;
+
+      var CacheFilename := FileCache.GetFilepath(FSHA);
+      var Downloader := TFileDownloader.Create(FileURI, CacheFilename);
+      Downloader.OnDownloadComplete := DownloadCompleteHandler;
+      Downloader.Start;
+      end
+
+  else //no file-based cache available, download to memory with no caching
+    begin
+    var Data := TMemoryStream.Create;
+    var Downloader := TDownloader.Create(FileURI, Data);
+    Downloader.OnDownloadComplete := DownloadCompleteHandler;
+    Downloader.Start;
+    end;
+
   raise ENotImplemented.Create('Not implemented yet');
 end;
 
-{ TGitFolder }
+{$endregion}
+
+{$region 'TGitFolder'}
 
 function TGitFolder.GetItems(const recursive: Boolean): TList<IGitItem>;
 begin
@@ -93,7 +154,16 @@ begin
   raise ENotImplemented.Create('Not implemented yet');
 end;
 
-{ TGitStore }
+{$endregion}
+
+{$region 'TGitStore'}
+
+constructor TGitStore.Create(const TheFileCache: IFileCache = nil);
+begin
+  FFileCache := TheFileCache;
+end;
+
+{$region 'RepositoryURI'}
 
 function TGitStore.GetRepositoryURI: TURI;
 begin
@@ -105,6 +175,10 @@ begin
   raise ENotImplemented.Create('Not implemented yet');
 end;
 
+{$endregion}
+
+{$region 'AuthKey'}
+
 function TGitStore.GetAuthKey: String;
 begin
   raise ENotImplemented.Create('Not implemented yet');
@@ -114,6 +188,8 @@ procedure TGitStore.SetAuthKey(const Value: String);
 begin
   raise ENotImplemented.Create('Not implemented yet');
 end;
+
+{$endregion}
 
 function TGitStore.GetBaseFolder: IGitFolder;
 begin
@@ -134,5 +210,7 @@ function TGitStore.GetFile(SHA: string): IGitFile;
 begin
   raise ENotImplemented.Create('Not implemented yet');
 end;
+
+{$endregion}
 
 end.

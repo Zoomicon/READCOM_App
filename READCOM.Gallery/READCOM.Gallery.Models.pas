@@ -1,7 +1,8 @@
-unit READCOM.Models.Gallery;
+unit READCOM.Gallery.Models;
 
 interface
   uses
+    Zoomicon.Downloader.Models, //for TDownloadCompletionEvent
     System.Classes, //for TStream
     System.Generics.Collections; //for TList
 
@@ -10,7 +11,7 @@ interface
     IGalleryFile = interface
       ['{7DB119EE-76FE-4619-97C8-F5E1605570DB}']
       function IsCached: Boolean;
-      function GetContent: TStream;
+      procedure DownloadContent(const DownloadCompletedHandler: TDownloadCompletionEvent);
     end;
 
     IGalleryFolder = interface

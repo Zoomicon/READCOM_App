@@ -2,6 +2,7 @@ unit Zoomicon.GitStore.Models;
 
 interface
   uses
+    Zoomicon.Downloader.Models, //for TDownloadCompletionEvent
     System.Classes, //for TStream
     System.Generics.Collections, //for TList
     System.Net.URLClient; //for TURI
@@ -16,7 +17,9 @@ interface
 
     IGitFile = interface(IGitItem)
       ['{53091685-BCCC-4DC6-BA03-EEC82F3EE204}']
-      function Download: TStream;
+      function GetFileUri: TURI;
+
+      procedure Download(const CompletionHandler: TDownloadCompletionEvent);
     end;
 
     IGitFolder = interface(IGitItem)

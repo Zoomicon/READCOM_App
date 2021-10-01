@@ -1,9 +1,9 @@
-unit READCOM.Classes.Gallery;
+unit READCOM.Gallery.Classes;
 
 interface
   uses
-    READCOM.Models.Gallery, //for IGallery, IGalleryFolder, IGalleryFile
-    READCOM.Models.Cache, //for IContentCache
+    READCOM.Gallery.Models, //for IGallery, IGalleryFolder, IGalleryFile
+    Zoomicon.Downloader.Models, //for TDownloadCompletionEvent
     Zoomicon.GitStore.Models, //for IGitStore
     System.Classes, //for TStream
     System.Generics.Collections; //for TList
@@ -11,10 +11,9 @@ interface
   type
     TGallery = class(TInterfacedObject, IGallery)
       protected
-        FCache: IContentCache;
         FStorage: IGitStore;
       public
-        constructor Create(const Cache: IContentCache; const Storage: IGitStore);
+        constructor Create(const Storage: IGitStore);
         //IGallery
         function GetHomeFolder: IGalleryFolder;
     end;
@@ -28,11 +27,11 @@ interface
 
     TGalleryFile = class(TInterfacedObject, IGalleryFile)
       protected
-        FStorageFile : IGitFile;
+        FGitFile : IGitFile;
       public
         //IGalleryFile
         function IsCached: Boolean;
-        function GetContent: TStream;
+        procedure DownloadContent(const DownloadCompletedHandler: TDownloadCompletionEvent);
     end;
 
 implementation
@@ -41,9 +40,8 @@ implementation
 
 { TGallery }
 
-constructor TGallery.Create(const Cache: IContentCache; const Storage: IGitStore);
+constructor TGallery.Create(const Storage: IGitStore);
 begin
-  FCache := Cache;
   FStorage := Storage;
 end;
 
@@ -66,12 +64,10 @@ end;
 
 { TGalleryFile }
 
-function TGalleryFile.GetContent: TStream;
+procedure TGalleryFile.DownloadContent(const DownloadCompletedHandler: TDownloadCompletionEvent);
 begin
-  if (FStorageFile <> nil) then
-    result := FStorageFile.Download //TODO: should check compressed cache if any if that file SHA exists and fetch from there (else add the cache at the Git level)
-  else
-    result := nil;
+  if (FGitFile <> nil) then
+    FGitFile.Download(DownloadCompletedHandler);
 end;
 
 function TGalleryFile.IsCached: Boolean;

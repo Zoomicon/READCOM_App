@@ -1,4 +1,4 @@
-package READCOM.GalleryLib;
+package Zoomicon.Cache;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -28,12 +28,10 @@ package READCOM.GalleryLib;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  READCOM.Models,
-  Zoomicon.GitStore;
+  rtl;
 
 contains
-  READCOM.Classes.Gallery in 'READCOM.Classes.Gallery.pas',
-  READCOM.Classes.Cache in 'READCOM.Classes.Cache.pas';
+  Zoomicon.Cache.Classes in 'Zoomicon.Cache.Classes.pas',
+  Zoomicon.Cache.Models in 'Zoomicon.Cache.Models.pas';
 
 end.
