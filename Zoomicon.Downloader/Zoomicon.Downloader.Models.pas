@@ -18,6 +18,9 @@ interface
       procedure Initialize(const TheContentURI: TURI; const Data: TStream; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
       procedure Start;
       procedure SetPaused(const Value: Boolean);
+      function IsTerminated: Boolean;
+
+      property Terminated: Boolean read IsTerminated;
     end;
 
     IFileDownloader = interface(IDownloader)

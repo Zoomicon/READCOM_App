@@ -66,7 +66,7 @@ end;
 
 procedure TGalleryFile.DownloadContent(const DownloadCompletedHandler: TDownloadCompletionEvent);
 begin
-  if (FGitFile <> nil) then
+  if Assigned(FGitFile) then
     FGitFile.Download(DownloadCompletedHandler);
 end;
 
