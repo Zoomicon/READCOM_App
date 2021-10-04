@@ -2,6 +2,7 @@ unit Zoomicon.Downloader.Classes;
 
 interface
   uses
+    Zoomicon.Cache.Models, //for IContentCache
     Zoomicon.Downloader.Models, //for IDownloader
     System.Classes, //for TThread
     System.Net.URLClient, //for TURI
@@ -31,6 +32,7 @@ interface
 
     TDownloader = class(TInterfacedObject, IDownloader)
       protected
+        FContentCache: IContentCache;
         FDownloaderThread: TDownloaderThread;
         FDownloaderThreadTerminationEvent: TEvent; //for other threads synchronization with downloader thread
 
@@ -55,10 +57,8 @@ interface
         function Execute: integer; virtual; //returns HTTP status code //called by TDownloaderThread
 
       public
-        class function Download(const ContentURI: TURI; const Data: TStream): IDownloader; overload;
-
-        constructor Create(const TheContentURI: TURI; const TheData: TStream; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
-        procedure Initialize(const TheContentURI: TURI; const TheData: TStream; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+        constructor Create(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+        procedure Initialize(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 
         procedure Start; virtual;
         function WaitForDownload(Timeout: cardinal = INFINITE): TWaitResult;
@@ -67,6 +67,7 @@ interface
         function IsTerminated: Boolean;
 
       published
+        property ContentCache: IContentCache read FContentCache write FContentCache;
         property DownloaderThreadTerminationEvent: TEvent read FDownloaderThreadTerminationEvent;
         property Resumable: Boolean read FResumable write FResumable;
         property Paused: Boolean read FPaused write SetPaused;
@@ -86,20 +87,17 @@ interface
     TFileDownloader = class(TDownloader, IFileDownloader)
       protected
         FFilepath: String;
-        procedure SetFilepath(Value: String);
         function Execute: integer; override; //returns HTTP status code //called by TDownloaderThread
 
       public
-        class function Download(const ContentURI: TURI; const Filepath: String): IFileDownloader; overload;
-
-        constructor Create(const TheContentURI: TURI; const TheFilepath: String; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
+        constructor Create(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         destructor Destroy; override;
 
-        procedure Initialize(const TheContentURI: TURI; const TheFilepath: String; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
+        procedure Initialize(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         procedure Start; override;
 
       published
-        property Filepath: String read FFilepath write SetFilepath;
+        property Filepath: String read FFilepath write FFilepath;
     end;
 
 implementation
@@ -127,7 +125,7 @@ begin
   SetTerminationEvent; //notify any threads waiting on our event object
 end;
 
-procedure TDownloaderThread.Execute;
+procedure TDownloaderThread.Execute; //returns HTTP status code
 begin
   try
     ReturnValue := Downloader.Execute; //return HTTP status code
@@ -165,18 +163,15 @@ end;
 
 {$REGION 'TDownloader'}
 
-class function TDownloader.Download(const ContentURI: TURI; const Data: TStream): IDownloader;
+constructor TDownloader.Create(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
-  result := TDownloader.Create(ContentURI, Data, true); //doing AutoStart
+  Initialize(TheContentURI, TheData, TheContentCache, AutoStart, TheStartPosition, TheEndPosition);
 end;
 
-constructor TDownloader.Create(const TheContentURI: TURI; const TheData: TStream; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+procedure TDownloader.Initialize(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
-  Initialize(TheContentURI, TheData, AutoStart, TheStartPosition, TheEndPosition);
-end;
+  FContentCache := TheContentCache;
 
-procedure TDownloader.Initialize(const TheContentURI: TURI; const TheData: TStream; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
-begin
   FDownloaderThread := TDownloaderThread.Create(self);
   FDownloaderThreadTerminationEvent := TEvent.Create();
 
@@ -194,7 +189,7 @@ end;
 
 function TDownloader.IsTerminated: Boolean;
 begin
-  result := Assigned(FDownloaderThread) and FDownloaderThread.CheckTerminated;
+  result := Assigned(FDownloaderThread) and FDownloaderThread.CheckTerminated; //TODO: maybe should return true if not Assigned(FDownloaderThread)
 end;
 
 procedure TDownloader.Start;
@@ -212,8 +207,22 @@ begin
     result := TWaitResult.wrAbandoned;
 end;
 
-function TDownloader.Execute: integer;
+function TDownloader.Execute: integer; //returns HTTP status code //called by TDownloaderThread
 begin
+  //If requested URI is cached, return its data from there...
+  if Assigned(FContentCache) then
+    begin
+    var CachedData := FContentCache.GetContent(FContentURIstr);
+    if Assigned(CachedData) then
+      begin
+      FData.CopyFrom(CachedData); //copy from CachedData to output stream
+      FreeAndNil(CachedData); //free CachedData handle
+      result := STATUS_OK;
+      exit;
+      end;
+    end;
+
+  //Download...
   result := Download(FStartPosition, FEndPosition);
 
   while (not FDownloaderThread.CheckTerminated) and FResumable do
@@ -230,6 +239,10 @@ begin
 
     Sleep(SleepTimeMS); //sleep a bit, being polite to other threads
   end;
+
+  //If data was downloaded succesfully, can cache downloaded data with URI as key...
+  if Assigned(FContentCache) and (result = STATUS_OK) then
+    FContentCache.PutContent(FContentURIstr, FData); //copies from start of stream
 end;
 
 function TDownloader.GetContentURI: TURI;
@@ -245,7 +258,7 @@ begin
     FShouldResume := True;
 end;
 
-function TDownloader.Download(const StartPosition, EndPosition: Int64): Integer;
+function TDownloader.Download(const StartPosition, EndPosition: Int64): Integer; //this is called by Execute which is called by TDownloaderThread
 begin
   var HttpClient := THTTPClient.Create;
   HttpClient.OnReceiveData := ReceiveHandler;
@@ -260,7 +273,7 @@ begin
     else
       begin
       FData.Seek(StartPosition, TSeekOrigin.soBeginning);
-      StatusCode := HttpClient.GetRange(FContentURIstr, StartPosition, EndPosition, Data).StatusCode; //synchronous-blocking call (executes ReceiveHandler callback periodically)
+      StatusCode := HttpClient.GetRange(FContentURIstr, StartPosition, EndPosition, FData).StatusCode; //synchronous-blocking call (executes ReceiveHandler callback periodically)
       end;
 
     if Assigned(FOnDownloadTerminated) then
@@ -318,27 +331,9 @@ end;
 
 {$region 'TFileDownloader'}
 
-class function TFileDownloader.Download(const ContentURI: TURI; const Filepath: String): IFileDownloader;
+constructor TFileDownloader.Create(const TheContentURI: TURI; const TheFilePath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
-  result := TFileDownloader.Create(ContentURI, Filepath);
-  result.Start;
-end;
-
-function TFileDownloader.Execute: integer;
-begin
-  result := 0;
-  try
-    result := inherited;
-  finally
-    FreeAndNil(FData); //when it's a TFileDownloader we weren't given a data stream, we created it, so have to free it
-    if result <> STATUS_OK then //If failed to download, delete partially downloaded file //TODO: maybe only do it when non-resumable?
-      TFile.Delete(Filepath); //Note: must first do FreeAndNil to release handle to file, then delete it
-  end;
-end;
-
-constructor TFileDownloader.Create(const TheContentURI: TURI; const TheFilePath: String; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
-begin
-  Initialize(TheContentURI, TheFilePath, AutoStart, TheStartPosition, TheEndPosition);
+  Initialize(TheContentURI, TheFilePath, TheContentCache, AutoStart, TheStartPosition, TheEndPosition);
 end;
 
 destructor TFileDownloader.Destroy;
@@ -356,24 +351,30 @@ begin
   FreeAndNil(FData); //when it's a TFileDownloader we weren't given a data stream, we created it, so have to free it
 end;
 
-procedure TFileDownloader.Initialize(const TheContentURI: TURI; const TheFilepath: string; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+procedure TFileDownloader.Initialize(const TheContentURI: TURI; const TheFilepath: string; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
   Filepath := TheFilepath; //this will call SetFilepath (don't just assign FFilePath)
-  Initialize(TheContentURI, FData, AutoStart, TheStartPosition, TheEndPosition);
-end;
-
-procedure TFileDownloader.SetFilepath(Value: String);
-begin
-  FFilePath := Value;
-  TDirectory.CreateDirectory(ExtractFileDir(Value)); //create any missing subdirectories
-  //not creating download file till Start is called to do the download
+  Initialize(TheContentURI, FData, TheContentCache, AutoStart, TheStartPosition, TheEndPosition);
 end;
 
 procedure TFileDownloader.Start;
 begin
   //only create the output file when download is to be started
-  FData := TFileStream.Create(FFilepath, fmCreate {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
+  TDirectory.CreateDirectory(ExtractFileDir(FFilepath)); //create any missing subdirectories
+  FData := TFileStream.Create(FFilepath, fmCreate {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
   inherited;
+end;
+
+function TFileDownloader.Execute: integer; //returns HTTP status code //called by TDownloaderThread
+begin
+  result := 0;
+  try
+    result := inherited;
+  finally
+    FreeAndNil(FData); //when it's a TFileDownloader we weren't given a data stream, we created it, so have to free it
+    if result <> STATUS_OK then //If failed to download, delete partially downloaded file //TODO: maybe only do it when non-resumable?
+      TFile.Delete(Filepath); //Note: must first do FreeAndNil to release handle to file, then delete it
+  end;
 end;
 
 {$endregion}

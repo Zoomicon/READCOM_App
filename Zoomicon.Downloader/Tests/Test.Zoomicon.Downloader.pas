@@ -2,30 +2,53 @@ unit Test.Zoomicon.Downloader; //Delphi DUnit Test Case
 
 interface
   uses
-    TestFramework, Zoomicon.Downloader.Models, System.Net.URLClient,
-    Zoomicon.Downloader.Classes, System.Classes;
+    Zoomicon.Cache.Models, //for IContentCache
+    TestFramework,
+    System.Net.URLClient,
+    System.Classes;
 
   const
-    DOWNLOAD_URI = 'https://raw.githubusercontent.com/zoomicon/READCOM_Gallery/master/Gallery/README.md';
     DOWNLOAD_TIMEOUT: Cardinal = 10000; //10 sec (can also use INFINITE)
-    SAVE_FILENAME = 'Test.Downloader.README.md';
+
+    DOWNLOAD_URI_STR = 'https://raw.githubusercontent.com/zoomicon/READCOM_Gallery/master/Gallery/README.md';
+    SAVE_FILENAME = 'Test1.md';
+
+    DOWNLOAD_URI_STR_NOCACHE = 'https://raw.githubusercontent.com/zoomicon/READCOM_Gallery/master/Gallery/Assets/Images/README.md';
+    SAVE_FILENAME_NOCACHE = 'Test2.md';
+
+    DOWNLOAD_URI_WRONG = 'blablabla';
+    SAVE_FILENAME_WRONGURI = 'Test3.md';
 
   type
     // Test methods for class TFileDownloader
 
     TestTFileDownloader = class(TTestCase)
-    strict private
-    public
-      procedure SetUp; override;
-      procedure TearDown; override;
-      procedure DoDownload(const TheContentURI: TURI; const TheSaveFilepath: String);
-    published
-      procedure TestSingleDownload;
-      procedure TestMultipleDownload;
+      strict private
+        FContentCache: IContentCache;
+
+      private
+        procedure DoDownload(const TheContentURI: TURI; const TheSaveFilepath: String; const TheContentCache: IContentCache);
+        procedure DoTestSingleDownload(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
+        procedure DoTestMultipleDownloads(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
+
+    procedure TestWrongUrlDownload;
+
+      public
+        procedure SetUp; override;
+        procedure TearDown; override;
+
+      published
+        procedure TestSingleDownload;
+        procedure TestMultipleDownloadWithoutCache;
+        procedure TestMultipleDownload;
+        procedure TestSingleDownloadWithoutCache;
     end;
 
 implementation
   uses
+    Zoomicon.Cache.Classes, //for TFileCache
+    Zoomicon.Downloader.Models,
+    Zoomicon.Downloader.Classes,
     System.SysUtils,
     System.IOUtils;
 
@@ -33,63 +56,90 @@ implementation
 
 procedure TestTFileDownloader.SetUp;
 begin
+  FContentCache := TFileCache.Create() As IFileCache;
 end;
 
 procedure TestTFileDownloader.TearDown;
 begin
+  //FContentCache is reference counted, so object it points to will be released automatically
 end;
 
 {$endregion}
 
 {$region 'Helpers'}
 
-procedure TestTFileDownloader.DoDownload(const TheContentURI: TURI; const TheSaveFilepath: String);
+procedure TestTFileDownloader.DoDownload(const TheContentURI: TURI; const TheSaveFilepath: String; const TheContentCache: IContentCache);
 begin
   if FileExists(TheSaveFilepath) then
     TFile.Delete(TheSaveFilepath); //remove download file if existing so that we can check if it was created later
 
-  var FileDownloader := TFileDownloader.Create(TheContentURI, TheSaveFilepath);
-  FileDownloader.Start;
+  var FileDownloader := TFileDownloader.Create(TheContentURI, TheSaveFilepath, TheContentCache, true); //AutoStart
   FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
 end;
 
-{$endregion}
-
-procedure TestTFileDownloader.TestSingleDownload;
+procedure TestTFileDownloader.DoTestSingleDownload(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
 begin
-  var ContentURI := TURI.Create(DOWNLOAD_URI);
-  var SaveFilepath := TPath.Combine(ExtractFileDir(ParamStr(0)), SAVE_FILENAME);
+  var ContentURI := TURI.Create(URIstr);
+  var SaveFilepath := TPath.Combine(ExtractFileDir(ParamStr(0)), SaveFilename);
 
-  DoDownload(ContentURI, SaveFilepath);
-  CheckTrue(TFile.Exists(SaveFilepath), 'File ' + SaveFilepath + ' was not downloaded');
+  DoDownload(ContentURI, SaveFilepath, cache);
+  CheckEquals(ExpectedFileExists, TFile.Exists(SaveFilepath), 'File ' + SaveFilepath + ' was not downloaded');
+  {}TFile.Delete(SaveFilepath);
 end;
 
-procedure TestTFileDownloader.TestMultipleDownload;
+procedure TestTFileDownloader.DoTestMultipleDownloads(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
   var SaveFileDirectory, SaveFilenameWithoutExt, SaveFilenameExt: String;
 
   function GetNumberedSaveFilepath(const i: Integer): String;
   begin
-    result := TPath.Combine(TPath.Combine(SaveFileDirectory, SaveFilenameWithoutExt) + '_' + IntToStr(i), SaveFilenameExt);
+    result := TPath.Combine(SaveFileDirectory, SaveFilenameWithoutExt + '_' + IntToStr(i) + SaveFilenameExt);
   end;
 
 begin
-  var ContentURI := TURI.Create(DOWNLOAD_URI);
-  var SaveFilepath := TPath.Combine(ExtractFileDir(ParamStr(0)), SAVE_FILENAME);
+  var ContentURI := TURI.Create(URIstr);
+  var SaveFilepath := TPath.Combine(ExtractFileDir(ParamStr(0)), SaveFilename);
 
   SaveFileDirectory := TPath.GetDirectoryName(SaveFilepath);
   SaveFilenameWithoutExt := TPath.GetFileNameWithoutExtension(SaveFilepath);
   SaveFilenameExt := TPath.GetExtension(SaveFilepath);
 
   for var i := 0 to 10 do
-    DoDownload(ContentURI, GetNumberedSaveFilepath(i));
+    DoDownload(ContentURI, GetNumberedSaveFilepath(i), cache);
 
   for var i := 0 to 10 do
     begin
-    var filename := GetNumberedSaveFilepath(i);
-    CheckTrue(TFile.Exists(filename), 'File ' + filename + ' was not downloaded');
+    var filepath := GetNumberedSaveFilepath(i);
+    CheckEquals(ExpectedFileExists, TFile.Exists(filepath), 'File ' + filepath + ' was not downloaded');
+    {}TFile.Delete(filepath);
     end;
 end;
 
+{$endregion}
+
+procedure TestTFileDownloader.TestSingleDownload;
+begin
+  DoTestSingleDownload(DOWNLOAD_URI_STR, SAVE_FILENAME, FContentCache);
+end;
+
+procedure TestTFileDownloader.TestSingleDownloadWithoutCache;
+begin
+  DoTestSingleDownload(DOWNLOAD_URI_STR_NOCACHE, SAVE_FILENAME_NOCACHE, nil);
+end;
+
+procedure TestTFileDownloader.TestMultipleDownload;
+begin
+  DoTestMultipleDownloads(DOWNLOAD_URI_STR, SAVE_FILENAME, FContentCache);
+end;
+
+procedure TestTFileDownloader.TestMultipleDownloadWithoutCache;
+begin
+  DoTestMultipleDownloads(DOWNLOAD_URI_STR_NOCACHE, SAVE_FILENAME_NOCACHE, nil);
+end;
+
+procedure TestTFileDownloader.TestWrongUrlDownload;
+begin
+  DoTestSingleDownload(DOWNLOAD_URI_WRONG, SAVE_FILENAME_WRONGURI, FContentCache, false);
+end;
 
 initialization
   // Register any test cases with the test runner

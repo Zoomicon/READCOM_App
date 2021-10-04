@@ -2,7 +2,7 @@ unit Zoomicon.GitStore.Classes;
 
 interface
   uses
-    Zoomicon.Cache.Models, //for IFileCache
+    Zoomicon.Cache.Models, //for IContentCache
     Zoomicon.Downloader.Models, //for TDownloadCompletionEvent, IFileDownloader
     Zoomicon.GitStore.Models, //for IGitItem, IGitFile, IGitFolder, IGitStore
     System.Classes, //for TStream
@@ -45,12 +45,12 @@ interface
 
     TGitStore = class(TInterfacedObject, IGitStore)
       protected
-        FFileCache: IFileCache;
+        FContentCache: IContentCache;
         FDownloadBranchName: String;
         FDownloadURI: String;
 
       public
-        constructor Create(const TheFileCache: IFileCache = nil);
+        constructor Create(const TheContentCache: IContentCache = nil);
 
         function GetRepositoryURI: TURI;
         procedure SetRepositoryURI(const Value: TURI);
@@ -65,7 +65,7 @@ interface
         function GetFolder(SHA: string): IGitFolder;
 
       published
-        property FileCache: IFileCache read FFileCache write FFileCache;
+        property ContentCache: IContentCache read FContentCache write FContentCache;
         property DownloadBranchName: String read FDownloadBranchName write FDownloadBranchName;
         property DownloadURI: String read FDownloadURI;
     end;
@@ -108,29 +108,10 @@ procedure TGitFile.Download(const DownloadCompleteHandler: TDownloadCompletionEv
 begin
   if (not Assigned(DownloadCompleteHandler)) or (not Assigned(FGitStore)) then exit;
 
-  var FileCache := FGitStore.FileCache;
-  if Assigned(FileCache) then
-    begin
-    var Content := FileCache.GetContent(FSHA);
-    if Assigned(Content) then
-      begin
-      DownloadCompleteHandler(self, Content);
-      exit;
-      end;
-
-      var CacheFilename := FileCache.GetFilepath(FSHA);
-      var Downloader := TFileDownloader.Create(FileURI, CacheFilename);
-      Downloader.OnDownloadComplete := DownloadCompleteHandler;
-      Downloader.Start;
-      end
-
-  else //no file-based cache available, download to memory with no caching
-    begin
-    var Data := TMemoryStream.Create;
-    var Downloader := TDownloader.Create(FileURI, Data);
-    Downloader.OnDownloadComplete := DownloadCompleteHandler;
-    Downloader.Start;
-    end;
+  var Data := TMemoryStream.Create;
+  var Downloader := TDownloader.Create(FileURI, Data, FGitStore.FContentCache);
+  Downloader.OnDownloadComplete := DownloadCompleteHandler;
+  Downloader.Start;
 
   raise ENotImplemented.Create('Not implemented yet');
 end;
@@ -158,9 +139,9 @@ end;
 
 {$region 'TGitStore'}
 
-constructor TGitStore.Create(const TheFileCache: IFileCache = nil);
+constructor TGitStore.Create(const TheContentCache: IContentCache = nil);
 begin
-  FFileCache := TheFileCache;
+  FContentCache := TheContentCache;
 end;
 
 {$region 'RepositoryURI'}

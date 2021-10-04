@@ -7,7 +7,10 @@ interface
 
   type
     TFileCache = class(TInterfacedObject, IFileCache)
-       public
+      protected
+        function GetKeyHash(const Key: String): String; virtual;
+
+      public
         function GetFilepath(const Key: String): String;
         function HasContent(const Key: String): Boolean;
         function GetContent(const Key: String): TStream; virtual;
@@ -21,13 +24,21 @@ interface
 
 implementation
   uses
+    System.Hash, //for THashSHA2
     System.SysUtils, //for ENotImplemented, FileExists
     System.IOUtils, //for TPath, TDirectory
     System.ZLib; //for TZCompressionStream, TZDecompressionStream
 
+function TFileCache.GetKeyHash(const Key: String): String;
+begin
+  result := THashSHA2.GetHashString(Key, THashSHA2.TSHA2Version.SHA512).ToUpper; //See https://en.wikipedia.org/wiki/SHA-2
+end;
+
 function TFileCache.GetFilepath(const Key: String): String;
 begin
-  result := TPath.Combine(TPath.Combine(TPath.GetCachePath, UnitName), Key); //using UnitName in the path too since it also contains READCOM in it (in some platforms there's no per-app cache folder)
+  result := TPath.Combine(TPath.Combine(TPath.GetCachePath, UnitName), GetKeyHash(Key));
+  //Using UnitName in the path too since it also contains READCOM in it (in some platforms there's no per-app cache folder)
+  //Using GetKeyHash (does SHA-512) to generate a unique HEX chars string from given Key (which could contain illegal file chars, e.g. a URL)
 end;
 
 { FileCache }
@@ -41,7 +52,7 @@ function TFileCache.GetContent(const Key: String): TStream;
 begin
   var Filepath := GetFilepath(Key);
   if FileExists(Filepath) then
-    result := TFileStream.Create(GetFilepath(Key), fmOpenRead)
+    result := TFileStream.Create(Filepath, fmOpenRead)
   else
     result := nil;
 end;
@@ -52,9 +63,9 @@ begin
 
   TDirectory.CreateDirectory(TPath.GetDirectoryName(Filepath)); //create any missing subdirectories
 
-  var CacheFile := TFileStream.Create(Filepath, fmOpenWrite); //overwrite any existing file
+  var CacheFile := TFileStream.Create(Filepath, fmCreate {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
   try
-    CacheFile.CopyFrom(Content);
+    CacheFile.CopyFrom(Content); //copies from start of stream
   finally
     FreeAndNil(CacheFile);
   end;

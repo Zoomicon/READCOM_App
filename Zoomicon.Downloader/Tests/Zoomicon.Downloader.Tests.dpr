@@ -19,6 +19,8 @@ program Zoomicon.Downloader.Tests;
 uses
   DUnitTestRunner,
   Test.Zoomicon.Downloader in 'Test.Zoomicon.Downloader.pas',
+  Zoomicon.Cache.Classes in '..\..\Zoomicon.Cache\Zoomicon.Cache.Classes.pas',
+  Zoomicon.Cache.Models in '..\..\Zoomicon.Cache\Zoomicon.Cache.Models.pas',
   Zoomicon.Downloader.Classes in '..\Zoomicon.Downloader.Classes.pas',
   Zoomicon.Downloader.Models in '..\Zoomicon.Downloader.Models.pas';
 

@@ -28,7 +28,8 @@ package Zoomicon.Downloader;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  Zoomicon.Cache;
 
 contains
   Zoomicon.Downloader.Classes in 'Zoomicon.Downloader.Classes.pas',

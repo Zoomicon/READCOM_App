@@ -7,10 +7,10 @@
             <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.Downloader\Zoomicon.Downloader.dproj">
-            <Dependencies/>
+            <Dependencies>Zoomicon.Cache\Zoomicon.Cache.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Downloader\Tests\Zoomicon.Downloader.Tests.dproj">
-            <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj</Dependencies>
+            <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.GitStore\Zoomicon.GitStore.dproj">
             <Dependencies>Zoomicon.Cache\Zoomicon.Cache.dproj;Zoomicon.Downloader\Zoomicon.Downloader.dproj</Dependencies>
@@ -38,22 +38,22 @@
     <Target Name="Zoomicon_Cache:Make">
         <MSBuild Projects="Zoomicon.Cache\Zoomicon.Cache.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Downloader">
+    <Target Name="Zoomicon_Downloader" DependsOnTargets="Zoomicon.Cache">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Downloader:Clean">
+    <Target Name="Zoomicon_Downloader:Clean" DependsOnTargets="Zoomicon.Cache:Clean">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Downloader:Make">
+    <Target Name="Zoomicon_Downloader:Make" DependsOnTargets="Zoomicon.Cache:Make">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Downloader_Tests" DependsOnTargets="Zoomicon.Downloader">
+    <Target Name="Zoomicon_Downloader_Tests">
         <MSBuild Projects="Zoomicon.Downloader\Tests\Zoomicon.Downloader.Tests.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Downloader_Tests:Clean" DependsOnTargets="Zoomicon.Downloader:Clean">
+    <Target Name="Zoomicon_Downloader_Tests:Clean">
         <MSBuild Projects="Zoomicon.Downloader\Tests\Zoomicon.Downloader.Tests.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Downloader_Tests:Make" DependsOnTargets="Zoomicon.Downloader:Make">
+    <Target Name="Zoomicon_Downloader_Tests:Make">
         <MSBuild Projects="Zoomicon.Downloader\Tests\Zoomicon.Downloader.Tests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_GitStore" DependsOnTargets="Zoomicon.Cache;Zoomicon.Downloader">

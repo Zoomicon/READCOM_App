@@ -29,7 +29,6 @@ package Zoomicon.GitStore;
 
 requires
   rtl,
-  Zoomicon.Cache,
   Zoomicon.Downloader;
 
 contains
