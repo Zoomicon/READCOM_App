@@ -1,0 +1,25 @@
+object StoryHUD: TStoryHUD
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object BtnAdd: TSpeedButton
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = 280.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'additembutton'
+    Text = 'BtnAdd'
+    OnClick = BtnAddClick
+  end
+  object BtnMenu: TSpeedButton
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = -1.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'drawertoolbutton'
+    Text = 'BtnAdd'
+    OnClick = BtnMenuClick
+  end
+end

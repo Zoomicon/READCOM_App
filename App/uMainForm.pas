@@ -6,21 +6,23 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls, uStory,
   FMX.Types, uZoomableFrame, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Layouts;
+  FMX.Layouts,
+  READCOM.App.Messages.Models, //for IMessageMenu
+  iPub.Rtl.Messaging; //for SubscribeAttribute, TipMessagingThread
 
 type
   TMainForm = class(TForm)
     ZoomableFrame: TZoomableFrame;
     TrackBar: TTrackBar;
     Story1: TStory;
-    StyleBook: TStyleBook;
     procedure TrackBarChange(Sender: TObject);
     procedure ZoomableFrameScrollBoxDblClick(Sender: TObject);
-  private
-    { Private declarations }
+
   public
-    { Public declarations }
     procedure LoadMessage(msg:String);
+
+    [Subscribe(TipMessagingThread.Main)]
+    procedure OnMenu(const AMessage: IMessageMenu);
   end;
 
 var
@@ -30,6 +32,11 @@ implementation
 
 {$R *.fmx}
 {$R *.iPad.fmx IOS}
+
+procedure TMainForm.OnMenu(const AMessage: IMessageMenu);
+begin
+  ShowMessage('Menu');
+end;
 
 procedure TMainForm.TrackBarChange(Sender: TObject);
 begin
