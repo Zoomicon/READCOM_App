@@ -31,14 +31,7 @@ interface
 
     IGitStore = interface
       ['{1EF5B517-4BC2-4337-A2F3-CF77DEA1CF05}']
-      function GetRepositoryURI: TURI;
-      procedure SetRepositoryURI(const Value: TURI);
-
-      function GetAuthKey: String;
-      procedure SetAuthKey(const Value: String);
-
       function GetBaseFolder: IGitFolder;
-
       function GetItem(SHA: string): IGitItem;
       function GetFile(SHA: string): IGitFile;
       function GetFolder(SHA: string): IGitFolder;

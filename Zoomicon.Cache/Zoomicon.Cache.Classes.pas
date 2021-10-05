@@ -6,7 +6,9 @@ interface
     System.Classes; //for TStream
 
   type
-    TFileCache = class(TInterfacedObject, IFileCache)
+    TFileCache = class(TInterfacedObject, IContentCache, IFileCache)
+      //note: declaring both as implemented, even though IContentCache is ancestor of IFileCache: needed in Delphi if we want to pass as the ancestor interface
+
       protected
         function GetKeyHash(const Key: String): String; virtual;
 

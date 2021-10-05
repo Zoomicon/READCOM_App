@@ -151,10 +151,10 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Test.Zoomicon.Downloader.pas"/>
-        <DCCReference Include="..\..\Zoomicon.Cache\Zoomicon.Cache.Classes.pas"/>
-        <DCCReference Include="..\..\Zoomicon.Cache\Zoomicon.Cache.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Downloader.Classes.pas"/>
         <DCCReference Include="..\Zoomicon.Downloader.Models.pas"/>
+        <DCCReference Include="..\..\Zoomicon.Cache\Zoomicon.Cache.Classes.pas"/>
+        <DCCReference Include="..\..\Zoomicon.Cache\Zoomicon.Cache.Models.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

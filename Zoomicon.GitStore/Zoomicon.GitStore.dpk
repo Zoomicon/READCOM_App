@@ -29,7 +29,13 @@ package Zoomicon.GitStore;
 
 requires
   rtl,
-  Zoomicon.Downloader;
+  Zoomicon.Downloader,
+  bindengine,
+  dbrtl,
+  bindcomp,
+  FireDAC,
+  FireDACCommonDriver,
+  FireDACCommon;
 
 contains
   Zoomicon.GitStore.Models in 'Zoomicon.GitStore.Models.pas',

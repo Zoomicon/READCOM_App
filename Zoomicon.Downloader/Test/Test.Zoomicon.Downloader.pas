@@ -1,4 +1,4 @@
-unit Test.Zoomicon.Downloader; //Delphi DUnit Test Case
+unit Test.Zoomicon.Downloader; //Delphi DUnit Test Cases
 
 interface
   uses
@@ -20,6 +20,7 @@ interface
     SAVE_FILENAME_WRONGURI = 'Test3.md';
 
   type
+
     // Test methods for class TFileDownloader
 
     TestTFileDownloader = class(TTestCase)
@@ -56,7 +57,7 @@ implementation
 
 procedure TestTFileDownloader.SetUp;
 begin
-  FContentCache := TFileCache.Create() As IFileCache;
+  FContentCache := TFileCache.Create() As IContentCache;
 end;
 
 procedure TestTFileDownloader.TearDown;
@@ -104,7 +105,7 @@ begin
   SaveFilenameExt := TPath.GetExtension(SaveFilepath);
 
   for var i := 0 to 10 do
-    DoDownload(ContentURI, GetNumberedSaveFilepath(i), cache);
+    DoDownload(ContentURI, GetNumberedSaveFilepath(i), cache); //TODO: this does the downloads in sequence, should try with parallel ones too
 
   for var i := 0 to 10 do
     begin

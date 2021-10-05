@@ -43,6 +43,8 @@ interface
         FResumable: Boolean;
         FPaused: Boolean;
 
+        FHeaderAccept: String;
+
         FContentURIstr: String;
         FData: TStream;
 
@@ -72,6 +74,10 @@ interface
         property Resumable: Boolean read FResumable write FResumable;
         property Paused: Boolean read FPaused write SetPaused;
         property Terminated: Boolean read IsTerminated;
+
+        property HeaderAccept: String read FHeaderAccept write FHeaderAccept;
+        //TODO: consider also adding Header properties for AcceptCharSet, AcceptEncoding, AcceptLanguage, ContentType, UserAgent
+
         property ContentURI: TURI read GetContentURI;
         property Data: TStream read FData;
 
@@ -261,6 +267,7 @@ end;
 function TDownloader.Download(const StartPosition, EndPosition: Int64): Integer; //this is called by Execute which is called by TDownloaderThread
 begin
   var HttpClient := THTTPClient.Create;
+  HttpClient.Accept := FHeaderAccept;
   HttpClient.OnReceiveData := ReceiveHandler;
 
   var StatusCode: Integer := 0; //e.g. HTTP_OK=200
