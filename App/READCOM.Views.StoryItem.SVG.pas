@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, READCOM.Views.StoryItem, Zoomicon.Manipulator,
-  FMX.ExtCtrls;
+  FMX.ExtCtrls, FMX.Controls.Presentation;
 
 type
   TStoryItemSVG = class(TStoryItem)

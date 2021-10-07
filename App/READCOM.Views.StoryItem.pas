@@ -8,15 +8,20 @@ uses
   iPub.Rtl.Messaging, //for SubscribeAttrible, GMessaging
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls;
+  FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation;
 
 type
-  TStoryItem = class(TFrame) //abstract
-    DropTarget: TDropTarget;
+  TStoryItem = class(TFrame)
     Manipulator: TManipulator;
+    DropTarget: TDropTarget;
+    Line1: TLine;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+    procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject;
+      const Point: TPointF; var Operation: TDragOperation);
+    procedure FrameDblClick(Sender: TObject);
 
   protected
+    procedure InitDropTarget;
     function GetDropFilter: String; virtual;
     procedure DoEditModeChange(const Value: Boolean);
 
@@ -38,8 +43,8 @@ implementation
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
-  //DropTarget1.FilterIndex := 1; //this is the default value
-  DropTarget.Filter := GetDropFilter;
+  InitDropTarget;
+
   GMessaging.Subscribe(Self);
 end;
 
@@ -47,6 +52,15 @@ destructor TStoryItem.Destroy;
 begin
   GMessaging.Unsubscribe(Self);
   inherited;
+end;
+
+procedure TStoryItem.InitDropTarget;
+begin
+  DropTarget.FilterIndex := 1;
+  //this is the default value
+  DropTarget.Filter := GetDropFilter;
+  DropTarget.OnDragOver := DropTargetDragOver;
+  DropTarget.OnDropped := DropTargetDropped;
 end;
 
 function TStoryItem.GetDropFilter: String;
@@ -71,9 +85,19 @@ begin
   TabStop := Value;
 end;
 
+procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+begin
+  Operation := TDragOperation.Copy;
+end;
+
 procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
   LoadFiles(Data.Files);
+end;
+
+procedure TStoryItem.FrameDblClick(Sender: TObject);
+begin
+ ShowMessage('Double click StoryItem');
 end;
 
 end.

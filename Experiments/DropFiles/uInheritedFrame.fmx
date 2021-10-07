@@ -1,0 +1,7 @@
+inherited InheritedFrame: TInheritedFrame
+  inherited DropTarget1: TDropTarget
+    TextSettings.FontColor = claBrown
+    StyledSettings = [Family, Size, Style]
+    Text = 'Inherited DropTarget'
+  end
+end

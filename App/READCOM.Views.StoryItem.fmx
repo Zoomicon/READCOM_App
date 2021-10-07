@@ -3,21 +3,30 @@ object StoryItem: TStoryItem
   Size.Height = 416.000000000000000000
   Size.PlatformDefault = False
   TabStop = False
+  OnDblClick = FrameDblClick
   object DropTarget: TDropTarget
+    Align = Contents
+    Size.Width = 544.000000000000000000
+    Size.Height = 416.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'DropTarget'
+    OnDragOver = DropTargetDragOver
+    OnDropped = DropTargetDropped
+    object Line1: TLine
+      LineType = Diagonal
+      Position.X = 494.000000000000000000
+      Position.Y = 224.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+    end
+  end
+  object Manipulator: TManipulator
     Align = Client
     Size.Width = 544.000000000000000000
     Size.Height = 416.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 0
-    Text = 'DropTarget'
-    OnDropped = DropTargetDropped
-    object Manipulator: TManipulator
-      Align = Client
-      Size.Width = 544.000000000000000000
-      Size.Height = 416.000000000000000000
-      Size.PlatformDefault = False
-      EditMode = False
-      Proportional = False
-    end
+    Proportional = False
   end
 end

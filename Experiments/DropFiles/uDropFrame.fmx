@@ -1,0 +1,15 @@
+object DropFrame: TDropFrame
+  Size.Width = 848.000000000000000000
+  Size.Height = 688.000000000000000000
+  Size.PlatformDefault = False
+  object DropTarget1: TDropTarget
+    Align = Contents
+    Size.Width = 848.000000000000000000
+    Size.Height = 688.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'DropTarget1'
+    OnDragOver = DropTarget1DragOver
+    OnDropped = DropTarget1Dropped
+  end
+end

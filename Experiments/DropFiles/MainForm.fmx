@@ -1,0 +1,93 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 664
+  ClientWidth = 636
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object GridLayout1: TGridLayout
+    Align = Contents
+    ItemHeight = 200.000000000000000000
+    ItemWidth = 200.000000000000000000
+    Orientation = Horizontal
+    Size.Width = 636.000000000000000000
+    Size.Height = 664.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    inline Frame11: TDropFrame
+      Align = Client
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame12: TDropFrame
+      Position.X = 200.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame13: TDropFrame
+      Position.X = 400.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame14: TDropFrame
+      Position.Y = 200.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame15: TDropFrame
+      Position.X = 200.000000000000000000
+      Position.Y = 200.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame16: TDropFrame
+      Position.X = 400.000000000000000000
+      Position.Y = 200.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+    inline Frame21: TInheritedFrame
+      Position.Y = 400.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      inherited DropTarget1: TDropTarget
+        Size.Width = 200.000000000000000000
+        Size.Height = 200.000000000000000000
+      end
+    end
+  end
+end

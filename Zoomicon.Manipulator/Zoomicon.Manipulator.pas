@@ -34,11 +34,10 @@ type
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
 
-    procedure Loaded; override;
     procedure HandleChangeTracking(Sender: TObject; var X, Y: Single);
 
   published
-    property EditMode: Boolean read FEditMode write SetEditMode;
+    property EditMode: Boolean read FEditMode write SetEditMode default false;
     property Proportional: Boolean read FProportional write SetProportional;
 
   end;
@@ -138,31 +137,6 @@ end;
 {$endregion}
 
 {$region 'TSelection wrappers'}
-
-procedure TManipulator.Loaded;
-begin
-  inherited;
-{
-  for var i := 0 to ChildrenCount-1 do
-  begin
-    var c := Children[i];
-    if (c is TSelection) then
-       begin
-       var Selection := TSelection(c);
-       with Selection do
-         for var si := 0 to ChildrenCount-1 do
-           begin
-           var sc := Children[si];
-           if (sc is TSelectionPoint) then
-             begin
-             ParentBounds := false;
-             TSelectionPoint(sc).OnTrack := HandleChangeTracking;
-             end;
-           end;
-       end;
-  end;
-}
-end;
 
 procedure TManipulator.AddMoveSelectionPoint(const ASelection: TSelection);
 begin
