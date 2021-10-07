@@ -1,12 +1,4 @@
-object StoryItemSVG: TStoryItemSVG
-  Left = 0
-  Top = 0
-  ClientHeight = 232
-  ClientWidth = 244
-  FormFactor.Width = 320
-  FormFactor.Height = 480
-  FormFactor.Devices = [Desktop, iPhone, iPad]
-  DesignerMasterStyle = 0
+inherited StoryItemSVG: TStoryItemSVG
   object SVGIconImage1: TSVGIconImage
     MultiResBitmap = <
       item
@@ -21,8 +13,8 @@ object StoryItemSVG: TStoryItemSVG
       end>
     Align = Client
     DisableInterpolation = True
-    Size.Width = 244.000000000000000000
-    Size.Height = 232.000000000000000000
+    Size.Width = 544.000000000000000000
+    Size.Height = 416.000000000000000000
     Size.PlatformDefault = False
   end
 end

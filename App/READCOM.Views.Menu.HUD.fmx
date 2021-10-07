@@ -22,4 +22,14 @@ object StoryHUD: TStoryHUD
     Text = 'BtnAdd'
     OnClick = BtnMenuClick
   end
+  object btnEdit: TSpeedButton
+    Position.X = -1.000000000000000000
+    Position.Y = 41.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'composetoolbutton'
+    Text = 'BtnAdd'
+    OnClick = btnEditClick
+  end
 end

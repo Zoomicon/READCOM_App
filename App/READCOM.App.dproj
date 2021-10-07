@@ -251,17 +251,13 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="_uMainForm.pas">
-            <Form>SomeForm</Form>
+        <DCCReference Include="..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas"/>
+        <DCCReference Include="READCOM.Views.Main.pas">
+            <Form>MainForm</Form>
             <FormType>fmx</FormType>
         </DCCReference>
-        <DCCReference Include="uStory.pas">
-            <Form>Story</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="uStoryPoint.pas">
-            <Form>StoryPoint</Form>
+        <DCCReference Include="READCOM.Views.StoryFrame.pas">
+            <Form>StoryFrame</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
@@ -270,24 +266,17 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas"/>
-        <DCCReference Include="uStoryHUD.pas">
+        <DCCReference Include="READCOM.Views.Menu.HUD.pas">
             <Form>StoryHUD</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="READCOM.App.Messages\READCOM.App.Messages.Classes.pas"/>
-        <DCCReference Include="READCOM.App.Messages\READCOM.App.Messages.Models.pas"/>
-        <DCCReference Include="Unit1.pas">
-            <Form>Form1</Form>
-            <FormType>fmx</FormType>
-        </DCCReference>
-        <DCCReference Include="uStoryItem.pas">
+        <DCCReference Include="READCOM.Views.StoryItem.pas">
             <Form>StoryItem</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="uStoryItemSVG.pas">
+        <DCCReference Include="READCOM.Views.StoryItem.SVG.pas">
             <Form>StoryItemSVG</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
@@ -297,6 +286,8 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="READCOM.Messages\READCOM.Messages.Classes.pas"/>
+        <DCCReference Include="READCOM.Messages\READCOM.Messages.Models.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

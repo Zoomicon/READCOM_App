@@ -1,15 +1,15 @@
 object ZoomableFrame: TZoomableFrame
-  Size.Width = 614.000000000000000000
-  Size.Height = 422.000000000000000000
+  Size.Width = 612.000000000000000000
+  Size.Height = 420.000000000000000000
   Size.PlatformDefault = False
   object ScrollBox: TScrollBox
     Align = Client
-    Size.Width = 614.000000000000000000
-    Size.Height = 422.000000000000000000
+    Size.Width = 612.000000000000000000
+    Size.Height = 420.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 614.000000000000000000
-    Viewport.Height = 422.000000000000000000
+    Viewport.Width = 596.000000000000000000
+    Viewport.Height = 404.000000000000000000
     object Layout: TLayout
       Size.Width = 614.000000000000000000
       Size.Height = 422.000000000000000000

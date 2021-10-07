@@ -1,0 +1,23 @@
+object StoryItem: TStoryItem
+  Size.Width = 544.000000000000000000
+  Size.Height = 416.000000000000000000
+  Size.PlatformDefault = False
+  TabStop = False
+  object DropTarget: TDropTarget
+    Align = Client
+    Size.Width = 544.000000000000000000
+    Size.Height = 416.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'DropTarget'
+    OnDropped = DropTargetDropped
+    object Manipulator: TManipulator
+      Align = Client
+      Size.Width = 544.000000000000000000
+      Size.Height = 416.000000000000000000
+      Size.PlatformDefault = False
+      EditMode = False
+      Proportional = False
+    end
+  end
+end

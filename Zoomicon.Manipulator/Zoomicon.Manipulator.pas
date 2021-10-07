@@ -23,8 +23,6 @@ type
     FEditMode: Boolean;
     FProportional: Boolean;
 
-    constructor Create(AOwner: TComponent);
-
     procedure SetEditMode(const Value: Boolean);
     procedure SetSelectorsVisible(const Value: Boolean);
     procedure SetProportional(value: Boolean);
@@ -84,12 +82,6 @@ end;
 {$endregion}
 
 {$REGION 'TManipulator'}
-
-constructor TManipulator.Create(AOwner: TComponent);
-begin
-  inherited;
-  //...
-end;
 
 {$region 'EditMode'}
 
@@ -263,7 +255,6 @@ begin
   var SelectionPoint := TSelectionPoint(Sender); //assuming events are sent by TSelectionPoint
   with SelectionPoint do
     begin
-    var ParentControl := TControl(Parent); //assuming we have a TControl as parent
     var Pos := ParentControl.Position.Point;
     var PressedPos := SelectionPoint.PressedPosition;
     ParentControl.Position := TPosition.Create(TPointF.Create(Pos.X + X - PressedPos.X/2 - ParentControl.Width/2, Pos.Y + Y - PressedPos.Y/2 - ParentControl.Height/2)); //Move parent control

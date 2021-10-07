@@ -1,5 +1,0 @@
-object Frame2: TFrame2
-  Size.Width = 448.000000000000000000
-  Size.Height = 316.000000000000000000
-  Size.PlatformDefault = False
-end
