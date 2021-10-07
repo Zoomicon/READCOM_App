@@ -12,11 +12,13 @@ uses
   READCOM.Views.StoryItem.SVG in 'READCOM.Views.StoryItem.SVG.pas' {StoryItemSVG: TFrame},
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.Messages.Classes in 'READCOM.Messages\READCOM.Messages.Classes.pas',
-  READCOM.Messages.Models in 'READCOM.Messages\READCOM.Messages.Models.pas';
+  READCOM.Messages.Models in 'READCOM.Messages\READCOM.Messages.Models.pas',
+  READCOM.App.Models in 'READCOM.App.Models.pas';
 
 {$R *.res}
 
 begin
+  ReportMemoryLeaksOnShutdown := True; //TODO: remove in production?
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

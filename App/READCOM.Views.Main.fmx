@@ -8,6 +8,26 @@ object MainForm: TMainForm
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   DesignerMasterStyle = 0
+  object ScrollBox: TScrollBox
+    Align = Contents
+    Size.Width = 1040.000000000000000000
+    Size.Height = 608.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Viewport.Width = 1040.000000000000000000
+    Viewport.Height = 608.000000000000000000
+    inline StoryFrame1: TStoryFrame
+      Align = Contents
+      Size.Width = 1040.000000000000000000
+      Size.Height = 608.000000000000000000
+      Size.PlatformDefault = False
+      TabStop = False
+      inherited DropTarget: TDropTarget
+        Size.Width = 1040.000000000000000000
+        Size.Height = 608.000000000000000000
+      end
+    end
+  end
   inline StoryHUD1: TStoryHUD
     Align = Contents
     Size.Width = 1040.000000000000000000
@@ -15,35 +35,6 @@ object MainForm: TMainForm
     Size.PlatformDefault = False
     inherited BtnAdd: TSpeedButton
       Position.X = 1000.000000000000000000
-    end
-  end
-  object ScrollBox: TScrollBox
-    Position.X = 1064.000000000000000000
-    Position.Y = 304.000000000000000000
-    TabOrder = 0
-    Viewport.Width = 34.000000000000000000
-    Viewport.Height = 34.000000000000000000
-    inline StoryFrame1: TStoryFrame
-      Size.Width = 800.000000000000000000
-      Size.Height = 800.000000000000000000
-      Size.PlatformDefault = False
-      TabStop = False
-      inherited DropTarget: TDropTarget
-        Size.Width = 800.000000000000000000
-        Size.Height = 800.000000000000000000
-        inherited Manipulator: TManipulator
-          Size.Width = 800.000000000000000000
-          Size.Height = 800.000000000000000000
-          inherited StoryItemSVG1: TStoryItemSVG
-            inherited SVGIconImage1: TSVGIconImage
-              MultiResBitmap = <
-                item
-                  SVGText = '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
-                end>
-            end
-          end
-        end
-      end
     end
   end
 end

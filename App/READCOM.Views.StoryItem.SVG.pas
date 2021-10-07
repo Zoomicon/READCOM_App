@@ -3,18 +3,21 @@ unit READCOM.Views.StoryItem.SVG;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
+  READCOM.App.Models, //for ILoadable
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, READCOM.Views.StoryItem, Zoomicon.Manipulator,
   FMX.ExtCtrls, FMX.Controls.Presentation;
 
 type
-  TStoryItemSVG = class(TStoryItem)
-    SVGIconImage1: TSVGIconImage;
+  TStoryItemSVG = class(TStoryItem, ILoadable)
+    SVGIconImage: TSVGIconImage;
   public
-    function GetDropFilter: String; override;
-    procedure LoadFile(const Filepath: String); override;
-    procedure LoadFiles(const Files: array of String); override;
+    {$region 'ILoadable'}
+    function GetLoadFilesFilter: String; override;
+    procedure Load(const Stream: TStream); overload; override;
+    procedure Load(const Filepaths: Array of String); overload; override;
+    {$endregion}
   end;
 
 implementation
@@ -23,28 +26,32 @@ implementation
 
 { TStoryItemSVG }
 
-function TStoryItemSVG.GetDropFilter: String;
+{$region 'ILoadable'}
+
+function TStoryItemSVG.GetLoadFilesFilter: String;
 begin
   result := 'SVG vector images (*.svg)|*.svg';
 end;
 
-procedure TStoryItemSVG.LoadFile(const Filepath: String);
+procedure TStoryItemSVG.Load(const Stream: TStream);
 begin
-  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
-  try
-    SVGIconImage1.MultiResBitmap.LoadFromStream(InputFileStream);
-  finally
-    FreeAndNil(InputFileStream);
+  var bitmap := SVGIconImage.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
+  bitmap.SVG.LoadFromStream(Stream);
+  //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
+  bitmap.DrawSVGIcon;
+  if FAutoSize then
+    SetSize(bitmap.Width, bitmap.Height);
+end;
+
+procedure TStoryItemSVG.Load(const Filepaths: Array of String);
+begin
+  for var f in Filepaths do
+  begin
+    Load(f);
+    exit; //we need just the 1st file in case multiple were dropped
   end;
 end;
 
-procedure TStoryItemSVG.LoadFiles(const Files: array of String);
-begin
-  for var f in Files do
-    begin
-    LoadFile(f);
-    exit; //we need just the 1st file in case multiple were dropped
-    end;
-end;
+{$endregion}
 
 end.

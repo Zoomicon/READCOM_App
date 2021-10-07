@@ -288,6 +288,7 @@
         </DCCReference>
         <DCCReference Include="READCOM.Messages\READCOM.Messages.Classes.pas"/>
         <DCCReference Include="READCOM.Messages\READCOM.Messages.Models.pas"/>
+        <DCCReference Include="READCOM.App.Models.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

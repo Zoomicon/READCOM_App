@@ -1,5 +1,5 @@
 inherited StoryItemSVG: TStoryItemSVG
-  object SVGIconImage1: TSVGIconImage
+  object SVGIconImage: TSVGIconImage
     MultiResBitmap = <
       item
         SVGText = 
@@ -11,7 +11,7 @@ inherited StoryItemSVG: TStoryItemSVG
           '4,33.4 17,25 31,25"/>        <rect x="22" y="14.8" width="4" hei' +
           'ght="12.3"/>    </g></svg>'
       end>
-    Align = Client
+    Align = Contents
     DisableInterpolation = True
     Size.Width = 544.000000000000000000
     Size.Height = 416.000000000000000000

@@ -15,8 +15,8 @@ uses
 type
   TMainForm = class(TForm)
     ScrollBox: TScrollBox;
-    StoryFrame1: TStoryFrame;
     StoryHUD1: TStoryHUD;
+    StoryFrame1: TStoryFrame;
 
   public
     [Subscribe(TipMessagingThread.Main)]

@@ -1,15 +1,2 @@
 inherited StoryFrame: TStoryFrame
-  inherited Manipulator: TManipulator
-    inline StoryItemSVG1: TStoryItemSVG
-      Size.Width = 544.000000000000000000
-      Size.Height = 416.000000000000000000
-      Size.PlatformDefault = False
-      TabStop = False
-      inherited SVGIconImage1: TSVGIconImage
-        MultiResBitmap = <
-          item
-          end>
-      end
-    end
-  end
 end

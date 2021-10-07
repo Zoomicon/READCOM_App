@@ -3,6 +3,7 @@ unit READCOM.Views.StoryItem;
 interface
 
 uses
+  READCOM.App.Models, //for ILoadable
   READCOM.Messages.Models, //for IMessageEditModeChange
   Zoomicon.Manipulator,
   iPub.Rtl.Messaging, //for SubscribeAttrible, GMessaging
@@ -10,30 +11,42 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation;
 
+const
+  DEFAULT_AUTOSIZE = true;
+
 type
-  TStoryItem = class(TFrame)
+  TStoryItem = class(TFrame, ILoadable)
     Manipulator: TManipulator;
     DropTarget: TDropTarget;
-    Line1: TLine;
+    Button1: TButton;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject;
       const Point: TPointF; var Operation: TDragOperation);
     procedure FrameDblClick(Sender: TObject);
 
   protected
+    FAutoSize: Boolean;
     procedure InitDropTarget;
-    function GetDropFilter: String; virtual;
     procedure DoEditModeChange(const Value: Boolean);
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure LoadFile(const Filepath: String); virtual; abstract;
-    procedure LoadFiles(const Files: array of String); virtual;
+    {$region 'ILoadable'}
+    function GetLoadFilesFilter: String; virtual;
+    procedure Load(const Stream: TStream); overload; virtual; abstract;
+    procedure Load(const Filepath: string); overload; virtual;
+    procedure Load(const Filepaths: array of string); overload; virtual;
+    {$endregion}
 
+    {$region 'Messages'}
     [Subscribe(TipMessagingThread.Main)]
     procedure OnEditModeChange(const AMessage: IMessageEditModeChange);
+    {$endregion}
+
+  published
+    property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
   end;
 
 implementation
@@ -43,8 +56,8 @@ implementation
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
+  FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
-
   GMessaging.Subscribe(Self);
 end;
 
@@ -54,25 +67,7 @@ begin
   inherited;
 end;
 
-procedure TStoryItem.InitDropTarget;
-begin
-  DropTarget.FilterIndex := 1;
-  //this is the default value
-  DropTarget.Filter := GetDropFilter;
-  DropTarget.OnDragOver := DropTargetDragOver;
-  DropTarget.OnDropped := DropTargetDropped;
-end;
-
-function TStoryItem.GetDropFilter: String;
-begin
-  result := '';
-end;
-
-procedure TStoryItem.LoadFiles(const Files: array of String);
-begin
-  for var f in Files do
-    LoadFile(f);
-end;
+{$region 'Edit mode'}
 
 procedure TStoryItem.OnEditModeChange(const AMessage: IMessageEditModeChange);
 begin
@@ -85,6 +80,41 @@ begin
   TabStop := Value;
 end;
 
+{$endregion}
+
+{$region 'ILoadable'}
+
+function TStoryItem.GetLoadFilesFilter: String;
+begin
+  result := '';
+end;
+
+procedure TStoryItem.Load(const Filepath: String);
+begin
+  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
+  try
+    Load(InputFileStream);
+  finally
+    FreeAndNil(InputFileStream);
+  end;
+end;
+
+procedure TStoryItem.Load(const Filepaths: array of String);
+begin
+  for var f in Filepaths do
+    Load(f);
+end;
+
+{$endregion}
+
+{$region 'Drop target'}
+
+procedure TStoryItem.InitDropTarget;
+begin
+  DropTarget.FilterIndex := 1; //this is the default value
+  DropTarget.Filter := GetLoadFilesFilter;
+end;
+
 procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   Operation := TDragOperation.Copy;
@@ -92,8 +122,10 @@ end;
 
 procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
-  LoadFiles(Data.Files);
+  Load(Data.Files);
 end;
+
+{$endregion}
 
 procedure TStoryItem.FrameDblClick(Sender: TObject);
 begin

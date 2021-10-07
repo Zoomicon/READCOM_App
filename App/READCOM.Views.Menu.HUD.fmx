@@ -1,5 +1,6 @@
 object StoryHUD: TStoryHUD
   Align = Contents
+  HitTest = False
   Size.Width = 912.000000000000000000
   Size.Height = 572.000000000000000000
   Size.PlatformDefault = False
