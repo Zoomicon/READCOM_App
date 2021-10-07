@@ -149,6 +149,8 @@ end;
 
 procedure TManipulator.Loaded;
 begin
+  inherited;
+{
   for var i := 0 to ChildrenCount-1 do
   begin
     var c := Children[i];
@@ -167,6 +169,7 @@ begin
            end;
        end;
   end;
+}
 end;
 
 procedure TManipulator.AddMoveSelectionPoint(const ASelection: TSelection);
@@ -175,6 +178,7 @@ begin
   with SelectionPoint do
     begin
     ParentBounds := false;
+    GripSize := SELECTION_GRIP_SIZE;
     Align := TAlignLayout.Center;
     Parent := ASelection;
     //SetSubComponent(true); //do not use, no need to persist the settings of the SelectionPoint component with the frame
@@ -261,7 +265,9 @@ begin
     begin
     var ParentControl := TControl(Parent); //assuming we have a TControl as parent
     var Pos := ParentControl.Position.Point;
-    ParentControl.Position := TPosition.Create(TPointF.Create(Pos.X + X - ParentControl.Width/2, Pos.Y + Y - ParentControl.Height/2)); //Move parent control
+    var PressedPos := SelectionPoint.PressedPosition;
+    ParentControl.Position := TPosition.Create(TPointF.Create(Pos.X + X - PressedPos.X/2 - ParentControl.Width/2, Pos.Y + Y - PressedPos.Y/2 - ParentControl.Height/2)); //Move parent control
+    SelectionPoint.PressedPosition := TPointF.Zero;
     //SelectionPoint.Align := TAlignLayout.Center;
     end;
 end;
