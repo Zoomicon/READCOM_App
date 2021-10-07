@@ -34,7 +34,7 @@ end;
 
 procedure TStoryHUD.BtnAddClick(Sender: TObject);
 begin
-  GMessaging.Post(TMessageAdd.Create As IMessageMenu);
+  GMessaging.Post(TMessageAdd.Create As IMessageAdd);
 end;
 
 end.

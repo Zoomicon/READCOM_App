@@ -1,12 +1,12 @@
 object ContainerFrame: TContainerFrame
   Size.Width = 160.000000000000000000
-  Size.Height = 90.000000000000000000
+  Size.Height = 88.000000000000000000
   Size.PlatformDefault = False
   object BackgroundRectangle: TRectangle
     Align = Contents
     Fill.Color = claCoral
     Size.Width = 160.000000000000000000
-    Size.Height = 90.000000000000000000
+    Size.Height = 88.000000000000000000
     Size.PlatformDefault = False
   end
 end

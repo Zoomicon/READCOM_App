@@ -1,4 +1,4 @@
-unit uMainForm;
+unit _uMainForm;
 
 interface
 
@@ -8,13 +8,14 @@ uses
   FMX.Types, uZoomableFrame, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts,
   READCOM.App.Messages.Models, //for IMessageMenu
-  iPub.Rtl.Messaging; //for SubscribeAttribute, TipMessagingThread
+  iPub.Rtl.Messaging, uStoryHUD; //for SubscribeAttribute, TipMessagingThread
 
 type
-  TMainForm = class(TForm)
+  TSomeForm = class(TForm)
     ZoomableFrame: TZoomableFrame;
     TrackBar: TTrackBar;
     Story1: TStory;
+    StoryHUD: TStoryHUD;
     procedure TrackBarChange(Sender: TObject);
     procedure ZoomableFrameScrollBoxDblClick(Sender: TObject);
 
@@ -23,32 +24,33 @@ type
 
     [Subscribe(TipMessagingThread.Main)]
     procedure OnMenu(const AMessage: IMessageMenu);
+
   end;
 
 var
-  MainForm: TMainForm;
+  SomeForm: TSomeForm;
 
 implementation
 
 {$R *.fmx}
 {$R *.iPad.fmx IOS}
 
-procedure TMainForm.OnMenu(const AMessage: IMessageMenu);
+procedure TSomeForm.OnMenu(const AMessage: IMessageMenu);
 begin
   ShowMessage('Menu');
 end;
 
-procedure TMainForm.TrackBarChange(Sender: TObject);
+procedure TSomeForm.TrackBarChange(Sender: TObject);
 begin
     ZoomableFrame.RatioScale := TrackBar.Value;
 end;
 
-procedure TMainForm.ZoomableFrameScrollBoxDblClick(Sender: TObject);
+procedure TSomeForm.ZoomableFrameScrollBoxDblClick(Sender: TObject);
 begin
   LoadMessage('test');
 end;
 
-procedure TMainForm.LoadMessage(msg:String);
+procedure TSomeForm.LoadMessage(msg:String);
 var
   panel:Tcalloutpanel;
   memo:TLabel;

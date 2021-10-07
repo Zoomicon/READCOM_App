@@ -1,6 +1,4 @@
-package Zoomicon.GitStore;
-
-{$Description 'Zoomicon GitStore'}
+package Zoomicon.Manipulator;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -15,8 +13,8 @@ package Zoomicon.GitStore;
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION OFF}
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
 {$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES ON}
@@ -31,17 +29,9 @@ package Zoomicon.GitStore;
 
 requires
   rtl,
-  Zoomicon.Downloader,
-  bindengine,
-  dbrtl,
-  bindcomp,
-  FireDAC,
-  FireDACCommonDriver,
-  FireDACCommon,
-  RESTComponents;
+  fmx;
 
 contains
-  Zoomicon.GitStore.Models in 'Zoomicon.GitStore.Models.pas',
-  Zoomicon.GitStore.Classes in 'Zoomicon.GitStore.Classes.pas';
+  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
 
 end.

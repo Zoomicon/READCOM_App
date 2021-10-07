@@ -1,4 +1,4 @@
-inherited MainForm_iPad: TMainForm_iPad
+inherited SomeForm_iPad: TSomeForm_iPad
   ClientHeight = 1004
   ClientWidth = 768
   DesignerMasterStyle = 0
