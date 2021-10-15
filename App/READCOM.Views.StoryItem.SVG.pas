@@ -10,10 +10,10 @@ uses
   FMX.ExtCtrls, FMX.Controls.Presentation;
 
 type
-  TStoryItemSVG = class(TStoryItem, ILoadable)
+  TStoryItemSVG = class(TStoryItem, IStoreable)
     SVGIconImage: TSVGIconImage;
   public
-    {$region 'ILoadable'}
+    {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream); overload; override;
     procedure Load(const Filepaths: Array of String); overload; override;
@@ -26,7 +26,7 @@ implementation
 
 { TStoryItemSVG }
 
-{$region 'ILoadable'}
+{$region 'IStoreable'}
 
 function TStoryItemSVG.GetLoadFilesFilter: String;
 begin

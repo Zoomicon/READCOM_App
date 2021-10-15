@@ -22,10 +22,4 @@ object StoryItem: TStoryItem
     Visible = False
     Proportional = False
   end
-  object Button1: TButton
-    Position.X = 288.000000000000000000
-    Position.Y = 272.000000000000000000
-    TabOrder = 2
-    Text = 'Button1'
-  end
 end

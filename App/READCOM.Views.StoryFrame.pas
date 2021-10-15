@@ -11,11 +11,11 @@ uses
 
 type
   {A TStoryFrame is a TStoryItem that can host other TStoryItems, including of its own kind [nested TStoryFrames] and is the only thing that takes part in navigation [TAB flow] when not in edit mode}
-  TStoryFrame = class(TStoryItem, ILoadable)
+  TStoryFrame = class(TStoryItem, IStoreable)
     protected
       procedure DoEditModeChange(const Value: Boolean);
     public
-      {$region 'ILoadable'}
+      {$region 'IStoreable'}
       function GetLoadFilesFilter: String; override;
       procedure Load(const Filepath: String); override;
       {$endregion}
@@ -35,7 +35,7 @@ begin
   TabStop := true; //always do tab stop navigation between TStoryFrames (irrespective of EditMode)
 end;
 
-{$region 'ILoadable'}
+{$region 'IStoreable'}
 
 function TStoryFrame.GetLoadFilesFilter: String;
 begin

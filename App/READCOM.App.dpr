@@ -13,12 +13,14 @@ uses
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.Messages.Classes in 'READCOM.Messages\READCOM.Messages.Classes.pas',
   READCOM.Messages.Models in 'READCOM.Messages\READCOM.Messages.Models.pas',
-  READCOM.App.Models in 'READCOM.App.Models.pas';
+  READCOM.App.Models in 'READCOM.App.Models.pas',
+  Zoomicon.Collections in 'Zoomicon.Collections.pas';
 
 {$R *.res}
 
 begin
   ReportMemoryLeaksOnShutdown := True; //TODO: remove in production?
+  Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
