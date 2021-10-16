@@ -252,32 +252,8 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas"/>
-        <DCCReference Include="READCOM.Views.Main.pas">
-            <Form>MainForm</Form>
-            <FormType>fmx</FormType>
-        </DCCReference>
-        <DCCReference Include="READCOM.Views.StoryFrame.pas">
-            <Form>StoryFrame</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="uZoomableFrame.pas">
             <Form>ZoomableFrame</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="READCOM.Views.Menu.HUD.pas">
-            <Form>StoryHUD</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="READCOM.Views.StoryItem.pas">
-            <Form>StoryItem</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="READCOM.Views.StoryItem.SVG.pas">
-            <Form>StoryItemSVG</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
@@ -286,10 +262,69 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="READCOM.Messages\READCOM.Messages.Classes.pas"/>
-        <DCCReference Include="READCOM.Messages\READCOM.Messages.Models.pas"/>
         <DCCReference Include="READCOM.App.Models.pas"/>
         <DCCReference Include="Zoomicon.Collections.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Chars.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Components.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Components.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Core.EnumerationStrategies.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Core.Enumerators.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Core.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Core.Reduce.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Core.Types.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.DB.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Files.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.GenericObjects.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.GenericObjects.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Generics.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Integers.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Integers.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.JSON.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.JSON.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Pointers.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Strings.MethodFactories.pas"/>
+        <DCCReference Include="..\3rdPartyLib\FluentQuery\FluentQuery.Strings.pas"/>
+        <DCCReference Include="Messages\READCOM.Messages.Classes.pas"/>
+        <DCCReference Include="Messages\READCOM.Messages.Models.pas"/>
+        <DCCReference Include="Views\READCOM.Views.StoryItem.pas">
+            <Form>StoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.ImageStoryItem.pas">
+            <Form>ImageStoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.BitmapImageStoryItem.pas">
+            <Form>BitmapImageStoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.VectorImageStoryItem.pas">
+            <Form>BitmapImageStoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.PanelStoryItem.pas">
+            <Form>PanelStoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.Menu.HUD.pas">
+            <Form>StoryHUD</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.Main.pas">
+            <Form>MainForm</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.AudioStoryItem.pas">
+            <Form>AudioStoryItem</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -13,6 +13,8 @@ uses
 
 const
   DEFAULT_AUTOSIZE = true;
+  MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
+  FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.read-com';
 
 type
   TStoryItem = class(TFrame, IStoryItem, IStoreable)
@@ -22,21 +24,23 @@ type
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure FrameDblClick(Sender: TObject);
 
+  //-- Fields ---
+
   protected
     FAutoSize: Boolean;
-    procedure InitDropTarget;
-    procedure DoEditModeChange(const Value: Boolean);
+
+  //--- Methods ---
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    //--- Methods ---
     procedure PlayRandomAudioStoryItem;
 
     { IStoreable }
     function GetLoadFilesFilter: String; virtual;
-    procedure Load(const Stream: TStream); overload; virtual;
+    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
+    procedure LoadReadCom(const Stream: TStream); virtual;
     procedure Load(const Filepath: string); overload; virtual;
     procedure Load(const Filepaths: array of string); overload; virtual;
     procedure Save(const Stream: TStream); overload; virtual;
@@ -49,7 +53,7 @@ type
 
     { ParentStoryItem }
     function GetParentStoryItem: IStoryItem;
-    procedure SetParentStoryItem(const Value: IStoryItem);
+    procedure SetParentStoryItem(const TheParent: IStoryItem);
 
     { StoryItems }
     function GetStoryItems: TStoryItemCollection;
@@ -70,16 +74,20 @@ type
     function GetTargetId: TGUID;
     procedure SetTargetId(const Value: TGUID);
 
-    //--- Messages ---
-    [Subscribe(TipMessagingThread.Main)]
+  //--- Events ---
+
+  protected
+    procedure InitDropTarget;
+    procedure DoEditModeChange(const Value: Boolean);
+  public
+    procedure OnEditModeChange(const AMessage: IMessageEditModeChange); //TODO: change
     procedure HandleParentNavigatedToChanged;
 
-    {$region 'Messages'}
-    procedure OnEditModeChange(const AMessage: IMessageEditModeChange);
-    {$endregion}
+  //--- Properties ---
 
+  protected
+    property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
   published
-    //--- Properties ---
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
     property StoryItems: TStoryItemCollection read GetStoryItems write SetStoryItems; //default nil
@@ -87,11 +95,14 @@ type
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //default nil //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
-
-    property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
   end;
 
+  TStoryItemClass = class of TStoryItem;
+
 implementation
+  uses
+    FluentQuery.Generics,
+    FluentQuery.GenericObjects;
 
 {$R *.fmx}
 
@@ -100,12 +111,12 @@ begin
   inherited;
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
-  GMessaging.Subscribe(Self);
+  //GMessaging.Subscribe(Self);
 end;
 
 destructor TStoryItem.Destroy;
 begin
-  GMessaging.Unsubscribe(Self);
+  //GMessaging.Unsubscribe(Self);
   inherited;
 end;
 
@@ -117,20 +128,6 @@ begin
 end;
 
 {$REGION '--- PROPERTIES ---'}
-
-{$region 'Hidden'}
-
-function TStoryItem.IsHidden: Boolean;
-begin
-
-end;
-
-procedure TStoryItem.SetHidden(const Value: Boolean);
-begin
-
-end;
-
-{$endregion}
 
 {$region 'Id'}
 
@@ -150,26 +147,37 @@ end;
 
 function TStoryItem.GetParentStoryItem: IStoryItem;
 begin
-
+  result := Owner As IStoryItem;
 end;
 
-procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
+procedure TStoryItem.SetParentStoryItem(const TheParent: IStoryItem);
 begin
-
+  //TODO
 end;
 
 {$endregion}
 
 {$region 'StoryItems'}
 
+function IsStoryItem(obj: TFmxObject): Boolean;
+begin
+  Result := Supports(obj, IStoryItem);
+end;
+
+function IsAudioStoryItem(obj: TFmxObject): Boolean;
+begin
+  Result := Supports(obj, IAudioStoryItem);
+end;
+
 function TStoryItem.GetStoryItems: TStoryItemCollection;
 begin
-
+  result := TStoryItemCollection(ObjectQuery<TFmxObject>.Select.From(Manipulator.Children).Where(IsStoryItem).AsTObjectList(false)); //TODO: does this work?
 end;
 
 procedure TStoryItem.SetStoryItems(const Value: TStoryItemCollection);
 begin
-
+  for var item in Value do
+    Manipulator.AddObject(item As TStoryItem);
 end;
 
 {$endregion}
@@ -177,6 +185,20 @@ end;
 {$region 'AudioStoryItems'}
 
 function TStoryItem.GetAudioStoryItems: TAudioStoryItemCollection;
+begin
+  result := TAudioStoryItemCollection(ObjectQuery<TFmxObject>.Select.From(Manipulator.Children).Where(IsAudioStoryItem).AsTObjectList(false)); //TODO: does this work?
+end;
+
+{$endregion}
+
+{$region 'Hidden'}
+
+function TStoryItem.IsHidden: Boolean;
+begin
+
+end;
+
+procedure TStoryItem.SetHidden(const Value: Boolean);
 begin
 
 end;
@@ -248,10 +270,18 @@ end;
 
 function TStoryItem.GetLoadFilesFilter: String;
 begin
-  result := '';
+  result := FILTER_READCOM;
 end;
 
-procedure TStoryItem.Load(const Stream: TStream);
+procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+begin
+  if ContentFormat = EXT_READCOM then
+    LoadReadCom(Stream)
+  else
+    raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
+end;
+
+procedure TStoryItem.LoadReadCom(const Stream: TStream);
 begin
   //TODO
 end;
@@ -260,7 +290,7 @@ procedure TStoryItem.Load(const Filepath: String);
 begin
   var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
   try
-    Load(InputFileStream);
+    Load(InputFileStream, ExtractFileExt(Filepath));
   finally
     FreeAndNil(InputFileStream);
   end;
@@ -269,7 +299,10 @@ end;
 procedure TStoryItem.Load(const Filepaths: array of String);
 begin
   for var f in Filepaths do
+  begin
     Load(f);
+    exit; //by default use just the 1st file in case multiple were dropped
+  end;
 end;
 
 { Save }

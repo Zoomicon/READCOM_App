@@ -6,24 +6,24 @@ uses
   iPub.Rtl.Messaging, //for SubscribeAttribute, TipMessagingThread
   READCOM.Messages.Models, //for IMessageMenu
   READCOM.Views.Menu.HUD,
-  READCOM.Views.Story,
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, uZoomableFrame, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Layouts, READCOM.Views.StoryItem, READCOM.Views.StoryFrame;
+  FMX.Layouts, READCOM.Views.StoryItem, READCOM.Views.PanelStoryItem;
 
 type
   TMainForm = class(TForm)
     ScrollBox: TScrollBox;
     StoryHUD1: TStoryHUD;
-    StoryFrame1: TStoryFrame;
+    StoryPanel1: TPanelStoryItem;
 
   public
-    [Subscribe(TipMessagingThread.Main)]
-    procedure OnMenu(const AMessage: IMessageMenu);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    //--- Events
+    [Subscribe(TipMessagingThread.Main)]
+    procedure OnMenu(const AMessage: IMessageMenu);
   end;
 
 var

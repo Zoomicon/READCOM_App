@@ -16,7 +16,7 @@ object MainForm: TMainForm
     TabOrder = 0
     Viewport.Width = 1040.000000000000000000
     Viewport.Height = 608.000000000000000000
-    inline StoryFrame1: TStoryFrame
+    inline StoryPanel1: TPanelStoryItem
       Align = Contents
       Size.Width = 1040.000000000000000000
       Size.Height = 608.000000000000000000
@@ -30,6 +30,7 @@ object MainForm: TMainForm
   end
   inline StoryHUD1: TStoryHUD
     Align = Contents
+    HitTest = False
     Size.Width = 1040.000000000000000000
     Size.Height = 608.000000000000000000
     Size.PlatformDefault = False

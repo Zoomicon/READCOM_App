@@ -9,19 +9,22 @@ uses
   System.UITypes, //for TAlphaColor
   FMX.Graphics, //for TFont
   FMX.Objects, //for TImage
-  FMX.SVGIconImage; //for TSVGIconImage
+  FMX.SVGIconImage, //for TSVGIconImage
+  FMX.Media; //for TMediaPlayer
+
+{$region 'Storage' ------------------------------------------------------------}
+
+const
+  EXT_READCOM = '.readcom';
 
 type
-
-  {$region 'Storage'}
-
   IStoreable = interface
     ['{A08F7880-FBE5-40C5-B695-FF0F3A18EF3E}']
     //--- Methods ---
 
     { Load }
     function GetLoadFilesFilter: String;
-    procedure Load(const Stream: TStream); overload;
+    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Load(const Filepath: string); overload;
     procedure Load(const Filepaths: array of string); overload;
 
@@ -31,8 +34,9 @@ type
     procedure Save(const Directory: string; const FilenamePrefix: string); overload; //TODO: ???
   end;
 
-  {$endregion}
+{$endregion -------------------------------------------------------------------}
 
+type
   IStoryItem = interface; //forward declaration
   IAudioStoryItem = interface; //forward declaration
 
@@ -80,9 +84,9 @@ type
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
     property StoryItems: TStoryItemCollection read GetStoryItems write SetStoryItems; //default nil
-    property AudioStoryItems: TAudioStoryItemCollection read GetAudioStoryItems; //default nil //stored false
+    property AudioStoryItems: TAudioStoryItemCollection read GetAudioStoryItems; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property Target: IStoryItem read GetTarget write SetTarget; //default nil //stored false
+    property Target: IStoryItem read GetTarget write SetTarget; //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
   end;
 
@@ -125,13 +129,18 @@ type
     procedure SetImage(const Value: TImage);
 
     //--- Properties ---
-    property Image: TImage read GetImage write SetImage; //default nil //stored false
+    property Image: TImage read GetImage write SetImage; //stored false //default nil
   end;
 
   IBitmapImageStoryItem = interface(IImageStoryItem)
     ['{97C577C0-5391-4B1D-8EA9-119D35B91523}']
+    //--- Methods ---
+    { Image }
+    function GetImage: TImage;
+    procedure SetImage(const Value: TImage);
+
     //--- Properties ---
-    property Image: TImage read GetImage write SetImage; //default nil //stored true (overrides ancestor's setting)
+    property Image: TImage read GetImage write SetImage; //stored true //default nil //overrides ancestor's "stored" setting
   end;
 
   IVectorImageStoryItem = interface(IImageStoryItem)
@@ -142,7 +151,7 @@ type
     procedure SetSVGImage(const Value: TSVGIconImage);
 
     //--- Properties ---
-    property Image: TImage read GetImage write SetImage; //default nil //stored false (overrides ancestor's setting)
+    property Image: TImage read GetImage; //overrides ancestor's "write" and "stored" settings
     property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage; //default nil
   end;
 
@@ -167,10 +176,15 @@ type
     function IsPlayOnce: Boolean;
     procedure SetPlayOnce(const Value: Boolean);
 
+    { Audio }
+    function GetAudio: TMediaPlayer;
+    procedure SetAudio(const Value: TMediaPlayer);
+
     //--- Properties ---
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
+    property Audio: TMediaPlayer read GetAudio write SetAudio; //stored false
   end;
 
   ITextStoryItem = interface(IStoryItem)

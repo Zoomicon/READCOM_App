@@ -1,4 +1,4 @@
-inherited StoryItemSVG: TStoryItemSVG
+inherited VectorImageStoryItem: TVectorImageStoryItem
   object SVGIconImage: TSVGIconImage
     MultiResBitmap = <
       item
