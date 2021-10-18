@@ -9,18 +9,19 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, uZoomableFrame, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Layouts, READCOM.Views.StoryItem, READCOM.Views.PanelStoryItem;
+  FMX.Layouts, READCOM.Views.StoryItem, READCOM.Views.PanelStoryItem,
+  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem;
 
 type
   TMainForm = class(TForm)
     ScrollBox: TScrollBox;
     StoryHUD1: TStoryHUD;
     StoryPanel1: TPanelStoryItem;
+    AudioStoryItem1: TAudioStoryItem;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
 
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
     //--- Events
     [Subscribe(TipMessagingThread.Main)]
     procedure OnMenu(const AMessage: IMessageMenu);
@@ -33,16 +34,14 @@ implementation
 
 {$R *.fmx}
 
-constructor TMainForm.Create(AOwner: TComponent);
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  inherited;
   GMessaging.Subscribe(Self);
 end;
 
-destructor TMainForm.Destroy;
+procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   GMessaging.Unsubscribe(Self);
-  inherited;
 end;
 
 procedure TMainForm.OnMenu(const AMessage: IMessageMenu);

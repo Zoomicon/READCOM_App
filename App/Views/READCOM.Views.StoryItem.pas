@@ -17,8 +17,7 @@ const
   FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.read-com';
 
 type
-  TStoryItem = class(TFrame, IStoryItem, IStoreable)
-    Manipulator: TManipulator;
+  TStoryItem = class(TManipulator, IStoryItem, IStoreable)
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -56,11 +55,11 @@ type
     procedure SetParentStoryItem(const TheParent: IStoryItem);
 
     { StoryItems }
-    function GetStoryItems: TStoryItemCollection;
-    procedure SetStoryItems(const Value: TStoryItemCollection);
+    function GetStoryItems: TStoryItemList;
+    procedure SetStoryItems(const Value: TStoryItemList);
 
     { AudioStoryItems }
-    function GetAudioStoryItems: TAudioStoryItemCollection;
+    function GetAudioStoryItems: TAudioStoryItemList;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -80,6 +79,7 @@ type
     procedure InitDropTarget;
     procedure DoEditModeChange(const Value: Boolean);
   public
+    [Subscribe(TipMessagingThread.Main)]
     procedure OnEditModeChange(const AMessage: IMessageEditModeChange); //TODO: change
     procedure HandleParentNavigatedToChanged;
 
@@ -90,8 +90,8 @@ type
   published
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
-    property StoryItems: TStoryItemCollection read GetStoryItems write SetStoryItems; //default nil
-    property AudioStoryItems: TAudioStoryItemCollection read GetAudioStoryItems; //default nil //stored false
+    property StoryItems: TStoryItemList read GetStoryItems write SetStoryItems; //default nil
+    property AudioStoryItems: TAudioStoryItemList read GetAudioStoryItems; //default nil //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //default nil //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
@@ -101,8 +101,7 @@ type
 
 implementation
   uses
-    FluentQuery.Generics,
-    FluentQuery.GenericObjects;
+    Zoomicon.Collections;
 
 {$R *.fmx}
 
@@ -111,18 +110,18 @@ begin
   inherited;
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
-  //GMessaging.Subscribe(Self);
+  GMessaging.Subscribe(Self);
 end;
 
 destructor TStoryItem.Destroy;
 begin
-  //GMessaging.Unsubscribe(Self);
+  GMessaging.Unsubscribe(Self);
   inherited;
 end;
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
 begin
-  var RandomAudioStoryItem := AudioStoryItems.PickRandom;
+  var RandomAudioStoryItem := AudioStoryItems.GetRandom;
   if RandomAudioStoryItem <> nil then
     RandomAudioStoryItem.Play;
 end;
@@ -169,24 +168,24 @@ begin
   Result := Supports(obj, IAudioStoryItem);
 end;
 
-function TStoryItem.GetStoryItems: TStoryItemCollection;
+function TStoryItem.GetStoryItems: TStoryItemList;
 begin
-  result := TStoryItemCollection(ObjectQuery<TFmxObject>.Select.From(Manipulator.Children).Where(IsStoryItem).AsTObjectList(false)); //TODO: does this work?
+  result := TObjectListEx<TControl>.GetAllOfInterface<IStoryItem>(Controls);
 end;
 
-procedure TStoryItem.SetStoryItems(const Value: TStoryItemCollection);
+procedure TStoryItem.SetStoryItems(const Value: TStoryItemList);
 begin
   for var item in Value do
-    Manipulator.AddObject(item As TStoryItem);
+    AddObject(item As TStoryItem);
 end;
 
 {$endregion}
 
 {$region 'AudioStoryItems'}
 
-function TStoryItem.GetAudioStoryItems: TAudioStoryItemCollection;
+function TStoryItem.GetAudioStoryItems: TAudioStoryItemList;
 begin
-  result := TAudioStoryItemCollection(ObjectQuery<TFmxObject>.Select.From(Manipulator.Children).Where(IsAudioStoryItem).AsTObjectList(false)); //TODO: does this work?
+  result := TObjectListEx<TControl>.GetAllOfInterface<IAudioStoryItem>(Controls);
 end;
 
 {$endregion}
@@ -256,7 +255,7 @@ end;
 
 procedure TStoryItem.DoEditModeChange(const Value: Boolean);
 begin
-  Manipulator.EditMode := Value;
+  EditMode := Value;
   TabStop := Value;
 end;
 

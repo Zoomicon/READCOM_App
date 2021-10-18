@@ -40,8 +40,8 @@ type
   IStoryItem = interface; //forward declaration
   IAudioStoryItem = interface; //forward declaration
 
-  TStoryItemCollection = TList<IStoryItem>;
-  TAudioStoryItemCollection = TListEx<IAudioStoryItem>;
+  TStoryItemList = TListEx<IStoryItem>;
+  TAudioStoryItemList = TListEx<IAudioStoryItem>;
 
   TStoryMode = (AnimatedStoryMode, InteractiveStoryMode, GuidedInteractiveStoryMode, EditMode);
 
@@ -59,11 +59,11 @@ type
     procedure SetParentStoryItem(const Value: IStoryItem);
 
     { StoryItems }
-    function GetStoryItems: TStoryItemCollection;
-    procedure SetStoryItems(const Value: TStoryItemCollection);
+    function GetStoryItems: TStoryItemList;
+    procedure SetStoryItems(const Value: TStoryItemList);
 
     { AudioStoryItems }
-    function GetAudioStoryItems: TAudioStoryItemCollection;
+    function GetAudioStoryItems: TAudioStoryItemList;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -83,8 +83,8 @@ type
     //--- Properties ---
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
-    property StoryItems: TStoryItemCollection read GetStoryItems write SetStoryItems; //default nil
-    property AudioStoryItems: TAudioStoryItemCollection read GetAudioStoryItems; //stored false
+    property StoryItems: TStoryItemList read GetStoryItems write SetStoryItems; //default nil
+    property AudioStoryItems: TAudioStoryItemList read GetAudioStoryItems; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''

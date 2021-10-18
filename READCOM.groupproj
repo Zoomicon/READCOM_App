@@ -3,6 +3,9 @@
         <ProjectGuid>{D72D9F84-A7BE-49DF-8CD0-E76416CE4FEE}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="Zoomicon.Collections\Zoomicon.Collections.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
             <Dependencies/>
         </Projects>
@@ -19,13 +22,13 @@
             <Dependencies>Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj">
-            <Dependencies/>
+            <Dependencies>Zoomicon.Collections\Zoomicon.Collections.dproj</Dependencies>
         </Projects>
         <Projects Include="READCOM.Gallery\READCOM.GalleryLib.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="App\READCOM.App.dproj">
-            <Dependencies>Zoomicon.Manipulator\Zoomicon.Manipulator.dproj</Dependencies>
+            <Dependencies>Zoomicon.Manipulator\Zoomicon.Manipulator.dproj;Zoomicon.Collections\Zoomicon.Collections.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -35,6 +38,15 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="Zoomicon_Collections">
+        <MSBuild Projects="Zoomicon.Collections\Zoomicon.Collections.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Collections:Clean">
+        <MSBuild Projects="Zoomicon.Collections\Zoomicon.Collections.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Collections:Make">
+        <MSBuild Projects="Zoomicon.Collections\Zoomicon.Collections.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Zoomicon_Cache">
         <MSBuild Projects="Zoomicon.Cache\Zoomicon.Cache.dproj"/>
     </Target>
@@ -80,13 +92,13 @@
     <Target Name="Zoomicon_GitStore_Tests:Make" DependsOnTargets="Zoomicon.GitStore:Make">
         <MSBuild Projects="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator">
+    <Target Name="Zoomicon_Manipulator" DependsOnTargets="Zoomicon.Collections">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Clean">
+    <Target Name="Zoomicon_Manipulator:Clean" DependsOnTargets="Zoomicon.Collections:Clean">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Make">
+    <Target Name="Zoomicon_Manipulator:Make" DependsOnTargets="Zoomicon.Collections:Make">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Make"/>
     </Target>
     <Target Name="READCOM_GalleryLib" DependsOnTargets="Zoomicon.Downloader;Zoomicon.GitStore">
@@ -98,23 +110,23 @@
     <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="Zoomicon.Downloader:Make;Zoomicon.GitStore:Make">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Manipulator">
+    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Manipulator;Zoomicon.Collections">
         <MSBuild Projects="App\READCOM.App.dproj"/>
     </Target>
-    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Manipulator:Clean">
+    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Manipulator:Clean;Zoomicon.Collections:Clean">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Manipulator:Make">
+    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Manipulator:Make;Zoomicon.Collections:Make">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_GitStore_Tests;Zoomicon_Manipulator;READCOM_GalleryLib;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Collections;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_GitStore_Tests;Zoomicon_Manipulator;READCOM_GalleryLib;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Manipulator:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Collections:Clean;Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Manipulator:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Manipulator:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Collections:Make;Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Manipulator:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

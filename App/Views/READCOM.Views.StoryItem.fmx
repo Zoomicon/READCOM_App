@@ -1,7 +1,6 @@
-object StoryItem: TStoryItem
+inherited StoryItem: TStoryItem
   Size.Width = 836.000000000000000000
   Size.Height = 532.000000000000000000
-  Size.PlatformDefault = False
   TabStop = False
   OnDblClick = FrameDblClick
   object DropTarget: TDropTarget
@@ -13,13 +12,5 @@ object StoryItem: TStoryItem
     Text = 'DropTarget'
     OnDragOver = DropTargetDragOver
     OnDropped = DropTargetDropped
-  end
-  object Manipulator: TManipulator
-    Align = Contents
-    Size.Width = 544.000000000000000000
-    Size.Height = 416.000000000000000000
-    Size.PlatformDefault = False
-    Visible = False
-    Proportional = False
   end
 end

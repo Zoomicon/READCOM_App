@@ -20,9 +20,12 @@ type
     procedure Click; override;
 
   protected
+    FAutoSize: Boolean;
     FEditMode: Boolean;
     FProportional: Boolean;
 
+    procedure DoAutoSize;
+    procedure SetAutoSize(const Value: Boolean);
     procedure SetEditMode(const Value: Boolean);
     procedure SetSelectorsVisible(const Value: Boolean);
     procedure SetProportional(value: Boolean);
@@ -36,7 +39,12 @@ type
 
     procedure HandleChangeTracking(Sender: TObject; var X, Y: Single);
 
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MoveChildren(const DX, DY: Single);
+
   published
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default true;
     property EditMode: Boolean read FEditMode write SetEditMode default false;
     property Proportional: Boolean read FProportional write SetProportional;
 
@@ -55,6 +63,7 @@ procedure Register;
 implementation //---------------------------------------------------------------
 
 uses
+  Zoomicon.Collections,
   FMX.Ani,
   FMX.Effects;
 
@@ -81,6 +90,47 @@ end;
 {$endregion}
 
 {$REGION 'TManipulator'}
+
+constructor TManipulator.Create(AOwner: TComponent);
+begin
+  inherited;
+  FAutoSize := True;
+end;
+
+{$region 'AutoSize'}
+
+procedure TManipulator.SetAutoSize(const Value: Boolean);
+begin
+  FAutoSize := Value;
+  DoAutoSize;
+end;
+
+function IsSelection(obj: TFmxObject): Boolean;
+begin
+  Result := obj is TSelection;
+end;
+
+procedure TManipulator.DoAutoSize;
+begin
+  if (FAutoSize) then
+    begin
+    BeginUpdate;
+
+    //temporarily disable Align:=Scale setting of all selectors and set it back again when done
+    //var selections := TObjectListEx<TControl>.GetAllOfClass<TSelection>(Controls);
+    //for var item in selections do item.Align := TAlignLayout.None;
+
+    var rect := GetChildrenRect;
+    SetSize(rect.Width, rect.Height);
+
+    //for var item in selections do item.Align := TAlignLayout.Scale;
+    //FreeAndNil(selections);
+
+    EndUpdate;
+    end;
+end;
+
+{$endregion}
 
 {$region 'EditMode'}
 
@@ -160,7 +210,7 @@ begin
     begin
     //SetSubComponent(true); //store settings directly in the frame when onwer isn't Self
     BoundsRect := AControl.BoundsRect;
-    Align := TAlignLayout.Scale;
+    //Align := TAlignLayout.Scale; //TODO: doesn't work with DoAutoSize
     HideSelection := not EditMode;
     Proportional := self.Proportional; //to Preserve aspect ratio when resizing
     GripSize := SELECTION_GRIP_SIZE;
@@ -224,17 +274,40 @@ end;
 
 {$region 'Events handling'}
 
+procedure TManipulator.MoveChildren(const DX, DY: Single);
+begin
+  if (DX = 0) and (DY = 0) then
+    exit;
+
+  BeginUpdate;
+  for var control in Controls do
+    control.Position.Point.Offset(DX, DY);
+  DoAutoSize;
+  EndUpdate;
+end;
+
 procedure TManipulator.HandleChangeTracking(Sender: TObject; var X, Y: Single);
 begin
+  BeginUpdate;
   var SelectionPoint := TSelectionPoint(Sender); //assuming events are sent by TSelectionPoint
   with SelectionPoint do
     begin
     var Pos := ParentControl.Position.Point;
     var PressedPos := SelectionPoint.PressedPosition;
-    ParentControl.Position := TPosition.Create(TPointF.Create(Pos.X + X - PressedPos.X/2 - ParentControl.Width/2, Pos.Y + Y - PressedPos.Y/2 - ParentControl.Height/2)); //Move parent control
-    SelectionPoint.PressedPosition := TPointF.Zero;
+
+    //Move dragged control:
+    var newX := Pos.X + X - PressedPos.X/2 - ParentControl.Width/2;
+    var newY := Pos.Y + Y - PressedPos.Y/2 - ParentControl.Height/2;
+    ParentControl.Position.Point := TPointF.Create(newX, newY); //Move parent control //not creating TPosition objects to avoid leaking (TPointF is a record)
+
+    //Offset all children (including this one) by the amount this control got into negative coordinates:
+    MoveChildren((abs(newX)-newX)/2, (abs(newY)-newY)/2); //this will also call DoAutoSize
+
+    //SelectionPoint.PressedPosition := TPointF.Zero;
+    SelectionPoint.Position.Point := TPointF.Zero;
     //SelectionPoint.Align := TAlignLayout.Center;
     end;
+  EndUpdate;
 end;
 
 procedure TManipulator.Click;
