@@ -3,6 +3,7 @@ unit Zoomicon.Manipulator;
 interface //--------------------------------------------------------------------
 
 uses
+  Zoomicon.Collections, //for TListEx
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Gestures,
@@ -15,6 +16,8 @@ const
 
 type
 
+  TSelectionList = TListEx<TSelection>;
+
   TManipulator = class(TFrame)
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
     procedure Click; override;
@@ -24,6 +27,7 @@ type
     FEditMode: Boolean;
     FProportional: Boolean;
 
+    function GetSelections: TSelectionList;
     procedure DoAutoSize;
     procedure SetAutoSize(const Value: Boolean);
     procedure SetEditMode(const Value: Boolean);
@@ -44,6 +48,7 @@ type
     procedure MoveChildren(const DX, DY: Single);
 
   published
+    property Selections: TSelectionList read GetSelections stored false;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default true;
     property EditMode: Boolean read FEditMode write SetEditMode default false;
     property Proportional: Boolean read FProportional write SetProportional;
@@ -63,7 +68,6 @@ procedure Register;
 implementation //---------------------------------------------------------------
 
 uses
-  Zoomicon.Collections,
   FMX.Ani,
   FMX.Effects;
 
@@ -117,14 +121,17 @@ begin
     BeginUpdate;
 
     //temporarily disable Align:=Scale setting of all selectors and set it back again when done
-    //var selections := TObjectListEx<TControl>.GetAllOfClass<TSelection>(Controls);
-    //for var item in selections do item.Align := TAlignLayout.None;
+    //var theSelections := Selections;
+    try
+      //for var item in theSelections do item.Align := TAlignLayout.None;
 
-    var rect := GetChildrenRect;
-    SetSize(rect.Width, rect.Height);
+      var rect := GetChildrenRect;
+      SetSize(rect.Width, rect.Height);
 
-    //for var item in selections do item.Align := TAlignLayout.Scale;
-    //FreeAndNil(selections);
+      //for var item in theSelections do item.Align := TAlignLayout.Scale;
+    finally
+      //FreeAndNil(theSelections);
+    end;
 
     EndUpdate;
     end;
@@ -140,25 +147,30 @@ begin
   SetSelectorsVisible(Value);
 end;
 
+function TManipulator.GetSelections: TSelectionList;
+begin
+  result := TObjectListEx<TControl>.GetAllOfClass<TSelection>(Controls);
+end;
+
 procedure TManipulator.SetSelectorsVisible(const Value: boolean);
 begin
-  for var i := 0 to ChildrenCount-1 do
-  begin
-    var c := Children[i];
-    if (c is TSelection) then
-       begin
-       var Selection := TSelection(c);
-       //Show or Hide selection UI
-       Selection.HideSelection := not Value; //not using Visible since it would show/hide contents too
-       //Show or Hide any SelectionPoint children
-       with Selection do
+  var theSelections := Selections;
+  try
+    for var selection in theSelections do
+       with selection do
+         begin
+         //Show or Hide selection UI
+         HideSelection := not Value; //not using Visible since it would show/hide contents too
+         //Show or Hide any SelectionPoint children
          for var si := 0 to ChildrenCount-1 do
            begin
            var sc := Children[si];
            if (sc is TSelectionPoint) then
              TSelectionPoint(sc).Visible := Value;
            end;
-       end;
+         end;
+  finally
+    FreeAndNil(theSelections);
   end;
 end;
 
@@ -174,13 +186,12 @@ begin
   //if Value then Align := TAlignLayout.Fit else Align := TAlignLayout.Scale;
 
   fProportional := value;
-  for i := 0 to ChildrenCount-1 do
-  begin
-    c := Children[i];
-    if (c is TSelection) then
-       begin
-       TSelection(c).Proportional := value;
-       end;
+  var theSelections := Selections;
+  try
+    for var selection in theSelections do
+       selection.Proportional := value;
+  finally
+    FreeAndNil(theSelections);
   end;
 end;
 
@@ -249,7 +260,7 @@ begin
     var Control := AObject As TControl;
     var Selection := WrapObjectWithSelection(Control);
     inherited DoAddObject(Selection); //don't call AddObject (will do infinite loop since it calls DoAddObject)
-    Selection.Name := SELECTION_NAME_PREFIX + Control.Name; //only do this here, before that AObject hasn't yet gotten a unique name from its TFrame Owner
+    Selection.Name := SELECTION_NAME_PREFIX + Control.Name + Random(MaxInt).ToString; //only do this here, before that AObject hasn't yet gotten a unique name from its TFrame Owner
     //Selection.InsertComponent(Control);
     //Control.SetSubComponent(true);
     end;

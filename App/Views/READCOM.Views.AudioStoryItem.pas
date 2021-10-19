@@ -3,6 +3,7 @@ unit READCOM.Views.AudioStoryItem;
 interface
 
 uses
+  Zoomicon.Media.Classes, //for TMediaPlayerEx
   READCOM.App.Models, //for TStoryItem, IAudioStoryItem, IStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
@@ -15,19 +16,25 @@ const
 
 type
   TAudioStoryItem = class(TStoryItem , IAudioStoryItem, IStoryItem, IStoreable)
-    MediaPlayer: TMediaPlayer;
     GlyphImage: TSVGIconImage;
+    MediaPlayer: TMediaPlayerEx;
+    procedure FrameTap(Sender: TObject; const Point: TPointF);
+    procedure FrameClick(Sender: TObject);
 
   //--- Methods ---
   public
-   {$region 'IStoreable'}
+    {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
     procedure Load(const Filepath: String); overload; override;
     procedure LoadMP3(const Stream: TStream); virtual;
     {$endregion}
 
+    {$region 'IPlayable'}
     procedure Play;
+    procedure Pause;
+    procedure Stop;
+    {$endregion}
 
   protected
     { Muted }
@@ -47,8 +54,8 @@ type
     procedure SetPlayOnce(const Value: Boolean);
 
     { Audio }
-    function GetAudio: TMediaPlayer;
-    procedure SetAudio(const Value: TMediaPlayer);
+    function GetAudio: TMediaPlayerEx;
+    procedure SetAudio(const Value: TMediaPlayerEx);
 
   //--- Properties ---
 
@@ -56,7 +63,7 @@ type
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayer read GetAudio write SetAudio; //stored false
+    property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
   end;
 
 implementation
@@ -96,10 +103,25 @@ end;
 
 {$endregion}
 
+{$region 'IPlayable'}
+
 procedure TAudioStoryItem.Play;
 begin
   MediaPlayer.Play;
 end;
+
+procedure TAudioStoryItem.Pause;
+begin
+  MediaPlayer.Stop; //this Pauses
+end;
+
+procedure TAudioStoryItem.Stop;
+begin
+  MediaPlayer.Stop; //this only Pauses...
+  MediaPlayer.CurrentTime := 0; //...so we also reset CurrentTime to 0
+end;
+
+{$endregion}
 
 {$region 'Muted'}
 
@@ -161,16 +183,32 @@ end;
 
 {$region 'Audio'}
 
-function TAudioStoryItem.GetAudio: TMediaPlayer;
+function TAudioStoryItem.GetAudio: TMediaPlayerEx;
 begin
   result := MediaPlayer;
 end;
 
-procedure TAudioStoryItem.SetAudio(const Value: TMediaPlayer);
+procedure TAudioStoryItem.SetAudio(const Value: TMediaPlayerEx);
 begin
   MediaPlayer.Assign(Value);
 end;
 
 {$endregion}
+
+{$REGION 'EVENTS'}
+
+procedure TAudioStoryItem.FrameClick(Sender: TObject);
+begin
+  inherited;
+  Play;
+end;
+
+procedure TAudioStoryItem.FrameTap(Sender: TObject; const Point: TPointF);
+begin
+  inherited;
+  Play;
+end;
+
+{$ENDREGION}
 
 end.

@@ -288,7 +288,7 @@
         </DCCReference>
         <DCCReference Include="Views\READCOM.Views.AudioStoryItem.pas">
             <Form>AudioStoryItem</Form>
-            <FormType>fmx</FormType>            
+            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Views\READCOM.Views.PanelStoryItem.pas">
@@ -305,6 +305,21 @@
             <Form>MainForm</Form>
             <FormType>fmx</FormType>
         </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
+            <Form>ObjectDebuggerFMXForm</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
+            <Form>FMXObjectDebuggerFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
+            <Form>MessageForm</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

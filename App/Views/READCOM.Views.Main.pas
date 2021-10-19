@@ -20,6 +20,7 @@ type
     AudioStoryItem1: TAudioStoryItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   public
     //--- Events
@@ -31,6 +32,8 @@ var
   MainForm: TMainForm;
 
 implementation
+  uses ObjectDebuggerFMXForm,
+       FormMessage;
 
 {$R *.fmx}
 
@@ -42,6 +45,15 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   GMessaging.Unsubscribe(Self);
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+{
+  Application.CreateForm(TMessageForm, MessageForm);
+  Application.CreateForm(TObjectDebuggerFMXForm, ObjectDebuggerFMXForm1);
+  ObjectDebuggerFMXForm1.Show;
+}
 end;
 
 procedure TMainForm.OnMenu(const AMessage: IMessageMenu);

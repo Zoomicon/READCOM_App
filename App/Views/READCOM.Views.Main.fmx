@@ -9,6 +9,7 @@ object MainForm: TMainForm
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   DesignerMasterStyle = 0
   object ScrollBox: TScrollBox
     Align = Contents
@@ -34,12 +35,10 @@ object MainForm: TMainForm
         Size.Height = 204.000000000000000000
         Size.PlatformDefault = False
         TabStop = False
-        inherited DropTarget: TDropTarget
-          inherited GlyphImage: TSVGIconImage
-            MultiResBitmap = <
-              item
-              end>
-          end
+        inherited GlyphImage: TSVGIconImage
+          MultiResBitmap = <
+            item
+            end>
         end
       end
     end

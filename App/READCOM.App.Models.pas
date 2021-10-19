@@ -4,6 +4,7 @@ interface
 
 uses
   Zoomicon.Collections, //for TListEx
+  Zoomicon.Media.Classes, //for TMediaPlayerEx
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
   System.UITypes, //for TAlphaColor
@@ -177,14 +178,14 @@ type
     procedure SetPlayOnce(const Value: Boolean);
 
     { Audio }
-    function GetAudio: TMediaPlayer;
-    procedure SetAudio(const Value: TMediaPlayer);
+    function GetAudio: TMediaPlayerEx;
+    procedure SetAudio(const Value: TMediaPlayerEx);
 
     //--- Properties ---
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayer read GetAudio write SetAudio; //stored false
+    property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
   end;
 
   ITextStoryItem = interface(IStoryItem)

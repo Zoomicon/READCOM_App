@@ -1,5 +1,7 @@
 package Zoomicon.Collections;
 
+{$Description 'Zoomicon Collections'}
+
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}

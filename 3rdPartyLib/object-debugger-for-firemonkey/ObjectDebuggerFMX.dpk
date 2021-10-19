@@ -1,6 +1,4 @@
-package Zoomicon.Manipulator;
-
-{$Description 'Zoomicon Manipulator'}
+package ObjectDebuggerFMX;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -15,8 +13,8 @@ package Zoomicon.Manipulator;
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION OFF}
-{$OVERFLOWCHECKS ON}
-{$RANGECHECKS ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
 {$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES ON}
@@ -27,14 +25,16 @@ package Zoomicon.Manipulator;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Object Debugger for FireMonkey'}
 {$IMPLICITBUILD ON}
+
 
 requires
   rtl,
-  fmx,
-  Zoomicon.Collections;
+  fmx;
 
 contains
-  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
+  ObjectDebuggerFMXFrame in 'ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame} ,
+  FormMessage in 'FormMessage.pas';
 
 end.

@@ -5,11 +5,11 @@ inherited StoryItem: TStoryItem
   OnDblClick = FrameDblClick
   object DropTarget: TDropTarget
     Align = Contents
+    Opacity = 0.200000002980232200
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
-    Text = 'DropTarget'
     OnDragOver = DropTargetDragOver
     OnDropped = DropTargetDropped
   end

@@ -1,0 +1,80 @@
+object ObjectDebuggerFMXForm: TObjectDebuggerFMXForm
+  Left = 0
+  Top = 0
+  Caption = 'FireMonkey Object Debugger'
+  ClientHeight = 480
+  ClientWidth = 352
+  Position = Designed
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  inline TFMXObjectDebuggerFrame1: TFMXObjectDebuggerFrame
+    Align = MostRight
+    Position.X = 2.000000000000000000
+    Size.Width = 350.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    inherited Panel1: TPanel
+      Size.Height = 480.000000000000000000
+      inherited TabControl1: TTabControl
+        Size.Height = 377.000000000000000000
+        Sizes = (
+          316s
+          351s
+          316s
+          351s
+          316s
+          351s)
+        inherited TabItemProperties: TTabItem
+          Size.Width = 74.000000000000000000
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 26.000000000000000000
+          inherited sgProp: TStringGrid
+            Size.Height = 351.000000000000000000
+            Viewport.Width = 296.000000000000000000
+            Viewport.Height = 326.000000000000000000
+            inherited StringColumn1: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+            inherited StringColumn2: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+          end
+        end
+        inherited TabItemEvents: TTabItem
+          Size.Width = 54.000000000000000000
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 26.000000000000000000
+          inherited sgEvt: TStringGrid
+            Size.Height = 351.000000000000000000
+            Viewport.Width = 316.000000000000000000
+            Viewport.Height = 351.000000000000000000
+            inherited StringColumn3: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+            inherited StringColumn5: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+          end
+        end
+        inherited TabItemData: TTabItem
+          Size.Width = 45.000000000000000000
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 26.000000000000000000
+          inherited sgData: TStringGrid
+            Size.Height = 351.000000000000000000
+            Viewport.Width = 316.000000000000000000
+            Viewport.Height = 351.000000000000000000
+            inherited StringColumn4: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+            inherited StringColumn6: TStringColumn
+              Size.Width = 145.000000000000000000
+            end
+          end
+        end
+      end
+    end
+  end
+end

@@ -1,6 +1,6 @@
-package Zoomicon.Manipulator;
+package Zoomicon.Media;
 
-{$Description 'Zoomicon Manipulator'}
+{$Description 'Zoomicon Media'}
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -31,10 +31,10 @@ package Zoomicon.Manipulator;
 
 requires
   rtl,
-  fmx,
-  Zoomicon.Collections;
+  fmx;
 
 contains
-  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
+  Zoomicon.Media.Classes in 'Zoomicon.Media.Classes.pas',
+  Zoomicon.Media.Models in 'Zoomicon.Media.Models.pas';
 
 end.
