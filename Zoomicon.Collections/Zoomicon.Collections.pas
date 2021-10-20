@@ -2,7 +2,7 @@ unit Zoomicon.Collections;
 
 interface
   uses
-    SysUtils, //for TPredicate
+    SysUtils, //for TPredicate, TProc
     System.Generics.Collections, //for TList
     System.Rtti; //for RttiContext
 
@@ -16,6 +16,10 @@ type
     { GetAll }
     class function GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
     function GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
+
+    {ForEach}
+    class procedure ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
+    procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
   end;
 
   //----------------------------------------------------------------------------
@@ -36,6 +40,10 @@ type
     { GetAllOfClass }
     class function GetAllOfClass<AClass: class>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TObjectListEx<AClass>; overload;
     function GetAllOfClass<AClass: class>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TListEx<AClass>; overload;
+
+    {ForEach}
+    class procedure ForEachOfClass<AClass: class>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
+    procedure ForEachOfClass<AClass: class>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
   end;
 
 implementation
@@ -69,7 +77,7 @@ class function TListEx<T>.GetAll(const Enum: TEnumerable<T>; const Predicate: TP
 begin
   var ResultList := TListEx<T>.Create;
   for var item in Enum do
-    if (@Predicate = nil) or Predicate(item) then
+    if (not Assigned(@Predicate)) or Predicate(item) then
       ResultList.Add(item);
   result := ResultList;
 end;
@@ -77,6 +85,23 @@ end;
 function TListEx<T>.GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>;
 begin
   result := {TListEx<T>.}GetAll(self);
+end;
+
+{$endregion}
+
+{$region 'ForEach'}
+
+class procedure TListEx<T>.ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil);
+begin
+  if Assigned(@Proc) then
+    for var item in Enum do
+      if (not Assigned(@Predicate)) or Predicate(item) then
+        Proc(item);
+end;
+
+procedure TListEx<T>.ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil);
+begin
+  {TListEx<T>.}ForEach(self, Proc, Predicate);
 end;
 
 {$endregion}
@@ -94,8 +119,8 @@ begin
   var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
   var ListOfAInterface := TInterfaceListEx<AInterface>.Create;
   for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((@OuterPredicate = nil) or OuterPredicate(item))  then
-      if (@InnerPredicate = nil) or InnerPredicate(itemAsAInterface) then
+    if Supports(item, guid, itemAsAInterface) and ((not Assigned(@OuterPredicate)) or OuterPredicate(item))  then
+      if (not Assigned(@InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         ListOfAInterface.Add(itemAsAInterface);
   result := ListOfAInterface;
 end;
@@ -120,8 +145,8 @@ begin
   var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
   var ListOfAInterface := TInterfaceListEx<AInterface>.Create;
   for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((@OuterPredicate = nil) or OuterPredicate(item))  then
-      if (@InnerPredicate = nil) or InnerPredicate(itemAsAInterface) then
+    if Supports(item, guid, itemAsAInterface) and ((not Assigned(@OuterPredicate)) or OuterPredicate(item)) then
+      if (not Assigned(@InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         ListOfAInterface.Add(itemAsAInterface);
   result := ListOfAInterface;
 end;
@@ -139,21 +164,39 @@ class function TObjectListEx<T>.GetAllOfClass<AClass>(const Enum: TEnumerable<T>
 begin
   var ListOfAClass := TObjectListEx<AClass>.Create;
   for var item in Enum do
-    if (item is AClass) and ((@OuterPredicate = nil) or OuterPredicate(item)) then
+    if (item is AClass) and ((not Assigned(@OuterPredicate)) or OuterPredicate(item)) then
       begin
       var itemAsAClass := item as AClass;
-      if (@InnerPredicate = nil) or InnerPredicate(ItemAsAClass) then
+      if (not Assigned(@InnerPredicate)) or InnerPredicate(ItemAsAClass) then
         ListOfAClass.Add(itemAsAClass);
       end;
   result := ListOfAClass;
 end;
 
-type y = TPredicate<TObject>;
-type x = TPredicate<TListEx<Boolean>>;
-
 function TObjectListEx<T>.GetAllOfClass<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TListEx<AClass>;
 begin
   result := {TObjectListEx<T>.}GetAllOfClass<AClass>(Self, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
+{$region 'ForEach'}
+
+class procedure TObjectListEx<T>.ForEachOfClass<AClass>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
+begin
+  if Assigned(@Proc) then
+    for var item in Enum do
+      if (item is AClass) and ((not Assigned(@OuterPredicate)) or OuterPredicate(item)) then
+        begin
+        var itemAsAClass := item as AClass;
+        if (not Assigned(@InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+          Proc(itemAsAClass);
+        end;
+end;
+
+procedure TObjectListEx<T>.ForEachOfClass<AClass>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
+begin
+  {TObjectListEx<T>.}ForEachOfClass<AClass>(Self, Proc, OuterPredicate, InnerPredicate);
 end;
 
 {$endregion}
