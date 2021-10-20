@@ -13,7 +13,7 @@ uses
 type
   TImageStoryItem = class abstract(TStoryItem, IImageStoryItem)
   //--- Methods ---
-  public
+  protected
     { Image }
     function GetImage: TImage; virtual; abstract;
     procedure SetImage(const Value: TImage); virtual; abstract;

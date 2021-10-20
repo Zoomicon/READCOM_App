@@ -13,45 +13,63 @@ uses
 const
   SELECTION_NAME_PREFIX = 'Sel_';
   SELECTION_GRIP_SIZE = 8;
+  SELECTION_DEFAULT_WIDTH = 100;
+  SELECTION_DEFAULT_HEIGHT = 100;
 
 type
+  TRectFPredicate = reference to function(Rectangle: TRectF): Boolean;
 
-  TSelectionList = TListEx<TSelection>;
+  {$region 'AreaSelector'}
+
+  TAreaSelector = class(TSelection)
+  protected
+    function GetControls(const RectPicker: TRectFPredicate): TControlList;
+    function GetIntersected: TControlList; virtual;
+    function GetContained: TControlList; virtual;
+  published
+    property Intersected: TControlList read GetIntersected stored false;
+    property Selected: TControlList read GetContained stored false;
+  end;
+
+  TAreaSelectorList = TListEx<TAreaSelector>;
+
+  {$endregion}
 
   TManipulator = class(TFrame)
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
     procedure Click; override;
 
   protected
+    FAreaSelector: TAreaSelector;
     FAutoSize: Boolean;
-    FEditMode: Boolean;
-    FProportional: Boolean;
 
-    function GetSelections: TSelectionList;
     procedure DoAutoSize;
     procedure SetAutoSize(const Value: Boolean);
+
+    {EditMode}
+    function IsEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean);
-    procedure SetSelectorsVisible(const Value: Boolean);
+
+    {Proportional}
+    function IsProportional: Boolean;
     procedure SetProportional(value: Boolean);
-
-    function IsSpecialObject(const AObject: TFmxObject): Boolean;
-    procedure AddMoveSelectionPoint(const ASelection: TSelection);
-    function WrapObjectWithSelection(const AControl: TControl): TSelection;
-
-    procedure DoAddObject(const AObject: TFmxObject); override;
-    procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
 
     procedure HandleChangeTracking(Sender: TObject; var X, Y: Single);
 
   public
     constructor Create(AOwner: TComponent); override;
-    procedure MoveChildren(const DX, DY: Single);
+    procedure MoveControls(const Controls: TControlList; const DX, DY: Single); overload;
+    procedure RotateControls(const Controls: TControlList; const DAngle: Single); overload;
+    procedure MoveControls(const DX, DY: Single); overload;
+    procedure RotateControls(const DAngle: Single); overload;
+    procedure MoveSelected(const DX, DY: Single);
+    procedure RotateSelected(const DAngle: Single);
 
   published
-    property Selections: TSelectionList read GetSelections stored false;
+    property AreaSelector: TAreaSelector read FAreaSelector stored false;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default true;
-    property EditMode: Boolean read FEditMode write SetEditMode default false;
-    property Proportional: Boolean read FProportional write SetProportional;
+    property EditMode: Boolean read IsEditMode write SetEditMode default false;
+    property Proportional: Boolean read IsProportional write SetProportional;
 
   end;
 
@@ -73,7 +91,51 @@ uses
 
 {$R *.fmx}
 
-{$REGION 'TMoverSelectionPoint'}
+{$REGION 'TAreaSelector' ------------------------------------------------------}
+
+function TAreaSelector.GetIntersected: TControlList;
+begin
+  var TheBounds := BoundsRect;
+  result := GetControls(
+      function (ARect: TRectF): Boolean
+      begin
+      result := TheBounds.IntersectsWith(ARect);
+      end
+    );
+end;
+
+function TAreaSelector.GetContained: TControlList;
+begin
+  var TheBounds := BoundsRect;
+  result := GetControls(
+      function (ARect: TRectF): Boolean
+      begin
+      result := TheBounds.Contains(ARect);
+      end
+    );
+end;
+
+function TAreaSelector.GetControls(const RectPicker: TRectFPredicate): TControlList;
+begin
+  if not Assigned(RectPicker) then
+    result := nil
+  else
+    begin
+    if (Parent = nil) then
+      result := nil
+    else
+      result := TObjectListEx<TFmxObject>.GetAllOfClass<TControl>(Parent.Children, nil,
+        function(AControl: TControl): Boolean
+        begin
+          result := RectPicker(AControl.BoundsRect);
+        end
+      );
+    end;
+end;
+
+{$ENDREGION ...................................................................}
+
+{$REGION 'TMoverSelectionPoint' -----------------------------------------------}
 
 constructor TMoverSelectionPoint.Create(AOwner: TComponent);
 begin
@@ -91,15 +153,118 @@ begin
     end;
 end;
 
-{$endregion}
+{$ENDREGION ...................................................................}
 
-{$REGION 'TManipulator'}
+{$REGION 'TManipulator' -------------------------------------------------------}
 
 constructor TManipulator.Create(AOwner: TComponent);
+
+  procedure CreateAreaSelector;
+  begin
+     FAreaSelector := TAreaSelector.Create(Self);
+     With FAreaSelector do
+       begin
+       Size.Size := TSizeF.Create(SELECTION_DEFAULT_WIDTH, SELECTION_DEFAULT_HEIGHT);
+       Visible := false;
+       GripSize := SELECTION_GRIP_SIZE;
+       end;
+     FAreaSelector.Parent := Self;
+  end;
+
+  procedure CreateMoveSelector;
+  begin
+    var SelectionPoint := TSelectionPoint.Create(FAreaSelector); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
+    with SelectionPoint do
+      begin
+      ParentBounds := false;
+      GripSize := SELECTION_GRIP_SIZE;
+      Align := TAlignLayout.Center;
+      Parent := FAreaSelector;
+      OnTrack := HandleChangeTracking;
+      end;
+  end;
+
 begin
   inherited;
-  FAutoSize := True;
+  CreateAreaSelector;
+  CreateMoveSelector; //must do after CreateAreaSelector
+  FAutoSize := true; //must do after CreateAreaSelector
 end;
+
+{$region Manipulation}
+
+procedure TManipulator.MoveControls(const Controls: TControlList; const DX, DY: Single);
+begin
+  if (DX <> 0) or (DY <> 0) then
+    begin
+    BeginUpdate;
+
+    TListEx<TControl>.ForEach(Controls,
+      procedure (Control: TControl)
+      begin
+        Control.Position.Point.Offset(DX, DY);
+      end
+    );
+
+    DoAutoSize;
+    EndUpdate;
+    end;
+end;
+
+procedure TManipulator.RotateControls(const Controls: TControlList; const DAngle: Single);
+begin
+  if (DAngle <>0) then
+    begin
+    BeginUpdate;
+
+    TObjectListEx<TControl>.ForEach(Controls,
+      procedure (Control: TControl)
+      begin
+        with (Control as IRotatedControl) do
+          try
+            RotationAngle := RotationAngle + DAngle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
+          except //catch exceptions, in case any controls fail when you try to rotate them
+            //NOP //TODO: do some error logging
+          end;
+      end
+    );
+
+    DoAutoSize; //TODO: is this needed? Do bounds change on rotation?
+    EndUpdate;
+    end;
+end;
+
+procedure TManipulator.MoveControls(const DX, DY: Single);
+begin
+  MoveControls(Controls, DX, DY);
+end;
+
+procedure TManipulator.RotateControls(const DAngle: Single);
+begin
+  RotateControls(Controls, DAngle);
+end;
+
+procedure TManipulator.MoveSelected(const DX, DY: Single);
+begin
+  if (DX <> 0) or (DY <> 0) then
+    begin
+    var TheSelected := AreaSelector.Selected;
+    MoveControls(TheSelected, DX, DY);
+    FreeAndNil(TheSelected);
+    end;
+end;
+
+procedure TManipulator.RotateSelected(const DAngle: Single);
+begin
+  if (DAngle <> 0) then
+    begin
+    var TheSelected := AreaSelector.Selected;
+    RotateControls(TheSelected, DAngle);
+    FreeAndNil(TheSelected);
+    end;
+end;
+
+{$endregion}
 
 {$region 'AutoSize'}
 
@@ -120,7 +285,7 @@ begin
     begin
     BeginUpdate;
 
-    //temporarily disable Align:=Scale setting of all selectors and set it back again when done
+    //temporarily disable Align:=Scale setting of all Selections and set it back again when done
     //var theSelections := Selections;
     try
       //for var item in theSelections do item.Align := TAlignLayout.None;
@@ -141,36 +306,24 @@ end;
 
 {$region 'EditMode'}
 
+function TManipulator.IsEditMode: Boolean;
+begin
+  result := AreaSelector.Visible;
+end;
+
 procedure TManipulator.SetEditMode(const Value: Boolean);
 begin
-  FEditMode := Value;
-  SetSelectorsVisible(Value);
-end;
-
-function TManipulator.GetSelections: TSelectionList;
-begin
-  result := TObjectListEx<TControl>.GetAllOfClass<TSelection>(Controls);
-end;
-
-procedure TManipulator.SetSelectorsVisible(const Value: boolean);
-begin
-  var theSelections := Selections;
-  try
-    for var selection in theSelections do
-       with selection do
-         begin
-         //Show or Hide selection UI
-         HideSelection := not Value; //not using Visible since it would show/hide contents too
-         //Show or Hide any SelectionPoint children
-         for var si := 0 to ChildrenCount-1 do
-           begin
-           var sc := Children[si];
-           if (sc is TSelectionPoint) then
-             TSelectionPoint(sc).Visible := Value;
-           end;
-         end;
-  finally
-    FreeAndNil(theSelections);
+  with AreaSelector do
+  begin
+  //Show or Hide selection UI
+  Visible := Value; //this will also hide the move control point
+  //Show or Hide any SelectionPoint children
+  for var si := 0 to ChildrenCount-1 do
+    begin
+    var sc := Children[si];
+    if (sc is TSelectionPoint) then
+     TSelectionPoint(sc).Visible := Value;
+    end;
   end;
 end;
 
@@ -178,124 +331,20 @@ end;
 
 {$region 'Proportional'}
 
-procedure TManipulator.SetProportional(value: boolean);
-var
-  i: Integer;
-  c: TFmxObject;
+function TManipulator.IsProportional: Boolean;
+begin
+  result := AreaSelector.Proportional;
+end;
+
+procedure TManipulator.SetProportional(Value: boolean);
 begin
   //if Value then Align := TAlignLayout.Fit else Align := TAlignLayout.Scale;
-
-  fProportional := value;
-  var theSelections := Selections;
-  try
-    for var selection in theSelections do
-       selection.Proportional := value;
-  finally
-    FreeAndNil(theSelections);
-  end;
-end;
-
-{$endregion}
-
-{$region 'TSelection wrappers'}
-
-procedure TManipulator.AddMoveSelectionPoint(const ASelection: TSelection);
-begin
-  var SelectionPoint := TSelectionPoint.Create(ASelection); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
-  with SelectionPoint do
-    begin
-    ParentBounds := false;
-    GripSize := SELECTION_GRIP_SIZE;
-    Align := TAlignLayout.Center;
-    Parent := ASelection;
-    //SetSubComponent(true); //do not use, no need to persist the settings of the SelectionPoint component with the frame
-    //BringToFront;
-    OnTrack := HandleChangeTracking;
-    end;
-end;
-
-function TManipulator.WrapObjectWithSelection(const AControl: TControl): TSelection;
-begin
-  var Selection:= TSelection.Create(Self); //can use AOwner as Owner maybe
-  with Selection do
-    begin
-    //SetSubComponent(true); //store settings directly in the frame when onwer isn't Self
-    BoundsRect := AControl.BoundsRect;
-    //Align := TAlignLayout.Scale; //TODO: doesn't work with DoAutoSize
-    HideSelection := not EditMode;
-    Proportional := self.Proportional; //to Preserve aspect ratio when resizing
-    GripSize := SELECTION_GRIP_SIZE;
-    end;
-
-  With AControl do //reparent
-    begin
-    Align := TAlignLayout.Contents; //fit Selection parent
-    Parent := Selection;
-    end;
-
-  {}AddMoveSelectionPoint(Selection); //add SelectionPoint at center to move control
-
-  result := Selection;
-end;
-
-function TManipulator.IsSpecialObject(const AObject: TFmxObject): Boolean;
-begin
-  //ShowMessage(AObject.QualifiedClassName);
-  Result :=
-    (csDesigning in Self.ComponentState) or
-    (AObject is TEffect) or
-    (AObject is TAnimation) or
-    (AObject is TSelection) or
-    (AObject = Self) or
-    (AObject.Parent = Self) or
-    not (AObject Is TControl);
-end;
-
-procedure TManipulator.DoAddObject(const AObject: TFmxObject);
-begin
-  if IsSpecialObject(AObject) then
-    inherited
-  else //for other objects added to the frame
-    begin
-    var Control := AObject As TControl;
-    var Selection := WrapObjectWithSelection(Control);
-    inherited DoAddObject(Selection); //don't call AddObject (will do infinite loop since it calls DoAddObject)
-    Selection.Name := SELECTION_NAME_PREFIX + Control.Name + Random(MaxInt).ToString; //only do this here, before that AObject hasn't yet gotten a unique name from its TFrame Owner
-    //Selection.InsertComponent(Control);
-    //Control.SetSubComponent(true);
-    end;
-end;
-
-procedure TManipulator.DoInsertObject(Index: Integer; const AObject: TFmxObject);
-begin
-  if IsSpecialObject(AObject) then
-    inherited
-  else //for other objects added to the frame
-    begin
-    var Control := AObject As TControl;
-    var Selection := WrapObjectWithSelection(Control);
-    inherited DoInsertObject(Index, Selection); //don't call InsertObject (will do infinite loop since it calls DoInsertObject)
-    Selection.Name := SELECTION_NAME_PREFIX + Control.Name; //only do this here, before that AObject hasn't yet gotten a unique name from its TFrame Owner
-    //Selection.InsertComponent(Control);
-    //Control.SetSubComponent(true);
-    end;
+  AreaSelector.Proportional := Value;
 end;
 
 {$endregion}
 
 {$region 'Events handling'}
-
-procedure TManipulator.MoveChildren(const DX, DY: Single);
-begin
-  if (DX = 0) and (DY = 0) then
-    exit;
-
-  BeginUpdate;
-  for var control in Controls do
-    control.Position.Point.Offset(DX, DY);
-  DoAutoSize;
-  EndUpdate;
-end;
 
 procedure TManipulator.HandleChangeTracking(Sender: TObject; var X, Y: Single);
 begin
@@ -312,7 +361,7 @@ begin
     ParentControl.Position.Point := TPointF.Create(newX, newY); //Move parent control //not creating TPosition objects to avoid leaking (TPointF is a record)
 
     //Offset all children (including this one) by the amount this control got into negative coordinates:
-    MoveChildren((abs(newX)-newX)/2, (abs(newY)-newY)/2); //this will also call DoAutoSize
+    MoveControls((abs(newX)-newX)/2, (abs(newY)-newY)/2); //this will also call DoAutoSize
 
     //SelectionPoint.PressedPosition := TPointF.Zero;
     SelectionPoint.Position.Point := TPointF.Zero;
@@ -337,13 +386,15 @@ end;
 
 {$endregion}
 
-{$endregion}
+{$ENDREGION ...................................................................}
 
 procedure Register;
 begin
   GroupDescendentsWith(TManipulator, TControl);
-  RegisterFmxClasses([TManipulator, TMoverSelectionPoint]); //register for persistence (needed if we use as SubComponent)
-  RegisterComponents('Zoomicon', [TManipulator, TMoverSelectionPoint]);
+  GroupDescendentsWith(TAreaSelector, TManipulator);
+  GroupDescendentsWith(TMoverSelectionPoint, TManipulator);
+  RegisterFmxClasses([TManipulator, TAreaSelector, TMoverSelectionPoint]); //register for persistence (needed if we use as SubComponent)
+  RegisterComponents('Zoomicon', [TManipulator, TAreaSelector, TMoverSelectionPoint]);
 end;
 
 end.

@@ -75,7 +75,9 @@ begin
   else if (FileExt = EXT_PNG) or (FileExt = EXT_JPEG) or (FileExt = EXT_JPG) then
     StoryItemClass := TBitmapImageStoryItem
   else if (FileExt = EXT_MP3) then
-    StoryItemClass := TAudioStoryItem;
+    StoryItemClass := TAudioStoryItem
+  else
+    exit;
 
   var StoryItem := StoryItemClass.Create(Self);
 
