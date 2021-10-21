@@ -17,6 +17,8 @@ const
   FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.read-com';
 
 type
+  IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
+
   TStoryItem = class(TManipulator, IStoryItem, IStoreable)
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
@@ -78,7 +80,10 @@ type
   protected
     procedure InitDropTarget;
     procedure DoEditModeChange(const Value: Boolean);
+    function GetDefaultSize: TSizeF; override;
   public
+    //[Subscribe(TipMessagingThread.Main)]
+    //procedure OnNavigatedTo(const AMessage: IMessageNavigatedTo);
     [Subscribe(TipMessagingThread.Main)]
     procedure OnEditModeChange(const AMessage: IMessageEditModeChange); //TODO: change
     procedure HandleParentNavigatedToChanged;
@@ -117,6 +122,11 @@ destructor TStoryItem.Destroy;
 begin
   GMessaging.Unsubscribe(Self);
   inherited;
+end;
+
+function TStoryItem.GetDefaultSize: TSizeF;
+begin
+  Result := TSizeF.Create(640, 480);
 end;
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
@@ -170,7 +180,7 @@ end;
 
 function TStoryItem.GetStoryItems: TStoryItemList;
 begin
-  result := TObjectListEx<TControl>.GetAllOfInterface<IStoryItem>(Controls);
+  result := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls);
 end;
 
 procedure TStoryItem.SetStoryItems(const Value: TStoryItemList);
@@ -185,7 +195,7 @@ end;
 
 function TStoryItem.GetAudioStoryItems: TAudioStoryItemList;
 begin
-  result := TObjectListEx<TControl>.GetAllOfInterface<IAudioStoryItem>(Controls);
+  result := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls);
 end;
 
 {$endregion}

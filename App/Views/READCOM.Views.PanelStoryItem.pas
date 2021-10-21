@@ -3,6 +3,7 @@ unit READCOM.Views.PanelStoryItem;
 interface
 
 uses
+  READCOM.Messages.Models, //for IMessageSingleValue
   READCOM.App.Models, //for IPanelStoryItem, IStoreable
   READCOM.Views.StoryItem, //for TStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
@@ -10,7 +11,7 @@ uses
   Zoomicon.Manipulator, FMX.ExtCtrls;
 
 type
-  {A TStoryFrame is a TStoryItem that can host other TStoryItems, including of its own kind [nested TStoryFrames] and is the only thing that takes part in navigation [TAB flow] when not in edit mode}
+  {A PanelStoryItem is the only thing that takes part in navigation [TAB flow] when not in edit mode}
   TPanelStoryItem = class(TStoryItem, {IPanelStoryItem,} IStoryItem, IStoreable)
     protected
       procedure DoEditModeChange(const Value: Boolean);

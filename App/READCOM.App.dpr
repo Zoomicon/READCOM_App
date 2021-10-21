@@ -1,6 +1,7 @@
 program READCOM.App;
 
 uses
+  //System.Classes,
   System.StartUpCopy,
   FMX.Forms,
   iPub.Rtl.Messaging in '..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas',
@@ -30,6 +31,8 @@ uses
 begin
   ReportMemoryLeaksOnShutdown := True; //TODO: remove in production?
   Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
+  //ApplicationHandleException := //...
+  //ApplicationShowException := //...
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   //ObjectDebuggerFMXForm1.Show;

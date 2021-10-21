@@ -10,6 +10,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  OnSaveState = FormSaveState
   DesignerMasterStyle = 0
   object ScrollBox: TScrollBox
     Align = Contents
@@ -19,29 +20,6 @@ object MainForm: TMainForm
     TabOrder = 0
     Viewport.Width = 1040.000000000000000000
     Viewport.Height = 608.000000000000000000
-    inline StoryPanel1: TPanelStoryItem
-      Size.Width = 1024.000000000000000000
-      Size.Height = 592.000000000000000000
-      Size.PlatformDefault = False
-      TabStop = False
-      inherited DropTarget: TDropTarget
-        Size.Width = 1024.000000000000000000
-        Size.Height = 592.000000000000000000
-      end
-      inline AudioStoryItem1: TAudioStoryItem
-        Position.X = 158.000000000000000000
-        Position.Y = 158.000000000000000000
-        Size.Width = 232.000000000000000000
-        Size.Height = 204.000000000000000000
-        Size.PlatformDefault = False
-        TabStop = False
-        inherited GlyphImage: TSVGIconImage
-          MultiResBitmap = <
-            item
-            end>
-        end
-      end
-    end
   end
   inline StoryHUD1: TStoryHUD
     Align = Contents

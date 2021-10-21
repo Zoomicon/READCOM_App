@@ -20,9 +20,7 @@ interface
       ['{5FA43981-3A62-4DF3-A2D1-71CDA4368122}']
     end;
 
-    IMessageEditModeChange = interface(IMessageSingleValue<Boolean>)
-      ['{DB89DC07-98EA-4E7B-94B9-C9232B16DEAF}']
-    end;
+    IMessageEditModeChange = IMessageSingleValue<Boolean>; //TODO: check that GUID reuse won't cause issues
 
 implementation
 
