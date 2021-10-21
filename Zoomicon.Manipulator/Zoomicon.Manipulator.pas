@@ -18,7 +18,36 @@ const
 type
   TRectFPredicate = reference to function(Rectangle: TRectF): Boolean;
 
-  {$region 'AreaSelector'}
+  {$REGION 'TLocationSelector' ------------------------------------------------}
+
+  TMovingEvent = procedure(Sender: TObject; const DX, DY: Single; out Canceled: Boolean) of object;
+  TMovedEvent = procedure(Sender: TObject; const DX, DY: Single) of object;
+
+  TLocationSelector = class(TSelectionPoint)
+  protected
+    FChangeCanceled: boolean;
+    FRestorePosition: TPointF;
+    FOnParentMoving: TMovingEvent;
+    FOnParentMoved: TMovedEvent;
+
+    //procedure DoChangeTracking(var X, Y: Single); override; //unfortunately ancestor method isn't virtual, using OnTrack=HandleChangeTracking in constructor instead
+    procedure HandleChangeTracking(Sender: TObject; var X, Y: Single); //called while mouse drag occurs
+
+    //procedure DoChange; override; //unfortunately ancestor method isn't virtual, using OnChange=HandleChange in constructor instead
+    procedure HandleChange(Sender: TObject); //called when mouse is released
+
+  public
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    property OnParentMoving: TMovingEvent read FOnParentMoving write FOnParentMoving;
+    property OnParentMoved: TMovedEvent read FOnParentMoved write FOnParentMoved;
+    property ChangeCanceled: Boolean read FChangeCanceled stored false;
+  end;
+
+  {$ENDREGION .................................................................}
+
+  {$REGION 'TAreaSelector' ----------------------------------------------------}
 
   TAreaSelector = class(TSelection)
   protected
@@ -30,7 +59,9 @@ type
     property Selected: TControlList read GetContained stored false;
   end;
 
-  {$endregion}
+  {$ENDREGION .................................................................}
+
+  {$REGION 'TManipulator' -----------------------------------------------------}
 
   TManipulator = class(TFrame)
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
@@ -51,7 +82,8 @@ type
     function IsProportional: Boolean;
     procedure SetProportional(value: Boolean);
 
-    procedure HandleChangeTracking(Sender: TObject; var X, Y: Single);
+    procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
+    procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -70,13 +102,7 @@ type
 
   end;
 
-  TMoverSelectionPoint = class(TSelectionPoint)
-  protected
-    //procedure DoChangeTracking(var X, Y: Single); override; //unfortunately ancestor method isn't virtual, using OnTrack event handler instead
-    procedure HandleChangeTracking(Sender: TObject; var X, Y: Single);
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;
+  {$ENDREGION .................................................................}
 
 procedure Register;
 
@@ -90,6 +116,51 @@ uses
 
 {$R *.fmx}
 
+{$REGION 'TLocationSelector' --------------------------------------------------}
+
+constructor TLocationSelector.Create(AOwner: TComponent);
+begin
+  inherited;
+  OnTrack := HandleChangeTracking;
+  OnChange := HandleChange;
+end;
+
+procedure TLocationSelector.HandleChangeTracking(Sender: TObject; var X, Y: Single);
+begin
+  var PressedPos := PressedPosition;
+  var ParentSize := ParentControl.Size.Size;
+  var DX := X - PressedPos.X/2 - ParentSize.Width/2;
+  var DY := Y - PressedPos.X/2 - ParentSize.Height/2;
+
+  if not FChangeCanceled then
+    begin
+    if Assigned(OnParentMoving) then
+      OnParentMoving(Self, DX, DY, FChangeCanceled);
+
+    if FChangeCanceled then //must do this right after calling OnParentMoving
+      FRestorePosition := Position.Point - TPointF.Create(DX, DY)
+    else
+      begin
+      with ParentControl.Position do
+        Point := Point + TPointF.Create(DX, DY); //Move parent control
+
+      if Assigned(OnParentMoved) then
+        OnParentMoved(Self, DX, DY);
+      end;
+    end
+end;
+
+procedure TLocationSelector.HandleChange(Sender: TObject);
+begin
+  if FChangeCanceled then
+    begin
+    Position.Point := FRestorePosition;
+    FChangeCanceled := True;
+    end;
+end;
+
+{$ENDREGION ...................................................................}
+
 {$REGION 'TAreaSelector' ------------------------------------------------------}
 
 function TAreaSelector.GetIntersected: TControlList;
@@ -98,7 +169,7 @@ begin
   result := GetControls(
       function (ARect: TRectF): Boolean
       begin
-      result := TheBounds.IntersectsWith(ARect);
+        result := TheBounds.IntersectsWith(ARect);
       end
     );
 end;
@@ -109,7 +180,7 @@ begin
   result := GetControls(
       function (ARect: TRectF): Boolean
       begin
-      result := TheBounds.Contains(ARect);
+        result := TheBounds.Contains(ARect);
       end
     );
 end;
@@ -126,29 +197,10 @@ begin
       result := TListEx<TControl>.GetAll(ParentControl.Controls,
         function(AControl: TControl): Boolean
         begin
-          result := RectPicker(AControl.BoundsRect);
+          result := (AControl <> Self) //not selecting ourselves
+                    and RectPicker(AControl.BoundsRect);
         end
       );
-    end;
-end;
-
-{$ENDREGION ...................................................................}
-
-{$REGION 'TMoverSelectionPoint' -----------------------------------------------}
-
-constructor TMoverSelectionPoint.Create(AOwner: TComponent);
-begin
-  inherited;
-  OnTrack := HandleChangeTracking;
-end;
-
-procedure TMoverSelectionPoint.HandleChangeTracking(Sender: TObject; var X, Y: Single);
-begin
-  if (Parent is TControl) then
-    begin
-    var ParentControl := TControl(Parent);
-    var Pos := ParentControl.Position;
-    ParentControl.Position := TPosition.Create(TPointF.Create(Pos.X + X, Pos.Y + Y)); //Move parent control
     end;
 end;
 
@@ -170,23 +222,24 @@ constructor TManipulator.Create(AOwner: TComponent);
      FAreaSelector.Parent := Self;
   end;
 
-  procedure CreateMoveSelector;
+  procedure CreateLocationSelector;
   begin
-    var SelectionPoint := TSelectionPoint.Create(FAreaSelector); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
-    with SelectionPoint do
+    var LocationSelector := TLocationSelector.Create(FAreaSelector); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
+    with LocationSelector do
       begin
-      ParentBounds := false;
+      ParentBounds := false; //can move outside of parent area
       GripSize := SELECTION_GRIP_SIZE;
       Align := TAlignLayout.Center;
       Parent := FAreaSelector;
-      OnTrack := HandleChangeTracking;
+      OnParentMoving := HandleAreaSelectorMoving;
+      OnParentMoved := HandleAreaSelectorMoved;
       end;
   end;
 
 begin
   inherited;
   CreateAreaSelector;
-  CreateMoveSelector; //must do after CreateAreaSelector
+  CreateLocationSelector; //must do after CreateAreaSelector
   FAutoSize := true; //must do after CreateAreaSelector
 end;
 
@@ -201,7 +254,8 @@ begin
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        Control.Position.Point.Offset(DX, DY);
+        with Control.Position do
+          Point := Point + TPointF.Create(DX, DY);
       end
     );
 
@@ -287,12 +341,12 @@ begin
     //temporarily disable Align:=Scale setting of all Selections and set it back again when done
     //var theSelections := Selections;
     try
-      //for var item in theSelections do item.Align := TAlignLayout.None;
+      //SetControlsAlign(TAlignLayout.None);
 
       var rect := GetChildrenRect;
       SetSize(rect.Width, rect.Height);
 
-      //for var item in theSelections do item.Align := TAlignLayout.Scale;
+      //SetControlsAlign(TAlignLayout.Scale);
     finally
       //FreeAndNil(theSelections);
     end;
@@ -345,34 +399,32 @@ end;
 
 {$region 'Events handling'}
 
-procedure TManipulator.HandleChangeTracking(Sender: TObject; var X, Y: Single);
-var DX, DY, newX, newY: Single;
+procedure TManipulator.HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
 begin
   BeginUpdate;
+  //Move all controls selected by the AreaSelector (that has just been moved)
+  MoveSelected(DX, DY); //this will also call DoAutoSize
+  Canceled := false;
+  //after this, TSelectionPoint.HandleChangeTracking will move the SelectionArea, then fire OnParentMoved event (which is assigned to HandleAreaSelectorMoved of the manipulator)
+end;
+
+procedure TManipulator.HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
+begin
+  //at this point TSelectionPoint.HandleChangeTracking has moved the SelectionArea
   var SelectionPoint := TSelectionPoint(Sender); //assuming events are sent by TSelectionPoint
   with SelectionPoint do
     begin
-    var Pos := ParentControl.Position.Point;
-    var PressedPos := SelectionPoint.PressedPosition;
+    var ParentPos := ParentControl.Position.Point;
+    var newX := ParentPos.X;
+    var newY := ParentPos.Y;
 
-    //Move dragged (parent) control (the AreaSelector):
-    DX := X - PressedPos.X/2 - ParentControl.Width/2;
-    DY := Y - PressedPos.Y/2 - ParentControl.Height/2;
-    newX := Pos.X + DX;
-    newY := Pos.Y + DY;
-    ParentControl.Position.Point.Offset(DX, DY);
+    //Offset all controls (including this one) by the amount this control got into negative coordinates:
+    MoveControls(TF.Iff<Single>(newX < 0, newX, 0), TF.Iff<Single>(newY < 0, newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"
 
-    //SelectionPoint.PressedPosition := TPointF.Zero;
-    SelectionPoint.Position.Point := TPointF.Zero;
-    //SelectionPoint.Align := TAlignLayout.Center;
+    //PressedPosition := TPointF.Zero;
+    Position.Point := TPointF.Zero;
+    //Align := TAlignLayout.Center;
     end;
-
-  //Move all controls selected by the AreaSelector (that has just been moved)
-  MoveSelected(X+DX, Y+DY); //this will also call DoAutoSize
-
-  //Offset all controls (including this one) by the amount this control got into negative coordinates:
-  MoveControls(TF.Iff<Single>(newX<0, newX, 0), TF.Iff<Single>(newY<0, newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"
-
   EndUpdate;
 end;
 
@@ -396,11 +448,11 @@ end;
 
 procedure Register;
 begin
-  GroupDescendentsWith(TManipulator, TControl);
+  GroupDescendentsWith(TLocationSelector, TManipulator);
   GroupDescendentsWith(TAreaSelector, TManipulator);
-  GroupDescendentsWith(TMoverSelectionPoint, TManipulator);
-  RegisterFmxClasses([TManipulator, TAreaSelector, TMoverSelectionPoint]); //register for persistence (needed if we use as SubComponent)
-  RegisterComponents('Zoomicon', [TManipulator, TAreaSelector, TMoverSelectionPoint]);
+  GroupDescendentsWith(TManipulator, TControl);
+  RegisterFmxClasses([TLocationSelector, TAreaSelector, TManipulator]); //register for persistence (needed if we use as SubComponent)
+  RegisterComponents('Zoomicon', [TLocationSelector, TAreaSelector, TManipulator]);
 end;
 
 end.
