@@ -4,14 +4,17 @@ interface
   uses SysUtils; //for TPredicate
 
 type
-  TFunctor = class
+  TF = class
     class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
+    class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: TFunc<T>): T; overload; inline;
     class function Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
+    class function Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: TFunc<T>): T; overload; inline;
+    class function Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: TFunc<T,T>): T; overload; inline;
   end;
 
 implementation
 
-class function TFunctor.Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T;
+class function TF.Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T;
 begin
   if Condition then
     result := ValueIfTrue
@@ -19,9 +22,38 @@ begin
     result := ValueIfFalse;
 end;
 
-class function TFunctor.Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: T): T;
+class function TF.Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: TFunc<T>): T;
 begin
-  Iff(Condition(Value), ValueIfTrue, ValueIfFalse);
+  if Condition and Assigned(ValueIfTrue) then
+    result := ValueIfTrue
+  else
+    result := ValueIfFalse; //Note: will fail if ValueIfFalse is not assigned
+end;
+
+class function TF.Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: T): T;
+begin
+  if Assigned(Condition) then
+    result := Iff(Condition(Value), ValueIfTrue, ValueIfFalse)
+  else
+    result := ValueIfFalse;
+end;
+
+class function TF.Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: TFunc<T>): T;
+begin
+  //result := Iff(Value, Condition, ValueIfTrue(), ValueIfFalse()); //use of () seems to be needed else compiler seems to match the same function (infinite recursion) //DOESN'T COMPILE (probably Delphi bug)
+  if Assigned(Condition) then
+    result := Iff(Condition(Value), ValueIfTrue, ValueIfFalse) //TODO: not sure if evaluation is deferred here (aka which "Iff" gets called [CTRL+Click in Delphi doesn't seem that clever], @ValueIfTrue/@ValueIfFalse to force that don't seem to compile)
+  else
+    result := ValueIfFalse; //Note: will fail if ValueIfFalse is not assigned
+end;
+
+class function TF.Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: TFunc<T,T>): T;
+begin
+  //result := Iff(Value, Condition, ValueIfTrue(Value), ValueIfFalse(Value)); //DOESN'T COMPILE (probably Delphi bug)
+  if Assigned(Condition) and Assigned(ValueIfTrue) {and Assigned(ValueIfFalse)} then //no need to check Assigned(ValueIfFalse) here, since in any case it will fail
+    result := Iff(Condition(Value), ValueIfTrue(Value), ValueIfFalse(Value)) //Note: will fail if ValueIfFalse is not assigned
+  else
+    result := ValueIfFalse(Value); //Note: will fail if ValueIfFalse is not assigned
 end;
 
 end.

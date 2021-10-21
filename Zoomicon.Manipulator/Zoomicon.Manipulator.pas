@@ -85,7 +85,7 @@ implementation //---------------------------------------------------------------
 uses
   FMX.Ani,
   FMX.Effects,
-  Zoomicon.Generics.Functors, //for TFunctor
+  Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections; //for TListEx
 
 {$R *.fmx}
@@ -371,7 +371,7 @@ begin
   MoveSelected(X+DX, Y+DY); //this will also call DoAutoSize
 
   //Offset all controls (including this one) by the amount this control got into negative coordinates:
-  MoveControls(TFunctor.Iff<Single>(newX<0, newX, 0), TFunctor.Iff<Single>(newY<0, newY, 0)); //this will also call DoAutoSize
+  MoveControls(TF.Iff<Single>(newX<0, newX, 0), TF.Iff<Single>(newY<0, newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"
 
   EndUpdate;
 end;
