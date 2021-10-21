@@ -1,7 +1,5 @@
 package Zoomicon.Media;
 
-{$Description 'Zoomicon Media'}
-
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
@@ -36,5 +34,7 @@ requires
 contains
   Zoomicon.Media.Classes in 'Zoomicon.Media.Classes.pas',
   Zoomicon.Media.Models in 'Zoomicon.Media.Models.pas';
+
+{$Description 'Zoomicon Media'}
 
 end.

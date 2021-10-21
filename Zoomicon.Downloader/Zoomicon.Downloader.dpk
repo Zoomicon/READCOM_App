@@ -35,4 +35,6 @@ contains
   Zoomicon.Downloader.Classes in 'Zoomicon.Downloader.Classes.pas',
   Zoomicon.Downloader.Models in 'Zoomicon.Downloader.Models.pas';
 
+{$Description 'Zoomicon Downloader'}
+
 end.

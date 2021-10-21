@@ -101,7 +101,7 @@ type
 
 implementation
   uses
-    Zoomicon.Collections;
+    Zoomicon.Generics.Collections;
 
 {$R *.fmx}
 

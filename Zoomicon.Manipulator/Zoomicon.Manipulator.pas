@@ -3,7 +3,6 @@ unit Zoomicon.Manipulator;
 interface //--------------------------------------------------------------------
 
 uses
-  Zoomicon.Collections, //for TListEx
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Gestures,
@@ -30,8 +29,6 @@ type
     property Intersected: TControlList read GetIntersected stored false;
     property Selected: TControlList read GetContained stored false;
   end;
-
-  TAreaSelectorList = TListEx<TAreaSelector>;
 
   {$endregion}
 
@@ -87,7 +84,9 @@ implementation //---------------------------------------------------------------
 
 uses
   FMX.Ani,
-  FMX.Effects;
+  FMX.Effects,
+  Zoomicon.Generics.Functors, //for TFunctor
+  Zoomicon.Generics.Collections; //for TListEx
 
 {$R *.fmx}
 
@@ -124,7 +123,7 @@ begin
     if (Parent = nil) then
       result := nil
     else
-      result := TObjectListEx<TFmxObject>.GetAllOfClass<TControl>(Parent.Children, nil,
+      result := TListEx<TControl>.GetAll(ParentControl.Controls,
         function(AControl: TControl): Boolean
         begin
           result := RectPicker(AControl.BoundsRect);
@@ -191,7 +190,7 @@ begin
   FAutoSize := true; //must do after CreateAreaSelector
 end;
 
-{$region Manipulation}
+{$region 'Manipulation'}
 
 procedure TManipulator.MoveControls(const Controls: TControlList; const DX, DY: Single);
 begin
@@ -217,7 +216,7 @@ begin
     begin
     BeginUpdate;
 
-    TObjectListEx<TControl>.ForEach(Controls,
+    TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
         with (Control as IRotatedControl) do
@@ -347,6 +346,7 @@ end;
 {$region 'Events handling'}
 
 procedure TManipulator.HandleChangeTracking(Sender: TObject; var X, Y: Single);
+var DX, DY, newX, newY: Single;
 begin
   BeginUpdate;
   var SelectionPoint := TSelectionPoint(Sender); //assuming events are sent by TSelectionPoint
@@ -355,18 +355,24 @@ begin
     var Pos := ParentControl.Position.Point;
     var PressedPos := SelectionPoint.PressedPosition;
 
-    //Move dragged control:
-    var newX := Pos.X + X - PressedPos.X/2 - ParentControl.Width/2;
-    var newY := Pos.Y + Y - PressedPos.Y/2 - ParentControl.Height/2;
-    ParentControl.Position.Point := TPointF.Create(newX, newY); //Move parent control //not creating TPosition objects to avoid leaking (TPointF is a record)
-
-    //Offset all children (including this one) by the amount this control got into negative coordinates:
-    MoveControls((abs(newX)-newX)/2, (abs(newY)-newY)/2); //this will also call DoAutoSize
+    //Move dragged (parent) control (the AreaSelector):
+    DX := X - PressedPos.X/2 - ParentControl.Width/2;
+    DY := Y - PressedPos.Y/2 - ParentControl.Height/2;
+    newX := Pos.X + DX;
+    newY := Pos.Y + DY;
+    ParentControl.Position.Point.Offset(DX, DY);
 
     //SelectionPoint.PressedPosition := TPointF.Zero;
     SelectionPoint.Position.Point := TPointF.Zero;
     //SelectionPoint.Align := TAlignLayout.Center;
     end;
+
+  //Move all controls selected by the AreaSelector (that has just been moved)
+  MoveSelected(X+DX, Y+DY); //this will also call DoAutoSize
+
+  //Offset all controls (including this one) by the amount this control got into negative coordinates:
+  MoveControls(TFunctor.Iff<Single>(newX<0, newX, 0), TFunctor.Iff<Single>(newY<0, newY, 0)); //this will also call DoAutoSize
+
   EndUpdate;
 end;
 

@@ -1,6 +1,4 @@
-package Zoomicon.Collections;
-
-{$Description 'Zoomicon Collections'}
+package Zoomicon.Generics;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -33,6 +31,9 @@ requires
   rtl;
 
 contains
-  Zoomicon.Collections in 'Zoomicon.Collections.pas';
+  Zoomicon.Generics.Collections in 'Collections\Zoomicon.Generics.Collections.pas',
+  Zoomicon.Generics.Functors in 'Functors\Zoomicon.Generics.Functors.pas';
+
+{$Description 'Zoomicon Generics'}
 
 end.

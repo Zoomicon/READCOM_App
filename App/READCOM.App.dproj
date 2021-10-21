@@ -257,7 +257,6 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Collections\Zoomicon.Collections.pas"/>
         <DCCReference Include="..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas">
             <Form>Manipulator</Form>
             <FormType>fmx</FormType>
@@ -320,6 +319,8 @@
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Classes.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

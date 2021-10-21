@@ -1,4 +1,4 @@
-unit Zoomicon.Collections;
+unit Zoomicon.Generics.Collections;
 
 interface
   uses

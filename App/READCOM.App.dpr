@@ -5,7 +5,6 @@ uses
   FMX.Forms,
   iPub.Rtl.Messaging in '..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas',
   uZoomableFrame in 'uZoomableFrame.pas' {ZoomableFrame: TFrame},
-  Zoomicon.Collections in '..\Zoomicon.Collections\Zoomicon.Collections.pas',
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Messages.Classes in 'Messages\READCOM.Messages.Classes.pas',
@@ -22,7 +21,9 @@ uses
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   Zoomicon.Media.Classes in '..\Zoomicon.Media\Zoomicon.Media.Classes.pas',
-  Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas';
+  Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
+  Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
+  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas';
 
 {$R *.res}
 

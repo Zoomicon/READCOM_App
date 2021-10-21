@@ -3,7 +3,7 @@ unit READCOM.App.Models;
 interface
 
 uses
-  Zoomicon.Collections, //for TListEx
+  Zoomicon.Generics.Collections, //for TListEx
   Zoomicon.Media.Classes, //for TMediaPlayerEx
   System.Classes, //for TStream
   System.Generics.Collections, //for TList

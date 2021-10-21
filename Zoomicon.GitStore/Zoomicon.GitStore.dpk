@@ -1,7 +1,5 @@
 package Zoomicon.GitStore;
 
-{$Description 'Zoomicon GitStore'}
-
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
@@ -43,5 +41,7 @@ requires
 contains
   Zoomicon.GitStore.Models in 'Zoomicon.GitStore.Models.pas',
   Zoomicon.GitStore.Classes in 'Zoomicon.GitStore.Classes.pas';
+
+{$Description 'Zoomicon GitStore'}
 
 end.

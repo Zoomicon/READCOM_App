@@ -1,7 +1,5 @@
 package Zoomicon.Cache;
 
-{$Description 'Zoomicon Cache'}
-
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
@@ -35,5 +33,7 @@ requires
 contains
   Zoomicon.Cache.Classes in 'Zoomicon.Cache.Classes.pas',
   Zoomicon.Cache.Models in 'Zoomicon.Cache.Models.pas';
+
+{$Description 'Zoomicon Cache'}
 
 end.

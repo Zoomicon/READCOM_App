@@ -1,7 +1,5 @@
 package Zoomicon.Manipulator;
 
-{$Description 'Zoomicon Manipulator'}
-
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
@@ -32,9 +30,11 @@ package Zoomicon.Manipulator;
 requires
   rtl,
   fmx,
-  Zoomicon.Collections;
+  Zoomicon.Generics;
 
 contains
   Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
+
+{$Description 'Zoomicon Manipulator'}
 
 end.
