@@ -16,14 +16,6 @@ type
     class function GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
     function GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
 
-    {ForEach}
-    class procedure ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
-    procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
-  end;
-
-  //----------------------------------------------------------------------------
-
-  TInterfaceListEx<T: IInterface> = class(TListEx<T>)
     { GetFirst }
     class function GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T; overload;
     function GetFirst(const Predicate: TPredicate<T> = nil): T; overload;
@@ -32,6 +24,14 @@ type
     class function GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T; overload;
     function GetLast(const Predicate: TPredicate<T> = nil): T; overload;
 
+    {ForEach}
+    class procedure ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
+    procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
+  end;
+
+  //----------------------------------------------------------------------------
+
+  TInterfaceListEx<T: IInterface> = class(TListEx<T>)
     { GetAllInterface }
     class function GetAllInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
     function GetAllInterface<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
@@ -52,14 +52,6 @@ type
   //----------------------------------------------------------------------------
 
   TObjectListEx<T: class> = class(TListEx<T>)
-    { GetFirst }
-    class function GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T; overload;
-    function GetFirst(const Predicate: TPredicate<T> = nil): T; overload;
-
-    { GetLast }
-    class function GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T; overload;
-    function GetLast(const Predicate: TPredicate<T> = nil): T; overload;
-
     { GetAllInterface }
     class function GetAllInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
     function GetAllInterface<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
@@ -103,14 +95,17 @@ implementation
 
 class function TListEx<T>.GetRandom(const List: TList<T>): T;
 begin
-  with List do
+  if Assigned(List) then
+    with List do
     begin
-    var c := Count;
-    if c = 0 then
-      result := Default(T) //returns Default value for type T
-    else
-      result := Items[Random(c)]; //TList uses 0-based index, and 0 <= Random(c) < c
-    end;
+      var c := Count;
+      if c = 0 then
+        result := Default(T) //returns Default value for type T
+      else
+        result := Items[Random(c)]; //TList uses 0-based index, and 0 <= Random(c) < c
+    end
+  else
+    result := Default(T); //returns Default value for type T
 end;
 
 function TListEx<T>.GetRandom: T;
@@ -125,9 +120,10 @@ end;
 class function TListEx<T>.GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>;
 begin
   var ResultList := TListEx<T>.Create;
-  for var item in Enum do
-    if (not Assigned(Predicate)) or Predicate(item) then
-      ResultList.Add(item);
+  if Assigned(Enum) then
+    for var item in Enum do
+      if (not Assigned(Predicate)) or Predicate(item) then
+        ResultList.Add(item);
   result := ResultList;
 end;
 
@@ -138,11 +134,56 @@ end;
 
 {$endregion}
 
+{$region 'GetFirst'}
+
+class function TListEx<T>.GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T;
+begin
+  if Assigned(Enum) then
+    for var item in Enum do
+      if (not Assigned(Predicate)) or Predicate(item) then
+      begin
+        result := item;
+        exit;
+      end;
+  result := Default(T) //returns Default value for type T
+end;
+
+function TListEx<T>.GetFirst(const Predicate: TPredicate<T> = nil): T;
+begin
+  result := {TListEx<T>.}GetFirst(self);
+end;
+
+{$endregion}
+
+{$region 'GetLast'}
+
+class function TListEx<T>.GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T;
+begin
+  if Assigned(List) then
+    for var i := List.Count-1 downto 0 do
+    begin
+      var item := List[i];
+      if (not Assigned(Predicate)) or Predicate(item) then
+      begin
+        result := item;
+        exit;
+      end;
+    end;
+  result := Default(T) //returns Default value for type T
+end;
+
+function TListEx<T>.GetLast(const Predicate: TPredicate<T> = nil): T;
+begin
+  result := {TListEx<T>.}GetLast(self);
+end;
+
+{$endregion}
+
 {$region 'ForEach'}
 
 class procedure TListEx<T>.ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil);
 begin
-  if Assigned(Proc) then
+  if Assigned(Enum) and Assigned(Proc) then
     for var item in Enum do
       if (not Assigned(Predicate)) or Predicate(item) then
         Proc(item);
@@ -159,60 +200,20 @@ end;
 
 {$REGION 'TInterfaceListEx' ------------------------------------------------------}
 
-{$region 'GetFirst'}
-
-class function TInterfaceListEx<T>.GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T;
-begin
-  for var item in Enum do
-    if (not Assigned(Predicate)) or Predicate(item) then
-      begin
-      result := item;
-      exit;
-      end;
-  result := nil;
-end;
-
-function TInterfaceListEx<T>.GetFirst(const Predicate: TPredicate<T> = nil): T;
-begin
-  result := {TInterfaceListEx<T>.}GetFirst(self);
-end;
-
-{$endregion}
-
-{$region 'GetLast'}
-
-class function TInterfaceListEx<T>.GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T;
-begin
-  for var i := List.Count-1 downto 0 do
-    begin
-    var item := List[i];
-    if (not Assigned(Predicate)) or Predicate(item) then
-      begin
-      result := item;
-      exit;
-      end;
-    end;
-  result := nil;
-end;
-
-function TInterfaceListEx<T>.GetLast(const Predicate: TPredicate<T> = nil): T;
-begin
-  result := {TInterfaceListEx<T>.}GetLast(self);
-end;
-
-{$endregion}
-
 {$region 'GetAllInterface'}
 
 class function TInterfaceListEx<T>.GetAllInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
   var ListOfAInterface := TInterfaceListEx<AInterface>.Create;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item))  then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
-        ListOfAInterface.Add(itemAsAInterface);
+  if Assigned(Enum) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item))  then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+          ListOfAInterface.Add(itemAsAInterface);
+  end;
   result := ListOfAInterface;
 end;
 
@@ -227,16 +228,19 @@ end;
 
 class function TInterfaceListEx<T>.GetFirstInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+  if Assigned(Enum) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         begin
-        result := itemAsAInterface;
-        exit;
+          result := itemAsAInterface;
+          exit;
         end;
-  result := nil;
+  end;
+  result := Default(AInterface); //returns nil
 end;
 
 function TInterfaceListEx<T>.GetFirstInterface<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -250,19 +254,22 @@ end;
 
 class function TInterfaceListEx<T>.GetLastInterface<AInterface>(const List: TList<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  for var i := List.Count-1 downto 0 do
+  if Assigned(List) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    for var i := List.Count-1 downto 0 do
     begin
-    var item := List[i];
-    var itemAsAInterface: AInterface;
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+      var item := List[i];
+      var itemAsAInterface: AInterface;
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         begin
-        result := itemAsAInterface;
-        exit;
+          result := itemAsAInterface;
+          exit;
         end;
     end;
-  result := nil;
+  end;
+  result := Default(AInterface); //returns nil
 end;
 
 function TInterfaceListEx<T>.GetLastInterface<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -276,12 +283,15 @@ end;
 
 class procedure TInterfaceListEx<T>.ForEachInterface<AInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
-        Proc(itemAsAInterface);
+  if Assigned(Enum) and Assigned(Proc) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+          Proc(itemAsAInterface);
+  end;
 end;
 
 procedure TInterfaceListEx<T>.ForEachInterface<AInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
@@ -295,60 +305,20 @@ end;
 
 {$REGION 'TObjectListEx' ------------------------------------------------------}
 
-{$region 'GetFirst'}
-
-class function TObjectListEx<T>.GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T;
-begin
-  for var item in Enum do
-    if (not Assigned(Predicate)) or Predicate(item) then
-      begin
-      result := item;
-      exit;
-      end;
-  result := nil;
-end;
-
-function TObjectListEx<T>.GetFirst(const Predicate: TPredicate<T> = nil): T;
-begin
-  result := {TObjectListEx<T>.}GetFirst(self);
-end;
-
-{$endregion}
-
-{$region 'GetLast'}
-
-class function TObjectListEx<T>.GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T;
-begin
-  for var i := List.Count-1 downto 0 do
-    begin
-    var item := List[i];
-    if (not Assigned(Predicate)) or Predicate(item) then
-      begin
-      result := item;
-      exit;
-      end;
-    end;
-  result := nil;
-end;
-
-function TObjectListEx<T>.GetLast(const Predicate: TPredicate<T> = nil): T;
-begin
-  result := {TObjectListEx<T>.}GetLast(self);
-end;
-
-{$endregion}
-
 {$region 'GetAllInterface'}
 
 class function TObjectListEx<T>.GetAllInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
   var ListOfAInterface := TInterfaceListEx<AInterface>.Create;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
-        ListOfAInterface.Add(itemAsAInterface);
+  if Assigned(Enum) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+          ListOfAInterface.Add(itemAsAInterface);
+  end;
   result := ListOfAInterface;
 end;
 
@@ -363,16 +333,19 @@ end;
 
 class function TObjectListEx<T>.GetFirstInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+  if Assigned(Enum) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         begin
-        result := itemAsAInterface;
-        exit;
+          result := itemAsAInterface;
+          exit;
         end;
-  result := nil;
+  end;
+  result := Default(AInterface); //returns nil
 end;
 
 function TObjectListEx<T>.GetFirstInterface<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -386,19 +359,22 @@ end;
 
 class function TObjectListEx<T>.GetLastInterface<AInterface>(const List: TList<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  for var i := List.Count-1 downto 0 do
+  if Assigned(List) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    for var i := List.Count-1 downto 0 do
     begin
-    var item := List[i];
-    var itemAsAInterface: AInterface;
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+      var item := List[i];
+      var itemAsAInterface: AInterface;
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
         begin
-        result := itemAsAInterface;
-        exit;
+          result := itemAsAInterface;
+          exit;
         end;
     end;
-  result := nil;
+  end;
+  result := Default(AInterface); //returns nil
 end;
 
 function TObjectListEx<T>.GetLastInterface<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -413,13 +389,14 @@ end;
 class function TObjectListEx<T>.GetAllClass<AClass>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TObjectListEx<AClass>;
 begin
   var ListOfAClass := TObjectListEx<AClass>.Create;
-  for var item in Enum do
-    if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      begin
-      var itemAsAClass := item as AClass;
-      if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
-        ListOfAClass.Add(itemAsAClass);
-      end;
+  if Assigned(Enum) then
+    for var item in Enum do
+      if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        begin
+        var itemAsAClass := item as AClass;
+        if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+          ListOfAClass.Add(itemAsAClass);
+        end;
   result := ListOfAClass;
 end;
 
@@ -434,17 +411,18 @@ end;
 
 class function TObjectListEx<T>.GetFirstClass<AClass>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass;
 begin
-  for var item in Enum do
-    if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      begin
-      var itemAsAClass := item as AClass;
-      if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+  if Assigned(Enum) then
+    for var item in Enum do
+      if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
         begin
-        result := itemAsAClass;
-        exit;
+        var itemAsAClass := item as AClass;
+        if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+          begin
+          result := itemAsAClass;
+          exit;
+          end;
         end;
-      end;
-  result := nil;
+  result := Default(AClass); //returns nil
 end;
 
 function TObjectListEx<T>.GetFirstClass<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass;
@@ -458,20 +436,21 @@ end;
 
 class function TObjectListEx<T>.GetLastClass<AClass>(const List: TList<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass;
 begin
-  for var i := List.Count-1 downto 0 do
-    begin
-    var item := List[i];
-    if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+  if Assigned(List) then
+    for var i := List.Count-1 downto 0 do
       begin
-      var itemAsAClass := item as AClass;
-      if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+      var item := List[i];
+      if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
         begin
-        result := itemAsAClass;
-        exit;
+        var itemAsAClass := item as AClass;
+        if (not Assigned(InnerPredicate)) or InnerPredicate(ItemAsAClass) then
+          begin
+          result := itemAsAClass;
+          exit;
+          end;
         end;
       end;
-    end;
-  result := nil;
+  result := Default(AClass); //returns nil
 end;
 
 function TObjectListEx<T>.GetLastClass<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass;
@@ -485,12 +464,15 @@ end;
 
 class procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
 begin
-  var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-  var itemAsAInterface: AInterface;
-  for var item in Enum do
-    if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-      if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
-        Proc(itemAsAInterface);
+  if Assigned(Enum) and Assigned(Proc) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+          Proc(itemAsAInterface);
+  end;
 end;
 
 procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
@@ -504,7 +486,7 @@ end;
 
 class procedure TObjectListEx<T>.ForEachClass<AClass>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
 begin
-  if Assigned(Proc) then
+  if Assigned(Enum) and Assigned(Proc) then
     for var item in Enum do
       if (item is AClass) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
         begin
