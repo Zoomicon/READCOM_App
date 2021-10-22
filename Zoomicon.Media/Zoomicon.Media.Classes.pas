@@ -13,52 +13,95 @@ const
 
 type
   TMediaPlayerEx = class(TMediaPlayer, IMediaPlayer)
+
   //-- Fields
 
   protected
     FAutoPlaying: Boolean;
     FLooping: Boolean;
     FTimer: TTimer;
+    FLastTime: TMediaTime;
+    FStream: TStream;
+    {Events}
+    FOnPlay: TOnPlay;
+    FOnPause: TOnPause;
+    FOnStop: TOnStop;
+    FOnAtStart: TOnAtStart;
+    FOnAtEnd: TOnAtEnd;
+    FOnCurrentTimeChange: TCurrentTimeChange;
 
   //-- Methods
 
   protected
+    procedure HandleTimer(Sender: TObject); virtual;
+    procedure DoAtStart; virtual;
+    procedure DoAtEnd; virtual;
+    {TimerStarted}
+    function IsTimerStarted: Boolean; virtual;
+    procedure SetTimerStarted(const Value: Boolean); virtual;
+    {Loaded}
+    function IsLoaded: Boolean;
     {Playing}
     function IsPlaying: Boolean; virtual;
     procedure SetPlaying(const Value: Boolean); virtual;
     {AtStart}
-    function IsAtStart: Boolean;
+    function IsAtStart: Boolean; virtual;
     {AtEnd}
-    function IsAtEnd: Boolean;
+    function IsAtEnd: Boolean; virtual;
     {Finished}
-    function IsFinished: Boolean;
+    function IsFinished: Boolean; virtual;
     {AutoPlaying}
-    function IsAutoPlaying: Boolean;
-    procedure SetAutoPlaying(const Value: Boolean); //TODO: override media loading to do autoplay (check state if media is available)
+    function IsAutoPlaying: Boolean; virtual;
+    procedure SetAutoPlaying(const Value: Boolean); virtual;
     {Looping}
     function IsLooping: Boolean; virtual;
     procedure SetLooping(const Value: Boolean); virtual;
+    {Filename}
+    function GetFilename: String;
+    procedure SetFileName(const Value: string);
+    {Stream}
+    function GetStream: TStream;
+    procedure SetStream(const Value: TStream);
+
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Play;
-    procedure Rewind;
+    destructor Destroy; override;
+    procedure Play; virtual;
+    procedure Rewind; virtual;
     procedure Pause; virtual;
-    procedure Stop;
+    procedure Stop; virtual;
 
   //-- Properties
 
+  protected
+    property TimerStarted: Boolean read IsTimerStarted write SetTimerStarted;
+
   published
+    property Loaded: Boolean read IsLoaded;
     property Playing: Boolean read IsPlaying write SetPlaying stored false;
     property AtStart: Boolean read IsAtStart;
     property AtEnd: Boolean read IsAtEnd;
     property Finished: Boolean read IsFinished;
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property Looping: Boolean read IsLooping write SetLooping;
+    property FileName: string read GetFilename write SetFilename;
+    property Stream: TStream read GetStream write SetStream stored false;
+    {Events}
+    property OnPlay: TOnPlay read FOnPlay write FOnPlay;
+    property OnPause: TOnPause read FOnPause write FOnPause;
+    property OnStop: TOnStop read FOnStop write FOnStop;
+    property OnAtStart: TOnAtStart read FOnAtStart write FOnAtStart;
+    property OnAtEnd: TOnAtEnd read FOnAtEnd write FOnAtEnd;
+    property OnCurrentTimeChange: TCurrentTimeChange read FOnCurrentTimeChange write FOnCurrentTimeChange;
   end;
 
 procedure Register;
 
 implementation
+
+uses
+  System.IOUtils, //for TPath
+  System.SysUtils; //for fmWrite
 
 {$REGION 'TMediaPlayerEx'}
 
@@ -66,14 +109,25 @@ constructor TMediaPlayerEx.Create(AOwner: TComponent);
 begin
   FTimer := TTimer.Create(self);
   FTimer.Interval := TIMER_INTERVAL;
-  //FTimer.OnTimer := //TODO: set up timer to send even when Finished and to do Looping
+  FTimer.OnTimer := HandleTimer;
+  inherited;
+end;
+
+destructor TMediaPlayerEx.Destroy;
+begin
+  Stream := nil; //must do (calls SetStream) to free any temporary file we had created //do not free FStream, we hadn't created it
   inherited;
 end;
 
 procedure TMediaPlayerEx.Play;
 begin
   if not IsPlaying then
+    begin
+    TimerStarted := true; //start timer used to detect and send OnCurrentTimeChange event
     inherited Play;
+    if Assigned(FOnPlay) then
+      FOnPlay;
+    end;
 end;
 
 procedure TMediaPlayerEx.Rewind;
@@ -84,13 +138,87 @@ end;
 procedure TMediaPlayerEx.Pause;
 begin
   if IsPlaying then
+    begin
     inherited Stop; //this Pauses
+    TimerStarted := false; //stop timer used to detect and send OnCurrentTimeChange event (to conserve resources)
+    if Assigned(FOnPause) then
+      FOnPause;
+    end;
 end;
 
 procedure TMediaPlayerEx.Stop;
 begin
-  Pause;
+  Pause; //this will also call StopTimer;
   Rewind;
+  if Assigned(FOnStop) then
+    FOnStop;
+end;
+
+procedure TMediaPlayerEx.HandleTimer;
+begin
+  if FAutoPlaying and Loaded then //since TimerStarted=true we're either playing or waiting for media to load to autoplay it
+    Play; //does nothing if Playing
+
+  var newTime := CurrentTime; //keep locally since it changes
+  if (FLastTime <> newTime) then
+    begin
+      FLastTime := newTime;
+      if Assigned(OnCurrentTimeChange) then
+        OnCurrentTimeChange(Self, newTime);
+
+      if IsAtStart then
+        DoAtStart;
+      if IsAtEnd then //if media has Duration=0 (though for CurrentTime to have changed, other media would have to be loaded before) we'll fire OnAtStart and then OnAtEnd
+        DoAtEnd;
+    end;
+end;
+
+procedure TMediaPlayerEx.DoAtStart;
+begin
+  if Assigned(FOnAtStart) then
+    FOnAtStart;
+end;
+
+procedure TMediaPlayerEx.DoAtEnd;
+begin
+  if Assigned(FOnAtEnd) then
+    FOnAtEnd;
+  if FLooping then
+    CurrentTime := 0; //TODO: depending on Timer resolution this may fail to fire OnAtStart (but if we call DoAtStart it may fire twice)
+end;
+
+{$region 'TimerStarted'}
+
+function TMediaPlayerEx.IsTimerStarted: Boolean;
+begin
+  result := FTimer.Enabled;
+end;
+
+procedure TMediaPlayerEx.SetTimerStarted(const Value: Boolean);
+begin
+  if Value then //Start timer
+  begin
+    if not IsTimerStarted then
+    begin
+      FLastTime := CurrentTime; //keep CurrentTime before starting the timer (do it before it gets started, since OnTimer event handler also updates FLastTime)
+      FTimer.Enabled := true; //we know (Value = true)
+    end
+  else //Stop timer
+    if IsTimerStarted then
+      begin
+      FTimer.Enabled := false; //we know (Value = false)
+      FLastTime := CurrentTime; //keep CurrentTime after stopping the timer (do it after it gets stopped, since OnTimer event handler also updates FLastTime)
+      end;
+  end;
+end;
+
+{$endregion}
+
+{$region 'Loaded'}
+
+function TMediaPlayerEx.IsLoaded: Boolean;
+begin
+  result := (State <> TMediaState.Unavailable);
 end;
 
 {$region 'Playing'}
@@ -139,7 +267,7 @@ end;
 
 {$region 'AutoPlaying'}
 
-function TMediaPlayerEx.IsAutoPlaying: Boolean;
+function TMediaPlayerEx.IsAutoPlaying: Boolean; //IMediaPlayer implementation
 begin
   result := FAutoPlaying;
 end;
@@ -147,13 +275,15 @@ end;
 procedure TMediaPlayerEx.SetAutoPlaying(const Value: Boolean);
 begin
   FAutoPlaying := Value;
+  if Value and Loaded then
+    Play;        
 end;
 
 {$endregion}
 
 {$region 'Looping'}
 
-function TMediaPlayerEx.IsLooping: Boolean;
+function TMediaPlayerEx.IsLooping: Boolean; //IMediaPlayer implementation
 begin
   result := FLooping;
 end;
@@ -161,6 +291,53 @@ end;
 procedure TMediaPlayerEx.SetLooping(const Value: Boolean);
 begin
   FLooping := Value;
+end;
+
+{$endregion}
+
+{$region 'Filename'}
+
+function TMediaPlayerEx.GetFilename: String;
+begin
+  result := inherited Filename;
+end;
+
+procedure TMediaPlayerEx.SetFileName(const Value: string);
+begin
+  if FAutoPlaying then
+    TimerStarted := true; //HandleTimer also checks if media is loaded
+  inherited Filename := Value;
+end;
+
+{$endregion}
+
+{$region 'Stream'}
+
+function TMediaPlayerEx.GetStream: TStream;
+begin
+  result := FStream;
+end;
+
+procedure TMediaPlayerEx.SetStream(const Value: TStream);
+begin
+  if Assigned(Value) then
+  begin
+    var TempFileName := TPath.GetTempFileName;
+    var F := TFileStream.Create(TempFilename, fmOpenWrite);
+    try
+      F.CopyFrom(Value);
+    finally
+      FreeAndNil(F);
+    end;
+    Filename := TempFilename;
+  end
+  else
+    begin
+    if Assigned(Stream) then
+      TFile.Delete(Filename); //delete temp file we had allocated for Stream
+    FStream := nil; //do not free FStream, we hadn't created it
+    Filename := '';
+    end;
 end;
 
 {$endregion}
