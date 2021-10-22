@@ -66,6 +66,8 @@ type
     property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
   end;
 
+  procedure Register;
+
 implementation
 
 {$R *.fmx}
@@ -211,4 +213,22 @@ end;
 
 {$ENDREGION}
 
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TAudioStoryItem]); //register for persistence
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TAudioStoryItem, TControl);
+  RegisterClasses;
+  RegisterComponents('Zoomicon', [TAudioStoryItem]); //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+end;
+
+initialization
+  RegisterClasses;
+
 end.
+
+//TODO: register MediaPlayerEx at its class
+//TODO: make sure we set Stored := False at constructor to our MediaPlayerEx (or see if shows prop at inspector)

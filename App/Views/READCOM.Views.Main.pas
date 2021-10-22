@@ -43,32 +43,36 @@ var
   MainForm: TMainForm;
 
 implementation
-  uses ObjectDebuggerFMXForm,
+  uses CodeSiteLogging,
+       ObjectDebuggerFMXForm,
        FormMessage;
 
 {$R *.fmx}
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
+  var TheStory := TPanelStoryItem.Create(Self);
   //SaveState.StoragePath := ... //TODO: default is transient, change to make permanent
   With SaveState do
     if Stream.Size > 0 then
     begin
-      var NewStory := TStoryItem.Create(Self);
-      //NewStory.Size.Size := TSizeF.Create(640, 480);
+      //TheStory.Size.Size := TSizeF.Create(640, 480);
       try
-        Stream.ReadComponent(NewStory);
+        TheStory.LoadReadCom(Stream);
+        {}CodeSite.Send(TheStory.SaveToString);
       except
         on E: Exception do
           begin
           SaveState.Stream.Clear; //clear stream if causes loading error
-          //TODO: should do some logging here (e.g. could be catching Invalid Stream Format)
+          CodeSite.SendException(E);
           ShowException(E, @TMainForm.FormCreate);
           end;
       end;
-      StoryView := NewStory;
     end;
+  StoryView := TheStory;
+  CodeSite.ExitMethod('FormCreate');
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -78,11 +82,23 @@ end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);
 begin
+  CodeSite.EnterMethod('SaveState');
   SaveState.Stream.Clear;
 
   var TheStory := StoryView;
   if Assigned(TheStory) then
-    SaveState.Stream.WriteComponent(TheStory);
+    try
+      TheStory.SaveReadCom(SaveState.Stream);
+      {}CodeSite.Send(TheStory.SaveToString);
+    except
+      On E: Exception do
+        begin
+        //SaveState.Stream.Clear; //clear stream in case it got corrupted
+        CodeSite.SendException(E);
+        ShowException(E, @TMainForm.FormCreate);
+        end;
+    end;
+  CodeSite.ExitMethod('SaveState');
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -112,7 +128,10 @@ end;
 
 function TMainForm.GetStoryView: TStoryItem;
 begin
-  result := TObjectListEx<TFmxObject>.GetFirstClass<TStoryItem>(ScrollBox.Content.Children);
+  if Assigned(ScrollBox.Content) then
+    result := TObjectListEx<TFmxObject>.GetFirstClass<TStoryItem>(ScrollBox.Content.Children)
+  else
+    result := nil;
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
@@ -125,7 +144,7 @@ begin
     FreeAndNil(TheStory); //destroy the old Story
     end;
   //Add new story
-  Value.Parent := ScrollBox.Content;
+  Value.Parent := ScrollBox;
 end;
 
 end.

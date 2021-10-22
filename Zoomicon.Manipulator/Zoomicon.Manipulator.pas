@@ -215,6 +215,7 @@ constructor TManipulator.Create(AOwner: TComponent);
      FAreaSelector := TAreaSelector.Create(Self);
      With FAreaSelector do
        begin
+       Stored := False; //don't store state for AreaSelector, should use state from designed .FMX resource
        Size.Size := TSizeF.Create(SELECTION_DEFAULT_WIDTH, SELECTION_DEFAULT_HEIGHT);
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
@@ -227,6 +228,7 @@ constructor TManipulator.Create(AOwner: TComponent);
     var LocationSelector := TLocationSelector.Create(FAreaSelector); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
     with LocationSelector do
       begin
+      Stored := False; //don't store state for LocationSelector, should use state from designed .FMX resource (NOT NEEDED, SINCE WE HAVE IT AS CHILD OF AREASELECTOR WHICH IS SET TO NOT STORED)
       ParentBounds := false; //can move outside of parent area
       GripSize := SELECTION_GRIP_SIZE;
       Align := TAlignLayout.Center;
@@ -446,13 +448,21 @@ end;
 
 {$ENDREGION ...................................................................}
 
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TLocationSelector, TAreaSelector, TManipulator]); //register for persistence (in case they're used standalone)
+end;
+
 procedure Register;
 begin
-  GroupDescendentsWith(TLocationSelector, TManipulator);
-  GroupDescendentsWith(TAreaSelector, TManipulator);
+  GroupDescendentsWith(TLocationSelector, TControl);
+  GroupDescendentsWith(TAreaSelector, TControl);
   GroupDescendentsWith(TManipulator, TControl);
-  RegisterFmxClasses([TLocationSelector, TAreaSelector, TManipulator]); //register for persistence (needed if we use as SubComponent)
+  RegisterClasses;
   RegisterComponents('Zoomicon', [TLocationSelector, TAreaSelector, TManipulator]);
 end;
+
+initialization
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

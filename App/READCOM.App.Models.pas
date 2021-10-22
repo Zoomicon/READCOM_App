@@ -17,6 +17,7 @@ uses
 
 const
   EXT_READCOM = '.readcom';
+  FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.readcom';
 
 type
   IStoreable = interface
@@ -28,11 +29,12 @@ type
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Load(const Filepath: string); overload;
     procedure Load(const Filepaths: array of string); overload;
+    procedure LoadFromString(const Data: String);
 
     { Save }
-    procedure Save(const Stream: TStream); overload;
+    procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
-    procedure Save(const Directory: string; const FilenamePrefix: string); overload; //TODO: ???
+    function SaveToString: string; overload;
   end;
 
 {$endregion -------------------------------------------------------------------}
@@ -41,12 +43,12 @@ type
   IStoryItem = interface; //forward declaration
   IAudioStoryItem = interface; //forward declaration
 
-  TStoryItemList = TListEx<IStoryItem>;
-  TAudioStoryItemList = TListEx<IAudioStoryItem>;
+  TIStoryItemList = TListEx<IStoryItem>;
+  TIAudioStoryItemList = TListEx<IAudioStoryItem>;
 
   TStoryMode = (AnimatedStoryMode, InteractiveStoryMode, GuidedInteractiveStoryMode, EditMode);
 
-  IStoryItem = interface(IStoreable)
+  IStoryItem = interface(IInterfaceComponentReference) //IInterfaceComponentReference.GetComponent is used to get related visual component reference
     ['{238909DD-45E6-463A-9698-C7C6DC1A6DFE}']
     //--- Methods ---
     procedure PlayRandomAudioStoryItem;
@@ -60,11 +62,11 @@ type
     procedure SetParentStoryItem(const Value: IStoryItem);
 
     { StoryItems }
-    function GetStoryItems: TStoryItemList;
-    procedure SetStoryItems(const Value: TStoryItemList);
+    function GetStoryItems: TIStoryItemList;
+    procedure SetStoryItems(const Value: TIStoryItemList);
 
     { AudioStoryItems }
-    function GetAudioStoryItems: TAudioStoryItemList;
+    function GetAudioStoryItems: TIAudioStoryItemList;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -84,8 +86,8 @@ type
     //--- Properties ---
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
-    property StoryItems: TStoryItemList read GetStoryItems write SetStoryItems; //default nil
-    property AudioStoryItems: TAudioStoryItemList read GetAudioStoryItems; //stored false
+    property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
+    property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''

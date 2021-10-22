@@ -308,6 +308,7 @@
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
+        <DCCReference Include="FMX.ApplicationHelper.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

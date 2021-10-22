@@ -1,7 +1,8 @@
 program READCOM.App;
 
 uses
-  //System.Classes,
+  SysUtils,
+  CodeSiteLogging,
   System.StartUpCopy,
   FMX.Forms,
   iPub.Rtl.Messaging in '..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas',
@@ -24,11 +25,36 @@ uses
   Zoomicon.Media.Classes in '..\Zoomicon.Media\Zoomicon.Media.Classes.pas',
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
   Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
-  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas';
+  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
+  FMX.ApplicationHelper in 'FMX.ApplicationHelper.pas';
 
 {$R *.res}
 
 begin
+  {$IFDEF DEBUG}
+  CodeSite.Enabled := CodeSite.Installed;
+  if CodeSite.Enabled then
+  begin
+    if CodeSite.Enabled then
+    begin
+      var Destination := TCodeSiteDestination.Create(Application);
+      with Destination do
+        begin
+        with LogFile do
+          begin
+          Active := True;
+          FileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.csl');
+          FilePath := '$(MyDocs)\My CodeSite Files\Logs\';
+          end;
+        Viewer.Active := True; // also show Live Viewer
+        end;
+      CodeSite.Destination := Destination;
+      CodeSite.Clear
+    end;
+  end;
+  {$ELSE}
+  CodeSite.Enabled := False;
+  {$ENDIF}
   ReportMemoryLeaksOnShutdown := True; //TODO: remove in production?
   Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
   //ApplicationHandleException := //...

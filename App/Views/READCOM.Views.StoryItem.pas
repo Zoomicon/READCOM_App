@@ -14,12 +14,11 @@ uses
 const
   DEFAULT_AUTOSIZE = true;
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
-  FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.read-com';
 
 type
   IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
 
-  TStoryItem = class(TManipulator, IStoryItem, IStoreable)
+  TStoryItem = class(TManipulator, IStoryItem, IInterfaceComponentReference, IStoreable)
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -28,6 +27,7 @@ type
   //-- Fields ---
 
   protected
+    FID: TGUID;
     FAutoSize: Boolean;
 
   //--- Methods ---
@@ -38,15 +38,20 @@ type
 
     procedure PlayRandomAudioStoryItem;
 
+    { IInterfaceComponentReference }
+    function GetComponent: TComponent;
+
     { IStoreable }
     function GetLoadFilesFilter: String; virtual;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure LoadReadCom(const Stream: TStream); virtual;
+    procedure LoadFromString(const Data: String); virtual;
+    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Load(const Filepath: string); overload; virtual;
     procedure Load(const Filepaths: array of string); overload; virtual;
-    procedure Save(const Stream: TStream); overload; virtual;
+    procedure SaveReadCom(const Stream: TStream); virtual;
+    function SaveToString: string; virtual;
+    procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
-    procedure Save(const Directory: string; const FilenamePrefix: string); overload; virtual;
 
     { Id }
     function GetId: TGUID;
@@ -57,11 +62,11 @@ type
     procedure SetParentStoryItem(const TheParent: IStoryItem);
 
     { StoryItems }
-    function GetStoryItems: TStoryItemList;
-    procedure SetStoryItems(const Value: TStoryItemList);
+    function GetStoryItems: TIStoryItemList;
+    procedure SetStoryItems(const Value: TIStoryItemList);
 
     { AudioStoryItems }
-    function GetAudioStoryItems: TAudioStoryItemList;
+    function GetAudioStoryItems: TIAudioStoryItemList;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -94,11 +99,11 @@ type
     property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
   published
     property Id: TGUID read GetId write SetId;
-    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
-    property StoryItems: TStoryItemList read GetStoryItems write SetStoryItems; //default nil
-    property AudioStoryItems: TAudioStoryItemList read GetAudioStoryItems; //default nil //stored false
+    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
+    property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
+    property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
     property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property Target: IStoryItem read GetTarget write SetTarget; //default nil //stored false
+    property Target: IStoryItem read GetTarget write SetTarget stored false; //default nil
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
   end;
 
@@ -113,6 +118,8 @@ implementation
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
+  DropTarget.Stored := False; //don't store state for DropTarget, should use state from designed .FMX resource
+  FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
   GMessaging.Subscribe(Self);
@@ -161,7 +168,7 @@ end;
 
 procedure TStoryItem.SetParentStoryItem(const TheParent: IStoryItem);
 begin
-  //TODO
+  TheParent.GetComponent.InsertComponent(GetComponent);
 end;
 
 {$endregion}
@@ -178,22 +185,22 @@ begin
   Result := Supports(obj, IAudioStoryItem);
 end;
 
-function TStoryItem.GetStoryItems: TStoryItemList;
+function TStoryItem.GetStoryItems: TIStoryItemList;
 begin
   result := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls);
 end;
 
-procedure TStoryItem.SetStoryItems(const Value: TStoryItemList);
+procedure TStoryItem.SetStoryItems(const Value: TIStoryItemList);
 begin
   for var item in Value do
-    AddObject(item As TStoryItem);
+    AddObject(item.GetComponent As TStoryItem);
 end;
 
 {$endregion}
 
 {$region 'AudioStoryItems'}
 
-function TStoryItem.GetAudioStoryItems: TAudioStoryItemList;
+function TStoryItem.GetAudioStoryItems: TIAudioStoryItemList;
 begin
   result := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls);
 end;
@@ -273,6 +280,14 @@ end;
 
 {$ENDREGION}
 
+
+{$region 'IInterfaceComponentReference'}
+
+function TStoryItem.GetComponent: TComponent;
+begin
+  result := Self;
+end;
+
 {$region 'IStoreable'}
 
 { Load }
@@ -282,17 +297,34 @@ begin
   result := FILTER_READCOM;
 end;
 
+procedure TStoryItem.LoadReadCom(const Stream: TStream);
+begin
+  Stream.ReadComponent(Self);
+end;
+
+procedure TStoryItem.LoadFromString(const Data: string);
+begin
+  var StrStream := TStringStream.Create(Data);
+  try
+    var BinStream := TMemoryStream.Create;
+    try
+      ObjectTextToBinary(StrStream, BinStream);
+      BinStream.Seek(0, soFromBeginning);
+      LoadReadCom(BinStream);
+    finally
+      BinStream.Free;
+    end;
+  finally
+    StrStream.Free;
+  end;
+end;
+
 procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
 begin
   if ContentFormat = EXT_READCOM then
     LoadReadCom(Stream)
   else
     raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
-end;
-
-procedure TStoryItem.LoadReadCom(const Stream: TStream);
-begin
-  //TODO
 end;
 
 procedure TStoryItem.Load(const Filepath: String);
@@ -316,24 +348,47 @@ end;
 
 { Save }
 
-procedure TStoryItem.Save(const Stream: TStream);
+function TStoryItem.SaveToString: string;
 begin
-  //TODO
+  var BinStream := TMemoryStream.Create;
+  var s: String;
+  try
+    var StrStream := TStringStream.Create(s);
+    try
+      SaveReadCom(BinStream);
+      BinStream.Seek(0, soFromBeginning);
+      ObjectBinaryToText(BinStream, StrStream);
+      StrStream.Seek(0, soFromBeginning);
+      result:= StrStream.DataString;
+    finally
+      StrStream.Free;
+    end;
+  finally
+    BinStream.Free
+  end;
+end;
+
+procedure TStoryItem.SaveReadCom(const Stream: TStream);
+begin
+  Stream.WriteComponent(Self);
+end;
+
+procedure TStoryItem.Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+begin
+  if ContentFormat = EXT_READCOM then
+    SaveReadCom(Stream)
+  else
+    raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
 end;
 
 procedure TStoryItem.Save(const Filepath: string);
 begin
   var OutputFileStream := TFileStream.Create(Filepath,  fmCreate); //or fmShareDenyNone //TODO: may be needed for Android
   try
-    Save(OutputFileStream);
+    Save(OutputFileStream, ExtractFileExt(Filepath));
   finally
     FreeAndNil(OutputFileStream);
   end;
-end;
-
-procedure TStoryItem.Save(const Directory: string; const FilenamePrefix: string);
-begin
-  //TODO
 end;
 
 {$endregion}
