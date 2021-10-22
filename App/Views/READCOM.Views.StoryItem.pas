@@ -118,7 +118,7 @@ implementation
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
-  DropTarget.Stored := False; //don't store state for DropTarget, should use state from designed .FMX resource
+  DropTarget.Stored := False; //don't store state, should use state from designed .FMX resource
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;

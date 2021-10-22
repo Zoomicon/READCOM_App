@@ -167,11 +167,19 @@ end;
 
 {$ENDREGION}
 
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TMediaPlayerEx]); //register for persistence
+end;
+
 procedure Register;
 begin
   GroupDescendentsWith(TMediaPlayerEx, TComponent);
-  RegisterFmxClasses([TMediaPlayerEx]); //register for persistence (needed if we use as SubComponent)
+  RegisterClasses;
   RegisterComponents('Zoomicon', [TMediaPlayerEx]);
 end;
+
+initialization
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

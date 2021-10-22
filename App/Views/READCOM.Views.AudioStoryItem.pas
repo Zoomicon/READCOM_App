@@ -23,6 +23,8 @@ type
 
   //--- Methods ---
   public
+    constructor Create(AOwner: TComponent); override;
+
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
@@ -63,7 +65,8 @@ type
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
+    property Audio: TMediaPlayerEx read GetAudio write SetAudio stored false;
+    //TODO: persist the audio data
   end;
 
   procedure Register;
@@ -73,6 +76,13 @@ implementation
 {$R *.fmx}
 
 { TAudioStoryItem }
+
+constructor TAudioStoryItem.Create(AOwner: TComponent);
+begin
+  inherited;
+  MediaPlayer.Stored := false; //don't store state, should use state from designed .FMX resource
+  GlyphImage.Stored := false; //don't store state, should use state from designed .FMX resource
+end;
 
 {$region 'IStoreable'}
 
@@ -192,7 +202,7 @@ end;
 
 procedure TAudioStoryItem.SetAudio(const Value: TMediaPlayerEx);
 begin
-  MediaPlayer.Assign(Value);
+  MediaPlayer.FileName := Value.FileName;
 end;
 
 {$endregion}
@@ -222,13 +232,11 @@ procedure Register;
 begin
   GroupDescendentsWith(TAudioStoryItem, TControl);
   RegisterClasses;
-  RegisterComponents('Zoomicon', [TAudioStoryItem]); //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterComponents('Zoomicon', [TAudioStoryItem]);
 end;
 
 initialization
-  RegisterClasses;
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
 
-//TODO: register MediaPlayerEx at its class
-//TODO: make sure we set Stored := False at constructor to our MediaPlayerEx (or see if shows prop at inspector)

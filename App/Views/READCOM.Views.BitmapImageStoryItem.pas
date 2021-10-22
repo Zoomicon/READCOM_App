@@ -90,4 +90,19 @@ end;
 
 {$endregion}
 
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TBitmapImageStoryItem]); //register for persistence
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TBitmapImageStoryItem, TControl);
+  RegisterClasses;
+  RegisterComponents('Zoomicon', [TBitmapImageStoryItem]);
+end;
+
+initialization
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+
 end.

@@ -215,7 +215,7 @@ constructor TManipulator.Create(AOwner: TComponent);
      FAreaSelector := TAreaSelector.Create(Self);
      With FAreaSelector do
        begin
-       Stored := False; //don't store state for AreaSelector, should use state from designed .FMX resource
+       Stored := False; //don't store state, should use state from designed .FMX resource
        Size.Size := TSizeF.Create(SELECTION_DEFAULT_WIDTH, SELECTION_DEFAULT_HEIGHT);
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
@@ -228,7 +228,7 @@ constructor TManipulator.Create(AOwner: TComponent);
     var LocationSelector := TLocationSelector.Create(FAreaSelector); //don't use Self so that the middle SelectionPoint doesn't show up in the frame designer
     with LocationSelector do
       begin
-      Stored := False; //don't store state for LocationSelector, should use state from designed .FMX resource (NOT NEEDED, SINCE WE HAVE IT AS CHILD OF AREASELECTOR WHICH IS SET TO NOT STORED)
+      Stored := False; //don't store state, should use state from designed .FMX resource (NOT NEEDED, SINCE WE HAVE IT AS CHILD OF AREASELECTOR WHICH IS SET TO NOT STORED)
       ParentBounds := false; //can move outside of parent area
       GripSize := SELECTION_GRIP_SIZE;
       Align := TAlignLayout.Center;

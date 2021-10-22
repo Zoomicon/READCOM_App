@@ -44,6 +44,8 @@ type
 
   end;
 
+  procedure Register;
+
 implementation
 
 {$R *.fmx}
@@ -102,11 +104,26 @@ end;
 
 procedure TVectorImageStoryItem.SetSVGImage(const Value: TSVGIconImage);
 begin
-  SVGIconImage.Assign(Value);
+  (SVGIconImage.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
 end;
 
 {$endregion}
 
 {$ENDREGION}
+
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TVectorImageStoryItem]); //register for persistence
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TVectorImageStoryItem, TControl);
+  RegisterClasses;
+  RegisterComponents('Zoomicon', [TVectorImageStoryItem]);
+end;
+
+initialization
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
