@@ -70,6 +70,7 @@ type
     procedure Rewind; virtual;
     procedure Pause; virtual;
     procedure Stop; virtual;
+    procedure Clear; virtual;
 
   //-- Properties
 
@@ -152,6 +153,12 @@ begin
   Rewind;
   if Assigned(FOnStop) then
     FOnStop;
+end;
+
+procedure TMediaPlayerEx.Clear;
+begin
+  Stop;
+  inherited Clear; //this does FreeAndNil(Media) and (at the ancestor level) also Filename:=''
 end;
 
 procedure TMediaPlayerEx.HandleTimer;
@@ -304,9 +311,14 @@ end;
 
 procedure TMediaPlayerEx.SetFileName(const Value: string);
 begin
-  if FAutoPlaying then
-    TimerStarted := true; //HandleTimer also checks if media is loaded
-  inherited Filename := Value;
+  if (Value.IsEmpty) then
+    Clear //this also calls Stop in our implementation (and via "inherited Clear" does FreeAndNil(Media) and [at the ancestor level] Filename:='')
+  else
+    begin
+    if FAutoPlaying then
+      TimerStarted := true; //HandleTimer also checks if media is loaded
+    inherited Filename := Value;
+    end;
 end;
 
 {$endregion}
@@ -336,7 +348,7 @@ begin
     if Assigned(Stream) then
       TFile.Delete(Filename); //delete temp file we had allocated for Stream
     FStream := nil; //do not free FStream, we hadn't created it
-    Filename := '';
+    Filename := ''; //this will call Clear
     end;
 end;
 
