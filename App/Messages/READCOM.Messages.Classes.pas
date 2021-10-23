@@ -16,6 +16,7 @@ interface
 
     TMessageMenu = class(TInterfacedObject, IMessageMenu);
     TMessageAdd = class(TInterfacedObject, IMessageAdd);
+    TMessageNavigation = class(TInterfacedObject, IMessageNavigationPrevious, IMessageNavigationNext);
     TMessageEditModeChange = class(TMessageSingleValue<Boolean>, IMessageEditModeChange);
 
 implementation

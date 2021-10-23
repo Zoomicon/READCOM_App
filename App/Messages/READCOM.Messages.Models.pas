@@ -20,6 +20,14 @@ interface
       ['{5FA43981-3A62-4DF3-A2D1-71CDA4368122}']
     end;
 
+    IMessageNavigationPrevious = interface
+      ['{F221FB61-B8C0-4749-9E03-6EB652866FC0}']
+    end;
+
+    IMessageNavigationNext = interface
+      ['{8D631950-77D6-4535-88DE-3C77C143C009}']
+    end;
+
     IMessageEditModeChange = IMessageSingleValue<Boolean>; //TODO: check that GUID reuse won't cause issues
 
 implementation

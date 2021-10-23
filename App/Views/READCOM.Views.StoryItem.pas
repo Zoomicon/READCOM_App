@@ -32,9 +32,12 @@ type
 
   //--- Methods ---
 
+  protected
+    procedure InitDropTarget;
+    function GetDefaultSize: TSizeF; override;
+
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
 
     procedure PlayRandomAudioStoryItem;
 
@@ -82,15 +85,9 @@ type
 
   //--- Events ---
 
-  protected
-    procedure InitDropTarget;
-    procedure DoEditModeChange(const Value: Boolean);
-    function GetDefaultSize: TSizeF; override;
   public
     //[Subscribe(TipMessagingThread.Main)]
     //procedure OnNavigatedTo(const AMessage: IMessageNavigatedTo);
-    [Subscribe(TipMessagingThread.Main)]
-    procedure OnEditModeChange(const AMessage: IMessageEditModeChange); //TODO: change
     procedure HandleParentNavigatedToChanged;
 
   //--- Properties ---
@@ -122,13 +119,6 @@ begin
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
-  GMessaging.Subscribe(Self);
-end;
-
-destructor TStoryItem.Destroy;
-begin
-  GMessaging.Unsubscribe(Self);
-  inherited;
 end;
 
 function TStoryItem.GetDefaultSize: TSizeF;
@@ -263,23 +253,7 @@ begin
 
 end;
 
-{$region 'Edit mode'}
-
-procedure TStoryItem.OnEditModeChange(const AMessage: IMessageEditModeChange);
-begin
-  DoEditModeChange(AMessage.Value);
-end;
-
-procedure TStoryItem.DoEditModeChange(const Value: Boolean);
-begin
-  EditMode := Value;
-  TabStop := Value;
-end;
-
-{$endregion}
-
 {$ENDREGION}
-
 
 {$region 'IInterfaceComponentReference'}
 

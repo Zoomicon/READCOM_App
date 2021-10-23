@@ -31,7 +31,7 @@
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="App\READCOM.App.dproj">
-            <Dependencies>Zoomicon.Manipulator\Zoomicon.Manipulator.dproj</Dependencies>
+            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zoomicon.Media\Zoomicon.Media.dproj;Zoomicon.Manipulator\Zoomicon.Manipulator.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -122,13 +122,13 @@
     <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="Zoomicon.Downloader:Make;Zoomicon.GitStore:Make">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Manipulator">
+    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Generics;Zoomicon.Media;Zoomicon.Manipulator">
         <MSBuild Projects="App\READCOM.App.dproj"/>
     </Target>
-    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Manipulator:Clean">
+    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Media:Clean;Zoomicon.Manipulator:Clean">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Manipulator:Make">
+    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Media:Make;Zoomicon.Manipulator:Make">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">

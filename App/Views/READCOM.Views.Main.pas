@@ -17,15 +17,22 @@ uses
 
 type
   TMainForm = class(TForm)
-    ScrollBox: TScrollBox;
-    StoryHUD1: TStoryHUD;
+    ScrollingStoryHost: TScrollBox;
+    StoryHUD: TStoryHUD;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
+    procedure ScrollingStoryHostResized(Sender: TObject);
+    procedure StoryHUDBtnMenuClick(Sender: TObject);
 
   protected
+    procedure StoryResized(Sender: TObject);
+    procedure CheckCenterStory;
+    {Story}
     function GetStory: IStoryItem;
+    procedure SetStory(const Value: IStoryItem);
+    {StoryView}
     function GetStoryView: TStoryItem;
     procedure SetStoryView(const Value: TStoryItem);
 
@@ -34,9 +41,12 @@ type
     [Subscribe(TipMessagingThread.Main)]
     procedure OnMenu(const AMessage: IMessageMenu);
 
+    [Subscribe(TipMessagingThread.Main)]
+    procedure OnEditModeChange(const AMessage: IMessageEditModeChange);
+
   published
-    property Story: IStoryItem read GetStory stored false;
-    property StoryView: TStoryItem read GetStoryView write SetStoryView;
+    property Story: IStoryItem read GetStory write SetStory stored false;
+    property StoryView: TStoryItem read GetStoryView write SetStoryView stored false;
   end;
 
 var
@@ -54,14 +64,14 @@ begin
   CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
   var TheStory := TPanelStoryItem.Create(Self);
+  //TheStory.Size.Size := TSizeF.Create(640, 480);
   //SaveState.StoragePath := ... //TODO: default is transient, change to make permanent
   With SaveState do
     if Stream.Size > 0 then
     begin
-      //TheStory.Size.Size := TSizeF.Create(640, 480);
       try
         TheStory.LoadReadCom(Stream);
-        {}CodeSite.Send(TheStory.SaveToString);
+        //CodeSite.Send(TheStory.SaveToString);
       except
         on E: Exception do
           begin
@@ -89,7 +99,7 @@ begin
   if Assigned(TheStory) then
     try
       TheStory.SaveReadCom(SaveState.Stream);
-      {}CodeSite.Send(TheStory.SaveToString);
+      //CodeSite.Send(TheStory.SaveToString);
     except
       On E: Exception do
         begin
@@ -115,6 +125,13 @@ begin
   ShowMessage('Menu');
 end;
 
+procedure TMainForm.OnEditModeChange(const AMessage: IMessageEditModeChange);
+begin
+  var view := StoryView;
+  if Assigned(view) then
+    view.EditMode := AMessage.Value;
+end;
+
 {$region 'Story'}
 
 function TMainForm.GetStory: IStoryItem;
@@ -122,16 +139,18 @@ begin
   result := TObjectListEx<TFmxObject>.GetFirstInterface<IStoryItem>(Children);
 end;
 
+procedure TMainForm.SetStory(const Value: IStoryItem);
+begin
+  StoryView := Value.GetComponent as TStoryItem;
+end;
+
 {$endregion}
 
-{$region 'StoryVieww'}
+{$region 'StoryView'}
 
 function TMainForm.GetStoryView: TStoryItem;
 begin
-  if Assigned(ScrollBox.Content) then
-    result := TObjectListEx<TFmxObject>.GetFirstClass<TStoryItem>(ScrollBox.Content.Children)
-  else
-    result := nil;
+  result := TObjectListEx<TControl>.GetFirstClass<TStoryItem>(ScrollingStoryHost.Content.Controls)
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
@@ -143,8 +162,45 @@ begin
     TheStory.Parent := nil;
     FreeAndNil(TheStory); //destroy the old Story
     end;
+
   //Add new story
-  Value.Parent := ScrollBox;
+  Value.Align := TAlignLayout.Fit;
+  //CheckCenterStory;
+  Value.Parent := ScrollingStoryHost.Content;
+  Value.Align := TAlignLayout.None;
+  Value.OnResized := StoryResized; //do after setting Align back to None
+end;
+
+{$endregion}
+
+procedure TMainForm.CheckCenterStory;
+begin
+  var view := StoryView;
+  if Assigned(view) then
+    with view do
+    begin
+    var centerHorz := (Width < ScrollingStoryHost.ClientWidth);
+    var centerVert := (Height < ScrollingStoryHost.ClientHeight);
+    if (centerHorz or centerVert) then Align := TAlignLayout.Center;
+    //After it has changed size now set again to no alignment
+    Align := TAlignLayout.None;
+    end;
+end;
+
+procedure TMainForm.ScrollingStoryHostResized(Sender: TObject);
+begin
+  CheckCenterStory;
+end;
+
+procedure TMainForm.StoryHUDBtnMenuClick(Sender: TObject);
+begin
+  StoryHUD.BtnMenuClick(Sender);
+
+end;
+
+procedure TMainForm.StoryResized(Sender: TObject);
+begin
+  CheckCenterStory;
 end;
 
 end.

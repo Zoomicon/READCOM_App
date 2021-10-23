@@ -4,31 +4,45 @@ object MainForm: TMainForm
   Caption = 'Form1'
   ClientHeight = 608
   ClientWidth = 1040
+  Position = DesktopCenter
+  WindowState = wsMaximized
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  ShowFullScreenIcon = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
-  object ScrollBox: TScrollBox
-    Align = Contents
+  object ScrollingStoryHost: TScrollBox
+    Align = Client
     Size.Width = 1040.000000000000000000
     Size.Height = 608.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
+    OnResized = ScrollingStoryHostResized
     Viewport.Width = 1040.000000000000000000
     Viewport.Height = 608.000000000000000000
   end
-  inline StoryHUD1: TStoryHUD
+  inline StoryHUD: TStoryHUD
     Align = Contents
     HitTest = False
     Size.Width = 1040.000000000000000000
     Size.Height = 608.000000000000000000
     Size.PlatformDefault = False
+    ParentShowHint = False
+    ShowHint = True
     inherited BtnAdd: TSpeedButton
       Position.X = 1000.000000000000000000
+    end
+    inherited BtnMenu: TSpeedButton
+      Position.Y = 567.000000000000000000
+      OnClick = nil
+    end
+    inherited BtnNext: TSpeedButton
+      Position.X = 991.000000000000000000
+      Position.Y = 567.000000000000000000
     end
   end
 end

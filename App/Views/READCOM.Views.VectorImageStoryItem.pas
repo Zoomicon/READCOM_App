@@ -30,6 +30,8 @@ type
     procedure SetSVGImage(const Value: TSVGIconImage);
 
   public
+    constructor Create(AOnwer: TComponent); override;
+
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
@@ -51,6 +53,12 @@ implementation
 {$R *.fmx}
 
 { TVectorImageStoryItem }
+
+constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
+begin
+  inherited;
+  SVGIconImage.Stored := false; //don't store state, should use state from designed .FMX resource
+end;
 
 {$region 'IStoreable'}
 

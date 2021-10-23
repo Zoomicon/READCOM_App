@@ -10,11 +10,15 @@ uses
 type
   TStoryHUD = class(TFrame)
     BtnAdd: TSpeedButton;
+    BtnPrevious: TSpeedButton;
+    BtnEdit: TSpeedButton;
     BtnMenu: TSpeedButton;
-    btnEdit: TSpeedButton;
-    procedure BtnMenuClick(Sender: TObject);
+    BtnNext: TSpeedButton;
+    procedure BtnPreviousClick(Sender: TObject);
     procedure BtnAddClick(Sender: TObject);
-    procedure btnEditClick(Sender: TObject);
+    procedure BtnEditClick(Sender: TObject);
+    procedure BtnMenuClick(Sender: TObject);
+    procedure BtnNextClick(Sender: TObject);
   protected
     FEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
@@ -30,15 +34,27 @@ implementation
 
 {$R *.fmx}
 
-procedure TStoryHUD.btnEditClick(Sender: TObject);
-begin
-  EditMode := not EditMode; //toggle
-end;
-
 procedure TStoryHUD.BtnMenuClick(Sender: TObject);
 begin
   GMessaging.Post(TMessageMenu.Create As IMessageMenu);
 end;
+
+procedure TStoryHUD.BtnEditClick(Sender: TObject);
+begin
+  EditMode := not EditMode; //toggle
+end;
+
+procedure TStoryHUD.BtnPreviousClick(Sender: TObject);
+begin
+  GMessaging.Post(TMessageNavigation.Create As IMessageNavigationPrevious);
+end;
+
+procedure TStoryHUD.BtnNextClick(Sender: TObject);
+begin
+  GMessaging.Post(TMessageNavigation.Create As IMessageNavigationNext);
+end;
+
+///////////
 
 procedure TStoryHUD.SetEditMode(const Value: Boolean);
 begin

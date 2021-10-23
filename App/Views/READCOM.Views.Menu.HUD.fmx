@@ -4,6 +4,8 @@ object StoryHUD: TStoryHUD
   Size.Width = 912.000000000000000000
   Size.Height = 572.000000000000000000
   Size.PlatformDefault = False
+  ParentShowHint = False
+  ShowHint = True
   object BtnAdd: TSpeedButton
     Anchors = [akTop, akRight]
     Position.X = 872.000000000000000000
@@ -14,23 +16,48 @@ object StoryHUD: TStoryHUD
     Text = 'BtnAdd'
     OnClick = BtnAddClick
   end
-  object BtnMenu: TSpeedButton
+  object BtnPrevious: TSpeedButton
     Position.X = -1.000000000000000000
     Size.Width = 41.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
     Text = 'BtnAdd'
-    OnClick = BtnMenuClick
+    OnClick = BtnPreviousClick
   end
-  object btnEdit: TSpeedButton
+  object BtnEdit: TSpeedButton
+    StaysPressed = True
+    Hint = 'Edit'
     Position.X = -1.000000000000000000
-    Position.Y = 41.000000000000000000
+    Position.Y = 49.000000000000000000
     Size.Width = 41.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'composetoolbutton'
-    Text = 'BtnAdd'
-    OnClick = btnEditClick
+    OnClick = BtnEditClick
+  end
+  object BtnMenu: TSpeedButton
+    StaysPressed = True
+    Anchors = [akLeft, akBottom]
+    Hint = 'Edit'
+    Position.X = 8.000000000000000000
+    Position.Y = 531.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'priortoolbutton'
+    OnClick = BtnPreviousClick
+  end
+  object BtnNext: TSpeedButton
+    StaysPressed = True
+    Anchors = [akRight, akBottom]
+    Hint = 'Edit'
+    Position.X = 863.000000000000000000
+    Position.Y = 531.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'nexttoolbutton'
+    OnClick = BtnNextClick
   end
 end

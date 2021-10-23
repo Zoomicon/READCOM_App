@@ -26,7 +26,8 @@ uses
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
   Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
   Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
-  FMX.ApplicationHelper in 'FMX.ApplicationHelper.pas';
+  FMX.ApplicationHelper in 'FMX.ApplicationHelper.pas',
+  READCOM.App.Globals in 'READCOM.App.Globals.pas' {DataModule1: TDataModule};
 
 {$R *.res}
 
@@ -61,6 +62,7 @@ begin
   //ApplicationShowException := //...
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TDataModule1, DataModule1);
   //ObjectDebuggerFMXForm1.Show;
   Application.Run;
 end.

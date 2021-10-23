@@ -30,6 +30,9 @@ type
     procedure SetImage(const Value: TImage); override;
 
   public
+    constructor Create(AOwner: TComponent); override;
+
+  public
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
@@ -45,6 +48,12 @@ type
 implementation
 
 {$R *.fmx}
+
+constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
+begin
+  inherited;
+  ImageControl.Stored := false; //don't store state, should use state from designed .FMX resource
+end;
 
 { TBitmapImageStoryItem }
 

@@ -368,18 +368,15 @@ end;
 
 procedure TManipulator.SetEditMode(const Value: Boolean);
 begin
-  with AreaSelector do
-  begin
-  //Show or Hide selection UI
-  Visible := Value; //this will also hide the move control point
-  //Show or Hide any SelectionPoint children
-  for var si := 0 to ChildrenCount-1 do
+  TListEx<TControl>.ForEach(
+    Controls,
+    procedure(Control: TControl)
     begin
-    var sc := Children[si];
-    if (sc is TSelectionPoint) then
-     TSelectionPoint(sc).Visible := Value;
-    end;
-  end;
+      if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
+        Control.Enabled := not Value;
+    end
+  );
+  AreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
 end;
 
 {$endregion}
