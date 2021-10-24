@@ -6,7 +6,6 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   iPub.Rtl.Messaging in '..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas',
-  uZoomableFrame in 'uZoomableFrame.pas' {ZoomableFrame: TFrame},
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Messages.Classes in 'Messages\READCOM.Messages.Classes.pas',

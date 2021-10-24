@@ -1,0 +1,5 @@
+object ZoomableFrame: TZoomableFrame
+  Size.Width = 612.000000000000000000
+  Size.Height = 420.000000000000000000
+  Size.PlatformDefault = False
+end

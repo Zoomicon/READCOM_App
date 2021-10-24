@@ -64,13 +64,12 @@ begin
   CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
   var TheStory := TPanelStoryItem.Create(Self);
-  //TheStory.Size.Size := TSizeF.Create(640, 480);
   //SaveState.StoragePath := ... //TODO: default is transient, change to make permanent
   With SaveState do
     if Stream.Size > 0 then
     begin
       try
-        TheStory.LoadReadCom(Stream);
+        //TheStory.LoadReadCom(Stream);
         //CodeSite.Send(TheStory.SaveToString);
       except
         on E: Exception do
@@ -166,8 +165,9 @@ begin
   //Add new story
   Value.Align := TAlignLayout.Fit;
   //CheckCenterStory;
+  Value.Size.Size := TSizeF.Create(ScrollingStoryHost.ClientWidth, ScrollingStoryHost.ClientHeight);
+  //Value.Align := TAlignLayout.Scale;
   Value.Parent := ScrollingStoryHost.Content;
-  Value.Align := TAlignLayout.None;
   Value.OnResized := StoryResized; //do after setting Align back to None
 end;
 
@@ -189,7 +189,7 @@ end;
 
 procedure TMainForm.ScrollingStoryHostResized(Sender: TObject);
 begin
-  CheckCenterStory;
+//  CheckCenterStory;
 end;
 
 procedure TMainForm.StoryHUDBtnMenuClick(Sender: TObject);
@@ -200,7 +200,7 @@ end;
 
 procedure TMainForm.StoryResized(Sender: TObject);
 begin
-  CheckCenterStory;
+//  CheckCenterStory;
 end;
 
 end.
