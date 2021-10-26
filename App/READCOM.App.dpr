@@ -62,6 +62,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TDataModule1, DataModule1);
-  //ObjectDebuggerFMXForm1.Show;
+  {}ObjectDebuggerFMXForm1.Show;
   Application.Run;
 end.

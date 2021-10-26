@@ -1,0 +1,193 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 488
+  ClientWidth = 705
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object ScrollBox: TScrollBox
+    Align = Client
+    Size.Width = 705.000000000000000000
+    Size.Height = 438.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    OnResize = ScrollBoxResize
+    Viewport.Width = 705.000000000000000000
+    Viewport.Height = 438.000000000000000000
+    object Zoomer: TScaledLayout
+      Align = Client
+      OriginalWidth = 705.000000000000000000
+      OriginalHeight = 438.000000000000000000
+      Size.Width = 705.000000000000000000
+      Size.Height = 438.000000000000000000
+      Size.PlatformDefault = False
+      object FillRect1: TRectangle
+        Align = Contents
+        Fill.Color = claChartreuse
+        Size.Width = 705.000000000000000000
+        Size.Height = 438.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object ScaledLayout: TScaledLayout
+        Align = Fit
+        Anchors = []
+        OriginalWidth = 608.069335937500000000
+        OriginalHeight = 438.000000000000000000
+        Size.Width = 608.069335937500000000
+        Size.Height = 438.000000000000000000
+        Size.PlatformDefault = False
+        object FillRect2: TRectangle
+          Align = Contents
+          Fill.Color = claBrown
+          Size.Width = 608.069335937500000000
+          Size.Height = 438.000000000000000000
+          Size.PlatformDefault = False
+        end
+        object btnZoom1: TButton
+          Position.X = 456.000000000000000000
+          Position.Y = 376.000000000000000000
+          Size.Width = 120.000000000000000000
+          Size.Height = 38.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 4
+          Text = 'Zoom to Bottom-Right'
+          TextSettings.WordWrap = True
+          OnClick = btnZoomClick
+        end
+        object btnZoom2: TButton
+          Position.X = 32.000000000000000000
+          Position.Y = 24.000000000000000000
+          Size.Width = 80.000000000000000000
+          Size.Height = 121.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 3
+          Text = 'Zoom to Top-Left'
+          TextSettings.WordWrap = True
+          OnClick = btnZoomClick
+        end
+        object btnZoom3: TButton
+          Position.X = 496.000000000000000000
+          Position.Y = 24.000000000000000000
+          Size.Width = 80.000000000000000000
+          Size.Height = 73.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          Text = 'Zoom to Top-Right'
+          TextSettings.WordWrap = True
+          OnClick = btnZoomClick
+        end
+        object btnZoom4: TButton
+          Position.X = 32.000000000000000000
+          Position.Y = 352.000000000000000000
+          Size.Width = 80.000000000000000000
+          Size.Height = 62.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          Text = 'Zoom to Bottom-Left'
+          TextSettings.WordWrap = True
+          OnClick = btnZoomClick
+        end
+        object btnZoom5: TButton
+          Position.X = 208.000000000000000000
+          Position.Y = 168.000000000000000000
+          Size.Width = 201.000000000000000000
+          Size.Height = 89.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+          Text = 'Zoom to Center'
+          TextSettings.WordWrap = True
+          OnClick = btnZoomClick
+        end
+      end
+    end
+  end
+  object GridPanelLayout1: TGridPanelLayout
+    Align = Bottom
+    Position.Y = 438.000000000000000000
+    Size.Width = 705.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    ColumnCollection = <
+      item
+        Value = 100.000000000000000000
+      end
+      item
+        SizeStyle = Absolute
+        Value = 100.000000000000000000
+      end>
+    ControlCollection = <
+      item
+        Column = 0
+        Control = trackZoomX
+        Row = 0
+      end
+      item
+        Column = 0
+        Control = trackZoomY
+        Row = 1
+      end
+      item
+        Column = 1
+        Control = switchSyncAxes
+        Row = 0
+        RowSpan = 2
+      end>
+    RowCollection = <
+      item
+        Value = 50.000000000000000000
+      end
+      item
+        Value = 50.000000000000000000
+      end
+      item
+        SizeStyle = Auto
+      end>
+    object trackZoomX: TTrackBar
+      Align = Bottom
+      Anchors = []
+      CanParentFocus = True
+      Frequency = 0.001000000047497451
+      Max = 10.000000000000000000
+      Min = -10.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 6.000000000000000000
+      Size.Width = 605.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Value = 1.000000000000000000
+      OnTracking = trackZoomXTracking
+    end
+    object trackZoomY: TTrackBar
+      Align = MostBottom
+      Anchors = []
+      CanParentFocus = True
+      Frequency = 0.001000000047497451
+      Max = 10.000000000000000000
+      Min = -10.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 31.000000000000000000
+      Size.Width = 605.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Value = 1.000000000000000000
+      OnTracking = trackZoomYTracking
+    end
+    object switchSyncAxes: TSwitch
+      Anchors = []
+      IsChecked = True
+      Position.X = 616.000000000000000000
+      Position.Y = 12.500000000000000000
+      Size.Width = 78.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+    end
+  end
+end

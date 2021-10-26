@@ -33,7 +33,8 @@ requires
 
 contains
   Zoomicon.Zooming.ZoomAndPan in 'Zoomicon.Zooming.ZoomAndPan.pas' {ZoomableFrame: TFrame},
-  Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas';
+  Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas',
+  Zoomicon.Zooming.Classes in 'Zoomicon.Zooming.Classes.pas';
 
 {$Description 'Zoomicon Zooming'}
 

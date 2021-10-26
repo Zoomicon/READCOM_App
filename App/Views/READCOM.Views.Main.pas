@@ -11,7 +11,7 @@ uses
   READCOM.Views.Menu.HUD,
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
-  FMX.Types, uZoomableFrame, FMX.Forms, FMX.Graphics, FMX.Dialogs,
+  FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, READCOM.Views.PanelStoryItem,
   Zoomicon.Manipulator, READCOM.Views.AudioStoryItem;
 
