@@ -101,6 +101,13 @@ object Form2: TForm2
           Text = 'Zoom to Center'
           TextSettings.WordWrap = True
           OnClick = btnZoomClick
+          object Button1: TButton
+            Position.X = 113.000000000000000000
+            Position.Y = 59.000000000000000000
+            TabOrder = 5
+            Text = 'Zoom to Child'
+            OnClick = btnZoomClick
+          end
         end
       end
     end
@@ -152,8 +159,8 @@ object Form2: TForm2
       Anchors = []
       CanParentFocus = True
       Frequency = 0.001000000047497451
-      Max = 10.000000000000000000
-      Min = -10.000000000000000000
+      Max = 30.000000000000000000
+      Min = -30.000000000000000000
       Orientation = Horizontal
       Position.Y = 6.000000000000000000
       Size.Width = 605.000000000000000000
@@ -168,8 +175,8 @@ object Form2: TForm2
       Anchors = []
       CanParentFocus = True
       Frequency = 0.001000000047497451
-      Max = 10.000000000000000000
-      Min = -10.000000000000000000
+      Max = 30.000000000000000000
+      Min = -30.000000000000000000
       Orientation = Horizontal
       Position.Y = 31.000000000000000000
       Size.Width = 605.000000000000000000

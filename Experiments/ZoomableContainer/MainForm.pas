@@ -23,6 +23,7 @@ type
     btnZoom3: TButton;
     btnZoom4: TButton;
     btnZoom5: TButton;
+    Button1: TButton;
     procedure trackZoomYTracking(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ScrollBoxResize(Sender: TObject);
@@ -31,7 +32,7 @@ type
     procedure trackZoomXTracking(Sender: TObject);
 
   public
-    procedure ZoomTo(const Rect: TRectF);
+    procedure ZoomTo(const Control: TControl);
     procedure SetZoom(const Value: Single); overload;
     procedure SetZoom(const ValueX, ValueY: Single); overload;
   end;
@@ -69,8 +70,8 @@ begin
 
     with Zoomer do
     begin
-      Size.Size := TSizeF.Create(OriginalWidth * abs(ValueX), OriginalHeight * abs(ValueY)); //don't use Scale to resize (won't work well here), ScaledLayout scales its contents automatically
-      Scale.Point := TPointF.Create(sign(ValueX), sign(ValueY));
+      Size.Size := TSizeF.Create(OriginalWidth * Abs(ValueX), OriginalHeight * Abs(ValueY)); //don't use Scale to resize (won't work well here), ScaledLayout scales its contents automatically
+      Scale.Point := TPointF.Create(Sign(ValueX), Sign(ValueY));
     end;
     //ScrollBox.InvalidateContentSize;
 
@@ -127,19 +128,33 @@ end;
 
 /////////////////////////
 
-procedure TForm2.ZoomTo(const Rect: TRectF); //TODO: doesn't work correctly (zooms to wrong place / center only)
+procedure TForm2.ZoomTo(const Control: TControl); //TODO: doesn't work correctly (when window has been resized it fails to position viewport correctly [wrong scrolling])
 begin
-  BeginUpdate;
-  SetZoom(Min(ScaledLayout.Width/Rect.Width, ScaledLayout.Height/Rect.Height)); //using Max here would mean you fill the area but get some cliping
-  ScrollBox.ViewportPosition := Zoomer.ScreenToLocal(ScaledLayout.LocalToScreen(Rect.Location));
-  EndUpdate;
+  //BeginUpdate; //MUST NOT DO, WON'T DO PANNING CALCULATION CORRECTLY
+  var rect := Control.BoundsRect;
+
+  var zoomFactor := Min(ScaledLayout.Width/Rect.Width, ScaledLayout.Height/Rect.Height); //TODO: check if OriginalWidth/OriginalHeight always stays same
+  SetZoom(zoomFactor); //using Max here would mean you fill the area but get some cliping
+
+  //ScrollBox.InvalidateContentSize;
+
+  //var ScrollPoint := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.Location));
+  //var ScrollPoint := ScrollBox.Content.Position + Zoomer.Position.Point + (ScaledLayout.Position.Point + Rect.Location/zoomFactor;
+  //ScrollBox.ScrollTo(-ScrollPoint.X + (ScrollBox.Width - Rect.Width)/2, -ScrollPoint.Y + (ScrollBox.Height - Rect.Height)/2);
+
+  var AdjRect := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect));
+  ScrollBox.ViewportPosition := AdjRect.Location - TPointF.Create((ScrollBox.Size.Width - AdjRect.Size.Width)/2, (ScrollBox.Size.Height - AdjRect.Size.Height)/2);
+
+  //EndUpdate;
 end;
 
 procedure TForm2.btnZoomClick(Sender: TObject);
 begin
   var Control := Sender As TButton;
-  ShowMessageFmt('Clicked: %s', [Control.Text]);
-  ZoomTo(Control.BoundsRect);
+  //ShowMessageFmt('Clicked: %s - button scale: (%f,%f)', [Control.Text, Control.Scale.X, Control.Scale.Y]);
+  //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition before: (%f, %f)', [x, y]);
+  ZoomTo(Control);
+  //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition after: (%f, %f)', [x, y]);
 end;
 
 end.
