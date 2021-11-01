@@ -128,24 +128,27 @@ end;
 
 /////////////////////////
 
-procedure TForm2.ZoomTo(const Control: TControl); //TODO: doesn't work correctly (when window has been resized it fails to position viewport correctly [wrong scrolling])
+function GetScalingFactor(const ScaledLayout: TScaledLayout): TPointF;
 begin
-  //BeginUpdate; //MUST NOT DO, WON'T DO PANNING CALCULATION CORRECTLY
-  var rect := Control.BoundsRect;
+  with ScaledLayout do
+    result := TPointF.Create(Width/OriginalWidth, Height/OriginalHeight); //need to use OriginalWidth/OriginalHeight, not Width/Height (since we may have resized the form)
+end;
 
-  var zoomFactor := Min(ScaledLayout.Width/Rect.Width, ScaledLayout.Height/Rect.Height); //TODO: check if OriginalWidth/OriginalHeight always stays same
+procedure TForm2.ZoomTo(const Control: TControl); //TODO: adjust for scrollbar sizes
+begin
+  //BeginUpdate; //Not needed
+  var Rect := Control.BoundsRect;
+
+  var scalingFactor := GetScalingFactor(ScaledLayout);
+  var zoomFactor := Min(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
   SetZoom(zoomFactor); //using Max here would mean you fill the area but get some cliping
 
-  //ScrollBox.InvalidateContentSize;
+  //EndUpdate; //make sure we do this here if needed, not at the end, else scrolling calculations won't work
 
-  //var ScrollPoint := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.Location));
-  //var ScrollPoint := ScrollBox.Content.Position + Zoomer.Position.Point + (ScaledLayout.Position.Point + Rect.Location/zoomFactor;
-  //ScrollBox.ScrollTo(-ScrollPoint.X + (ScrollBox.Width - Rect.Width)/2, -ScrollPoint.Y + (ScrollBox.Height - Rect.Height)/2);
+  var CenterPointNewCoords := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.CenterPoint*scalingFactor)); //must adjust the CenterPoint by the ScalingFactor here
 
-  var AdjRect := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect));
-  ScrollBox.ViewportPosition := AdjRect.Location - TPointF.Create((ScrollBox.Size.Width - AdjRect.Size.Width)/2, (ScrollBox.Size.Height - AdjRect.Size.Height)/2);
-
-  //EndUpdate;
+  var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBox.Size.Width/2, ScrollBox.Size.Height/2);
+  ScrollBox.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
 end;
 
 procedure TForm2.btnZoomClick(Sender: TObject);
