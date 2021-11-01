@@ -36,6 +36,8 @@ type
     procedure btnZoomClick(Sender: TObject);
     procedure UpdateZoomFromTrackbars;
     procedure trackZoomXTracking(Sender: TObject);
+    procedure ScrollBoxMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; var Handled: Boolean);
 
   public
     procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
@@ -122,6 +124,21 @@ end;
 procedure TForm2.UpdateZoomFromTrackbars;
 begin
   SetZoom(trackZoomX.Value, trackZoomY.Value);
+end;
+
+var
+  StoredWheelDelta: extended;
+
+procedure TForm2.ScrollBoxMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); //TODO: adjust to zoom at mouse point
+begin
+  if ssCtrl in Shift then
+    begin
+    StoredWheelDelta := StoredWheelDelta + WheelDelta; // accumulate wheeldelta's
+    SetZoom(1 + StoredWheelDelta / 120 / 5); //increase 5 to zoom slower
+    Handled := true;
+    end
+  else
+    Handled := false;
 end;
 
 procedure TForm2.ScrollBoxResize(Sender: TObject);

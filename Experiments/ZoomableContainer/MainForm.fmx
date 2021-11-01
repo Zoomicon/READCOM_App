@@ -16,6 +16,7 @@ object Form2: TForm2
     Size.PlatformDefault = False
     TabOrder = 0
     OnResize = ScrollBoxResize
+    OnMouseWheel = ScrollBoxMouseWheel
     Viewport.Width = 704.000000000000000000
     Viewport.Height = 438.000000000000000000
     object Zoomer: TScaledLayout
