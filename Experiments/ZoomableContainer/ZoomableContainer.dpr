@@ -3,7 +3,8 @@ program ZoomableContainer;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  MainForm in 'MainForm.pas' {Form2};
+  MainForm in 'MainForm.pas' {Form2},
+  Zoomicon.FMX.Utils in 'Zoomicon.FMX.Utils.pas';
 
 {$R *.res}
 

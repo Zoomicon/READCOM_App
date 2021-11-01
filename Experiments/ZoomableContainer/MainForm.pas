@@ -3,9 +3,15 @@ unit MainForm;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Objects;
+  FMX.Controls,
+  FMX.Forms,
+  FMX.Layouts,
+  FMX.StdCtrls,
+  FMX.Objects,
+  FMX.Controls.Presentation,
+  FMX.Types,
+  System.Classes,
+  System.Types;
 
 type
   TForm2 = class(TForm)
@@ -32,16 +38,19 @@ type
     procedure trackZoomXTracking(Sender: TObject);
 
   public
-    procedure ZoomTo(const Control: TControl);
-    procedure SetZoom(const Value: Single); overload;
+    procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
     procedure SetZoom(const ValueX, ValueY: Single); overload;
+    procedure SetZoom(const Value: TPointF); overload;
+    procedure SetZoom(const Value: Single); overload;
   end;
 
 var
   Form2: TForm2;
 
 implementation
-  uses Math;
+  uses
+    Zoomicon.FMX.Utils,
+    Math;
 
 {$R *.fmx}
 
@@ -56,6 +65,11 @@ end;
 procedure TForm2.SetZoom(const Value: Single);
 begin
   SetZoom(Value, Value);
+end;
+
+procedure TForm2.SetZoom(const Value: TPointF);
+begin
+  SetZoom(Value.X, Value.Y);
 end;
 
 procedure TForm2.SetZoom(const ValueX, ValueY: Single);
@@ -77,6 +91,32 @@ begin
 
     EndUpdate;
     end;
+end;
+
+procedure TForm2.ZoomTo(const Control: TControl; const KeepRatio: Boolean = true); //TODO: adjust for scrollbar sizes
+begin
+  //BeginUpdate; //Not needed
+  var Rect := Control.BoundsRect;
+
+  var scalingFactor := GetScalingFactor(ScaledLayout);
+
+  if KeepRatio then
+    begin
+    var zoomFactor := Min(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y)); //using Max here would mean you fill the area but get some cliping
+    SetZoom(zoomFactor);
+    end
+  else
+    begin
+    var zoomFactor := TPointF.Create(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
+    SetZoom(zoomFactor);
+    end;
+
+  //EndUpdate; //make sure we do this here if needed, not at the end, else scrolling calculations won't work
+
+  var CenterPointNewCoords := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.CenterPoint*scalingFactor)); //must adjust the CenterPoint by the ScalingFactor here
+
+  var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBox.Size.Width/2, ScrollBox.Size.Height/2);
+  ScrollBox.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
 end;
 
 procedure TForm2.UpdateZoomFromTrackbars;
@@ -128,35 +168,12 @@ end;
 
 /////////////////////////
 
-function GetScalingFactor(const ScaledLayout: TScaledLayout): TPointF;
-begin
-  with ScaledLayout do
-    result := TPointF.Create(Width/OriginalWidth, Height/OriginalHeight); //need to use OriginalWidth/OriginalHeight, not Width/Height (since we may have resized the form)
-end;
-
-procedure TForm2.ZoomTo(const Control: TControl); //TODO: adjust for scrollbar sizes
-begin
-  //BeginUpdate; //Not needed
-  var Rect := Control.BoundsRect;
-
-  var scalingFactor := GetScalingFactor(ScaledLayout);
-  var zoomFactor := Min(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
-  SetZoom(zoomFactor); //using Max here would mean you fill the area but get some cliping
-
-  //EndUpdate; //make sure we do this here if needed, not at the end, else scrolling calculations won't work
-
-  var CenterPointNewCoords := ScrollBox.Content.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.CenterPoint*scalingFactor)); //must adjust the CenterPoint by the ScalingFactor here
-
-  var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBox.Size.Width/2, ScrollBox.Size.Height/2);
-  ScrollBox.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
-end;
-
 procedure TForm2.btnZoomClick(Sender: TObject);
 begin
   var Control := Sender As TButton;
   //ShowMessageFmt('Clicked: %s - button scale: (%f,%f)', [Control.Text, Control.Scale.X, Control.Scale.Y]);
   //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition before: (%f, %f)', [x, y]);
-  ZoomTo(Control);
+  ZoomTo(Control, switchSyncAxes.IsChecked);
   //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition after: (%f, %f)', [x, y]);
 end;
 
