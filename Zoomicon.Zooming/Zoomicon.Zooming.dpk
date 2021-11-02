@@ -32,9 +32,10 @@ requires
   fmx;
 
 contains
-  Zoomicon.Zooming.ZoomAndPan in 'Zoomicon.Zooming.ZoomAndPan.pas' {ZoomableFrame: TFrame},
   Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas',
-  Zoomicon.Zooming.Classes in 'Zoomicon.Zooming.Classes.pas';
+  Zoomicon.Zooming.Classes in 'Zoomicon.Zooming.Classes.pas',
+  Zoomicon.FMX.Utils in 'Zoomicon.FMX.Utils.pas',
+  Zoomicon.Zooming.ZoomFrame in 'Zoomicon.Zooming.ZoomFrame.pas' {ZoomFrame: TFrame};
 
 {$Description 'Zoomicon Zooming'}
 

@@ -30,6 +30,15 @@
         <Projects Include="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Experiments\DropFiles\DropFiles.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Experiments\SizeableFrame\SizeableFrame.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Experiments\ZoomableContainer\ZoomableContainer.dproj">
+            <Dependencies>Zoomicon.Zooming\Zoomicon.Zooming.dproj</Dependencies>
+        </Projects>
         <Projects Include="READCOM.Gallery\READCOM.GalleryLib.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
@@ -125,6 +134,33 @@
     <Target Name="Zoomicon_Manipulator:Make">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Make"/>
     </Target>
+    <Target Name="DropFiles">
+        <MSBuild Projects="Experiments\DropFiles\DropFiles.dproj"/>
+    </Target>
+    <Target Name="DropFiles:Clean">
+        <MSBuild Projects="Experiments\DropFiles\DropFiles.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DropFiles:Make">
+        <MSBuild Projects="Experiments\DropFiles\DropFiles.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SizeableFrame">
+        <MSBuild Projects="Experiments\SizeableFrame\SizeableFrame.dproj"/>
+    </Target>
+    <Target Name="SizeableFrame:Clean">
+        <MSBuild Projects="Experiments\SizeableFrame\SizeableFrame.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SizeableFrame:Make">
+        <MSBuild Projects="Experiments\SizeableFrame\SizeableFrame.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ZoomableContainer" DependsOnTargets="Zoomicon.Zooming">
+        <MSBuild Projects="Experiments\ZoomableContainer\ZoomableContainer.dproj"/>
+    </Target>
+    <Target Name="ZoomableContainer:Clean" DependsOnTargets="Zoomicon.Zooming:Clean">
+        <MSBuild Projects="Experiments\ZoomableContainer\ZoomableContainer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ZoomableContainer:Make" DependsOnTargets="Zoomicon.Zooming:Make">
+        <MSBuild Projects="Experiments\ZoomableContainer\ZoomableContainer.dproj" Targets="Make"/>
+    </Target>
     <Target Name="READCOM_GalleryLib" DependsOnTargets="Zoomicon.Downloader;Zoomicon.GitStore">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj"/>
     </Target>
@@ -144,13 +180,13 @@
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Generics;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_Media;Zoomicon_GitStore_Tests;Zoomicon_Zooming;Zoomicon_Manipulator;READCOM_GalleryLib;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Generics;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_Media;Zoomicon_GitStore_Tests;Zoomicon_Zooming;Zoomicon_Manipulator;DropFiles;SizeableFrame;ZoomableContainer;READCOM_GalleryLib;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Generics:Clean;Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_Media:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Zooming:Clean;Zoomicon_Manipulator:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Generics:Clean;Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_Media:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Zooming:Clean;Zoomicon_Manipulator:Clean;DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Generics:Make;Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_Media:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Zooming:Make;Zoomicon_Manipulator:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Generics:Make;Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_Media:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Zooming:Make;Zoomicon_Manipulator:Make;DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

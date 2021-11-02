@@ -3,14 +3,22 @@ unit Zoomicon.Zooming.Models;
 interface
 
 uses
-  System.Types;
+  System.Types,
+  FMX.Controls; //for TControl
 
 type
+  TZoomChangedEvent = procedure (NewZoom: TPointF) of object;
 
   IZoomable = interface
     ['{C6A56119-CA7F-4748-B63C-DD7D6722B7BA}']
 
-    procedure ZoomTo(const Rect: TRectF; const );
+    function GetZoom: TPointF;
+    procedure SetZoom(const ValueX, ValueY: Single); overload;
+    procedure SetZoom(const Value: TPointF); overload;
+    procedure SetZoom(const Value: Single); overload;
+    procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
+    //
+    property Zoom: TPointF read GetZoom write SetZoom;
   end;
 
 implementation

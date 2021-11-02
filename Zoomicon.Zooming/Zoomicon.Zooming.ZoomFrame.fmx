@@ -1,0 +1,119 @@
+object ZoomFrame: TZoomFrame
+  Size.Width = 712.000000000000000000
+  Size.Height = 556.000000000000000000
+  Size.PlatformDefault = False
+  object ScrollBox: TScrollBox
+    Align = Client
+    Size.Width = 712.000000000000000000
+    Size.Height = 556.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    OnResize = ScrollBoxResize
+    OnMouseWheel = ScrollBoxMouseWheel
+    Viewport.Width = 712.000000000000000000
+    Viewport.Height = 556.000000000000000000
+    object Zoomer: TScaledLayout
+      Align = Client
+      OriginalWidth = 712.000000000000000000
+      OriginalHeight = 556.000000000000000000
+      Size.Width = 712.000000000000000000
+      Size.Height = 556.000000000000000000
+      Size.PlatformDefault = False
+      object ScaledLayout: TScaledLayout
+        Align = Fit
+        Anchors = []
+        OriginalWidth = 712.000000000000000000
+        OriginalHeight = 512.862548828125000000
+        Size.Width = 712.000000000000000000
+        Size.Height = 512.862548828125000000
+        Size.PlatformDefault = False
+      end
+    end
+  end
+  object ZoomControls: TGridPanelLayout
+    Align = Bottom
+    Position.Y = 506.000000000000000000
+    Size.Width = 712.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    TabOrder = 1
+    ColumnCollection = <
+      item
+        Value = 100.000000000000000000
+      end
+      item
+        SizeStyle = Absolute
+        Value = 100.000000000000000000
+      end>
+    ControlCollection = <
+      item
+        Column = 0
+        Control = trackZoomX
+        Row = 0
+      end
+      item
+        Column = 0
+        Control = trackZoomY
+        Row = 1
+      end
+      item
+        Column = 1
+        Control = switchSyncAxes
+        Row = 0
+        RowSpan = 2
+      end>
+    RowCollection = <
+      item
+        Value = 50.000000000000000000
+      end
+      item
+        Value = 50.000000000000000000
+      end
+      item
+        SizeStyle = Auto
+      end>
+    object trackZoomX: TTrackBar
+      Align = Bottom
+      Anchors = []
+      CanParentFocus = True
+      Frequency = 0.001000000047497451
+      Max = 30.000000000000000000
+      Min = -30.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 6.000000000000000000
+      Size.Width = 612.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Value = 1.000000000000000000
+      OnTracking = trackZoomXTracking
+    end
+    object trackZoomY: TTrackBar
+      Align = MostBottom
+      Anchors = []
+      CanParentFocus = True
+      Frequency = 0.001000000047497451
+      Max = 30.000000000000000000
+      Min = -30.000000000000000000
+      Orientation = Horizontal
+      Position.Y = 31.000000000000000000
+      Size.Width = 612.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Value = 1.000000000000000000
+      OnTracking = trackZoomYTracking
+    end
+    object switchSyncAxes: TSwitch
+      Anchors = []
+      IsChecked = True
+      Position.X = 623.000000000000000000
+      Position.Y = 12.500000000000000000
+      Size.Width = 78.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+    end
+  end
+end
