@@ -52,6 +52,7 @@ implementation
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
+  ImageControl.SetSubComponent(true);
   ImageControl.Stored := false; //don't store state, should use state from designed .FMX resource
 end;
 
@@ -92,7 +93,7 @@ end;
 
 procedure TBitmapImageStoryItem.SetImage(const Value: TImage);
 begin
-  ImageControl.Assign(Value);
+  ImageControl.Bitmap.Assign(Value.Bitmap); //can't assign TImage directly
 end;
 
 {$endregion}
