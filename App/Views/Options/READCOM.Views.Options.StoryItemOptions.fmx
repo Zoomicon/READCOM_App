@@ -1,0 +1,56 @@
+object StoryItemOptions: TStoryItemOptions
+  Size.Width = 132.000000000000000000
+  Size.Height = 64.000000000000000000
+  Size.PlatformDefault = False
+  object GridPanelLayout: TGridPanelLayout
+    Align = Contents
+    Size.Width = 132.000000000000000000
+    Size.Height = 64.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    ColumnCollection = <
+      item
+        Value = 100.000000000000000000
+      end
+      item
+        SizeStyle = Auto
+      end>
+    ControlCollection = <
+      item
+        Column = 0
+        Control = btnCloseOptions
+        Row = 0
+      end
+      item
+        Column = 1
+        Control = btnDelete
+        Row = 0
+      end>
+    ExpandStyle = AddColumns
+    RowCollection = <
+      item
+        Value = 100.000000000000000000
+      end>
+    object btnCloseOptions: TSpeedButton
+      Anchors = []
+      Position.X = 6.000000000000000000
+      Position.Y = 21.000000000000000000
+      Size.Width = 71.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'drawertoolbutton'
+      OnClick = btnCloseOptionsClick
+    end
+    object btnDelete: TSpeedButton
+      Anchors = []
+      Position.X = 83.000000000000000000
+      Position.Y = 6.000000000000000000
+      Size.Width = 49.000000000000000000
+      Size.Height = 52.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'trashtoolbutton'
+      Text = 'Delete'
+      OnClick = btnDeleteClick
+    end
+  end
+end

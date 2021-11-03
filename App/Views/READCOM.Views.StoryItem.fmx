@@ -1,4 +1,5 @@
 inherited StoryItem: TStoryItem
+  OnTap = FrameTap
   Size.Width = 836.000000000000000000
   Size.Height = 532.000000000000000000
   TabStop = False
@@ -12,5 +13,6 @@ inherited StoryItem: TStoryItem
     TabOrder = 1
     OnDragOver = DropTargetDragOver
     OnDropped = DropTargetDropped
+    OnDblClick = DropTargetDblClick
   end
 end

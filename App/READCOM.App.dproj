@@ -259,6 +259,10 @@
         <DCCReference Include="READCOM.App.Models.pas"/>
         <DCCReference Include="Messages\READCOM.Messages.Classes.pas"/>
         <DCCReference Include="Messages\READCOM.Messages.Models.pas"/>
+        <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
+            <Form>StoryItemOptions</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Views\READCOM.Views.StoryItem.pas">
             <Form>StoryItem</Form>
             <DesignClass>TFrame</DesignClass>
@@ -307,7 +311,6 @@
         <DCCReference Include="FMX.ApplicationHelper.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
             <Form>DataModule1</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Base">

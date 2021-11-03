@@ -21,8 +21,8 @@ type
     procedure Rewind;
     procedure Pause;
     procedure Stop;
-    {Loaded}
-    function IsLoaded: Boolean;
+    {MediaLoaded}
+    function IsMediaLoaded: Boolean;
     {Playing}
     function IsPlaying: Boolean;
     procedure SetPlaying(const Value: Boolean);
@@ -46,7 +46,7 @@ type
     procedure SetStream(const Value: TStream);
 
     //-- Properties
-    property Loaded: Boolean read IsLoaded; //stored false
+    property MediaLoaded: Boolean read IsMediaLoaded; //stored false
     property Playing: Boolean read IsPlaying write SetPlaying; //stored false
     property AtStart: Boolean read IsAtStart;
     property AtEnd: Boolean read IsAtEnd;

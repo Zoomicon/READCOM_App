@@ -39,8 +39,8 @@ type
     {TimerStarted}
     function IsTimerStarted: Boolean; virtual;
     procedure SetTimerStarted(const Value: Boolean); virtual;
-    {Loaded}
-    function IsLoaded: Boolean;
+    {MediaLoaded}
+    function IsMediaLoaded: Boolean;
     {Playing}
     function IsPlaying: Boolean; virtual;
     procedure SetPlaying(const Value: Boolean); virtual;
@@ -78,7 +78,7 @@ type
     property TimerStarted: Boolean read IsTimerStarted write SetTimerStarted;
 
   published
-    property Loaded: Boolean read IsLoaded;
+    property MediaLoaded: Boolean read IsMediaLoaded;
     property Playing: Boolean read IsPlaying write SetPlaying stored false;
     property AtStart: Boolean read IsAtStart;
     property AtEnd: Boolean read IsAtEnd;
@@ -163,7 +163,7 @@ end;
 
 procedure TMediaPlayerEx.HandleTimer;
 begin
-  if FAutoPlaying and Loaded then //since TimerStarted=true we're either playing or waiting for media to load to autoplay it
+  if FAutoPlaying and MediaLoaded then //since TimerStarted=true we're either playing or waiting for media to load to autoplay it
     Play; //does nothing if Playing
 
   var newTime := CurrentTime; //keep locally since it changes
@@ -221,9 +221,9 @@ end;
 
 {$endregion}
 
-{$region 'Loaded'}
+{$region 'MediaLoaded'}
 
-function TMediaPlayerEx.IsLoaded: Boolean;
+function TMediaPlayerEx.IsMediaLoaded: Boolean;
 begin
   result := (State <> TMediaState.Unavailable);
 end;
@@ -282,7 +282,7 @@ end;
 procedure TMediaPlayerEx.SetAutoPlaying(const Value: Boolean);
 begin
   FAutoPlaying := Value;
-  if Value and Loaded then
+  if Value and MediaLoaded then
     Play;        
 end;
 

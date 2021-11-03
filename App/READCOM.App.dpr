@@ -10,6 +10,7 @@ uses
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Messages.Classes in 'Messages\READCOM.Messages.Classes.pas',
   READCOM.Messages.Models in 'Messages\READCOM.Messages.Models.pas',
+  READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
   READCOM.Views.StoryItem in 'Views\READCOM.Views.StoryItem.pas' {StoryItem: TFrame},
   READCOM.Views.ImageStoryItem in 'Views\READCOM.Views.ImageStoryItem.pas' {ImageStoryItem: TFrame},
   READCOM.Views.BitmapImageStoryItem in 'Views\READCOM.Views.BitmapImageStoryItem.pas' {BitmapImageStoryItem: TFrame},

@@ -23,12 +23,15 @@ type
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure FrameDblClick(Sender: TObject);
+    procedure FrameTap(Sender: TObject; const Point: TPointF);
+    procedure DropTargetDblClick(Sender: TObject);
 
   //-- Fields ---
 
   protected
     FID: TGUID;
     FAutoSize: Boolean;
+    FOptions: IStoryItemOptions;
 
   //--- Methods ---
 
@@ -83,6 +86,9 @@ type
     function GetTargetId: TGUID;
     procedure SetTargetId(const Value: TGUID);
 
+    { Options }
+    function GetOptions: IStoryItemOptions;
+
   //--- Events ---
 
   public
@@ -94,6 +100,7 @@ type
 
   protected
     property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
+    property Options: IStoryItemOptions read GetOptions stored false;
   published
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
@@ -108,7 +115,8 @@ type
 
 implementation
   uses
-    Zoomicon.Generics.Collections;
+    Zoomicon.Generics.Collections,
+    READCOM.Views.Options.StoryItemOptions;
 
 {$R *.fmx}
 
@@ -239,13 +247,34 @@ end;
 
 {$endregion}
 
+{$region 'Options'}
+
+function TStoryItem.GetOptions: IStoryItemOptions;
+begin
+  if not Assigned(FOptions) then
+    FOptions := TStoryItemOptions.Create(Self);
+  result := FOptions;
+end;
+
 {$ENDREGION}
 
 {$REGION '--- EVENTS ---'}
 
 procedure TStoryItem.FrameDblClick(Sender: TObject);
 begin
- ShowMessage('Double click StoryItem');
+  //ShowMessage('Double click StoryItem');
+  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+end;
+
+procedure TStoryItem.DropTargetDblClick(Sender: TObject);
+begin
+  //ShowMessage('Double click StoryItem on DropTarget');
+  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+end;
+
+procedure TStoryItem.FrameTap(Sender: TObject; const Point: TPointF);
+begin
+  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
 end;
 
 procedure TStoryItem.HandleParentNavigatedToChanged;

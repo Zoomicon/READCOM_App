@@ -1,5 +1,7 @@
 unit READCOM.Views.Main;
 
+//TODO: fix issue where if Popup with Options is shown at least once, then save state puts options data in the stored file, failing to load them (since that class isn't declared [doesn't need to after all] with streaming system). MAYBE JUST DESTROY THE POPUP WHEN CLOSED and make sure all are closed before saving
+
 interface
 
 uses
@@ -60,26 +62,39 @@ implementation
 {$R *.fmx}
 
 procedure TMainForm.FormCreate(Sender: TObject);
+
+  function LoadStory: TPanelStoryItem;
+  begin
+    var TheStory: TPanelStoryItem := nil;
+    With SaveState do
+      begin
+      //StoragePath := ... //TODO: default is transient, change to make permanent
+      if Stream.Size > 0 then
+        try
+          TheStory := TPanelStoryItem.Create(Self);
+          TheStory.LoadReadCom(Stream);
+          {}CodeSite.Send(TheStory.SaveToString);
+        except
+          on E: Exception do
+            begin
+            Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
+            CodeSite.SendException(E);
+            ShowException(E, @TMainForm.FormCreate);
+            FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
+            end;
+        end;
+      end;
+    result := TheStory;
+  end;
+
 begin
   CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
-  var TheStory := TPanelStoryItem.Create(Self);
-  //SaveState.StoragePath := ... //TODO: default is transient, change to make permanent
-  With SaveState do
-    if Stream.Size > 0 then
-    begin
-      try
-        TheStory.LoadReadCom(Stream);
-        {}CodeSite.Send(TheStory.SaveToString);
-      except
-        on E: Exception do
-          begin
-          SaveState.Stream.Clear; //clear stream if causes loading error
-          CodeSite.SendException(E);
-          ShowException(E, @TMainForm.FormCreate);
-          end;
-      end;
-    end;
+
+  var TheStory := LoadStory;
+  if not Assigned(TheStory) then
+    TheStory := TPanelStoryItem.Create(Self);
+
   StoryView := TheStory;
   CodeSite.ExitMethod('FormCreate');
 end;
@@ -92,20 +107,22 @@ end;
 procedure TMainForm.FormSaveState(Sender: TObject);
 begin
   CodeSite.EnterMethod('SaveState');
+  //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
   var TheStory := StoryView;
   if Assigned(TheStory) then
-    try
-      TheStory.SaveReadCom(SaveState.Stream);
-      //CodeSite.Send(TheStory.SaveToString);
-    except
-      On E: Exception do
-        begin
-        //SaveState.Stream.Clear; //clear stream in case it got corrupted
-        CodeSite.SendException(E);
-        ShowException(E, @TMainForm.FormCreate);
-        end;
+    with SaveState do
+      try
+        TheStory.SaveReadCom(Stream);
+        {}CodeSite.Send(TheStory.SaveToString);
+      except
+        On E: Exception do
+          begin
+          Stream.Clear; //clear stream in case it got corrupted
+          CodeSite.SendException(E);
+          ShowException(E, @TMainForm.FormCreate);
+          end;
     end;
   CodeSite.ExitMethod('SaveState');
 end;

@@ -40,8 +40,15 @@ type
 {$endregion -------------------------------------------------------------------}
 
 type
-  IStoryItem = interface; //forward declaration
-  IAudioStoryItem = interface; //forward declaration
+
+  //forward declarations
+  IStoryItem = interface;
+  IPanelStoryItem = interface;
+  IImageStoryItem = interface;
+  IBitmapImageStoryItem = interface;
+  IVectorImageStoryItem = interface;
+  IAudioStoryItem = interface;
+  IStoryItemOptions = interface;
 
   TIStoryItemList = TListEx<IStoryItem>;
   TIAudioStoryItemList = TListEx<IAudioStoryItem>;
@@ -80,6 +87,9 @@ type
     function GetTargetId: TGUID;
     procedure SetTargetId(const Value: TGUID);
 
+    { Options }
+    function GetOptions: IStoryItemOptions;
+
     //--- Messages ---
     procedure HandleParentNavigatedToChanged;
 
@@ -91,6 +101,14 @@ type
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
+    property Options: IStoryItemOptions read GetOptions; //stored false
+  end;
+
+  IStoryItemOptions = interface
+    ['{1AEC7512-1E1D-4720-9D74-9A5411A64377}']
+    function GetStoryItem: IStoryItem;
+    procedure ShowPopup;
+    procedure HidePopup;
   end;
 
   IPanelStoryItem = interface(IStoryItem)

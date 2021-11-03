@@ -1,5 +1,4 @@
 inherited AudioStoryItem: TAudioStoryItem
-  OnTap = FrameTap
   Size.Width = 232.000000000000000000
   Size.Height = 204.000000000000000000
   OnClick = FrameClick
@@ -38,6 +37,7 @@ inherited AudioStoryItem: TAudioStoryItem
     Size.PlatformDefault = False
   end
   object MediaPlayer: TMediaPlayerEx
+    FileName = ''
     AutoPlaying = False
     Looping = False
     Left = 26
