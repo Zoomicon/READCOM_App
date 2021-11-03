@@ -70,7 +70,11 @@ implementation
 constructor TZoomFrame.Create(AOwner: TComponent);
 begin
   inherited;
-  ScrollBox.Stored := true;
+
+  ScrollBox.SetSubComponent(true);
+  ScrollBox.Stored := false;
+
+  ZoomControls.SetSubComponent(false);
   ZoomControls.Stored := false; //not storing, will load from FMX and the apply wrapper properties //no need to set this for its children controls too
   ZoomControlsVisible := DEFAULT_ZOOM_CONTROLS_VISIBLE;
 end;

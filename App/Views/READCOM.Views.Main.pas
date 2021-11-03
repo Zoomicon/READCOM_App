@@ -69,8 +69,8 @@ begin
     if Stream.Size > 0 then
     begin
       try
-        //TheStory.LoadReadCom(Stream);
-        //CodeSite.Send(TheStory.SaveToString);
+        TheStory.LoadReadCom(Stream);
+        {}CodeSite.Send(TheStory.SaveToString);
       except
         on E: Exception do
           begin

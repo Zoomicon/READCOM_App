@@ -20,6 +20,7 @@ type
     FInnerLayout: TScaledLayout;
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
     //
+    procedure InitInnerLayout;
     procedure SetInnerLayout(const Value: TScaledLayout);
     procedure ParentChanged; override;
     procedure HandleViewportMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
@@ -27,6 +28,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    //procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
 
     //IZoomable
     function GetZoom: TPointF;
@@ -34,10 +36,13 @@ type
     procedure SetZoom(const Value: TPointF); overload;
     procedure SetZoom(const Value: Single); overload;
     procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
+    function GetZoomFactor: TPosition;
+    procedure SetZoomFactor(const Value: TPosition);
 
   published
-    property InnerLayout: TScaledLayout read FInnerLayout write SetInnerLayout;
-    property Zoom: TPointF read GetZoom write SetZoom;
+    property InnerLayout: TScaledLayout read FInnerLayout write SetInnerLayout stored false;
+    property Zoom: TPointF read GetZoom write SetZoom stored false;
+    property ZoomFactor: TPosition read GetZoomFactor write SetZoomFactor;
     property OnZoomChanged: TZoomChangedEvent read FOnZoomChanged write FOnZoomChanged;
   end;
 
@@ -46,7 +51,8 @@ procedure Register;
 implementation
   uses
     Zoomicon.FMX.Utils,
-    Math; //for Sign
+    Math, //for Sign
+    System.SysUtils; //for FreeAndNil
 
 { TZoomedLayout }
 
@@ -59,20 +65,40 @@ begin
   else
     Align := TAlignLayout.Center;
 
-  SetAcceptsControls(true);
-  SetInnerLayout(TScaledLayout.Create(Self));
+  SetAcceptsControls(false);
+
+  FInnerLayout := TScaledLayout.Create(Self); //setting Self as owner of child control, so it will be destroyed with our control
+  InitInnerLayout;
 end;
+
+procedure TZoomedLayout.InitInnerLayout;
+begin
+  with FInnerLayout do
+    begin
+    Align := TAlignLayout.Fit;
+    Locked := False;
+    HitTest := True;
+    //Name := 'InnerLayout';
+    SetSubComponent(true);
+    Stored := False;
+    SetAcceptsControls(true);
+    end;
+  FInnerLayout.Parent := Self;
+end;
+
+{
+procedure TZoomedLayout.GetChildren(Proc: TGetChildProc; Root: TComponent);
+begin
+  inherited;
+  if (FInnerLayout <> nil) then
+    Proc(FInnerLayout);
+end;
+}
 
 procedure TZoomedLayout.SetInnerLayout(const Value: TScaledLayout);
 begin
-  with Value do
-    begin
-    Align := TAlignLayout.Fit;
-    //Stored := False; //don't store automatically, stored via property
-    Locked := True;
-    HitTest := False;
-    end;
-  Value.Parent := Self;
+  FInnerLayout.Assign(Value); //don't use "Value", make a deep copy of it instead
+  InitInnerLayout;
 end;
 
 procedure TZoomedLayout.ParentChanged; //if can't find scrollbox then try AncestorParentChanged instead
@@ -89,7 +115,17 @@ begin
     end;
 end;
 
-//
+{$region 'IZoomable'}
+
+function TZoomedLayout.GetZoomFactor: TPosition;
+begin
+  result := TPosition.Create(Zoom); //TODO: see if this is leaking objects
+end;
+
+procedure TZoomedLayout.SetZoomFactor(const Value: TPosition);
+begin
+  Zoom := Value.Point;
+end;
 
 function TZoomedLayout.GetZoom: TPointF;
 begin
@@ -127,8 +163,6 @@ begin
   EndUpdate;
 end;
 
-//
-
 procedure TZoomedLayout.ZoomTo(const Control: TControl; const KeepRatio: Boolean = true); //TODO: adjust for scrollbar sizes
 begin
   //BeginUpdate; //Not needed
@@ -164,7 +198,7 @@ begin
     end;
 end;
 
-//
+{$endregion}
 
 procedure TZoomedLayout.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); //TODO: adjust to zoom at mouse point
 begin

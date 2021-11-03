@@ -239,10 +239,10 @@ constructor TManipulator.Create(AOwner: TComponent);
   end;
 
 begin
-  inherited;
   CreateAreaSelector;
   CreateLocationSelector; //must do after CreateAreaSelector
   FAutoSize := true; //must do after CreateAreaSelector
+  inherited; //do last since it will also load designer resource
 end;
 
 {$region 'Manipulation'}
@@ -376,7 +376,9 @@ begin
         Control.Enabled := not Value;
     end
   );
-  AreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
+
+  if Assigned(FAreaSelector) then
+    FAreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
 end;
 
 {$endregion}

@@ -57,6 +57,7 @@ implementation
 constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
 begin
   inherited;
+  SVGIconImage.SetSubComponent(true);
   SVGIconImage.Stored := false; //don't store state, should use state from designed .FMX resource
 end;
 
