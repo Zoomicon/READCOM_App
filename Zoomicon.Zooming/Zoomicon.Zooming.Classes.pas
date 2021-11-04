@@ -21,8 +21,6 @@ type
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
     //
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    procedure InitScaledLayout;
-    procedure SetScaledLayout(const Value: TScaledLayout);
     procedure ParentChanged; override;
     procedure HandleViewportMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
     procedure HandleViewportResize(Sender: TObject);
@@ -41,7 +39,7 @@ type
     procedure SetZoomFactor(const Value: TPosition);
 
   published
-    property ScaledLayout: TScaledLayout read FScaledLayout write SetScaledLayout stored false;
+    property ScaledLayout: TScaledLayout read FScaledLayout stored false;
     property Zoom: TPointF read GetZoom write SetZoom stored false;
     property ZoomFactor: TPosition read GetZoomFactor write SetZoomFactor;
     property OnZoomChanged: TZoomChangedEvent read FOnZoomChanged write FOnZoomChanged;
@@ -58,6 +56,24 @@ implementation
 { TZoomedLayout }
 
 constructor TZoomedLayout.Create(AOwner: TComponent);
+
+  procedure InitScaledLayout;
+  begin
+    var TheScaledLayout := TScaledLayout.Create(Self); //setting Self as owner of child control, so it will be destroyed with our control
+    with TheScaledLayout do
+      begin
+      Align := TAlignLayout.Fit;
+      //Locked := False;
+      //HitTest := True;
+      Name := 'ScaledLayout';
+
+      SetSubComponent(true);
+      Stored := false;
+      end;
+    TheScaledLayout.Parent := Self;
+    FScaledLayout := TheScaledLayout;
+  end;
+
 begin
   inherited;
 
@@ -68,34 +84,16 @@ begin
 
   SetAcceptsControls(false);
 
-  //if not (csLoading in ComponentState) then
-    begin
-    FScaledLayout := TScaledLayout.Create(Self); //setting Self as owner of child control, so it will be destroyed with our control
-    InitScaledLayout;
-    end;
-end;
-
-procedure TZoomedLayout.InitScaledLayout;
-begin
-  with FScaledLayout do
-    begin
-    Align := TAlignLayout.Fit;
-    Locked := False;
-    HitTest := True;
-    //Name := 'ScaledLayout';
-    SetSubComponent(true);
-    Stored := false;
-    SetAcceptsControls(true);
-    end;
-  FScaledLayout.Parent := Self;
+  InitScaledLayout;
 end;
 
 procedure TZoomedLayout.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   inherited;
-  for var Control in FScaledLayout.Children do
-    if not ((csDesigning in ComponentState) and (Control.ClassName = 'TGrabHandle.TGrabHandleRectangle')) then //this is to not store Delphi IDE designer's selection grab handles
-      Proc(Control); //Store all children of ScaledLayout as if they were ours
+  if Assigned(FScaledLayout) and (FScaledLayout.ChildrenCount <> 0) then //Children can be nil, so check ChildrenCount first
+    for var Control in FScaledLayout.Children do
+      if not ((csDesigning in ComponentState) and (Control.ClassName = 'TGrabHandle.TGrabHandleRectangle')) then //this is to not store Delphi IDE designer's selection grab handles
+        Proc(Control); //Store all children of ScaledLayout as if they were ours
 end;
 
 procedure TZoomedLayout.Loaded;
@@ -103,19 +101,16 @@ begin
   BeginUpdate;
 
   //reparent children after loading (since at GetChildren we stored children of ScaledLayout as ours), except for the ScrollBox and the ZoomControls
-  For var Control in Controls do
-    if (Control <> ScaledLayout) then
-      Control.Parent := ScaledLayout;
+  if Assigned(FScaledLayout) and (ControlsCount > 1) then //extra optimization (we didn't need to check for <> 0, since we always have one child, the ScaledLayout one)
+    For var Control in Controls do
+      if (Control <> ScaledLayout) then
+        Control.Parent := ScaledLayout;
 
   Align := TAlignLayout.Center; //at design mode we have it set to TAlignLayout.Client
-  EndUpdate;
-  inherited;
-end;
 
-procedure TZoomedLayout.SetScaledLayout(const Value: TScaledLayout);
-begin
-  FScaledLayout.Assign(Value); //don't use "Value", make a deep copy of it instead
-  InitScaledLayout;
+  EndUpdate;
+
+  inherited;
 end;
 
 procedure TZoomedLayout.ParentChanged; //if can't find scrollbox then try AncestorParentChanged instead

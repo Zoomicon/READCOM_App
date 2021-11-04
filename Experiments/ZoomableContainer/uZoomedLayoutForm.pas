@@ -1,4 +1,6 @@
-unit Unit3;
+unit uZoomedLayoutForm;
+
+//TODO: this doesn't seem to show content (button)
 
 interface
 

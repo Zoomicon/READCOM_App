@@ -15,23 +15,20 @@ uses
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, READCOM.Views.PanelStoryItem,
-  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem;
+  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem, Zoomicon.Zooming.ZoomFrame;
 
 type
   TMainForm = class(TForm)
-    ScrollingStoryHost: TScrollBox;
     StoryHUD: TStoryHUD;
+    ZoomFrame: TZoomFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
-    procedure ScrollingStoryHostResized(Sender: TObject);
     procedure StoryHUDBtnMenuClick(Sender: TObject);
 
   protected
     function LoadSavedState: Boolean;
-    procedure StoryResized(Sender: TObject);
-    procedure CheckCenterStory;
     {Story}
     function GetStory: IStoryItem;
     procedure SetStory(const Value: IStoryItem);
@@ -95,7 +92,11 @@ begin
   GMessaging.Subscribe(Self);
 
   if (not LoadSavedState) then
-    StoryView := TPanelStoryItem.Create(Self);
+    begin
+    var TheStory := TPanelStoryItem.Create(Self);
+    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+    StoryView := TheStory;
+    end;
 
   CodeSite.ExitMethod('FormCreate');
 end;
@@ -167,7 +168,7 @@ end;
 
 function TMainForm.GetStoryView: TStoryItem;
 begin
-  result := TObjectListEx<TControl>.GetFirstClass<TStoryItem>(ScrollingStoryHost.Content.Controls)
+  result := TObjectListEx<TControl>.GetFirstClass<TStoryItem>(ZoomFrame.ScaledLayout.Controls)
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
@@ -176,49 +177,20 @@ begin
   var TheStory := StoryView;
   if Assigned(TheStory) then
     begin
-    TheStory.Parent := nil;
+    //TheStory.Parent := nil; //shouldn't be needed
     FreeAndNil(TheStory); //destroy the old Story
     end;
 
   //Add new story
   Value.Align := TAlignLayout.Fit;
-  //CheckCenterStory;
-  Value.Size.Size := TSizeF.Create(ScrollingStoryHost.ClientWidth, ScrollingStoryHost.ClientHeight);
-  //Value.Align := TAlignLayout.Scale;
-  Value.Parent := ScrollingStoryHost.Content;
-  Value.OnResized := StoryResized; //do after setting Align back to None
+  Value.Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
 end;
 
 {$endregion}
 
-procedure TMainForm.CheckCenterStory;
-begin
-  var view := StoryView;
-  if Assigned(view) then
-    with view do
-    begin
-    var centerHorz := (Width < ScrollingStoryHost.ClientWidth);
-    var centerVert := (Height < ScrollingStoryHost.ClientHeight);
-    if (centerHorz or centerVert) then Align := TAlignLayout.Center;
-    //After it has changed size now set again to no alignment
-    Align := TAlignLayout.None;
-    end;
-end;
-
-procedure TMainForm.ScrollingStoryHostResized(Sender: TObject);
-begin
-//  CheckCenterStory;
-end;
-
 procedure TMainForm.StoryHUDBtnMenuClick(Sender: TObject);
 begin
   StoryHUD.BtnMenuClick(Sender);
-
-end;
-
-procedure TMainForm.StoryResized(Sender: TObject);
-begin
-//  CheckCenterStory;
 end;
 
 end.

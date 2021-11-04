@@ -30,19 +30,12 @@ implementation
 {$REGION 'EditMode'}
 
 procedure TContainerFrame.SetEditMode(value: boolean);
-var
-  i: Integer;
-  c: TFmxObject;
 begin
   fEditMode := value;
-  for i := 0 to ChildrenCount-1 do
-  begin
-    c := Children[i];
-    if (c is TSelection) then
-       begin
-       TSelection(c).HideSelection := not value;
-       end;
-  end;
+  if (ControlsCount <> 0) then
+    for var c in Controls do
+      if (c is TSelection) then
+         TSelection(c).HideSelection := not value;
 end;
 
 {$ENDREGION}
@@ -50,21 +43,14 @@ end;
 {$REGION 'Proportional'}
 
 procedure TContainerFrame.SetProportional(value: boolean);
-var
-  i: Integer;
-  c: TFmxObject;
 begin
   if value then Align := TAlignLayout.Fit else Align := TAlignLayout.Scale;
 
   fProportional := value;
-  for i := 0 to ChildrenCount-1 do
-  begin
-    c := Children[i];
-    if (c is TSelection) then
-       begin
-       TSelection(c).Proportional := value;
-       end;
-  end;
+  if (ControlsCount <> 0) then
+    for var c in Controls do
+      if (c is TSelection) then
+         TSelection(c).Proportional := value;
 end;
 
 {$ENDREGION}

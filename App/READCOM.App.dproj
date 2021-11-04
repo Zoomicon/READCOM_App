@@ -313,6 +313,13 @@
             <Form>DataModule1</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.FMX.Utils.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas">
+            <Form>ZoomFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

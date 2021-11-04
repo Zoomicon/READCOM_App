@@ -27,7 +27,10 @@ uses
   Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
   Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
   FMX.ApplicationHelper in 'FMX.ApplicationHelper.pas',
-  READCOM.App.Globals in 'READCOM.App.Globals.pas' {DataModule1: TDataModule};
+  READCOM.App.Globals in 'READCOM.App.Globals.pas' {DataModule1: TDataModule},
+  Zoomicon.FMX.Utils in '..\Zoomicon.Zooming\Zoomicon.FMX.Utils.pas',
+  Zoomicon.Zooming.Models in '..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
+  Zoomicon.Zooming.ZoomFrame in '..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas' {ZoomFrame: TFrame};
 
 {$R *.res}
 

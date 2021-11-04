@@ -1,4 +1,4 @@
-unit Unit1;
+unit uZoomFrameForm;
 
 interface
 
@@ -10,8 +10,9 @@ uses
 
 type
   TForm1 = class(TForm)
-    ZoomFrame1: TZoomFrame;
+    ZoomFrame: TZoomFrame;
     Button1: TButton;
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -24,5 +25,10 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  ZoomFrame.ZoomTo(Sender As TControl);
+end;
 
 end.

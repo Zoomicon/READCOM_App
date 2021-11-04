@@ -85,9 +85,10 @@ end;
 procedure TZoomFrame.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   inherited;
-  for var Control in ScaledLayout.Children do
-    if not ((csDesigning in ComponentState) and (Control.ClassName = 'TGrabHandle.TGrabHandleRectangle')) then //this is to not store Delphi IDE designer's selection grab handles
-      Proc(Control); //Store all children of ScaledLayout as if they were ours
+  if (ScaledLayout.ChildrenCount <> 0) then //Children can be nil, so check ChildrenCount first
+    for var Control in ScaledLayout.Children do
+      if not ((csDesigning in ComponentState) and (Control.ClassName = 'TGrabHandle.TGrabHandleRectangle')) then //this is to not store Delphi IDE designer's selection grab handles
+        Proc(Control); //Store all children of ScaledLayout as if they were ours
 end;
 
 procedure TZoomFrame.Loaded;
@@ -95,13 +96,16 @@ begin
   BeginUpdate;
 
   //reparent children after loading (since at GetChildren we stored children of ScaledLayout as ours), except for the ScrollBox and the ZoomControls
-  For var Control in Controls do
-    if (Control <> ScrollBox) and (Control <> ZoomControls) then
-      Control.Parent := ScaledLayout;
+  if (ControlsCount > 2) then //extra optimization (we didn't need to check for <> 0, since we always have two children, the ScrollBox and the ZoomControls ones)
+    For var Control in Controls do
+      if (Control <> ScrollBox) and (Control <> ZoomControls) then
+        Control.Parent := ScaledLayout;
 
   Zoomer.Align := TAlignLayout.Center; //at design mode we have it set to TAlignLayout.Client
   UpdateZoomFromTrackbars;
+
   EndUpdate;
+
   inherited;
 end;
 
