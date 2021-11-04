@@ -38,6 +38,7 @@ inherited AudioStoryItem: TAudioStoryItem
   end
   object MediaPlayer: TMediaPlayerEx
     FileName = ''
+    Muted = False
     AutoPlaying = False
     Looping = False
     Left = 26

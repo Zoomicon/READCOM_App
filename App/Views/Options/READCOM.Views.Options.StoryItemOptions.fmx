@@ -1,16 +1,23 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 132.000000000000000000
+  Size.Width = 380.000000000000000000
   Size.Height = 64.000000000000000000
   Size.PlatformDefault = False
   object GridPanelLayout: TGridPanelLayout
     Align = Contents
-    Size.Width = 132.000000000000000000
+    Size.Width = 380.000000000000000000
     Size.Height = 64.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     ColumnCollection = <
       item
+        SizeStyle = Auto
         Value = 100.000000000000000000
+      end
+      item
+        SizeStyle = Auto
+      end
+      item
+        SizeStyle = Auto
       end
       item
         SizeStyle = Auto
@@ -25,6 +32,16 @@ object StoryItemOptions: TStoryItemOptions
         Column = 1
         Control = btnDelete
         Row = 0
+      end
+      item
+        Column = 2
+        Control = btnLoad
+        Row = 0
+      end
+      item
+        Column = 3
+        Control = btnSave
+        Row = 0
       end>
     ExpandStyle = AddColumns
     RowCollection = <
@@ -33,17 +50,17 @@ object StoryItemOptions: TStoryItemOptions
       end>
     object btnCloseOptions: TSpeedButton
       Anchors = []
-      Position.X = 6.000000000000000000
-      Position.Y = 21.000000000000000000
-      Size.Width = 71.000000000000000000
-      Size.Height = 22.000000000000000000
+      Position.Y = 6.000000000000000000
+      Size.Width = 49.000000000000000000
+      Size.Height = 52.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'drawertoolbutton'
+      Text = 'Hide Options'
       OnClick = btnCloseOptionsClick
     end
     object btnDelete: TSpeedButton
       Anchors = []
-      Position.X = 83.000000000000000000
+      Position.X = 49.000000000000000000
       Position.Y = 6.000000000000000000
       Size.Width = 49.000000000000000000
       Size.Height = 52.000000000000000000
@@ -52,5 +69,35 @@ object StoryItemOptions: TStoryItemOptions
       Text = 'Delete'
       OnClick = btnDeleteClick
     end
+    object btnLoad: TSpeedButton
+      Anchors = []
+      Position.X = 98.000000000000000000
+      Position.Y = 6.000000000000000000
+      Size.Width = 49.000000000000000000
+      Size.Height = 52.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'organizetoolbutton'
+      Text = 'Load'
+      OnClick = btnLoadClick
+    end
+    object btnSave: TSpeedButton
+      Anchors = []
+      Position.X = 147.000000000000000000
+      Position.Y = 6.000000000000000000
+      Size.Width = 49.000000000000000000
+      Size.Height = 52.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'escapetoolbutton'
+      Text = 'Load'
+      OnClick = btnSaveClick
+    end
+  end
+  object OpenDialog: TOpenDialog
+    Left = 248
+    Top = 16
+  end
+  object SaveDialog: TSaveDialog
+    Left = 328
+    Top = 16
   end
 end

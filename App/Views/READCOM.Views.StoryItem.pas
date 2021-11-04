@@ -18,43 +18,46 @@ const
 type
   IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
 
-  TStoryItem = class(TManipulator, IStoryItem, IInterfaceComponentReference, IStoreable)
+  TStoryItem = class(TManipulator, IStoryItem, IStoreable)
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
     procedure FrameDblClick(Sender: TObject);
     procedure FrameTap(Sender: TObject; const Point: TPointF);
     procedure DropTargetDblClick(Sender: TObject);
+    procedure FrameCanFocus(Sender: TObject; var ACanFocus: Boolean);
 
   //-- Fields ---
 
   protected
     FID: TGUID;
     FAutoSize: Boolean;
+    FHidden: Boolean;
     FOptions: IStoryItemOptions;
+    FStoryMode: TStoryMode;
 
   //--- Methods ---
 
   protected
     procedure InitDropTarget;
+    procedure SetParent(const Value: TFmxObject); override;
     function GetDefaultSize: TSizeF; override;
+    procedure ApplyHidden;
+    procedure LoadReadCom(const Stream: TStream); virtual;
+    procedure SaveReadCom(const Stream: TStream); virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
 
     procedure PlayRandomAudioStoryItem;
 
-    { IInterfaceComponentReference }
-    function GetComponent: TComponent;
-
     { IStoreable }
     function GetLoadFilesFilter: String; virtual;
-    procedure LoadReadCom(const Stream: TStream); virtual;
     procedure LoadFromString(const Data: String); virtual;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Load(const Filepath: string); overload; virtual;
     procedure Load(const Filepaths: array of string); overload; virtual;
-    procedure SaveReadCom(const Stream: TStream); virtual;
+    function GetSaveFilesFilter: String; virtual;
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
@@ -63,9 +66,12 @@ type
     function GetId: TGUID;
     procedure SetId(const Value: TGUID);
 
+    { View }
+    function GetView: TControl;
+
     { ParentStoryItem }
     function GetParentStoryItem: IStoryItem;
-    procedure SetParentStoryItem(const TheParent: IStoryItem);
+    procedure SetParentStoryItem(const Value: IStoryItem);
 
     { StoryItems }
     function GetStoryItems: TIStoryItemList;
@@ -86,6 +92,10 @@ type
     function GetTargetId: TGUID;
     procedure SetTargetId(const Value: TGUID);
 
+    { StoryMode }
+    function GetStoryMode: TStoryMode;
+    procedure SetStoryMode(const Value: TStoryMode);
+
     { Options }
     function GetOptions: IStoryItemOptions;
 
@@ -101,6 +111,7 @@ type
   protected
     property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
     property Options: IStoryItemOptions read GetOptions stored false;
+
   published
     property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
@@ -109,6 +120,7 @@ type
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget stored false; //default nil
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
+    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
   TStoryItemClass = class of TStoryItem;
@@ -127,6 +139,16 @@ begin
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
+end;
+
+procedure TStoryItem.SetParent(const Value: TFmxObject);
+begin
+  var IsNewParentIStoryItem := Supports(Value, IStoryItem);
+  Options.DeleteVisible := IsNewParentIStoryItem;
+  if IsNewParentIStoryItem then
+    SetParentStoryItem(Value as IStoryItem)
+  else
+    inherited; //needed to add the top StoryItem to some container
 end;
 
 function TStoryItem.GetDefaultSize: TSizeF;
@@ -157,16 +179,26 @@ end;
 
 {$endregion}
 
+{$region 'View'}
+
+function TStoryItem.GetView: TControl;
+begin
+  result := Self;
+end;
+
+{$endregion
+
 {$region 'ParentStoryItem'}
 
 function TStoryItem.GetParentStoryItem: IStoryItem;
 begin
-  result := Owner As IStoryItem;
+  result := Parent As IStoryItem;
 end;
 
-procedure TStoryItem.SetParentStoryItem(const TheParent: IStoryItem);
+procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
 begin
-  TheParent.GetComponent.InsertComponent(GetComponent);
+  StoryMode := Value.StoryMode;
+  Value.View.InsertComponent(GetView);
 end;
 
 {$endregion}
@@ -191,7 +223,7 @@ end;
 procedure TStoryItem.SetStoryItems(const Value: TIStoryItemList);
 begin
   for var item in Value do
-    AddObject(item.GetComponent As TStoryItem);
+    AddObject(item.GetView As TStoryItem);
 end;
 
 {$endregion}
@@ -209,12 +241,18 @@ end;
 
 function TStoryItem.IsHidden: Boolean;
 begin
-
+  result := FHidden;
 end;
 
 procedure TStoryItem.SetHidden(const Value: Boolean);
 begin
+  FHidden := Value;
+  ApplyHidden;
+end;
 
+procedure TStoryItem.ApplyHidden;
+begin
+  Visible := (StoryMode = TStoryMode.EditMode) or (not Hidden);
 end;
 
 {$endregion}
@@ -247,6 +285,27 @@ end;
 
 {$endregion}
 
+{$region 'StoryMode'}
+
+function TStoryItem.GetStoryMode: TStoryMode;
+begin
+  result := FStoryMode;
+end;
+
+procedure TStoryItem.SetStoryMode(const Value: TStoryMode);
+begin
+  FStoryMode := Value;
+  StoryItems.ForEach(procedure(StoryItem:IStoryItem) //note: can't use "const" parameter here, TProc<IStoryItem> doesn't use such
+    begin
+     StoryItem.StoryMode := Value;
+    end
+  );
+
+  ApplyHidden;
+end;
+
+{$endregion}
+
 {$region 'Options'}
 
 function TStoryItem.GetOptions: IStoryItemOptions;
@@ -259,6 +318,12 @@ end;
 {$ENDREGION}
 
 {$REGION '--- EVENTS ---'}
+
+procedure TStoryItem.FrameCanFocus(Sender: TObject; var ACanFocus: Boolean);
+begin
+  inherited;
+  ShowMessage('Focused');
+end;
 
 procedure TStoryItem.FrameDblClick(Sender: TObject);
 begin
@@ -284,13 +349,6 @@ end;
 
 {$ENDREGION}
 
-{$region 'IInterfaceComponentReference'}
-
-function TStoryItem.GetComponent: TComponent;
-begin
-  result := Self;
-end;
-
 {$region 'IStoreable'}
 
 { Load }
@@ -298,11 +356,6 @@ end;
 function TStoryItem.GetLoadFilesFilter: String;
 begin
   result := FILTER_READCOM;
-end;
-
-procedure TStoryItem.LoadReadCom(const Stream: TStream);
-begin
-  Stream.ReadComponent(Self);
 end;
 
 procedure TStoryItem.LoadFromString(const Data: string);
@@ -320,6 +373,11 @@ begin
   finally
     StrStream.Free;
   end;
+end;
+
+procedure TStoryItem.LoadReadCom(const Stream: TStream);
+begin
+  Stream.ReadComponent(Self);
 end;
 
 procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -350,6 +408,11 @@ begin
 end;
 
 { Save }
+
+function TStoryItem.GetSaveFilesFilter: String;
+begin
+  result := FILTER_READCOM;
+end;
 
 function TStoryItem.SaveToString: string;
 begin

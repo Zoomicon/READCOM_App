@@ -43,9 +43,9 @@ type
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
 
-    { AutoPlay }
-    function IsAutoPlay: Boolean;
-    procedure SetAutoPlay(const Value: Boolean);
+    { AutoPlaying }
+    function IsAutoPlaying: Boolean;
+    procedure SetAutoPlaying(const Value: Boolean);
 
     { Looping }
     function IsLooping: Boolean;
@@ -62,8 +62,8 @@ type
   //--- Properties ---
 
   published
-    property Muted: Boolean read IsMuted write SetMuted;
-    property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
+    property Muted: Boolean read IsMuted write SetMuted stored false; //shouldn't store this so that interacting with the story won't store it disabled
+    property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
     property Audio: TMediaPlayerEx read GetAudio write SetAudio stored false;
     //TODO: persist the audio data
@@ -119,7 +119,7 @@ end;
 
 procedure TAudioStoryItem.Play;
 begin
-  MediaPlayer.Play;
+  MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
 end;
 
 procedure TAudioStoryItem.Pause;
@@ -139,28 +139,26 @@ end;
 
 function TAudioStoryItem.IsMuted: Boolean;
 begin
-  result := (MediaPlayer.Volume = 0);
+  result := MediaPlayer.Muted;
 end;
 
-procedure TAudioStoryItem.SetMuted(const Value: Boolean);
+procedure TAudioStoryItem.SetMuted(const Value: Boolean); //TODO: should rename this in interface (call it enabled) and Stop the MediaPlayer instead of muting the audio
 begin
-  var vol := 1;
-  if Value then vol := 0; //Mute
-  MediaPlayer.Volume := vol;
+  MediaPlayer.Muted := Value;
 end;
 
 {$endregion}
 
 {$region 'AutoPlay'}
 
-function TAudioStoryItem.IsAutoPlay: Boolean;
+function TAudioStoryItem.IsAutoPlaying: Boolean;
 begin
-
+  result := MediaPlayer.AutoPlaying;
 end;
 
-procedure TAudioStoryItem.SetAutoPlay(const Value: Boolean);
+procedure TAudioStoryItem.SetAutoPlaying(const Value: Boolean);
 begin
-
+  MediaPlayer.AutoPlaying := Value;
 end;
 
 {$endregion}
@@ -169,12 +167,12 @@ end;
 
 function TAudioStoryItem.IsLooping: Boolean;
 begin
-
+  result := MediaPlayer.Looping;
 end;
 
 procedure TAudioStoryItem.SetLooping(const Value: Boolean);
 begin
-
+  MediaPlayer.Looping := Value;
 end;
 
 {$endregion}
@@ -183,7 +181,7 @@ end;
 
 function TAudioStoryItem.IsPlayOnce: Boolean;
 begin
-
+  //TODO
 end;
 
 procedure TAudioStoryItem.SetPlayOnce(const Value: Boolean);

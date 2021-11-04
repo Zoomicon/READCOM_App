@@ -17,6 +17,8 @@ type
   //-- Fields
 
   protected
+    FVolumeBeforeMuting: Single; //0-1
+    FMuted: Boolean;
     FAutoPlaying: Boolean;
     FLooping: Boolean;
     FTimer: TTimer;
@@ -50,6 +52,9 @@ type
     function IsAtEnd: Boolean; virtual;
     {Finished}
     function IsFinished: Boolean; virtual;
+    {Muted}
+    function IsMuted: Boolean; virtual;
+    procedure SetMuted(const Value: Boolean); virtual;
     {AutoPlaying}
     function IsAutoPlaying: Boolean; virtual;
     procedure SetAutoPlaying(const Value: Boolean); virtual;
@@ -83,6 +88,7 @@ type
     property AtStart: Boolean read IsAtStart;
     property AtEnd: Boolean read IsAtEnd;
     property Finished: Boolean read IsFinished;
+    property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property Looping: Boolean read IsLooping write SetLooping;
     property FileName: string read GetFilename write SetFilename;
@@ -268,6 +274,30 @@ end;
 function TMediaPlayerEx.IsFinished: Boolean;
 begin
   result := (not Playing) and AtEnd;
+end;
+
+{$endregion}
+
+{$region 'Muted'}
+
+function TMediaPlayerEx.IsMuted: Boolean;
+begin
+  result := FMuted;
+end;
+
+procedure TMediaPlayerEx.SetMuted(const Value: Boolean);
+begin
+  if Value and (not FMuted) then
+    begin
+      FVolumeBeforeMuting := Volume;
+      Volume := 0;
+      FMuted := Value;
+    end
+  else if (not Value) and FMuted then
+    begin
+    Volume := FVolumeBeforeMuting;
+    FMuted := Value;
+    end;
 end;
 
 {$endregion}

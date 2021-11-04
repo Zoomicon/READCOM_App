@@ -29,6 +29,7 @@ type
     procedure StoryHUDBtnMenuClick(Sender: TObject);
 
   protected
+    function LoadSavedState: Boolean;
     procedure StoryResized(Sender: TObject);
     procedure CheckCenterStory;
     {Story}
@@ -61,41 +62,41 @@ implementation
 
 {$R *.fmx}
 
-procedure TMainForm.FormCreate(Sender: TObject);
-
-  function LoadStory: TPanelStoryItem;
+function TMainForm.LoadSavedState: Boolean;
+begin
+  result := false;
+  With SaveState do
   begin
-    var TheStory: TPanelStoryItem := nil;
-    With SaveState do
-      begin
-      //StoragePath := ... //TODO: default is transient, change to make permanent
-      if Stream.Size > 0 then
-        try
-          TheStory := TPanelStoryItem.Create(Self);
-          TheStory.LoadReadCom(Stream);
-          {}CodeSite.Send(TheStory.SaveToString);
-        except
-          on E: Exception do
-            begin
-            Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-            CodeSite.SendException(E);
-            ShowException(E, @TMainForm.FormCreate);
-            FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
-            end;
-        end;
+    //StoragePath := ... //TODO: default is transient, change to make permanent
+    if Stream.Size > 0 then
+    begin
+      var TheStory := TPanelStoryItem.Create(Self);
+      try
+        TheStory.Load(Stream); //default file format is EXT_READCOM
+        {}CodeSite.Send(TheStory.SaveToString);
+        StoryView := TheStory; //only set StoryView
+        result := true;
+      except
+        on E: Exception do
+          begin
+          Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
+          CodeSite.SendException(E);
+          ShowException(E, @TMainForm.FormCreate);
+          FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
+          end;
       end;
-    result := TheStory;
+    end;
   end;
+end;
 
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
 
-  var TheStory := LoadStory;
-  if not Assigned(TheStory) then
-    TheStory := TPanelStoryItem.Create(Self);
+  if (not LoadSavedState) then
+    StoryView := TPanelStoryItem.Create(Self);
 
-  StoryView := TheStory;
   CodeSite.ExitMethod('FormCreate');
 end;
 
@@ -114,7 +115,7 @@ begin
   if Assigned(TheStory) then
     with SaveState do
       try
-        TheStory.SaveReadCom(Stream);
+        TheStory.Save(Stream); //default file format is EXT_READCOM
         {}CodeSite.Send(TheStory.SaveToString);
       except
         On E: Exception do
@@ -157,7 +158,7 @@ end;
 
 procedure TMainForm.SetStory(const Value: IStoryItem);
 begin
-  StoryView := Value.GetComponent as TStoryItem;
+  StoryView := Value.GetView as TStoryItem;
 end;
 
 {$endregion}

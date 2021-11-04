@@ -12,19 +12,48 @@ uses
 
 type
   {A PanelStoryItem is the only thing that takes part in navigation [TAB flow] when not in edit mode}
-  TPanelStoryItem = class(TStoryItem, {IPanelStoryItem,} IStoryItem, IStoreable)
+  TPanelStoryItem = class(TStoryItem, IPanelStoryItem, IStoryItem, IStoreable)
+    //--- Methods ---
+
     protected
       procedure DoEditModeChange(const Value: Boolean);
+
     public
-      {$region 'IStoreable'}
+      { IStoreable }
       function GetLoadFilesFilter: String; override;
       procedure Load(const Filepath: String); override;
       procedure Load(const Filepaths: array of String); override;
-      {$endregion}
+
+      procedure NavigateTo;
+
+      { Active }
+      function IsActive: Boolean;
+      procedure SetActive(const Value: Boolean);
+
+      { Navigatable }
+      function IsNavigatable: Boolean;
+      procedure SetNavigatable(const Value: Boolean);
+
+      { NavigationOrder }
+      function GetNavigationOrder: Integer;
+      procedure SetNavigationOrder(const Value: Integer);
+
+    //--- Events ---
+
+    public
+      procedure HandleStoryModeChanged;
+
+    //--- Properties ---
+
+    published
+      property Active: Boolean read IsActive write SetActive; //default false
+      property Navigatable: Boolean read IsNavigatable write SetNavigatable; //default true
+      property NavigationOrder: Integer read GetNavigationOrder write SetNavigationOrder; //default 0
   end;
 
 implementation
   uses
+    Zoomicon.Generics.Collections, //for TObjectListEx
     READCOM.Views.BitmapImageStoryItem, //for TBitmapImageStoryItem
     READCOM.Views.VectorImageStoryItem, //for TVectorImageStoryItem
     READCOM.Views.AudioStoryItem, //for TAudioStoryItem
@@ -99,5 +128,49 @@ begin
 end;
 
 {$endregion}
+
+{$region 'NavigationOrder'}
+
+function TPanelStoryItem.GetNavigationOrder: Integer;
+begin
+  result := TabOrder;
+end;
+
+procedure TPanelStoryItem.SetNavigationOrder(const Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+{$endregion}
+
+procedure TPanelStoryItem.HandleStoryModeChanged;
+begin
+
+end;
+
+function TPanelStoryItem.IsActive: Boolean;
+begin
+
+end;
+
+procedure TPanelStoryItem.SetActive(const Value: Boolean);
+begin
+
+end;
+
+procedure TPanelStoryItem.NavigateTo;
+begin
+
+end;
+
+function TPanelStoryItem.IsNavigatable: Boolean;
+begin
+
+end;
+
+procedure TPanelStoryItem.SetNavigatable(const Value: Boolean);
+begin
+
+end;
 
 end.

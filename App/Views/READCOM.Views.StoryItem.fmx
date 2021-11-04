@@ -3,6 +3,7 @@ inherited StoryItem: TStoryItem
   Size.Width = 836.000000000000000000
   Size.Height = 532.000000000000000000
   TabStop = False
+  OnCanFocus = FrameCanFocus
   OnDblClick = FrameDblClick
   object DropTarget: TDropTarget
     Align = Contents

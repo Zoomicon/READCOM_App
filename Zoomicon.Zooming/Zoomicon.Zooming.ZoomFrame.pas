@@ -41,6 +41,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Loaded; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
 
     //IZoomable
     function GetZoom: TPointF;
@@ -61,6 +62,7 @@ procedure Register;
 implementation
   uses
     Zoomicon.FMX.Utils, //for TScaledLayoutHelper
+    FMX.Objects, //for TGrabHandleRectangle
     Math; //for Sign
 
 {$R *.fmx}
@@ -74,17 +76,33 @@ begin
   ScrollBox.SetSubComponent(true);
   ScrollBox.Stored := false;
 
-  ZoomControls.SetSubComponent(false);
+  ZoomControls.SetSubComponent(true);
   ZoomControls.Stored := false; //not storing, will load from FMX and the apply wrapper properties //no need to set this for its children controls too
+
   ZoomControlsVisible := DEFAULT_ZOOM_CONTROLS_VISIBLE;
+end;
+
+procedure TZoomFrame.GetChildren(Proc: TGetChildProc; Root: TComponent);
+begin
+  inherited;
+  for var Control in ScaledLayout.Children do
+    if not ((csDesigning in ComponentState) and (Control.ClassName = 'TGrabHandle.TGrabHandleRectangle')) then //this is to not store Delphi IDE designer's selection grab handles
+      Proc(Control); //Store all children of ScaledLayout as if they were ours
 end;
 
 procedure TZoomFrame.Loaded;
 begin
   BeginUpdate;
+
+  //reparent children after loading (since at GetChildren we stored children of ScaledLayout as ours), except for the ScrollBox and the ZoomControls
+  For var Control in Controls do
+    if (Control <> ScrollBox) and (Control <> ZoomControls) then
+      Control.Parent := ScaledLayout;
+
   Zoomer.Align := TAlignLayout.Center; //at design mode we have it set to TAlignLayout.Client
   UpdateZoomFromTrackbars;
   EndUpdate;
+  inherited;
 end;
 
 {$region 'IZoomable'}

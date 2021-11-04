@@ -8,6 +8,7 @@ uses
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
   System.UITypes, //for TAlphaColor
+  FMX.Controls, //for TControl
   FMX.Graphics, //for TFont
   FMX.Objects, //for TImage
   FMX.SVGIconImage, //for TSVGIconImage
@@ -32,6 +33,7 @@ type
     procedure LoadFromString(const Data: String);
 
     { Save }
+    function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
     function SaveToString: string; overload;
@@ -55,7 +57,7 @@ type
 
   TStoryMode = (AnimatedStoryMode, InteractiveStoryMode, GuidedInteractiveStoryMode, EditMode);
 
-  IStoryItem = interface(IInterfaceComponentReference) //IInterfaceComponentReference.GetComponent is used to get related visual component reference
+  IStoryItem = interface(IStoreable)
     ['{238909DD-45E6-463A-9698-C7C6DC1A6DFE}']
     //--- Methods ---
     procedure PlayRandomAudioStoryItem;
@@ -63,6 +65,9 @@ type
     { Id }
     function GetId: TGUID;
     procedure SetId(const Value: TGUID);
+
+    { View }
+    function GetView: TControl;
 
     { ParentStoryItem }
     function GetParentStoryItem: IStoryItem;
@@ -87,6 +92,10 @@ type
     function GetTargetId: TGUID;
     procedure SetTargetId(const Value: TGUID);
 
+    { StoryMode }
+    function GetStoryMode: TStoryMode;
+    procedure SetStoryMode(const Value: TStoryMode);
+
     { Options }
     function GetOptions: IStoryItemOptions;
 
@@ -95,20 +104,37 @@ type
 
     //--- Properties ---
     property Id: TGUID read GetId write SetId;
-    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false //TODO: see if Delphi persistence can do loops
+    property View: TControl read GetView;
+    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Target: IStoryItem read GetTarget write SetTarget; //stored false
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
+    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property Options: IStoryItemOptions read GetOptions; //stored false
+  end;
+
+  IStory = interface(IStoryItem)
+    { StoryMode }
+    function GetStoryMode: TStoryMode;
+    procedure SetStoryMode(const Value: TStoryMode);
   end;
 
   IStoryItemOptions = interface
     ['{1AEC7512-1E1D-4720-9D74-9A5411A64377}']
+    { StoryItem }
     function GetStoryItem: IStoryItem;
+
+    { DeleteVisible }
+    function IsDeleteVisible: Boolean;
+    procedure SetDeleteVisible(const Value: Boolean);
+
+    { Popup }
     procedure ShowPopup;
     procedure HidePopup;
+
+    property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible;
   end;
 
   IPanelStoryItem = interface(IStoryItem)
@@ -128,10 +154,6 @@ type
     function GetNavigationOrder: Integer;
     procedure SetNavigationOrder(const Value: Integer);
 
-    { StoryMode }
-    function GetStoryMode: TStoryMode;
-    procedure SetStoryMode(const Value: TStoryMode);
-
     //--- Events ---
     procedure HandleStoryModeChanged;
 
@@ -139,7 +161,6 @@ type
     property Active: Boolean read IsActive write SetActive; //default false
     property Navigatable: Boolean read IsNavigatable write SetNavigatable; //default true
     property NavigationOrder: Integer read GetNavigationOrder write SetNavigationOrder; //default 0
-    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode //TODO: decide
   end;
 
   IImageStoryItem = interface(IStoryItem)
@@ -185,9 +206,9 @@ type
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
 
-    { AutoPlay }
-    function IsAutoPlay: Boolean;
-    procedure SetAutoPlay(const Value: Boolean);
+    { AutoPlaying }
+    function IsAutoPlaying: Boolean;
+    procedure SetAutoPlaying(const Value: Boolean);
 
     { Looping }
     function IsLooping: Boolean;
@@ -203,7 +224,7 @@ type
 
     //--- Properties ---
     property Muted: Boolean read IsMuted write SetMuted;
-    property AutoPlay: Boolean read IsAutoPlay write SetAutoPlay;
+    property AutoPlay: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
     property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
   end;
