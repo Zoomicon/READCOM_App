@@ -28,7 +28,7 @@
             <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj">
-            <Dependencies/>
+            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
         </Projects>
         <Projects Include="Experiments\DropFiles\DropFiles.dproj">
             <Dependencies/>
@@ -125,13 +125,13 @@
     <Target Name="Zoomicon_Zooming:Make">
         <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator">
+    <Target Name="Zoomicon_Manipulator" DependsOnTargets="Zoomicon.Generics">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Clean">
+    <Target Name="Zoomicon_Manipulator:Clean" DependsOnTargets="Zoomicon.Generics:Clean">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Make">
+    <Target Name="Zoomicon_Manipulator:Make" DependsOnTargets="Zoomicon.Generics:Make">
         <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Make"/>
     </Target>
     <Target Name="DropFiles">

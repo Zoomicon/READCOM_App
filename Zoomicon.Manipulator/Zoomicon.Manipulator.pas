@@ -12,8 +12,6 @@ uses
 const
   SELECTION_NAME_PREFIX = 'Sel_';
   SELECTION_GRIP_SIZE = 8;
-  SELECTION_DEFAULT_WIDTH = 100;
-  SELECTION_DEFAULT_HEIGHT = 100;
 
 type
   TRectFPredicate = reference to function(Rectangle: TRectF): Boolean;
@@ -51,6 +49,7 @@ type
 
   TAreaSelector = class(TSelection)
   protected
+    function DoGetUpdateRect: TRectF; override; //used to fix bug in TSelection that doesn't consider usage inside a TScaledLayout
     function GetControls(const RectPicker: TRectFPredicate): TControlList;
     function GetIntersected: TControlList; virtual;
     function GetContained: TControlList; virtual;
@@ -64,12 +63,19 @@ type
   {$REGION 'TManipulator' -----------------------------------------------------}
 
   TManipulator = class(TFrame)
+    {Gestures}
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
+
+    {Mouse}
+    procedure MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Single); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
     procedure Click; override;
 
   protected
     FAreaSelector: TAreaSelector;
     FAutoSize: Boolean;
+    FDragStartLocation: TPointF;
 
     procedure DoAutoSize;
     procedure SetAutoSize(const Value: Boolean);
@@ -109,10 +115,11 @@ procedure Register;
 implementation //---------------------------------------------------------------
 
 uses
+  Zoomicon.Generics.Functors, //for TF
+  Zoomicon.Generics.Collections, //for TListEx
   FMX.Ani,
   FMX.Effects,
-  Zoomicon.Generics.Functors, //for TF
-  Zoomicon.Generics.Collections; //for TListEx
+  System.Math; //for Min
 
 {$R *.fmx}
 
@@ -162,6 +169,12 @@ end;
 {$ENDREGION ...................................................................}
 
 {$REGION 'TAreaSelector' ------------------------------------------------------}
+
+function TAreaSelector.DoGetUpdateRect: TRectF; //Fix for TSelection's calculation for the case we have one or more nested TScaledLayout in parent hierarchy
+begin
+  Result := inherited;
+  Result.Inflate((GripSize + 1) * AbsoluteScale.X, (GripSize + 1) * AbsoluteScale.Y); //not sure if that is too big, however it works compared to just using Scale as TSelection does
+end;
 
 function TAreaSelector.GetIntersected: TControlList;
 begin
@@ -216,7 +229,8 @@ constructor TManipulator.Create(AOwner: TComponent);
      With FAreaSelector do
        begin
        Stored := False; //don't store state, should use state from designed .FMX resource
-       Size.Size := TSizeF.Create(SELECTION_DEFAULT_WIDTH, SELECTION_DEFAULT_HEIGHT);
+       ParentBounds := true;
+       Size.Size := TPointF.Zero;
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
        end;
@@ -441,6 +455,72 @@ begin
   ShowMessage('Gesture');
   //TODO
   inherited;
+end;
+
+procedure TManipulator.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  if (ssLeft in Shift) then
+    begin
+    BeginUpdate;
+    Capture; //start mouse events capturing
+    var p := TPointF.Create(X,Y);
+    FDragStartLocation := p;
+    AreaSelector.Position.Point := p;
+    AreaSelector.Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
+    EndUpdate;
+    end;
+end;
+
+procedure Swap(var a, b: Single); inline; //there's no Swap(Single, Single) or SwapF
+begin
+  var temp := a;
+  a := b;
+  b := temp;
+end;
+
+procedure Order(var a, b: Single); inline;
+begin
+  if (a > b) then
+    Swap(a, b);
+end;
+
+{
+procedure Order(var a, b, c: Single); inline;
+begin
+  if (a > b) then
+    Swap(a, b);
+  if (b > c) then
+    Swap(b, c);
+end;
+}
+
+procedure TManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
+begin
+  inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp)
+
+  if (ssLeft in Shift) then
+  begin
+    //FDragging := true;
+    with AreaSelector do
+    begin
+      var LX: Single := FDragStartLocation.X; //Delphi 11 compiler issue, gives below at call to Order function error "E2033 Types of actual and formal var parameters must be identical if we skip ": Single", even though it is of type Single
+      Order(LX, X);
+
+      var LY: Single := FDragStartLocation.Y; //Delphi 11 compiler issue, gives "E2033 Types of actual and formal var parameters must be identical if we skip ": Single", even though it is of type Single
+      Order(LY, Y);
+
+      BoundsRect := TRectF.Create(LX, LY, X, Y);
+    end;
+  end;
+end;
+
+procedure TManipulator.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  if (ssLeft in Shift) then
+    begin
+    //fDragging := false;
+    ReleaseCapture; //stop mouse events capturing
+    end;
 end;
 
 {$endregion}
