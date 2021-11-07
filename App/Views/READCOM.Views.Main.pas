@@ -18,7 +18,7 @@ uses
   Zoomicon.Manipulator, READCOM.Views.AudioStoryItem, Zoomicon.Zooming.ZoomFrame;
 
 type
-  TMainForm = class(TForm)
+  TMainForm = class(TForm, IStory)
     StoryHUD: TStoryHUD;
     ZoomFrame: TZoomFrame;
     procedure FormCreate(Sender: TObject);
@@ -43,6 +43,19 @@ type
 
     [Subscribe(TipMessagingThread.Main)]
     procedure OnEditModeChange(const AMessage: IMessageEditModeChange);
+
+    { StoryMode }
+    function GetStoryMode: TStoryMode;
+    procedure SetStoryMode(const Value: TStoryMode);
+    { Navigation }
+    procedure GotoPreviousPanel;
+    procedure GotoNextPanel;
+    { CurrentPanel }
+    function GetCurrentPanel: IPanelStoryItem;
+    procedure SetCurrentPanel(const Value: IPanelStoryItem);
+    property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
+
+    procedure ZoomTo(const StoryItem: IStoryItem);
 
   published
     property Story: IStoryItem read GetStory write SetStory stored false;
@@ -171,6 +184,16 @@ begin
   result := TObjectListEx<TControl>.GetFirstClass<TStoryItem>(ZoomFrame.ScaledLayout.Controls)
 end;
 
+procedure TMainForm.GotoNextPanel;
+begin
+
+end;
+
+procedure TMainForm.GotoPreviousPanel;
+begin
+
+end;
+
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
 begin
   //Remove old story
@@ -192,5 +215,39 @@ procedure TMainForm.StoryHUDBtnMenuClick(Sender: TObject);
 begin
   StoryHUD.BtnMenuClick(Sender);
 end;
+
+{$region 'IStory'}
+
+{ CurrentPanel }
+function TMainForm.GetCurrentPanel: IPanelStoryItem;
+begin
+  //TODO
+end;
+
+procedure TMainForm.SetCurrentPanel(const Value: IPanelStoryItem);
+begin
+  //TODO
+end;
+
+{ StoryMode }
+
+function TMainForm.GetStoryMode: TStoryMode;
+begin
+  result := Story.StoryMode;
+end;
+
+procedure TMainForm.SetStoryMode(const Value: TStoryMode);
+begin
+  Story.StoryMode := Value;
+end;
+
+{ ZoomTo }
+
+procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
+begin
+  ZoomFrame.ZoomTo(StoryItem.View);
+end;
+
+{$endregion}
 
 end.

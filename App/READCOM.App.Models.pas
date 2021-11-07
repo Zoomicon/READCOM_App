@@ -57,6 +57,22 @@ type
 
   TStoryMode = (AnimatedStoryMode, InteractiveStoryMode, GuidedInteractiveStoryMode, EditMode);
 
+  IStory = interface
+    ['{3A6CAD51-3787-4D18-9DA7-A07895BC4661}']
+    { StoryMode }
+    function GetStoryMode: TStoryMode;
+    procedure SetStoryMode(const Value: TStoryMode);
+    { Navigation }
+    procedure GotoPreviousPanel;
+    procedure GotoNextPanel;
+    { CurrentPanel }
+    function GetCurrentPanel: IPanelStoryItem;
+    procedure SetCurrentPanel(const Value: IPanelStoryItem);
+    property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
+
+    procedure ZoomTo(const StoryItem: IStoryItem);
+  end;
+
   IStoryItem = interface(IStoreable)
     ['{238909DD-45E6-463A-9698-C7C6DC1A6DFE}']
     //--- Methods ---
@@ -113,12 +129,6 @@ type
     property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property Options: IStoryItemOptions read GetOptions; //stored false
-  end;
-
-  IStory = interface(IStoryItem)
-    { StoryMode }
-    function GetStoryMode: TStoryMode;
-    procedure SetStoryMode(const Value: TStoryMode);
   end;
 
   IStoryItemOptions = interface

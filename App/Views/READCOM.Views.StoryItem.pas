@@ -39,7 +39,6 @@ type
   //--- Methods ---
 
   protected
-    procedure InitDropTarget;
     procedure SetParent(const Value: TFmxObject); override;
     function GetDefaultSize: TSizeF; override;
     procedure ApplyHidden;
@@ -133,9 +132,20 @@ implementation
 {$R *.fmx}
 
 constructor TStoryItem.Create(AOwner: TComponent);
+
+  procedure InitDropTarget;
+  begin
+    with DropTarget do
+    begin
+    Stored := False; //don't store state, should use state from designed .FMX resource
+    BringToFront;
+    FilterIndex := 1; //this is the default value
+    Filter := GetLoadFilesFilter;
+    end;
+  end;
+
 begin
   inherited;
-  DropTarget.Stored := False; //don't store state, should use state from designed .FMX resource
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
   InitDropTarget;
@@ -460,12 +470,6 @@ end;
 {$endregion}
 
 {$region 'Drop target'}
-
-procedure TStoryItem.InitDropTarget;
-begin
-  DropTarget.FilterIndex := 1; //this is the default value
-  DropTarget.Filter := GetLoadFilesFilter;
-end;
 
 procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
