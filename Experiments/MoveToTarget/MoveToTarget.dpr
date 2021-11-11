@@ -3,7 +3,8 @@ program MoveToTarget;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  uMainForm in 'uMainForm.pas' {Form2};
+  uMainForm in 'uMainForm.pas' {Form2},
+  uDraggable in 'uDraggable.pas';
 
 {$R *.res}
 
