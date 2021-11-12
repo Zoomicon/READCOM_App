@@ -155,22 +155,23 @@ end;
 
 procedure TPanelStoryItem.SetActive(const Value: Boolean);
 begin
-
+  //TODO
+  NavigateTo;
 end;
 
 procedure TPanelStoryItem.NavigateTo;
 begin
-
+  //TODO: send message to zoom container or find Story Root? (could search for first ancestor that is ZoomPanel but makes dependency to it, better use messaging or ask to be given an IZoomable)
 end;
 
 function TPanelStoryItem.IsNavigatable: Boolean;
 begin
-
+  result := CanFocus;
 end;
 
 procedure TPanelStoryItem.SetNavigatable(const Value: Boolean);
 begin
-
+  CanFocus := Value;
 end;
 
 end.

@@ -70,7 +70,6 @@ type
     procedure MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Single); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
-    procedure Click; override;
 
   protected
     FAreaSelector: TAreaSelector;
@@ -81,12 +80,12 @@ type
     procedure SetAutoSize(const Value: Boolean);
 
     {EditMode}
-    function IsEditMode: Boolean;
-    procedure SetEditMode(const Value: Boolean);
+    function IsEditMode: Boolean; virtual;
+    procedure SetEditMode(const Value: Boolean); virtual;
 
     {Proportional}
-    function IsProportional: Boolean;
-    procedure SetProportional(value: Boolean);
+    function IsProportional: Boolean; virtual;
+    procedure SetProportional(value: Boolean); virtual;
 
     procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
@@ -443,13 +442,6 @@ begin
   EndUpdate;
 end;
 
-procedure TManipulator.Click;
-begin
-  ShowMessage('Click');
-  //TODO
-  inherited;
-end;
-
 procedure TManipulator.DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean);
 begin
   ShowMessage('Gesture');
@@ -459,6 +451,8 @@ end;
 
 procedure TManipulator.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
   if (ssLeft in Shift) then
     begin
     BeginUpdate;
@@ -496,7 +490,7 @@ end;
 
 procedure TManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
-  inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp)
+  inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp) and for event handlers to be fired (e.g. at ancestors)
 
   if (ssLeft in Shift) then
   begin
@@ -516,6 +510,8 @@ end;
 
 procedure TManipulator.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
   if (ssLeft in Shift) then
     begin
     //fDragging := false;

@@ -1,10 +1,7 @@
 inherited StoryItem: TStoryItem
-  OnTap = FrameTap
   Size.Width = 836.000000000000000000
   Size.Height = 532.000000000000000000
   TabStop = False
-  OnCanFocus = FrameCanFocus
-  OnDblClick = FrameDblClick
   object DropTarget: TDropTarget
     Align = Contents
     Opacity = 0.200000002980232200
@@ -12,8 +9,8 @@ inherited StoryItem: TStoryItem
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
+    Visible = False
     OnDragOver = DropTargetDragOver
     OnDropped = DropTargetDropped
-    OnDblClick = DropTargetDblClick
   end
 end

@@ -22,10 +22,6 @@ type
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-    procedure FrameDblClick(Sender: TObject);
-    procedure FrameTap(Sender: TObject; const Point: TPointF);
-    procedure DropTargetDblClick(Sender: TObject);
-    procedure FrameCanFocus(Sender: TObject; var ACanFocus: Boolean);
 
   //-- Fields ---
 
@@ -39,11 +35,17 @@ type
   //--- Methods ---
 
   protected
-    procedure SetParent(const Value: TFmxObject); override;
     function GetDefaultSize: TSizeF; override;
+    procedure SetParent(const Value: TFmxObject); override;
+    procedure SetEditMode(const Value: Boolean); override;
+
     procedure ApplyHidden;
     procedure LoadReadCom(const Stream: TStream); virtual;
     procedure SaveReadCom(const Stream: TStream); virtual;
+
+    procedure Click; override; //preferring overriden methods instead of event handlers that get stored with saved state
+    procedure Tap(const Point: TPointF); override;
+    //procedure CanFocus(var ACanFocus: Boolean); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -151,6 +153,11 @@ begin
   InitDropTarget;
 end;
 
+function TStoryItem.GetDefaultSize: TSizeF;
+begin
+  Result := TSizeF.Create(640, 480);
+end;
+
 procedure TStoryItem.SetParent(const Value: TFmxObject);
 begin
   var IsNewParentIStoryItem := Supports(Value, IStoryItem);
@@ -161,9 +168,10 @@ begin
     inherited; //needed to add the top StoryItem to some container
 end;
 
-function TStoryItem.GetDefaultSize: TSizeF;
+procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
-  Result := TSizeF.Create(640, 480);
+  inherited;
+  DropTarget.Visible := Value;
 end;
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
@@ -307,7 +315,7 @@ begin
   FStoryMode := Value;
   StoryItems.ForEach(procedure(StoryItem:IStoryItem) //note: can't use "const" parameter here, TProc<IStoryItem> doesn't use such
     begin
-     StoryItem.StoryMode := Value;
+    StoryItem.StoryMode := Value;
     end
   );
 
@@ -321,7 +329,11 @@ end;
 function TStoryItem.GetOptions: IStoryItemOptions;
 begin
   if not Assigned(FOptions) then
-    FOptions := TStoryItemOptions.Create(Self);
+    begin
+    var optionsView := TStoryItemOptions.Create(Self);
+    optionsView.Stored := false; //must do else it will try to save the options with the owner of the options frame (which seems to also be used as Root, probably causing to try to store the options frame)
+    FOptions := optionsView;
+    end;
   result := FOptions;
 end;
 
@@ -331,32 +343,31 @@ end;
 
 {$REGION '--- EVENTS ---'}
 
-procedure TStoryItem.FrameCanFocus(Sender: TObject; var ACanFocus: Boolean);
+{
+procedure TStoryItem.CanFocus(var ACanFocus: Boolean);
 begin
   inherited;
   ShowMessage('Focused');
 end;
+}
 
-procedure TStoryItem.FrameDblClick(Sender: TObject);
+procedure TStoryItem.Click;
 begin
-  //ShowMessage('Double click StoryItem');
-  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+  inherited; //fire event handlers
+  if EditMode then
+    Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
 end;
 
-procedure TStoryItem.DropTargetDblClick(Sender: TObject);
+procedure TStoryItem.Tap(const Point: TPointF);
 begin
-  //ShowMessage('Double click StoryItem on DropTarget');
-  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
-end;
-
-procedure TStoryItem.FrameTap(Sender: TObject; const Point: TPointF);
-begin
-  Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+  inherited; //fire event handlers
+  if EditMode then
+    Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
 end;
 
 procedure TStoryItem.HandleParentNavigatedToChanged;
 begin
-
+  //TODO
 end;
 
 {$region 'Drop target'}
@@ -477,7 +488,7 @@ end;
 
 procedure TStoryItem.Save(const Filepath: string);
 begin
-  var OutputFileStream := TFileStream.Create(Filepath,  fmCreate); //or fmShareDenyNone //TODO: may be needed for Android
+  var OutputFileStream := TFileStream.Create(Filepath, fmCreate); //or fmShareDenyNone //TODO: may be needed for Android
   try
     Save(OutputFileStream, ExtractFileExt(Filepath));
   finally

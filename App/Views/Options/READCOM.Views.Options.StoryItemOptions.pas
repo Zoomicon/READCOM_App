@@ -114,6 +114,7 @@ begin
     var options := Self;
     with popup do
     begin
+      Stored := False; //don't try to store the popup
       //Parent := (component as TFmxObject);
       //PlacementTarget := (component as TControl);
       AddObject(options);
