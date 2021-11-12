@@ -196,7 +196,7 @@ begin
   result := Self;
 end;
 
-{$endregion
+{$endregion}
 
 {$region 'ParentStoryItem'}
 
@@ -325,6 +325,8 @@ begin
   result := FOptions;
 end;
 
+{$endregion}
+
 {$ENDREGION}
 
 {$REGION '--- EVENTS ---'}
@@ -356,6 +358,22 @@ procedure TStoryItem.HandleParentNavigatedToChanged;
 begin
 
 end;
+
+{$region 'Drop target'}
+
+procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+begin
+  if EditMode then
+    Operation := TDragOperation.Copy;
+end;
+
+procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+begin
+  if EditMode then
+    Load(Data.Files);
+end;
+
+{$endregion}
 
 {$ENDREGION}
 
@@ -465,20 +483,6 @@ begin
   finally
     FreeAndNil(OutputFileStream);
   end;
-end;
-
-{$endregion}
-
-{$region 'Drop target'}
-
-procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-begin
-  Operation := TDragOperation.Copy;
-end;
-
-procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-begin
-  Load(Data.Files);
 end;
 
 {$endregion}
