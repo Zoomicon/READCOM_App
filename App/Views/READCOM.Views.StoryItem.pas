@@ -208,7 +208,7 @@ end;
 procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
 begin
   StoryMode := Value.StoryMode;
-  Value.View.InsertComponent(GetView);
+  inherited SetParent(Value.View); //don't use "InsertComponent" here, won't work //must use "inherited" to avoid infinite loop and stack overflow //"inherited Parent :=" also fails in Delphi11
 end;
 
 {$endregion}

@@ -254,7 +254,7 @@ constructor TManipulator.Create(AOwner: TComponent);
 
 begin
   CreateAreaSelector;
-  //CreateLocationSelector; //must do after CreateAreaSelector
+  CreateLocationSelector; //must do after CreateAreaSelector
   FAutoSize := true; //must do after CreateAreaSelector
   inherited; //do last since it will also load designer resource
 end;
