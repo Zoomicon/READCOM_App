@@ -70,6 +70,7 @@ type
     procedure MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Single); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
 
   protected
     FAreaSelector: TAreaSelector;
@@ -144,11 +145,11 @@ begin
       OnParentMoving(Self, DX, DY, FChangeCanceled);
 
     if FChangeCanceled then //must do this right after calling OnParentMoving
-      FRestorePosition := Position.Point - TPointF.Create(DX, DY)
+      FRestorePosition := Position.Point - PointF(DX, DY)
     else
       begin
       with ParentControl.Position do
-        Point := Point + TPointF.Create(DX, DY); //Move parent control
+        Point := Point + PointF(DX, DY); //Move parent control
 
       if Assigned(OnParentMoved) then
         OnParentMoved(Self, DX, DY);
@@ -270,7 +271,7 @@ begin
       procedure (Control: TControl)
       begin
         with Control.Position do
-          Point := Point + TPointF.Create(DX, DY);
+          Point := Point + PointF(DX, DY);
       end
     );
 
@@ -457,7 +458,7 @@ begin
     begin
     BeginUpdate;
     Capture; //start mouse events capturing
-    var p := TPointF.Create(X,Y);
+    var p := PointF(X,Y);
     FDragStartLocation := p;
     AreaSelector.Position.Point := p;
     AreaSelector.Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
@@ -503,7 +504,7 @@ begin
       var LY: Single := FDragStartLocation.Y; //Delphi 11 compiler issue, gives "E2033 Types of actual and formal var parameters must be identical if we skip ": Single", even though it is of type Single
       Order(LY, Y);
 
-      BoundsRect := TRectF.Create(LX, LY, X, Y);
+      BoundsRect := RectF(LX, LY, X, Y);
     end;
   end;
 end;
@@ -517,6 +518,29 @@ begin
     //fDragging := false;
     ReleaseCapture; //stop mouse events capturing
     end;
+end;
+
+procedure TManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+{
+  var Control := ObjectAtPoint(Screen.MousePos) as TControl;
+
+  if ssCtrl in Shift then
+  begin
+    var zoom_center := screen.MousePos - Control.LocalToScreen(PointF(0,0));
+
+    var old_scale := 1;
+    var new_scale : single;
+    if WheelDelta >= 0
+      then new_scale := old_scale * (1 + (WheelDelta / 120)/5)
+      else new_scale := old_scale / (1 - (WheelDelta / 120)/5);
+
+    Control.Size.Size := TSizeF.Create(Control.Size.Size.cx * new_scale, Control.Size.Size.cy * new_scale);
+
+    // correction for image position when scaling
+    Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale/old_scale), Control.Position.Y + zoom_center.y * (1-new_scale/old_scale));
+  end; //adapted from https://stackoverflow.com/a/66049562/903783
+}
 end;
 
 {$endregion}

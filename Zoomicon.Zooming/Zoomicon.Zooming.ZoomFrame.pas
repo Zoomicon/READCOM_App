@@ -135,7 +135,7 @@ begin
     with Zoomer do
     begin
       Size.Size := TSizeF.Create(OriginalWidth * Abs(ValueX), OriginalHeight * Abs(ValueY)); //don't use Scale to resize (won't work well here), ScaledLayout scales its contents automatically
-      Scale.Point := TPointF.Create(Sign(ValueX), Sign(ValueY));
+      Scale.Point := PointF(Sign(ValueX), Sign(ValueY));
     end;
     //ScrollBox.InvalidateContentSize;
 
@@ -161,7 +161,7 @@ begin
     end
   else
     begin
-    var zoomFactor := TPointF.Create(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
+    var zoomFactor := PointF(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
     SetZoom(zoomFactor);
     end;
 
@@ -173,12 +173,12 @@ begin
   var ScrollBoxHost := GetScrollBoxParent(Zoomer);
   if (ScrollBoxHost <> nil) then
     begin
-    var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBoxHost.Width/2, ScrollBoxHost.Height/2);
+    var scrollToPos := CenterPointNewCoords - PointF(ScrollBoxHost.Width/2, ScrollBoxHost.Height/2);
     ScrollBoxHost.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
     end
   else
     begin //TODO: see if this case (when not hosted in ScrollBox) works
-    var offsetPos := CenterPointNewCoords - TPointF.Create(ZoomerParent.Width/2, ZoomerParent.Height/2);
+    var offsetPos := CenterPointNewCoords - PointF(ZoomerParent.Width/2, ZoomerParent.Height/2);
     Zoomer.Position.Point := offsetPos;
     end;
 end;

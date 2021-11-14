@@ -116,7 +116,7 @@ begin
 
   //Center the new item...
   var ItemSize := StoryItem.Size;
-  StoryItem.Position.Point := TPointF.Create(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  StoryItem.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
 
   StoryItem.Parent := Self;
 end;

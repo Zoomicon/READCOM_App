@@ -39,7 +39,7 @@ end;
 
 function TScaledLayoutHelper.GetScalingFactor: TPointF;
 begin
-  result := TPointF.Create(Width/OriginalWidth, Height/OriginalHeight); //need to use OriginalWidth/OriginalHeight, not Width/Height (since we may have resized)
+  result := PointF(Width/OriginalWidth, Height/OriginalHeight); //need to use OriginalWidth/OriginalHeight, not Width/Height (since we may have resized)
 end;
 
 { Misc }
