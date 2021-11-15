@@ -24,9 +24,17 @@ type
     class function GetLast(const List: TList<T>; const Predicate: TPredicate<T> = nil): T; overload;
     function GetLast(const Predicate: TPredicate<T> = nil): T; overload;
 
-    {ForEach}
+    { ForEach }
     class procedure ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
     procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
+
+    { Shuffle }
+    class procedure Shuffle(const List: TList<T>); overload; //based on: http://www.bytechaser.com/en/functions/p6sv9tve9v/randomly-shuffle-contents-of-any-list-in-c-sharp.aspx
+    procedure Shuffle; overload;
+
+    { AddOnce }
+    class procedure AddOnce(const List: TList<T>; const Item: T); overload;
+    procedure AddOnce(const Item: T); overload;
   end;
 
   //----------------------------------------------------------------------------
@@ -192,6 +200,44 @@ end;
 procedure TListEx<T>.ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil);
 begin
   {TListEx<T>.}ForEach(self, Proc, Predicate);
+end;
+
+{$endregion}
+
+{$region 'Shuffle'}
+
+class procedure TListEx<T>.Shuffle(const List: TList<T>); //based on: http://www.bytechaser.com/en/functions/p6sv9tve9v/randomly-shuffle-contents-of-any-list-in-c-sharp.aspx
+begin
+  Randomize; //Seed the random number generator from clock
+  var n := List.Count;
+  while (n > 1) do
+  begin
+    dec(n);
+    var k := random(n + 1);
+    var value := list[k];
+    list[k] := list[n];
+    list[n] := value;
+  end;
+end;
+
+procedure TListEx<T>.Shuffle;
+begin
+  {TListEx<T>.}Shuffle(self);
+end;
+
+{$endregion}
+
+{$region 'AddOnce'}
+
+class procedure TListEx<T>.AddOnce(const List: TList<T>; const Item: T);
+begin
+  if not List.Contains(item) then
+    List.Add(item);
+end;
+
+procedure TListEx<T>.AddOnce(const Item: T);
+begin
+  {TListEx<T>.}AddOnce(self, Item);
 end;
 
 {$endregion}
