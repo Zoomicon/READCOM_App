@@ -143,8 +143,7 @@ procedure TStoryItemOptions.CheckCreatePopup;
 begin
   if not Assigned(FPopup) then
   begin
-    var component := GetStoryItem.View;
-    var popup := TPopup.Create(nil); //don't set component as owner, seems to always store it (irrespective of "Stored := false") //can't set Self as owner either, makes a circular reference
+    var popup := TPopup.Create(nil); //don't set StoryItem.View as owner, seems to always store it (irrespective of "Stored := false") //can't set Self as owner either, makes a circular reference
     var options := Self;
     with popup do
     begin

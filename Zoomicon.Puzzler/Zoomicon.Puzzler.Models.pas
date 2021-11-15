@@ -29,6 +29,15 @@ type
     property OverTarget: Boolean read IsOverTarget;
   end;
 
+  IMultipleHasTarget = interface
+    ['{8B845E1F-1C06-42CD-8657-38A869FE68BC}']
+
+    {AllOverTarget}
+    function AreAllOverTarget: Boolean;
+
+    property AllOverTarget: Boolean read AreAllOverTarget;
+  end;
+
 implementation
 
 end.

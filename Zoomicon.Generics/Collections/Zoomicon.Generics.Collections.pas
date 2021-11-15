@@ -28,6 +28,10 @@ type
     class procedure ForEach(const Enum: TEnumerable<T>; const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
     procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
 
+    { All }
+    class function All(const Enum: TEnumerable<T>; const Predicate: TPredicate<T>): Boolean; overload;
+    function All(const Predicate: TPredicate<T>): Boolean; overload;
+
     { Shuffle }
     class procedure Shuffle(const List: TList<T>); overload; //based on: http://www.bytechaser.com/en/functions/p6sv9tve9v/randomly-shuffle-contents-of-any-list-in-c-sharp.aspx
     procedure Shuffle; overload;
@@ -204,19 +208,40 @@ end;
 
 {$endregion}
 
+{$region 'All'}
+
+class function TListEx<T>.All(const Enum: TEnumerable<T>; const Predicate: TPredicate<T>): Boolean;
+begin
+  result := false;
+  if Assigned(Enum) and Assigned(Predicate) then
+    for var item in Enum do
+      if not Predicate(item) then exit;
+  result := true;
+end;
+
+function TListEx<T>.All(const Predicate: TPredicate<T>): Boolean;
+begin
+  result := {TListEx<T>.}All(Self, Predicate);
+end;
+
+{$endregion}
+
 {$region 'Shuffle'}
 
 class procedure TListEx<T>.Shuffle(const List: TList<T>); //based on: http://www.bytechaser.com/en/functions/p6sv9tve9v/randomly-shuffle-contents-of-any-list-in-c-sharp.aspx
 begin
-  Randomize; //Seed the random number generator from clock
-  var n := List.Count;
-  while (n > 1) do
+  if Assigned(List) then
   begin
-    dec(n);
-    var k := random(n + 1);
-    var value := list[k];
-    list[k] := list[n];
-    list[n] := value;
+    Randomize; //Seed the random number generator from clock
+    var n := List.Count;
+    while (n > 1) do
+    begin
+      dec(n);
+      var k := random(n + 1);
+      var value := list[k];
+      list[k] := list[n];
+      list[n] := value;
+    end;
   end;
 end;
 
@@ -231,7 +256,7 @@ end;
 
 class procedure TListEx<T>.AddOnce(const List: TList<T>; const Item: T);
 begin
-  if not List.Contains(item) then
+  if Assigned(List) and (not List.Contains(item)) then
     List.Add(item);
 end;
 

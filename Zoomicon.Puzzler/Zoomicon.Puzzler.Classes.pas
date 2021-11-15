@@ -2,7 +2,7 @@ unit Zoomicon.Puzzler.Classes;
 
 interface
   uses
-    //Zoomicon.Puzzler.Models, //for IShuffler
+    //Zoomicon.Puzzler.Models, //for IShuffler, IHasTarget
     FMX.Controls; //for TControl
 
 {$REGION 'Shuffler'}
@@ -22,7 +22,20 @@ const
   DEFAULT_TARGET_TOLERANCE : Single = 10;
 
 type
+  TControlMultipleHasTargetHelper = class helper for TControl//(MultipleHasTarget)
+  public
+    {TargetTolerance}
+    //class var TargetTolerance: Single; //COMPILER BUG: HAVE TO EITHER MOVE THIS CLASS HELPER BEFORE THE OTHER TCONTROL CLASS HELPER, OR REDECLARE THIS HERE
+
+    {AllOverTarget}
+    function AreAllOverTarget: Boolean;
+
+    property AllOverTarget: Boolean read AreAllOverTarget;
+  end;
+
+type
   TControlHasTargetHelper = class helper for TControl//(IHasTarget)
+  public
     {TargetTolerance}
     class var TargetTolerance: Single;
     class constructor Create; //initializes TargetTolerance to DEFAULT_TARGET_TOLERANCE
@@ -46,6 +59,7 @@ type
 
 implementation
   uses
+    Zoomicon.Puzzler.Models, //for IHasTarget
     Zoomicon.Generics.Collections, //for TListEx
     System.Types; //for PointF
 
@@ -97,12 +111,16 @@ end;
 
 {$endregion}
 
-{$endregion}
+{$region 'TargetTolerance'}
 
 class constructor TControlHasTargetHelper.Create;
 begin
   TargetTolerance := DEFAULT_TARGET_TOLERANCE;
 end;
+
+{$endregion}
+
+{$region 'DistanceToTarget'}
 
 function TControlHasTargetHelper.GetDistanceToTarget: Single;
 begin
@@ -112,9 +130,28 @@ begin
     result := 0;
 end;
 
+{$endregion}
+
+{$region 'IsOverTarget'}
+
 function TControlHasTargetHelper.IsOverTarget: Boolean;
 begin
   result := DistanceToTarget <= TargetTolerance;
+end;
+
+{$endregion}
+
+{$ENDREGION}
+
+{$REGION 'TControlMultipleHasTargetHelper'}
+
+function TControlMultipleHasTargetHelper.AreAllOverTarget: Boolean;
+begin
+  result := TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).All(function(item: IHasTarget): Boolean
+      begin
+        result := item.OverTarget;
+      end
+    );
 end;
 
 {$ENDREGION}
