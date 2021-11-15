@@ -23,21 +23,31 @@ type
     procedure btnSaveClick(Sender: TObject);
 
   protected
+    FStoryItem: IStoryItem;
     FPopup: TPopup;
     procedure CheckCreatePopup;
+
     {StoryItem}
     function GetStoryItem: IStoryItem;
+    procedure SetStoryItem(const Value: IStoryItem);
+
+    {View}
+    function GetView: TControl;
+
     {DeleteVisible}
     function IsDeleteVisible: Boolean;
     procedure SetDeleteVisible(const Value: Boolean);
 
   public
-    procedure ShowPopup;
+    destructor Destroy; override;
+
+    procedure ShowPopup; //TODO: use PopupVisible boolean property instead
     procedure HidePopup;
     property Popup: TPopup read FPopup write FPopup stored false;
 
   published
-    property StoryItem: IStoryItem read GetStoryItem stored false;
+    property View: TControl read GetView stored false;
+    property StoryItem: IStoryItem read GetStoryItem write SetStoryItem stored false;
     property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible stored false;
   end;
 
@@ -47,11 +57,35 @@ implementation
 
 { TStoryItemOptions }
 
+destructor TStoryItemOptions.Destroy;
+begin
+  if Assigned(FPopup) then
+    FPopup.RemoveObject(Self); //must do before FreeAndNil(FPopup) else it fails when we call "inherited" below (the popup seems to kill us though it wasn't our owner, we were just its child/content)
+
+  FreeAndNil(FPopup);
+
+  inherited; //do last
+end;
+
 {$region 'StoryItem'}
 
 function TStoryItemOptions.GetStoryItem: IStoryItem;
 begin
-  result := Owner as IStoryItem; //assuming options frame is owned by an IStoryItem implementor
+  result := FStoryItem;
+end;
+
+procedure TStoryItemOptions.SetStoryItem(const Value: IStoryItem);
+begin
+  FStoryItem := Value;
+end;
+
+{$endregion}
+
+{$region 'View'}
+
+function TStoryItemOptions.GetView: TControl;
+begin
+  result := Self;
 end;
 
 {$endregion}
@@ -110,12 +144,10 @@ begin
   if not Assigned(FPopup) then
   begin
     var component := GetStoryItem.View;
-    var popup := TPopup.Create(component);
+    var popup := TPopup.Create(nil); //don't set component as owner, seems to always store it (irrespective of "Stored := false") //can't set Self as owner either, makes a circular reference
     var options := Self;
     with popup do
     begin
-      Stored := False; //don't try to store the popup
-      //Parent := (component as TFmxObject);
       //PlacementTarget := (component as TControl);
       AddObject(options);
       Placement:=TPlacement.MouseCenter;

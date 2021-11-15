@@ -123,7 +123,7 @@ end;
 destructor TMediaPlayerEx.Destroy;
 begin
   Stream := nil; //must do (calls SetStream) to free any temporary file we had created //do not free FStream, we hadn't created it
-  inherited;
+  inherited; //do last
 end;
 
 procedure TMediaPlayerEx.Play;

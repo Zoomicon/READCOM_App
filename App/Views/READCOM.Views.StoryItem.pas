@@ -5,7 +5,9 @@ interface
 uses
   READCOM.App.Models, //for IStoryItem
   READCOM.Messages.Models, //for IMessageEditModeChange
-  Zoomicon.Manipulator,
+  Zoomicon.Manipulator, //for TManipulator
+  Zoomicon.Puzzler.Models, //for IHasTarget
+  Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper
   iPub.Rtl.Messaging, //for SubscribeAttrible, GMessaging
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
@@ -18,7 +20,7 @@ const
 type
   IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
 
-  TStoryItem = class(TManipulator, IStoryItem, IStoreable)
+  TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget) //IHasTarget implemented via TControlHasTargetHelper
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
@@ -49,6 +51,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     procedure PlayRandomAudioStoryItem;
 
@@ -62,10 +65,6 @@ type
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
-
-    { Id }
-    function GetId: TGUID;
-    procedure SetId(const Value: TGUID);
 
     { View }
     function GetView: TControl;
@@ -84,14 +83,6 @@ type
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
-
-    { Target }
-    function GetTarget: IStoryItem;
-    procedure SetTarget(const Value: IStoryItem);
-
-    { TargetId }
-    function GetTargetId: TGUID;
-    procedure SetTargetId(const Value: TGUID);
 
     { StoryMode }
     function GetStoryMode: TStoryMode;
@@ -114,13 +105,10 @@ type
     property Options: IStoryItemOptions read GetOptions stored false;
 
   published
-    property Id: TGUID read GetId write SetId;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
     property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property Target: IStoryItem read GetTarget write SetTarget stored false; //default nil
-    property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
@@ -153,6 +141,14 @@ begin
   InitDropTarget;
 end;
 
+destructor TStoryItem.Destroy;
+begin
+  if Assigned(FOptions) then
+    FreeAndNil(FOptions.View);
+
+  inherited; //do last
+end;
+
 function TStoryItem.GetDefaultSize: TSizeF;
 begin
   Result := TSizeF.Create(640, 480);
@@ -182,20 +178,6 @@ begin
 end;
 
 {$REGION '--- PROPERTIES ---'}
-
-{$region 'Id'}
-
-function TStoryItem.GetId: TGUID;
-begin
-
-end;
-
-procedure TStoryItem.SetId(const Value: TGUID);
-begin
-
-end;
-
-{$endregion}
 
 {$region 'View'}
 
@@ -275,34 +257,6 @@ end;
 
 {$endregion}
 
-{$region 'Target'}
-
-function TStoryItem.GetTarget: IStoryItem;
-begin
-
-end;
-
-procedure TStoryItem.SetTarget(const Value: IStoryItem);
-begin
-
-end;
-
-{$endregion}
-
-{$region 'TargetId'}
-
-function TStoryItem.GetTargetId: TGUID;
-begin
-
-end;
-
-procedure TStoryItem.SetTargetId(const Value: TGUID);
-begin
-
-end;
-
-{$endregion}
-
 {$region 'StoryMode'}
 
 function TStoryItem.GetStoryMode: TStoryMode;
@@ -330,10 +284,10 @@ function TStoryItem.GetOptions: IStoryItemOptions;
 begin
   if not Assigned(FOptions) then
     begin
-    var optionsView := TStoryItemOptions.Create(Self);
-    optionsView.Stored := false; //must do else it will try to save the options with the owner of the options frame (which seems to also be used as Root, probably causing to try to store the options frame)
-    FOptions := optionsView;
+    FOptions := TStoryItemOptions.Create(nil); //don't set storyitem as owner, seems to always store it (irrespective of "Stored := false")
+    FOptions.StoryItem := Self;
     end;
+
   result := FOptions;
 end;
 

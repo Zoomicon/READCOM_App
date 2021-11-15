@@ -127,8 +127,8 @@ end;
 
 destructor TDownloaderThread.Destroy;
 begin
-  inherited;
   SetTerminationEvent; //notify any threads waiting on our event object
+  inherited; //do last
 end;
 
 procedure TDownloaderThread.Execute; //returns HTTP status code
@@ -345,8 +345,6 @@ end;
 
 destructor TFileDownloader.Destroy;
 begin
-  inherited;
-
   if Assigned(FDownloaderThread) then
     begin
     FreeAndNil(FDownloaderThread);
@@ -356,6 +354,8 @@ begin
     end;
 
   FreeAndNil(FData); //when it's a TFileDownloader we weren't given a data stream, we created it, so have to free it
+
+  inherited; //do last
 end;
 
 procedure TFileDownloader.Initialize(const TheContentURI: TURI; const TheFilepath: string; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);

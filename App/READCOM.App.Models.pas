@@ -78,10 +78,6 @@ type
     //--- Methods ---
     procedure PlayRandomAudioStoryItem;
 
-    { Id }
-    function GetId: TGUID;
-    procedure SetId(const Value: TGUID);
-
     { View }
     function GetView: TControl;
 
@@ -100,14 +96,6 @@ type
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
 
-    { Target }
-    function GetTarget: IStoryItem;
-    procedure SetTarget(const Value: IStoryItem);
-
-    { TargetId }
-    function GetTargetId: TGUID;
-    procedure SetTargetId(const Value: TGUID);
-
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
@@ -119,22 +107,23 @@ type
     procedure HandleParentNavigatedToChanged;
 
     //--- Properties ---
-    property Id: TGUID read GetId write SetId;
     property View: TControl read GetView;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property Target: IStoryItem read GetTarget write SetTarget; //stored false
-    property TargetId: TGUID read GetTargetId write SetTargetId; //default ''
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property Options: IStoryItemOptions read GetOptions; //stored false
   end;
 
   IStoryItemOptions = interface
     ['{1AEC7512-1E1D-4720-9D74-9A5411A64377}']
+    { View }
+    function GetView: TControl;
+
     { StoryItem }
     function GetStoryItem: IStoryItem;
+    procedure SetStoryItem(const Value: IStoryItem);
 
     { DeleteVisible }
     function IsDeleteVisible: Boolean;
@@ -144,6 +133,8 @@ type
     procedure ShowPopup;
     procedure HidePopup;
 
+    property View: TControl read GetView; //stored false
+    property StoryItem: IStoryItem read GetStoryItem write SetStoryItem; //stored false
     property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible;
   end;
 
