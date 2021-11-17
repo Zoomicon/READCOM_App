@@ -22,19 +22,7 @@ const
   DEFAULT_TARGET_TOLERANCE : Single = 10;
 
 type
-  TControlMultipleHasTargetHelper = class helper for TControl//(MultipleHasTarget)
-  public
-    {TargetTolerance}
-    //class var TargetTolerance: Single; //COMPILER BUG: HAVE TO EITHER MOVE THIS CLASS HELPER BEFORE THE OTHER TCONTROL CLASS HELPER, OR REDECLARE THIS HERE
-
-    {AllOverTarget}
-    function AreAllOverTarget: Boolean;
-
-    property AllOverTarget: Boolean read AreAllOverTarget;
-  end;
-
-type
-  TControlHasTargetHelper = class helper for TControl//(IHasTarget)
+  TControlHasTargetHelper = class helper(TControlShufflerHelper) for TControl//(IHasTarget) //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
   public
     {TargetTolerance}
     class var TargetTolerance: Single;
@@ -53,6 +41,15 @@ type
     property Target: TControl read GetTarget write SetTarget;
     property DistanceToTarget: Single read GetDistanceToTarget;
     property OverTarget: Boolean read IsOverTarget;
+  end;
+
+type
+  TControlMultipleHasTargetHelper = class helper(TControlHasTargetHelper) for TControl//(IMultipleHasTarget) //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
+  public
+    {AllOverTarget}
+    function AreAllOverTarget: Boolean;
+
+    property AllOverTarget: Boolean read AreAllOverTarget;
   end;
 
 {$ENDREGION}

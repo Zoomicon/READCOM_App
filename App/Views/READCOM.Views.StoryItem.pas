@@ -20,7 +20,7 @@ const
 type
   IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
 
-  TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget) //IHasTarget implemented via TControlHasTargetHelper
+  TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     DropTarget: TDropTarget;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
