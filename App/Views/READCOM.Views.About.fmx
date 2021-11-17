@@ -1,0 +1,88 @@
+object Frame1: TFrame1
+  Size.Width = 516.000000000000000000
+  Size.Height = 304.000000000000000000
+  Size.PlatformDefault = False
+  object svgLogo: TSVGIconImage
+    MultiResBitmap = <
+      item
+      end>
+    DisableInterpolation = True
+    Position.X = 8.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 109.000000000000000000
+    Size.Height = 109.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object Panel1: TPanel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 125.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 383.000000000000000000
+    Size.Height = 110.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object lblTitle: TLabel
+      Align = Horizontal
+      StyledSettings = [Family, Size, FontColor]
+      Position.Y = 24.000000000000000000
+      Size.Width = 383.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.HorzAlign = Center
+      Text = 'READ-COM App'
+      TabOrder = 1
+    end
+    object Panel2: TPanel
+      Align = Horizontal
+      Position.Y = 49.000000000000000000
+      Size.Width = 383.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object lblVersion: TLabel
+        Align = Left
+        Position.X = 204.000000000000000000
+        Size.Width = 57.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Version:'
+        TabOrder = 3
+      end
+      object lblVersionValue: TLabel
+        Align = Client
+        Size.Width = 122.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        Text = '0.1'
+        TabOrder = 2
+      end
+      object Panel3: TPanel
+        Align = MostLeft
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Size.Width = 204.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 5
+      end
+    end
+  end
+  object Memo1: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    Lines.Strings = (
+      'Author: George Birbilis / Zoomicon.com'
+      'https://www.read-com-eu.uma.es/'
+      ''
+      'Icons: https://icons8.com')
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Position.X = 8.000000000000000000
+    Position.Y = 125.000000000000000000
+    Size.Width = 500.000000000000000000
+    Size.Height = 171.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Viewport.Width = 496.000000000000000000
+    Viewport.Height = 167.000000000000000000
+  end
+end
