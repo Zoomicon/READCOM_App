@@ -37,7 +37,6 @@ type
     procedure editUrlActionChangeTracking(Sender: TObject);
     procedure editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 
-
   protected
     FStoryItem: IStoryItem;
     FPopup: TPopup;
@@ -188,7 +187,7 @@ begin
     if (AResult = mrOk) then
       begin
       editUrlAction.Text := AValues[0]; //this will call "OnChangeTracking" handler
-      //ShowPopup;
+      //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
       end;
     end
   );
