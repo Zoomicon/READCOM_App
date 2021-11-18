@@ -31,6 +31,7 @@ type
     FID: TGUID;
     FAutoSize: Boolean;
     FHidden: Boolean;
+    FUrlAction: String;
     FOptions: IStoryItemOptions;
     FStoryMode: TStoryMode;
 
@@ -84,6 +85,14 @@ type
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
 
+    { Anchored }
+    function IsAnchored: Boolean;
+    procedure SetAnchored(const Value: Boolean);
+
+    { UrlAction }
+    function GetUrlAction: String;
+    procedure SetUrlAction(const Value: String);
+
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
@@ -109,6 +118,8 @@ type
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
     property Hidden: Boolean read IsHidden write SetHidden; //default false
+    property Anchored: Boolean read IsAnchored write SetAnchored; //default false
+    property UrlAction: String read GetUrlAction write SetUrlAction; //default nil
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
@@ -116,6 +127,7 @@ type
 
 implementation
   uses
+    u_UrlOpen,
     Zoomicon.Generics.Collections,
     READCOM.Views.Options.StoryItemOptions;
 
@@ -257,6 +269,31 @@ end;
 
 {$endregion}
 
+{$region 'Anchored'}
+
+function TStoryItem.IsAnchored: Boolean;
+begin
+  result := Locked;
+end;
+
+procedure TStoryItem.SetAnchored(const Value: Boolean);
+begin
+  Locked := Value;
+end;
+
+{$endregion}
+
+{$region 'UrlAction'}
+function TStoryItem.GetUrlAction: String;
+begin
+  result := FUrlAction;
+end;
+
+procedure TStoryItem.SetUrlAction(const Value: String);
+begin
+  FUrlAction := Value;
+end;
+
 {$region 'StoryMode'}
 
 function TStoryItem.GetStoryMode: TStoryMode;
@@ -309,7 +346,10 @@ procedure TStoryItem.Click;
 begin
   inherited; //fire event handlers
   if EditMode then
-    Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+    Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
+  else
+    if (FUrlAction <> '') then
+      url_Open_In_Browser(FUrlAction);
 end;
 
 procedure TStoryItem.Tap(const Point: TPointF);

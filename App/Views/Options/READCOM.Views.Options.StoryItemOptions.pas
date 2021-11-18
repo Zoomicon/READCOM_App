@@ -6,21 +6,37 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts,
-  READCOM.App.Models, FMX.Controls.Presentation; //for IStoryItemOptions
+  READCOM.App.Models, FMX.Controls.Presentation, System.ImageList,
+  FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit; //for IStoryItemOptions
 
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
     GridPanelLayout: TGridPanelLayout;
     btnDelete: TSpeedButton;
-    btnCloseOptions: TSpeedButton;
     btnLoad: TSpeedButton;
     OpenDialog: TOpenDialog;
     btnSave: TSpeedButton;
     SaveDialog: TSaveDialog;
-    procedure btnCloseOptionsClick(Sender: TObject);
-    procedure btnDeleteClick(Sender: TObject);
-    procedure btnLoadClick(Sender: TObject);
-    procedure btnSaveClick(Sender: TObject);
+    SVGIconImageList: TSVGIconImageList;
+    ActionList: TActionList;
+    actionDelete: TAction;
+    actionOpen: TAction;
+    actionSave: TAction;
+    actionAnchor: TAction;
+    btnAnchor: TSpeedButton;
+    Panel1: TPanel;
+    glyphUrlAction: TGlyph;
+    editUrlAction: TEdit;
+    actionChangeUrlAction: TAction;
+    procedure actionAnchorExecute(Sender: TObject);
+    procedure actionDeleteExecute(Sender: TObject);
+    procedure actionOpenExecute(Sender: TObject);
+    procedure actionSaveExecute(Sender: TObject);
+    procedure actionChangeUrlActionExecute(Sender: TObject);
+    procedure Glyph1Tap(Sender: TObject; const Point: TPointF);
+    procedure editUrlActionChangeTracking(Sender: TObject);
+    procedure editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+
 
   protected
     FStoryItem: IStoryItem;
@@ -52,6 +68,10 @@ type
   end;
 
 implementation
+  uses
+    FMX.DialogService.Async,
+    FMX.Objects, //for TImageWrapMode
+    FMX.Styles.Objects; //for TStyleObject
 
 {$R *.fmx}
 
@@ -67,6 +87,16 @@ begin
   inherited; //do last
 end;
 
+procedure TStoryItemOptions.editUrlActionChangeTracking(Sender: TObject);
+begin
+  StoryItem.SetUrlAction(editUrlAction.Text);
+end;
+
+procedure TStoryItemOptions.editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  actionChangeUrlAction.Execute;
+end;
+
 {$region 'StoryItem'}
 
 function TStoryItemOptions.GetStoryItem: IStoryItem;
@@ -77,6 +107,12 @@ end;
 procedure TStoryItemOptions.SetStoryItem(const Value: IStoryItem);
 begin
   FStoryItem := Value;
+
+  with FStoryItem do
+  begin
+    editUrlAction.Text := GetUrlAction;
+    actionAnchor.Checked := IsAnchored;
+  end;
 end;
 
 {$endregion}
@@ -86,6 +122,12 @@ end;
 function TStoryItemOptions.GetView: TControl;
 begin
   result := Self;
+end;
+
+procedure TStoryItemOptions.Glyph1Tap(Sender: TObject;
+  const Point: TPointF);
+begin
+  ShowMessage('test');
 end;
 
 {$endregion}
@@ -104,19 +146,21 @@ end;
 
 {$endregion}
 
-{$region 'Buttons'}
+{$region 'Actions'}
 
-procedure TStoryItemOptions.btnCloseOptionsClick(Sender: TObject);
+procedure TStoryItemOptions.actionAnchorExecute(Sender: TObject);
 begin
-  HidePopup;
+  actionAnchor.Checked := not actionAnchor.Checked;
+  StoryItem.SetAnchored(actionAnchor.Checked);
+  ShowPopup;
 end;
 
-procedure TStoryItemOptions.btnDeleteClick(Sender: TObject);
+procedure TStoryItemOptions.actionDeleteExecute(Sender: TObject);
 begin
   FreeAndNil(GetStoryItem As TComponent);
 end;
 
-procedure TStoryItemOptions.btnLoadClick(Sender: TObject);
+procedure TStoryItemOptions.actionOpenExecute(Sender: TObject);
 begin
   with OpenDialog do
   begin
@@ -126,7 +170,7 @@ begin
   end;
 end;
 
-procedure TStoryItemOptions.btnSaveClick(Sender: TObject);
+procedure TStoryItemOptions.actionSaveExecute(Sender: TObject);
 begin
   with SaveDialog do
   begin
@@ -137,7 +181,23 @@ begin
   end;
 end;
 
+procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);
+begin
+  TDialogServiceAsync.InputQuery('URL', ['URL'], [StoryItem.GetUrlAction], procedure(const AResult: TModalResult; const AValues: array of string)
+    begin
+    if (AResult = mrOk) then
+      begin
+      editUrlAction.Text := AValues[0]; //this will call "OnChangeTracking" handler
+      //ShowPopup;
+      end;
+    end
+  );
+  ShowPopup;
+end;
+
 {$endregion}
+
+{$region 'Popup'}
 
 procedure TStoryItemOptions.CheckCreatePopup;
 begin
@@ -147,22 +207,23 @@ begin
     var options := Self;
     with popup do
     begin
-      //PlacementTarget := (component as TControl);
-      AddObject(options);
-      Placement:=TPlacement.MouseCenter;
       Width := options.Width;
       Height := options.Height;
+      options.Align := TAlignLayout.Client;
+      AddObject(options);
+      Placement:=TPlacement.MouseCenter;
+      //DragWithParent := true; //don't use, will move with cursor (at Delphi 11)
+      //PlacementTarget := (component as TControl);
       //PlacementRectangle:= TBounds.Create(RectF(0, 0, Width, Height));
     end;
     FPopup := popup;
   end;
 end;
 
-{$region 'Popup'}
-
 procedure TStoryItemOptions.ShowPopup;
 begin
   CheckCreatePopup;
+
   if Assigned(FPopup) then
     FPopup.IsOpen := true;
 end;

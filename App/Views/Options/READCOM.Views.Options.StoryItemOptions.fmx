@@ -1,23 +1,25 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 380.000000000000000000
-  Size.Height = 64.000000000000000000
+  Size.Width = 344.000000000000000000
+  Size.Height = 204.000000000000000000
   Size.PlatformDefault = False
   object GridPanelLayout: TGridPanelLayout
-    Align = Contents
-    Size.Width = 380.000000000000000000
-    Size.Height = 64.000000000000000000
+    Align = Horizontal
+    Size.Width = 344.000000000000000000
+    Size.Height = 57.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     ColumnCollection = <
       item
-        SizeStyle = Auto
-        Value = 100.000000000000000000
+        SizeStyle = Absolute
+        Value = 64.000000000000000000
       end
       item
-        SizeStyle = Auto
+        SizeStyle = Absolute
+        Value = 64.000000000000000000
       end
       item
-        SizeStyle = Auto
+        SizeStyle = Absolute
+        Value = 64.000000000000000000
       end
       item
         SizeStyle = Auto
@@ -25,7 +27,7 @@ object StoryItemOptions: TStoryItemOptions
     ControlCollection = <
       item
         Column = 0
-        Control = btnCloseOptions
+        Control = btnAnchor
         Row = 0
       end
       item
@@ -48,56 +50,328 @@ object StoryItemOptions: TStoryItemOptions
       item
         Value = 100.000000000000000000
       end>
-    object btnCloseOptions: TSpeedButton
-      Anchors = []
-      Position.Y = 6.000000000000000000
-      Size.Width = 49.000000000000000000
-      Size.Height = 52.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'drawertoolbutton'
-      Text = 'Hide Options'
-      OnClick = btnCloseOptionsClick
-    end
     object btnDelete: TSpeedButton
-      Anchors = []
-      Position.X = 49.000000000000000000
-      Position.Y = 6.000000000000000000
-      Size.Width = 49.000000000000000000
-      Size.Height = 52.000000000000000000
+      Action = actionDelete
+      Align = Client
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 3
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'trashtoolbutton'
-      Text = 'Delete'
-      OnClick = btnDeleteClick
     end
     object btnLoad: TSpeedButton
-      Anchors = []
-      Position.X = 98.000000000000000000
-      Position.Y = 6.000000000000000000
-      Size.Width = 49.000000000000000000
-      Size.Height = 52.000000000000000000
+      Action = actionOpen
+      Align = Client
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 1
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'organizetoolbutton'
-      Text = 'Load'
-      OnClick = btnLoadClick
     end
     object btnSave: TSpeedButton
-      Anchors = []
-      Position.X = 147.000000000000000000
-      Position.Y = 6.000000000000000000
-      Size.Width = 49.000000000000000000
-      Size.Height = 52.000000000000000000
+      Action = actionSave
+      Align = Client
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 2
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'escapetoolbutton'
-      Text = 'Load'
-      OnClick = btnSaveClick
+    end
+    object btnAnchor: TSpeedButton
+      Action = actionAnchor
+      Align = Client
+      Anchors = []
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 0
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'escapetoolbutton'
     end
   end
   object OpenDialog: TOpenDialog
-    Left = 248
-    Top = 16
+    Left = 24
+    Top = 144
   end
   object SaveDialog: TSaveDialog
-    Left = 328
-    Top = 16
+    Left = 88
+    Top = 144
+  end
+  object Panel1: TPanel
+    Align = Horizontal
+    Position.Y = 65.000000000000000000
+    Size.Width = 344.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 9
+    object glyphUrlAction: TGlyph
+      Margins.Left = 5.000000000000000000
+      Align = MostLeft
+      Position.X = 5.000000000000000000
+      Size.Width = 33.000000000000000000
+      Size.Height = 41.000000000000000000
+      Size.PlatformDefault = False
+      ImageIndex = 4
+      Images = SVGIconImageList
+    end
+    object editUrlAction: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Client
+      TabOrder = 4
+      Margins.Left = 5.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 41.000000000000000000
+      Size.PlatformDefault = False
+      OnChangeTracking = editUrlActionChangeTracking
+      OnMouseDown = editUrlActionMouseDown
+    end
+  end
+  object SVGIconImageList: TSVGIconImageList
+    Source = <
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Anchor'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="line">'#10'    <path fill="none" stroke="#000000" s' +
+          'troke-linecap="round" stroke-linejoin="round" stroke-miterlimit=' +
+          '"10" stroke-width="2" d="M54.215,34.1095l-5.2701,9.12h3.1702c-2.' +
+          '4101,5.55-7.6001,9.37-13.5801,10.07v-23.88h4c1.2053,0,2.1704-1.0' +
+          '684,1.9747-2.3241 c-0.154-0.9877-1.0771-1.6759-2.0766-1.6759H38.' +
+          '535v-2.41c2.0104-0.891,3.3423-3.0605,2.9227-5.4805 c-0.3413-1.96' +
+          '84-1.8948-3.5908-3.8506-3.9978c-3.2277-0.6717-6.0721,1.7782-6.07' +
+          '21,4.8883c0,2.05,1.24,3.81,3,4.59v2.41h-3.898 c-0.9996,0-1.9227,' +
+          '0.6882-2.0766,1.6759c-0.1958,1.2557,0.7694,2.3241,1.9746,2.3241h' +
+          '4v23.88 c-5.9299-0.71-11.1699-4.56-13.58-10.07h3.1001l-5.2701-9.' +
+          '12l-5.27,9.12h3.28c0,0.24,0.0541,0.4652,0.13,0.71 c2.6723,8.6078' +
+          ',16.5632,15.1685,19.0988,16.3038c0.2569,0.1151,0.5388,0.1164,0.7' +
+          '966,0.0034 c2.5781-1.1294,16.8623-7.7541,19.5846-17.0172h3.08L54' +
+          '.215,34.1095z M36.535,17.4195c0.5501,0,1,0.45,1,1c0,0.55-0.4499,' +
+          '1-1,1 c-0.55,0-1-0.45-1-1C35.535,17.8695,35.985,17.4195,36.535,1' +
+          '7.4195z"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'OpenFileFolder'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="#9B9B9A" stroke="none" ' +
+          'd="M15.464,59.6264c0.1391-0.1691,2.3559-7.8264,2.8998-9.627c0.45' +
+          '7-1.5137,3.9618-15.2702,6.1601-25.071 c0.0084-0.1315,33.4839-0.6' +
+          '133,33.4839-0.6133v-4.0109c0,0.5522-1-3.356-1-3.356L29.5147,16.3' +
+          '77 c-0.0801-1.2364-1.004-4.1216-2.1368-4.1216L14.791,12.0571c-1.' +
+          '1026,0-2.8321,1.3407-2.8321,2.4437c0,0,0.5527,39.7248,0,39.7248 ' +
+          'c-0.5527,0-0.9999,2.3271-0.9999,1.7744c0,0,0.3537,3.5947,1.3755,' +
+          '4.566c0.0143,0.0137,0.0302,0.0212,0.0451,0.0335 C12.2471,60.4436' +
+          ',15.305,59.8189,15.464,59.6264z"/>'#10'    <path fill="#D0CFCE" stro' +
+          'ke="none" d="M23.9444,24.3151c0,0.0782-0.0083,0.1557-0.0259,0.23' +
+          '18c-0.2749,1.226-6.7345,30.0417-7.363,32.1243 c-0.3359,1.1164-0.' +
+          '9593,2.3082-1.7645,3.291l43.1115,0.0104c1.1381,0,1.5216,0,2.1521' +
+          '-2.3899 c0.6676-2.5305,6.6984-30.2693,7.342-33.2323c0.0017-0.009' +
+          ',0.0066-0.0353,0.0066-0.0353H23.9444z"/>'#10'  </g>'#10'  <g id="hair"/>' +
+          #10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  <g id="line">'#10'    <p' +
+          'ath fill="none" stroke="#000000" stroke-linecap="round" stroke-l' +
+          'inejoin="round" stroke-miterlimit="10" stroke-width="2" d="M57.0' +
+          '078,20.3044v-3.3562l-27.3383-0.0025c-0.198,0-0.3586-0.165-0.3586' +
+          '-0.3684l-0.0687-1.5169 c-0.116-1.7878-1.3398-3.0033-2.9967-3.003' +
+          '3H14.9589c-1.6569,0-3,1.3432-3,3V56"/>'#10'    <path fill="none" str' +
+          'oke="#000000" stroke-linecap="round" stroke-linejoin="round" str' +
+          'oke-miterlimit="10" stroke-width="2" d="M17.0271,55.5678c-0.5897' +
+          ',1.954-2.2223,4.1389-3.8959,4.394l43.9148,0.0108c1.6569,0,2.3233' +
+          '-0.4388,3-3 c0.6767-2.5612,7-31.6575,7-31.6575c0-0.5523-0.4477-1' +
+          '-1-1H24.9649c-0.5523,0-1,0.4477-1,1 C23.9649,25.3151,17.6168,53.' +
+          '6137,17.0271,55.5678z"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Save'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="#D0CFCE" stroke="none" ' +
+          'd="M58.2314,54.8086H14.1252c-0.8922,0-1.6222-0.73-1.6222-1.6222V' +
+          '43.1805c0-0.8922,0.73-1.6222,1.6222-1.6222 h44.1062c0.8922,0,1.6' +
+          '222,0.73,1.6222,1.6222v10.0059C59.8536,54.0786,59.1236,54.8086,5' +
+          '8.2314,54.8086z"/>'#10'    <circle cx="19.0173" cy="48.2886" r="1.93' +
+          '37" fill="#92D3F5" stroke="none"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g ' +
+          'id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  <g id="line">'#10'    <line x1' +
+          '="36.0851" x2="36.0851" y1="17.1466" y2="36.0165" fill="none" st' +
+          'roke="#000000" stroke-linecap="round" stroke-linejoin="round" st' +
+          'roke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="42.24" x2=' +
+          '"36.1" y1="29.8951" y2="36.0351" fill="none" stroke="#000000" st' +
+          'roke-linecap="round" stroke-linejoin="round" stroke-miterlimit="' +
+          '10" stroke-width="2"/>'#10'    <line x1="29.91" x2="36.05" y1="29.89' +
+          '51" y2="36.0351" fill="none" stroke="#000000" stroke-linecap="ro' +
+          'und" stroke-linejoin="round" stroke-miterlimit="10" stroke-width' +
+          '="2"/>'#10'    <path fill="none" stroke="#000000" stroke-linecap="ro' +
+          'und" stroke-linejoin="round" stroke-miterlimit="10" stroke-width' +
+          '="2" d="M56.8961,54.9782H15.0768c-1.65,0-3-1.35-3-3V44.402c0-1.6' +
+          '5,1.35-3,3-3h41.8194c1.65,0,3,1.35,3,3v7.5762 C59.8961,53.6282,5' +
+          '8.5461,54.9782,56.8961,54.9782z"/>'#10'    <circle cx="19.0173" cy="' +
+          '48.2886" r="2" fill="none" stroke="#000000" stroke-linecap="roun' +
+          'd" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="' +
+          '2"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Delete'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="#FFFFFF" stroke="none" ' +
+          'd="M51.7598,17H20.1525v37.65c0,4.0593,3.2907,5.6209,7.35,5.6209h' +
+          '16.9073c4.0593,0,7.35-1.5616,7.35-5.6209 V17z"/>'#10'    <polyline f' +
+          'ill="#FFFFFF" stroke="none" stroke-linecap="round" stroke-linejo' +
+          'in="round" stroke-miterlimit="10" stroke-width="2" points="31,16' +
+          ' 31,12 41,12 41,16"/>'#10'    <polygon fill="#9b9b9a" stroke="none" ' +
+          'points="51,37 51,46.5172 51,57.6207 48.3,60 33,60"/>'#10'    <rect x' +
+          '="17" y="16" width="38" height="4" fill="#FFFFFF" stroke="none" ' +
+          'stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit' +
+          '="10" stroke-width="2"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g id="skin"/' +
+          '>'#10'  <g id="skin-shadow"/>'#10'  <g id="line">'#10'    <polyline fill="no' +
+          'ne" stroke="#000000" stroke-linecap="round" stroke-linejoin="rou' +
+          'nd" stroke-miterlimit="10" stroke-width="2" points="31,16 31,12 ' +
+          '41,12 41,16"/>'#10'    <path fill="none" stroke="#000000" stroke-lin' +
+          'ecap="round" stroke-linejoin="round" stroke-miterlimit="10" stro' +
+          'ke-width="2" d="M51,25v31c0,2.2091-1.7909,4-4,4H25c-2.2091,0-4-1' +
+          '.7909-4-4V25"/>'#10'    <rect x="17" y="16" width="38" height="4" fi' +
+          'll="none" stroke="#000000" stroke-linecap="round" stroke-linejoi' +
+          'n="round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1' +
+          '="41" x2="41" y1="28.25" y2="55" fill="none" stroke="#000000" st' +
+          'roke-linecap="round" stroke-linejoin="round" stroke-miterlimit="' +
+          '10" stroke-width="2"/>'#10'    <line x1="31" x2="31" y1="28.25" y2="' +
+          '55" fill="none" stroke="#000000" stroke-linecap="round" stroke-l' +
+          'inejoin="round" stroke-miterlimit="10" stroke-width="2"/>'#10'  </g>' +
+          #10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 41
+          end>
+        IconName = 'GlobeWithMeridians'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="line">'#10'    <circle cx="36" cy="36" r="28" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <path fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2" d="M36,8v56c-8.56' +
+          '04,0-15.5-12.536-15.5-28S27.4396,8,36,8c8.5604,0,15.5,12.536,15.' +
+          '5,28S44.5604,64,36,64"/>'#10'    <path fill="none" stroke="#000000" ' +
+          'stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit' +
+          '="10" stroke-width="2" d="M8,36"/>'#10'    <path fill="none" stroke=' +
+          '"#000000" stroke-linecap="round" stroke-linejoin="round" stroke-' +
+          'miterlimit="10" stroke-width="2" d="M64,36"/>'#10'    <line x1="64" ' +
+          'x2="8" y1="36" y2="36" fill="none" stroke="#000000" stroke-linec' +
+          'ap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke' +
+          '-width="2"/>'#10'    <line x1="60" x2="12" y1="22" y2="22" fill="non' +
+          'e" stroke="#000000" stroke-linecap="round" stroke-linejoin="roun' +
+          'd" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="60" x' +
+          '2="12" y1="50" y2="50" fill="none" stroke="#000000" stroke-linec' +
+          'ap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke' +
+          '-width="2"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end>
+    Destination = <
+      item
+        Layers = <
+          item
+            Name = 'Anchor'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'OpenFileFolder'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Save'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Delete'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'GlobeWithMeridians'
+            SourceRect.Right = 41.000000000000000000
+            SourceRect.Bottom = 41.000000000000000000
+          end>
+      end
+      item
+        Layers = <>
+      end>
+    Left = 176
+    Top = 144
+  end
+  object ActionList: TActionList
+    Images = SVGIconImageList
+    Left = 264
+    Top = 144
+    object actionDelete: TAction
+      Text = 'Delete'
+      ImageIndex = 3
+      OnExecute = actionDeleteExecute
+      ImageIndex = 3
+    end
+    object actionOpen: TAction
+      Text = 'Open'
+      ImageIndex = 1
+      OnExecute = actionOpenExecute
+      ImageIndex = 1
+    end
+    object actionSave: TAction
+      Text = 'Save'
+      ImageIndex = 2
+      OnExecute = actionSaveExecute
+      ImageIndex = 2
+    end
+    object actionAnchor: TAction
+      Text = 'Anchor'
+      ImageIndex = 0
+      OnExecute = actionAnchorExecute
+      ImageIndex = 0
+    end
+    object actionChangeUrlAction: TAction
+      Text = 'Change URL Action'
+      OnExecute = actionChangeUrlActionExecute
+    end
   end
 end

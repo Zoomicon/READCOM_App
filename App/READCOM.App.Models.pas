@@ -96,6 +96,14 @@ type
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
 
+    { Anchored }
+    function IsAnchored: Boolean;
+    procedure SetAnchored(const Value: Boolean);
+
+    { UrlAction }
+    function GetUrlAction: String;
+    procedure SetUrlAction(const Value: String);
+
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);

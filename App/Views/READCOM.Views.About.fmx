@@ -74,7 +74,7 @@ object Frame1: TFrame1
       'Author: George Birbilis / Zoomicon.com'
       'https://www.read-com-eu.uma.es/'
       ''
-      'Icons: https://icons8.com')
+      'Icons: https://openmoji.org/')
     Anchors = [akLeft, akTop, akRight, akBottom]
     Position.X = 8.000000000000000000
     Position.Y = 125.000000000000000000

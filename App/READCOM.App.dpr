@@ -33,7 +33,8 @@ uses
   Zoomicon.Zooming.ZoomFrame in '..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas' {ZoomFrame: TFrame},
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
-  READCOM.Views.About in 'Views\READCOM.Views.About.pas' {Frame1: TFrame};
+  READCOM.Views.About in 'Views\READCOM.Views.About.pas' {Frame1: TFrame},
+  u_UrlOpen in 'u_UrlOpen.pas';
 
 {$R *.res}
 
