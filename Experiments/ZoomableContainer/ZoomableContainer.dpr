@@ -10,16 +10,16 @@ uses
   uMainForm in 'uMainForm.pas' {MainForm},
   Zoomicon.Zooming.ZoomFrame in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas' {ZoomFrame: TFrame},
   Zoomicon.Zooming.Classes in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.Classes.pas',
-  uZoomFrameForm in 'uZoomFrameForm.pas' {Form1},
-  uZoomedLayoutForm in 'uZoomedLayoutForm.pas' {Form3};
+  uZoomFrameForm in 'uZoomFrameForm.pas' {ZoomFrameForm},
+  uZoomedLayoutForm in 'uZoomedLayoutForm.pas' {ZoomedLayoutForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
-  TForm1.Create(MainForm).Visible := true;
-  TForm3.Create(MainForm).Visible := true;
+  TZoomFrameForm.Create(MainForm).Visible := true;
+  //TZoomedLayoutForm.Create(MainForm).Visible := true; //TODO: NOT WORKING CORRECTLY
 
   Application.Run;
 end.

@@ -3,7 +3,7 @@ unit Zoomicon.Zooming.ZoomFrame;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Layouts,
   Zoomicon.Zooming.Models;
@@ -91,15 +91,19 @@ begin
         Proc(Control); //Store all children of ScaledLayout as if they were ours
 end;
 
+//TODO: seems to have issue in design mode, not loading all children back into the ScaledLayout (they seem to move into ZoomLayout)
 procedure TZoomFrame.Loaded;
 begin
   BeginUpdate;
 
   //reparent children after loading (since at GetChildren we stored children of ScaledLayout as ours), except for the ScrollBox and the ZoomControls
-  if (ControlsCount > 2) then //extra optimization (we didn't need to check for <> 0, since we always have two children, the ScrollBox and the ZoomControls ones)
+  if (ControlsCount <> 0) then //extra optimization (we didn't need to check for <> 0, since we always have two children, the ScrollBox and the ZoomControls ones) //don't use >2 as extra optimization, may be called multiple times when we have inherited Frames
     For var Control in Controls do
       if (Control <> ScrollBox) and (Control <> ZoomControls) then
-        Control.Parent := ScaledLayout;
+        begin
+        //ScaledLayout.InsertComponent(Control); //this won't show the child in structure view in the IDE
+        Control.Parent := ScaledLayout; //this seems to only keep one child when loading form in the IDE, others eventually move to the frame
+        end;
 
   Zoomer.Align := TAlignLayout.Center; //at design mode we have it set to TAlignLayout.Client
   UpdateZoomFromTrackbars;
@@ -147,40 +151,51 @@ begin
     end;
 end;
 
+//TODO: take in mind scrollbar size
 procedure TZoomFrame.ZoomTo(const Control: TControl; const KeepRatio: Boolean = true); //TODO: adjust for scrollbar sizes
 begin
+  {$region 'Zoom'}
   //BeginUpdate; //Not needed
-  var Rect := Control.BoundsRect;
 
-  var scalingFactor := ScaledLayout.ScalingFactor;
+  var ZoomerAbsRect := Zoomer.AbsoluteRect;
+  var ControlAbsRect := Control.AbsoluteRect;
 
   if KeepRatio then
     begin
-    var zoomFactor := Min(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y)); //using Max here would mean you fill the area but get some cliping
-    SetZoom(zoomFactor);
+      var ZoomFactor := Min(ZoomerAbsRect.Width / ControlAbsRect.Width, ZoomerAbsRect.Height / ControlAbsRect.Height);
+      SetZoom(ZoomFactor);
     end
   else
     begin
-    var zoomFactor := PointF(Zoomer.OriginalWidth/(Rect.Width*scalingFactor.X), Zoomer.OriginalHeight/(Rect.Height*scalingFactor.Y));
-    SetZoom(zoomFactor);
+      var ZoomFactor := PointF(ZoomerAbsRect.Width / ControlAbsRect.Width, ZoomerAbsRect.Height / ControlAbsRect.Height);
+      SetZoom(ZoomFactor);
     end;
 
+  //RecalcAbsolute; //TForm doesn't seem to have such method (would probably be needed if we wrapped everything in a single BeginUpdate/EndUpdate, haven't made that work ok though)
   //EndUpdate; //make sure we do this here if needed, not at the end, else scrolling calculations won't work
 
+  {$endregion}
+
+  {$region 'Pan (center)'}
+
+  ControlAbsRect := Control.AbsoluteRect; //NEEDED TO RECALCULATE AFTER ZOOMING IN ORDER TO FIND THE CORRECT CENTER
+
   var ZoomerParent := Zoomer.ParentControl;
-  var CenterPointNewCoords := ZoomerParent.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.CenterPoint*scalingFactor)); //must adjust the CenterPoint by the ScalingFactor here
+  var CenterPointNewCoords := ZoomerParent.AbsoluteToLocal(ControlAbsRect.CenterPoint);
 
   var ScrollBoxHost := GetScrollBoxParent(Zoomer);
   if (ScrollBoxHost <> nil) then
     begin
-    var scrollToPos := CenterPointNewCoords - PointF(ScrollBoxHost.Width/2, ScrollBoxHost.Height/2);
+    var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBoxHost.Width/2, ScrollBoxHost.Height/2);
     ScrollBoxHost.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
     end
   else
     begin //TODO: see if this case (when not hosted in ScrollBox) works
-    var offsetPos := CenterPointNewCoords - PointF(ZoomerParent.Width/2, ZoomerParent.Height/2);
+    var offsetPos := CenterPointNewCoords - TPointF.Create(ZoomerParent.Width/2, ZoomerParent.Height/2);
     Zoomer.Position.Point := offsetPos;
     end;
+
+  {$endregion}
 end;
 
 {$endregion}

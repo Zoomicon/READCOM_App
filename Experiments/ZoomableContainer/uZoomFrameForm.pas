@@ -6,27 +6,22 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
   FMX.Controls.Presentation, FMX.StdCtrls, Zoomicon.Zooming.Classes,
-  Zoomicon.Zooming.ZoomFrame;
+  Zoomicon.Zooming.ZoomFrame, FMX.Objects;
 
 type
-  TForm1 = class(TForm)
+  TZoomFrameForm = class(TForm)
     ZoomFrame: TZoomFrame;
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
+    procedure btnZoomClick(Sender: TObject);
   end;
 
 var
-  Form1: TForm1;
+  ZoomFrameForm: TZoomFrameForm;
 
 implementation
 
 {$R *.fmx}
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TZoomFrameForm.btnZoomClick(Sender: TObject);
 begin
   ZoomFrame.ZoomTo(Sender As TControl);
 end;

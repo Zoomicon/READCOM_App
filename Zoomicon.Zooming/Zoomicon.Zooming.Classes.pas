@@ -175,39 +175,53 @@ begin
   EndUpdate;
 end;
 
+//TODO: take in mind scrollbar size
 procedure TZoomedLayout.ZoomTo(const Control: TControl; const KeepRatio: Boolean = true); //TODO: adjust for scrollbar sizes
 begin
-  //BeginUpdate; //Not needed
-  var Rect := Control.BoundsRect;
+  var Zoomer := Self;
 
-  var scalingFactor := FScaledLayout.ScalingFactor;
+  {$region 'Zoom'}
+  //BeginUpdate; //Not needed
+
+  var ZoomerAbsRect := Zoomer.AbsoluteRect;
+  var ControlAbsRect := Control.AbsoluteRect;
 
   if KeepRatio then
     begin
-    var zoomFactor := Min(OriginalWidth/(Rect.Width*scalingFactor.X), OriginalHeight/(Rect.Height*scalingFactor.Y)); //using Max here would mean you fill the area but get some cliping
-    SetZoom(zoomFactor);
+      var ZoomFactor := Min(ZoomerAbsRect.Width / ControlAbsRect.Width, ZoomerAbsRect.Height / ControlAbsRect.Height);
+      SetZoom(ZoomFactor);
     end
   else
     begin
-    var zoomFactor := TPointF.Create(OriginalWidth/(Rect.Width*scalingFactor.X), OriginalHeight/(Rect.Height*scalingFactor.Y));
-    SetZoom(zoomFactor);
+      var ZoomFactor := PointF(ZoomerAbsRect.Width / ControlAbsRect.Width, ZoomerAbsRect.Height / ControlAbsRect.Height);
+      SetZoom(ZoomFactor);
     end;
 
+  //RecalcAbsolute; //TForm doesn't seem to have such method (would probably be needed if we wrapped everything in a single BeginUpdate/EndUpdate, haven't made that work ok though)
   //EndUpdate; //make sure we do this here if needed, not at the end, else scrolling calculations won't work
 
-  var CenterPointNewCoords := ParentControl.AbsoluteToLocal(Control.ParentControl.LocalToAbsolute(Rect.CenterPoint*scalingFactor)); //must adjust the CenterPoint by the ScalingFactor here
+  {$endregion}
 
-  var ScrollBoxHost := GetScrollBoxParent(Self);
+  {$region 'Pan (center)'}
+
+  ControlAbsRect := Control.AbsoluteRect; //NEEDED TO RECALCULATE AFTER ZOOMING IN ORDER TO FIND THE CORRECT CENTER
+
+  var ZoomerParent := Zoomer.ParentControl;
+  var CenterPointNewCoords := ZoomerParent.AbsoluteToLocal(ControlAbsRect.CenterPoint);
+
+  var ScrollBoxHost := GetScrollBoxParent(Zoomer);
   if (ScrollBoxHost <> nil) then
     begin
     var scrollToPos := CenterPointNewCoords - TPointF.Create(ScrollBoxHost.Width/2, ScrollBoxHost.Height/2);
     ScrollBoxHost.ViewportPosition := scrollToPos; //don't use ScrollTo method, it is deprecated and just calls ScrollBy (which expects [DX, DY], not a position to scroll to)
     end
   else
-    begin
-    var offsetPos := CenterPointNewCoords - TPointF.Create(ParentControl.Width/2, ParentControl.Height/2);
-    Position.Point := offsetPos;
+    begin //TODO: see if this case (when not hosted in ScrollBox) works
+    var offsetPos := CenterPointNewCoords - TPointF.Create(ZoomerParent.Width/2, ZoomerParent.Height/2);
+    Zoomer.Position.Point := offsetPos;
     end;
+
+  {$endregion}
 end;
 
 {$endregion}

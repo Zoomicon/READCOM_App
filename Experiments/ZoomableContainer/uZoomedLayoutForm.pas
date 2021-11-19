@@ -10,7 +10,7 @@ uses
   Zoomicon.Zooming.Classes, FMX.Controls.Presentation, FMX.StdCtrls;
 
 type
-  TForm3 = class(TForm)
+  TZoomedLayoutForm = class(TForm)
     ScrollBox1: TScrollBox;
     ZoomedLayout1: TZoomedLayout;
     Button1: TButton;
@@ -21,7 +21,7 @@ type
   end;
 
 var
-  Form3: TForm3;
+  ZoomedLayoutForm: TZoomedLayoutForm;
 
 implementation
 
