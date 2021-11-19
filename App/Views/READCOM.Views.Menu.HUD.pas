@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
-  FMX.SVGIconImageList;
+  FMX.SVGIconImageList, FMX.Layouts, System.Actions, FMX.ActnList;
 
 type
   TStoryHUD = class(TFrame)
@@ -16,57 +16,110 @@ type
     BtnMenu: TSpeedButton;
     BtnNext: TSpeedButton;
     SVGIconImageList: TSVGIconImageList;
-    procedure BtnPreviousClick(Sender: TObject);
-    procedure BtnAddClick(Sender: TObject);
-    procedure BtnEditClick(Sender: TObject);
-    procedure BtnMenuClick(Sender: TObject);
-    procedure BtnNextClick(Sender: TObject);
+    layoutEdit: TLayout;
+    layoutNavigation: TLayout;
+    ActionList1: TActionList;
+    actionPrevious: TAction;
+    actionNext: TAction;
+    actionAdd: TAction;
+    actionEdit: TAction;
+    actionAbout: TAction;
+    actionMenu: TAction;
+    layoutAll: TLayout;
+    procedure actionEditExecute(Sender: TObject);
+    procedure actionPreviousExecute(Sender: TObject);
+    procedure actionNextExecute(Sender: TObject);
+    procedure actionAboutExecute(Sender: TObject);
+    procedure actionAddExecute(Sender: TObject);
+    procedure actionMenuExecute(Sender: TObject);
   protected
-    FEditMode: Boolean;
+    {EditMode}
+    function GetEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
   public
-    property EditMode: Boolean read FEditMode write SetEditMode;
+    property EditMode: Boolean read GetEditMode write SetEditMode;
   end;
 
 implementation
   uses
     READCOM.Messages.Models, //for IMessageMenu, IMessageAdd
     READCOM.Messages.Classes, //for TMessageMenu, TMessageAdd
+    READCOM.Views.About, //for TAbout
     iPub.Rtl.Messaging; //for GMessaging
 
 {$R *.fmx}
 
-procedure TStoryHUD.BtnMenuClick(Sender: TObject);
+{$REGION 'Properties'}
+
+{$region 'EditMode'}
+
+function TStoryHUD.GetEditMode: Boolean;
 begin
-  GMessaging.Post(TMessageMenu.Create As IMessageMenu);
+  result := actionEdit.Checked;
 end;
 
-procedure TStoryHUD.BtnEditClick(Sender: TObject);
+procedure TStoryHUD.SetEditMode(const Value: Boolean);
 begin
-  EditMode := not EditMode; //toggle
+  actionEdit.Checked := Value; //see if it causes firing of event on change
 end;
 
-procedure TStoryHUD.BtnPreviousClick(Sender: TObject);
+{$endregion}
+
+{$ENDREGION}
+
+{$REGION 'Actions'}
+
+procedure TStoryHUD.actionMenuExecute(Sender: TObject);
+begin
+  layoutAll.Visible := actionMenu.Checked;
+end;
+
+{$region 'Navigation actions'}
+
+procedure TStoryHUD.actionPreviousExecute(Sender: TObject);
 begin
   GMessaging.Post(TMessageNavigation.Create As IMessageNavigationPrevious);
 end;
 
-procedure TStoryHUD.BtnNextClick(Sender: TObject);
+procedure TStoryHUD.actionNextExecute(Sender: TObject);
 begin
   GMessaging.Post(TMessageNavigation.Create As IMessageNavigationNext);
 end;
 
-///////////
+{$endregion}
 
-procedure TStoryHUD.SetEditMode(const Value: Boolean);
-begin
-  FEditMode := Value;
-  GMessaging.Post(TMessageEditModeChange.Create(Value) As IMessageEditModeChange);
-end;
+{$region 'Edit actions'}
 
-procedure TStoryHUD.BtnAddClick(Sender: TObject);
+procedure TStoryHUD.actionAddExecute(Sender: TObject);
 begin
   GMessaging.Post(TMessageAdd.Create As IMessageAdd);
 end;
+
+procedure TStoryHUD.actionEditExecute(Sender: TObject);
+begin
+  var inEditMode := EditMode;
+  GMessaging.Post(TMessageEditModeChange.Create(inEditMode) As IMessageEditModeChange);
+  layoutEdit.Visible := inEditMode;
+end;
+
+{$endregion}
+
+{$region 'Help actions'}
+
+procedure TStoryHUD.actionAboutExecute(Sender: TObject);
+begin
+  var popup := TPopup.Create(Self);
+  with popup do
+  begin
+    Placement := TPlacement.Center;
+    PlacementTarget := Self;
+    AddObject(TAboutFrame.Create(Self)); //TODO: see that this doesn't get stored and how to release on popup close
+  end;
+  popup.Visible := true;
+end;
+
+{$endregion}
+
+{$ENDREGION}
 
 end.

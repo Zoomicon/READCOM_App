@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 608
-  ClientWidth = 1040
+  ClientHeight = 616
+  ClientWidth = 876
   Position = DesktopCenter
   WindowState = wsMaximized
   FormFactor.Width = 320
@@ -17,29 +17,47 @@ object MainForm: TMainForm
   DesignerMasterStyle = 0
   object ZoomFrame: TZoomFrame
     Align = Client
-    Size.Width = 1040.000000000000000000
-    Size.Height = 608.000000000000000000
+    Size.Width = 876.000000000000000000
+    Size.Height = 616.000000000000000000
     Size.PlatformDefault = False
     Proportional = True
   end
-  inline StoryHUD: TStoryHUD
-    Align = Contents
+  inline StoryHUD1: TStoryHUD
+    Align = Client
     HitTest = False
-    Size.Width = 1040.000000000000000000
-    Size.Height = 608.000000000000000000
+    Size.Width = 876.000000000000000000
+    Size.Height = 616.000000000000000000
     Size.PlatformDefault = False
     ParentShowHint = False
     ShowHint = True
-    inherited BtnAdd: TSpeedButton
-      Position.X = 1000.000000000000000000
-    end
     inherited BtnMenu: TSpeedButton
-      Position.Y = 567.000000000000000000
-      OnClick = nil
+      Position.Y = 8.000000000000000000
     end
-    inherited BtnNext: TSpeedButton
-      Position.X = 991.000000000000000000
-      Position.Y = 567.000000000000000000
+    inherited layoutAll: TLayout
+      Size.Width = 876.000000000000000000
+      Size.Height = 616.000000000000000000
+      inherited layoutEdit: TLayout
+        Position.X = 836.000000000000000000
+        Size.Height = 576.000000000000000000
+      end
+      inherited layoutNavigation: TLayout
+        Position.Y = 576.000000000000000000
+        Size.Width = 876.000000000000000000
+        inherited BtnNext: TSpeedButton
+          Position.X = 820.000000000000000000
+        end
+      end
+    end
+    inherited ActionList1: TActionList
+      inherited actionPrevious: TAction
+        ImageIndex = 1
+      end
+      inherited actionNext: TAction
+        ImageIndex = 2
+      end
+      inherited actionEdit: TAction
+        ImageIndex = 0
+      end
     end
   end
 end

@@ -19,13 +19,12 @@ uses
 
 type
   TMainForm = class(TForm, IStory)
-    StoryHUD: TStoryHUD;
     ZoomFrame: TZoomFrame;
+    StoryHUD1: TStoryHUD;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
-    procedure StoryHUDBtnMenuClick(Sender: TObject);
 
   protected
     function LoadSavedState: Boolean;
@@ -210,11 +209,6 @@ begin
 end;
 
 {$endregion}
-
-procedure TMainForm.StoryHUDBtnMenuClick(Sender: TObject);
-begin
-  StoryHUD.BtnMenuClick(Sender);
-end;
 
 {$region 'IStory'}
 

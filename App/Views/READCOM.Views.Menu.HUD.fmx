@@ -1,69 +1,92 @@
 object StoryHUD: TStoryHUD
-  Align = Contents
+  Align = Client
   HitTest = False
   Size.Width = 912.000000000000000000
   Size.Height = 572.000000000000000000
   Size.PlatformDefault = False
   ParentShowHint = False
   ShowHint = True
-  object BtnAdd: TSpeedButton
-    Anchors = [akTop, akRight]
-    Position.X = 872.000000000000000000
-    Size.Width = 41.000000000000000000
-    Size.Height = 33.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'additembutton'
-    Text = 'BtnAdd'
-    OnClick = BtnAddClick
-  end
-  object BtnPrevious: TSpeedButton
-    Position.X = -1.000000000000000000
-    Size.Width = 41.000000000000000000
+  object BtnMenu: TSpeedButton
+    Action = actionMenu
+    Anchors = [akLeft, akBottom]
+    Enabled = True
+    Images = SVGIconImageList
+    ImageIndex = -1
+    Size.Width = 33.000000000000000000
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
-    Text = 'BtnAdd'
-    OnClick = BtnPreviousClick
   end
-  object BtnEdit: TSpeedButton
-    StaysPressed = True
-    Hint = 'Edit'
-    Images = SVGIconImageList
-    ImageIndex = 0
-    Position.Y = 41.000000000000000000
-    Size.Width = 40.000000000000000000
-    Size.Height = 40.000000000000000000
+  object layoutAll: TLayout
+    Align = Client
+    Size.Width = 912.000000000000000000
+    Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
-    StyleLookup = 'priortoolbutton'
-    Text = 'priortoolbutton'
-    OnClick = BtnEditClick
-  end
-  object BtnMenu: TSpeedButton
-    StaysPressed = True
-    Anchors = [akLeft, akBottom]
-    Hint = 'Edit'
-    Images = SVGIconImageList
-    ImageIndex = 1
-    Position.Y = 528.000000000000000000
-    Size.Width = 49.000000000000000000
-    Size.Height = 44.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'priortoolbutton'
-    OnClick = BtnPreviousClick
-  end
-  object BtnNext: TSpeedButton
-    StaysPressed = True
-    Anchors = [akRight, akBottom]
-    Hint = 'Edit'
-    Images = SVGIconImageList
-    ImageIndex = 2
-    Position.X = 857.000000000000000000
-    Position.Y = 528.000000000000000000
-    Size.Width = 56.000000000000000000
-    Size.Height = 44.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'nexttoolbutton'
-    OnClick = BtnNextClick
+    Visible = False
+    TabOrder = 3
+    object layoutEdit: TLayout
+      Align = MostRight
+      Position.X = 872.000000000000000000
+      Size.Width = 40.000000000000000000
+      Size.Height = 532.000000000000000000
+      Size.PlatformDefault = False
+      Visible = False
+      TabOrder = 1
+      object BtnAdd: TSpeedButton
+        Action = actionAdd
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Images = SVGIconImageList
+        ImageIndex = -1
+        Position.X = -1.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
+      end
+    end
+    object layoutNavigation: TLayout
+      Align = MostBottom
+      Position.Y = 532.000000000000000000
+      Size.Width = 912.000000000000000000
+      Size.Height = 40.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object BtnNext: TSpeedButton
+        Action = actionNext
+        Align = MostRight
+        Enabled = True
+        Images = SVGIconImageList
+        ImageIndex = 2
+        Position.X = 856.000000000000000000
+        Size.Width = 56.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'drawertoolbutton'
+      end
+      object BtnPrevious: TSpeedButton
+        Action = actionPrevious
+        Align = MostLeft
+        Enabled = True
+        Images = SVGIconImageList
+        ImageIndex = 1
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'drawertoolbutton'
+      end
+    end
+    object BtnEdit: TSpeedButton
+      Action = actionEdit
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 0
+      Position.Y = 41.000000000000000000
+      Size.Width = 40.000000000000000000
+      Size.Height = 40.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'priortoolbutton'
+    end
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
@@ -165,5 +188,47 @@ object StoryHUD: TStoryHUD
     Size = 64
     Left = 232
     Top = 32
+  end
+  object ActionList1: TActionList
+    Images = SVGIconImageList
+    Left = 328
+    Top = 32
+    object actionPrevious: TAction
+      Category = 'Navigation'
+      Text = 'actionPrevious'
+      ImageIndex = 1
+      OnExecute = actionPreviousExecute
+      ImageIndex = 1
+    end
+    object actionNext: TAction
+      Category = 'Navigation'
+      Text = 'actionNext'
+      ImageIndex = 2
+      OnExecute = actionNextExecute
+      ImageIndex = 2
+    end
+    object actionAdd: TAction
+      Category = 'Edit'
+      Text = 'actionAdd'
+      OnExecute = actionAddExecute
+    end
+    object actionEdit: TAction
+      Category = 'Edit'
+      AutoCheck = True
+      Text = 'actionEdit'
+      ImageIndex = 0
+      OnExecute = actionEditExecute
+      ImageIndex = 0
+    end
+    object actionAbout: TAction
+      Category = 'Help'
+      Text = 'actionAbout'
+      OnExecute = actionAboutExecute
+    end
+    object actionMenu: TAction
+      AutoCheck = True
+      Text = 'actionMenu'
+      OnExecute = actionMenuExecute
+    end
   end
 end

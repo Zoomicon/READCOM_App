@@ -9,7 +9,7 @@ uses
   FMX.Objects, FMX.SVGIconImage;
 
 type
-  TFrame1 = class(TFrame)
+  TAboutFrame = class(TFrame)
     svgLogo: TSVGIconImage;
     Panel1: TPanel;
     lblTitle: TLabel;

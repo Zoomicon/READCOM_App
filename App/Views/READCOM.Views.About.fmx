@@ -1,4 +1,4 @@
-object Frame1: TFrame1
+object AboutFrame: TAboutFrame
   Size.Width = 516.000000000000000000
   Size.Height = 304.000000000000000000
   Size.PlatformDefault = False
