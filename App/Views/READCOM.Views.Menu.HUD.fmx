@@ -57,7 +57,7 @@ object StoryHUD: TStoryHUD
     Hint = 'Edit'
     Images = SVGIconImageList
     ImageIndex = 2
-    Position.X = 856.000000000000000000
+    Position.X = 857.000000000000000000
     Position.Y = 528.000000000000000000
     Size.Width = 56.000000000000000000
     Size.Height = 44.000000000000000000
