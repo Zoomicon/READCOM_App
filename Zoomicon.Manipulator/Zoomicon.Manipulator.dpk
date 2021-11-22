@@ -33,7 +33,8 @@ requires
   Zoomicon.Generics;
 
 contains
-  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
+  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame},
+  Zoomicon.Selector in 'Zoomicon.Selector.pas';
 
 {$Description 'Zoomicon Manipulator'}
 

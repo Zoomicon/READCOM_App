@@ -34,7 +34,8 @@ uses
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
-  u_UrlOpen in 'u_UrlOpen.pas';
+  u_UrlOpen in 'u_UrlOpen.pas',
+  Zoomicon.Selector in '..\Zoomicon.Manipulator\Zoomicon.Selector.pas';
 
 {$R *.res}
 

@@ -1,9 +1,10 @@
 unit Zoomicon.Manipulator;
 
-interface //--------------------------------------------------------------------
+interface
 
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  Zoomicon.Selector, //for TLocationSelector, TAreaSelector
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Gestures,
   //FMX.Layouts, //for TLayout
@@ -14,51 +15,6 @@ const
   SELECTION_GRIP_SIZE = 8;
 
 type
-  TRectFPredicate = reference to function(Rectangle: TRectF): Boolean;
-
-  {$REGION 'TLocationSelector' ------------------------------------------------}
-
-  TMovingEvent = procedure(Sender: TObject; const DX, DY: Single; out Canceled: Boolean) of object;
-  TMovedEvent = procedure(Sender: TObject; const DX, DY: Single) of object;
-
-  TLocationSelector = class(TSelectionPoint)
-  protected
-    FChangeCanceled: boolean;
-    FRestorePosition: TPointF;
-    FOnParentMoving: TMovingEvent;
-    FOnParentMoved: TMovedEvent;
-
-    //procedure DoChangeTracking(var X, Y: Single); override; //unfortunately ancestor method isn't virtual, using OnTrack=HandleChangeTracking in constructor instead
-    procedure HandleChangeTracking(Sender: TObject; var X, Y: Single); //called while mouse drag occurs
-
-    //procedure DoChange; override; //unfortunately ancestor method isn't virtual, using OnChange=HandleChange in constructor instead
-    procedure HandleChange(Sender: TObject); //called when mouse is released
-
-  public
-    constructor Create(AOwner: TComponent); override;
-
-  published
-    property OnParentMoving: TMovingEvent read FOnParentMoving write FOnParentMoving;
-    property OnParentMoved: TMovedEvent read FOnParentMoved write FOnParentMoved;
-    property ChangeCanceled: Boolean read FChangeCanceled stored false;
-  end;
-
-  {$ENDREGION .................................................................}
-
-  {$REGION 'TAreaSelector' ----------------------------------------------------}
-
-  TAreaSelector = class(TSelection)
-  protected
-    function DoGetUpdateRect: TRectF; override; //used to fix bug in TSelection that doesn't consider usage inside a TScaledLayout
-    function GetControls(const RectPicker: TRectFPredicate): TControlList;
-    function GetIntersected: TControlList; virtual;
-    function GetContained: TControlList; virtual;
-  published
-    property Intersected: TControlList read GetIntersected stored false;
-    property Selected: TControlList read GetContained stored false;
-  end;
-
-  {$ENDREGION .................................................................}
 
   {$REGION 'TManipulator' -----------------------------------------------------}
 
@@ -73,6 +29,10 @@ type
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
 
   protected
+    {Gestures}
+    FLastPosition: TPointF;
+    FLastDistance: Integer;
+
     FAreaSelector: TAreaSelector;
     FAutoSize: Boolean;
     FDragStartLocation: TPointF;
@@ -90,6 +50,12 @@ type
 
     procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
+
+    procedure HandlePan(EventInfo: TGestureEventInfo);
+    procedure HandleRotate(EventInfo: TGestureEventInfo);
+    procedure HandleZoom(EventInfo: TGestureEventInfo);
+    procedure HandlePressAndTap(EventInfo: TGestureEventInfo);
+
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -112,7 +78,7 @@ type
 
 procedure Register;
 
-implementation //---------------------------------------------------------------
+implementation
 
 uses
   Zoomicon.Generics.Functors, //for TF
@@ -123,103 +89,7 @@ uses
 
 {$R *.fmx}
 
-{$REGION 'TLocationSelector' --------------------------------------------------}
-
-constructor TLocationSelector.Create(AOwner: TComponent);
-begin
-  inherited;
-  OnTrack := HandleChangeTracking;
-  OnChange := HandleChange;
-end;
-
-procedure TLocationSelector.HandleChangeTracking(Sender: TObject; var X, Y: Single);
-begin
-  var PressedPos := PressedPosition;
-  var ParentSize := ParentControl.Size.Size;
-  var DX := X - PressedPos.X/2 - ParentSize.Width/2;
-  var DY := Y - PressedPos.X/2 - ParentSize.Height/2;
-
-  if not FChangeCanceled then
-    begin
-    if Assigned(OnParentMoving) then
-      OnParentMoving(Self, DX, DY, FChangeCanceled);
-
-    if FChangeCanceled then //must do this right after calling OnParentMoving
-      FRestorePosition := Position.Point - PointF(DX, DY)
-    else
-      begin
-      with ParentControl.Position do
-        Point := Point + PointF(DX, DY); //Move parent control
-
-      if Assigned(OnParentMoved) then
-        OnParentMoved(Self, DX, DY);
-      end;
-    end
-end;
-
-procedure TLocationSelector.HandleChange(Sender: TObject);
-begin
-  if FChangeCanceled then
-    begin
-    Position.Point := FRestorePosition;
-    FChangeCanceled := True;
-    end;
-end;
-
-{$ENDREGION ...................................................................}
-
-{$REGION 'TAreaSelector' ------------------------------------------------------}
-
-function TAreaSelector.DoGetUpdateRect: TRectF; //Fix for TSelection's calculation for the case we have one or more nested TScaledLayout in parent hierarchy
-begin
-  Result := inherited;
-  Result.Inflate((GripSize + 1) * AbsoluteScale.X, (GripSize + 1) * AbsoluteScale.Y); //not sure if that is too big, however it works compared to just using Scale as TSelection does
-end;
-
-function TAreaSelector.GetIntersected: TControlList;
-begin
-  var TheBounds := BoundsRect;
-  result := GetControls(
-      function (ARect: TRectF): Boolean
-      begin
-        result := TheBounds.IntersectsWith(ARect);
-      end
-    );
-end;
-
-function TAreaSelector.GetContained: TControlList;
-begin
-  var TheBounds := BoundsRect;
-  result := GetControls(
-      function (ARect: TRectF): Boolean
-      begin
-        result := TheBounds.Contains(ARect);
-      end
-    );
-end;
-
-function TAreaSelector.GetControls(const RectPicker: TRectFPredicate): TControlList;
-begin
-  if not Assigned(RectPicker) then
-    result := nil
-  else
-    begin
-    if (Parent = nil) then
-      result := nil
-    else
-      result := TListEx<TControl>.GetAll(ParentControl.Controls,
-        function(AControl: TControl): Boolean
-        begin
-          result := (AControl <> Self) //not selecting ourselves
-                    and RectPicker(AControl.BoundsRect);
-        end
-      );
-    end;
-end;
-
-{$ENDREGION ...................................................................}
-
-{$REGION 'TManipulator' -------------------------------------------------------}
+{$REGION 'TManipulator'}
 
 constructor TManipulator.Create(AOwner: TComponent);
 
@@ -443,13 +313,6 @@ begin
   EndUpdate;
 end;
 
-procedure TManipulator.DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean);
-begin
-  ShowMessage('Gesture');
-  //TODO
-  inherited;
-end;
-
 procedure TManipulator.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
@@ -543,22 +406,104 @@ begin
 }
 end;
 
+{$region 'Gestures'}
+
+procedure TManipulator.DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean);
+begin
+   if EventInfo.GestureID = igiPan then
+    handlePan(EventInfo)
+  else if EventInfo.GestureID = igiZoom then
+    handleZoom(EventInfo)
+  else if EventInfo.GestureID = igiRotate then
+    handleRotate(EventInfo)
+  else if EventInfo.GestureID = igiPressAndTap then
+    handlePressAndTap(EventInfo);
+
+  inherited;
+end;
+
+procedure TManipulator.HandlePan(EventInfo: TGestureEventInfo);
+var
+  image: TImage;
+begin
+  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  if LObj is TImage then
+  begin
+    if not(TInteractiveGestureFlag.gfBegin in EventInfo.Flags) then
+    begin
+      image := TImage(LObj.GetObject);
+      //Set the X coordinate.
+      image.Position.X := image.Position.X + (EventInfo.Location.X - FLastPosition.X);
+      if (image.Position.X < 0) then
+        image.Position.X := 0;
+      if image.Position.X > (Width - image.Width) then
+        image.Position.X := Width - image.Width;
+
+        //Set the Y coordinate.
+      image.Position.Y := image.Position.Y + (EventInfo.Location.Y - FLastPosition.Y);
+      if (image.Position.Y < 0) then
+        image.Position.Y := 0;
+      if image.Position.Y > (Height - image.Height) then
+        image.Position.Y := Height - image.Height;
+    end;
+
+    FLastPosition := EventInfo.Location;
+  end;
+end;
+
+procedure TManipulator.HandleRotate(eventInfo: TGestureEventInfo);
+var
+  LObj: IControl;
+  image: TImage;
+begin
+  LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  if LObj is TImage then
+  begin
+    image := TImage(LObj.GetObject);
+    image.RotationAngle := RadToDeg(-EventInfo.Angle);
+  end;
+end;
+
+procedure TManipulator.HandleZoom(EventInfo: TGestureEventInfo);
+begin
+  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  if not(TInteractiveGestureFlag.gfBegin in EventInfo.Flags) then
+  begin
+    var control := TControl(LObj.GetObject);
+    var dHalfDistance := (EventInfo.Distance - FLastDistance) / 2;
+    with control do
+    begin
+      Width := Width + dHalfDistance;
+      Height := Height + dHalfDistance;
+      Position.X := Position.X - dHalfDistance;
+      Position.Y := Position.Y - dHalfDistance;
+    end;
+  end;
+  FLastDIstance := EventInfo.Distance;
+end;
+
+procedure TManipulator.HandlePressAndTap(EventInfo: TGestureEventInfo);
+begin
+  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  //TODO: delete object?
+end;
+
 {$endregion}
 
-{$ENDREGION ...................................................................}
+{$endregion}
+
+{$ENDREGION}
 
 procedure RegisterClasses;
 begin
-  RegisterFmxClasses([TLocationSelector, TAreaSelector, TManipulator]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TManipulator]); //register for persistence (in case they're used standalone)
 end;
 
 procedure Register;
 begin
-  GroupDescendentsWith(TLocationSelector, TControl);
-  GroupDescendentsWith(TAreaSelector, TControl);
   GroupDescendentsWith(TManipulator, TControl);
   RegisterClasses;
-  RegisterComponents('Zoomicon', [TLocationSelector, TAreaSelector, TManipulator]);
+  RegisterComponents('Zoomicon', [TManipulator]);
 end;
 
 initialization
