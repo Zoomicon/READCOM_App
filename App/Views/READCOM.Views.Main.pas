@@ -204,8 +204,14 @@ begin
     end;
 
   //Add new story
-  Value.Align := TAlignLayout.Fit;
-  Value.Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+  with Value do
+  begin
+    Align := TAlignLayout.Fit;
+    Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+  end;
+
+  StoryHUD1.SendToBack; //don't call BringToFront on "Value" since it is hosted deeper inside the TZoomFrame
+  ZoomFrame.BringToFront;
 end;
 
 {$endregion}

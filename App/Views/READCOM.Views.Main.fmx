@@ -15,13 +15,6 @@ object MainForm: TMainForm
   OnShow = FormShow
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
-  object ZoomFrame: TZoomFrame
-    Align = Client
-    Size.Width = 876.000000000000000000
-    Size.Height = 616.000000000000000000
-    Size.PlatformDefault = False
-    Proportional = True
-  end
   inline StoryHUD1: TStoryHUD
     Align = Client
     HitTest = False
@@ -59,5 +52,12 @@ object MainForm: TMainForm
         ImageIndex = 0
       end
     end
+  end
+  object ZoomFrame: TZoomFrame
+    Align = Client
+    Size.Width = 876.000000000000000000
+    Size.Height = 616.000000000000000000
+    Size.PlatformDefault = False
+    Proportional = True
   end
 end

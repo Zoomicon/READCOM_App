@@ -22,8 +22,6 @@ type
 
   TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     DropTarget: TDropTarget;
-    procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-    procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 
   //-- Fields ---
 
@@ -102,6 +100,10 @@ type
 
   //--- Events ---
 
+  protected
+    procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+    procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+
   public
     //[Subscribe(TipMessagingThread.Main)]
     //procedure OnNavigatedTo(const AMessage: IMessageNavigatedTo);
@@ -139,10 +141,12 @@ constructor TStoryItem.Create(AOwner: TComponent);
   begin
     with DropTarget do
     begin
-    Stored := False; //don't store state, should use state from designed .FMX resource
-    BringToFront;
-    FilterIndex := 1; //this is the default value
-    Filter := GetLoadFilesFilter;
+      Stored := False; //don't store state, should use state from designed .FMX resource
+      BringToFront;
+      FilterIndex := 1; //this is the default value
+      Filter := GetLoadFilesFilter;
+      OnDragOver := DropTargetDragOver;
+      OnDragDrop := DropTargetDropped;
     end;
   end;
 

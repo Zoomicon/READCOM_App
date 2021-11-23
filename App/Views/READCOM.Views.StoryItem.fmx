@@ -10,7 +10,5 @@ inherited StoryItem: TStoryItem
     Size.PlatformDefault = False
     TabOrder = 1
     Visible = False
-    OnDragOver = DropTargetDragOver
-    OnDropped = DropTargetDropped
   end
 end
