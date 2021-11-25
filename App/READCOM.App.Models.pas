@@ -75,6 +75,7 @@ type
 
   IStoryItem = interface(IStoreable)
     ['{238909DD-45E6-463A-9698-C7C6DC1A6DFE}']
+
     //--- Methods ---
     procedure PlayRandomAudioStoryItem;
 
@@ -126,6 +127,8 @@ type
 
   IStoryItemOptions = interface
     ['{1AEC7512-1E1D-4720-9D74-9A5411A64377}']
+
+    //--- Methods ---
     { View }
     function GetView: TControl;
 
@@ -141,6 +144,7 @@ type
     procedure ShowPopup;
     procedure HidePopup;
 
+    //--- Properties ---
     property View: TControl read GetView; //stored false
     property StoryItem: IStoryItem read GetStoryItem write SetStoryItem; //stored false
     property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible;
@@ -148,6 +152,7 @@ type
 
   IPanelStoryItem = interface(IStoryItem)
     ['{61292D80-36A5-4330-B52B-685D538C1E52}']
+
     //--- Methods ---
     procedure NavigateTo;
 
@@ -174,6 +179,7 @@ type
 
   IImageStoryItem = interface(IStoryItem)
     ['{26111D6E-A587-4AB5-8CC9-84269C2719DC}']
+
     //--- Methods ---
     { Image }
     function GetImage: TImage;
@@ -185,6 +191,7 @@ type
 
   IBitmapImageStoryItem = interface(IImageStoryItem)
     ['{97C577C0-5391-4B1D-8EA9-119D35B91523}']
+
     //--- Methods ---
     { Image }
     function GetImage: TImage;
@@ -196,6 +203,7 @@ type
 
   IVectorImageStoryItem = interface(IImageStoryItem)
     ['{6A71E9E3-D0AC-452E-9DF9-6DFC25BFB2CD}']
+
     //--- Methods ---
     { Image }
     function GetSVGImage: TSVGIconImage;
@@ -208,6 +216,7 @@ type
 
   IAudioStoryItem = interface(IStoryItem)
     ['{5C29ED8A-C6D1-47C2-A8F8-F41249C5846B}']
+
     //--- Methods ---
     procedure Play;
 
@@ -240,6 +249,7 @@ type
 
   ITextStoryItem = interface(IStoryItem)
     ['{A05D85F0-F7F6-4EA1-8D4F-0C6FF7BEA572}']
+
     //--- Methods ---
     { Text }
     function GetText: String;
@@ -267,6 +277,7 @@ type
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
     property TextColor: TAlphaColor read GetTextColor write SetTextColor;
+    //TODO:  (maybe remove and just add filterchar string like in TEdit)
   end;
 
 implementation

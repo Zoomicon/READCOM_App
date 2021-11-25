@@ -1,0 +1,15 @@
+inherited TextStoryItem: TTextStoryItem
+  Align = Contents
+  object Memo: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    Align = Client
+    Size.Width = 836.000000000000000000
+    Size.Height = 532.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    OnApplyStyleLookup = MemoApplyStyleLookup
+    Viewport.Width = 836.000000000000000000
+    Viewport.Height = 532.000000000000000000
+  end
+end

@@ -35,36 +35,48 @@ uses
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
   u_UrlOpen in 'u_UrlOpen.pas',
-  Zoomicon.Selector in '..\Zoomicon.Manipulator\Zoomicon.Selector.pas';
+  Zoomicon.Selector in '..\Zoomicon.Manipulator\Zoomicon.Selector.pas',
+  READCOM.Views.TextStoryItem in 'Views\READCOM.Views.TextStoryItem.pas' {TextStoryItem: TFrame},
+  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas';
 
 {$R *.res}
 
-begin
-  {$IFDEF DEBUG}
-  CodeSite.Enabled := CodeSite.Installed;
-  if CodeSite.Enabled then
+{$IFDEF DEBUG}
+
+  procedure EnableCodeSite;
   begin
+    CodeSite.Enabled := CodeSite.Installed;
     if CodeSite.Enabled then
     begin
-      var Destination := TCodeSiteDestination.Create(Application);
-      with Destination do
-        begin
-        with LogFile do
+      if CodeSite.Enabled then
+      begin
+        var Destination := TCodeSiteDestination.Create(Application);
+        with Destination do
           begin
-          Active := True;
-          FileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.csl');
-          FilePath := '$(MyDocs)\My CodeSite Files\Logs\';
+          with LogFile do
+            begin
+            Active := True;
+            FileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.csl');
+            FilePath := '$(MyDocs)\My CodeSite Files\Logs\';
+            end;
+          Viewer.Active := True; // also show Live Viewer
           end;
-        Viewer.Active := True; // also show Live Viewer
-        end;
-      CodeSite.Destination := Destination;
-      CodeSite.Clear
+        CodeSite.Destination := Destination;
+        CodeSite.Clear
+      end;
     end;
   end;
+
+{$ENDIF}
+
+begin
+  {$IFDEF DEBUG}
+  EnableCodeSite;
+  ReportMemoryLeaksOnShutdown := True;
   {$ELSE}
   CodeSite.Enabled := False;
   {$ENDIF}
-  ReportMemoryLeaksOnShutdown := True; //TODO: remove in production?
+
   Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
   //ApplicationHandleException := //...
   //ApplicationShowException := //...
