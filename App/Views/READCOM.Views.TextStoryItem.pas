@@ -179,7 +179,7 @@ end;
 procedure TTextStoryItem.MemoApplyStyleLookup(Sender: TObject);
 begin
   inherited;
-begin
+
   var Obj := Memo.FindStyleResource('background');
   if Assigned(Obj) And (Obj is TActiveStyleObject) Then
      TActiveStyleObject(Obj).Source := Nil;
