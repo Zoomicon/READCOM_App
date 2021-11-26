@@ -24,7 +24,6 @@ type
 
   protected
     { Text }
-    { Text }
     function GetText: String;
     procedure SetText(const Value: String);
 

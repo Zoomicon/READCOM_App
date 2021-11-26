@@ -3,16 +3,19 @@ unit Zoomicon.Manipulator;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   Zoomicon.Selector, //for TLocationSelector, TAreaSelector
-  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Gestures,
-  //FMX.Layouts, //for TLayout
+  System.Types,
+  System.UITypes,
+  System.Classes,
+  FMX.Types,
+  FMX.Controls,
+  FMX.Forms,
+  FMX.Gestures, //TODO: is this needed here?
   FMX.Objects; //for TSelection
 
 const
-  SELECTION_NAME_PREFIX = 'Sel_';
   SELECTION_GRIP_SIZE = 8;
+  DEFAULT_AUTOSIZE = false;
 
 type
 
@@ -23,12 +26,15 @@ type
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
 
     {Mouse}
-    procedure MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Single); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
 
   protected
+    FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick in the future, remove this
+
     {Gestures}
     FLastPosition: TPointF;
     FLastDistance: Integer;
@@ -68,7 +74,7 @@ type
 
   published
     property AreaSelector: TAreaSelector read FAreaSelector stored false;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default true;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default DEFAULT_AUTOSIZE;
     property EditMode: Boolean read IsEditMode write SetEditMode default false;
     property Proportional: Boolean read IsProportional write SetProportional;
 
@@ -85,7 +91,8 @@ uses
   Zoomicon.Generics.Collections, //for TListEx
   FMX.Ani,
   FMX.Effects,
-  System.Math; //for Min
+  System.Math, //for Min, EnsureInRange
+  System.SysUtils; //for Supports
 
 {$R *.fmx}
 
@@ -125,7 +132,7 @@ constructor TManipulator.Create(AOwner: TComponent);
 begin
   CreateAreaSelector;
   CreateLocationSelector; //must do after CreateAreaSelector
-  FAutoSize := true; //must do after CreateAreaSelector
+  FAutoSize := DEFAULT_AUTOSIZE; //must do after CreateAreaSelector
   inherited; //do last since it will also load designer resource
 end;
 
@@ -315,7 +322,11 @@ end;
 
 procedure TManipulator.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  FMouseShift := Shift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition) //Note that MouseUp fires before MouseClick so we do need to have this in MouseDown
+
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
+  if not EditMode then exit;
 
   if (ssLeft in Shift) then
     begin
@@ -356,6 +367,8 @@ procedure TManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
   inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp) and for event handlers to be fired (e.g. at ancestors)
 
+  if not EditMode then exit;
+
   if (ssLeft in Shift) then
   begin
     //FDragging := true;
@@ -376,6 +389,8 @@ procedure TManipulator.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: S
 begin
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
+  if not EditMode then exit;
+
   if (ssLeft in Shift) then
     begin
     //fDragging := false;
@@ -383,33 +398,59 @@ begin
     end;
 end;
 
+procedure TManipulator.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
+
+  inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
+  if not EditMode then exit;
+
+  if (ssLeft in Shift) then
+  begin
+    var LObj := Self.ObjectAtPoint(LocalToScreen(PointF(X, Y))); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
+    if Assigned(LObj) and (LObj.GetObject is TControl) then
+      with AreaSelector do
+        BoundsRect := TControl(LObj.GetObject).BoundsRect;
+  end;
+end;
+
 procedure TManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
-{
-  var Control := ObjectAtPoint(Screen.MousePos) as TControl;
-
-  if ssCtrl in Shift then
+  if (ssAlt in Shift) and not EditMode then //TODO: Fix StoryItem hierarchy (DropTarget issue) to use EditMode (WILL GET FIXED WITH option to not get child items most probably), THIS ALSO AFFECTS MOUSECLICK (SO AREASELECTOR DOESN'T GET PLACED AT CLICKED CHILD BOUNDS)
   begin
-    var zoom_center := screen.MousePos - Control.LocalToScreen(PointF(0,0));
+    var ScreenMousePos := Screen.MousePos;
+    var LObj := ObjectAtPoint(ScreenMousePos);
+    if Assigned(LObj) then
+    begin
+      var Control := TControl(LObj.GetObject).ParentControl; //TODO: fix hack - have an ObjectAtPoint/ObjectAtPointLocal that has param to not recurse into children
+      var zoom_center := Control.ScreenToLocal(ScreenMousePos);
 
-    var old_scale := 1;
-    var new_scale : single;
-    if WheelDelta >= 0
-      then new_scale := old_scale * (1 + (WheelDelta / 120)/5)
-      else new_scale := old_scale / (1 - (WheelDelta / 120)/5);
+      var new_scale : single;
+      if WheelDelta >= 0
+        then new_scale := (1 + (WheelDelta / 120)/5)
+        else new_scale := 1 / (1 - (WheelDelta / 120)/5);
 
-    Control.Size.Size := TSizeF.Create(Control.Size.Size.cx * new_scale, Control.Size.Size.cy * new_scale);
+      BeginUpdate;
+      Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale);
 
-    // correction for image position when scaling
-    Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale/old_scale), Control.Position.Y + zoom_center.y * (1-new_scale/old_scale));
-  end; //adapted from https://stackoverflow.com/a/66049562/903783
-}
+      // correction for position when scaling
+      Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale), Control.Position.Y + zoom_center.y * (1-new_scale));
+      EndUpdate;
+
+      exit;
+    end; //adapted from https://stackoverflow.com/a/66049562/903783
+  end;
+
+  inherited; //if we didn't handle the event, needed for event handlers to be fired (e.g. at ancestors)
 end;
 
 {$region 'Gestures'}
 
 procedure TManipulator.DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean);
 begin
+   inherited;
+
    if EventInfo.GestureID = igiPan then
     handlePan(EventInfo)
   else if EventInfo.GestureID = igiZoom then
@@ -423,28 +464,20 @@ begin
 end;
 
 procedure TManipulator.HandlePan(EventInfo: TGestureEventInfo);
-var
-  image: TImage;
 begin
   var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
-  if LObj is TImage then
+  if Assigned(LObj) then
   begin
-    if not(TInteractiveGestureFlag.gfBegin in EventInfo.Flags) then
+    if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
+       (LObj.GetObject is TControl) then
     begin
-      image := TImage(LObj.GetObject);
-      //Set the X coordinate.
-      image.Position.X := image.Position.X + (EventInfo.Location.X - FLastPosition.X);
-      if (image.Position.X < 0) then
-        image.Position.X := 0;
-      if image.Position.X > (Width - image.Width) then
-        image.Position.X := Width - image.Width;
-
-        //Set the Y coordinate.
-      image.Position.Y := image.Position.Y + (EventInfo.Location.Y - FLastPosition.Y);
-      if (image.Position.Y < 0) then
-        image.Position.Y := 0;
-      if image.Position.Y > (Height - image.Height) then
-        image.Position.Y := Height - image.Height;
+      BeginUpdate;
+      var Control := TControl(LObj.GetObject);
+      control.Position.Point := PointF(
+        EnsureRange(Control.Position.X + (EventInfo.Location.X - FLastPosition.X), 0, Width - Control.Width),
+        EnsureRange(Control.Position.Y + (EventInfo.Location.Y - FLastPosition.Y), 0, Height - Control.Height)
+      );
+      EndUpdate;
     end;
 
     FLastPosition := EventInfo.Location;
@@ -453,32 +486,33 @@ end;
 
 procedure TManipulator.HandleRotate(eventInfo: TGestureEventInfo);
 var
-  LObj: IControl;
-  image: TImage;
+  RotatedControl: IRotatedControl;
 begin
-  LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
-  if LObj is TImage then
-  begin
-    image := TImage(LObj.GetObject);
-    image.RotationAngle := RadToDeg(-EventInfo.Angle);
-  end;
+  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  if Assigned(LObj) then
+    if Supports(LObj.GetObject, IRotatedControl, RotatedControl) then
+      RotatedControl.RotationAngle := RadToDeg(-EventInfo.Angle);
 end;
 
 procedure TManipulator.HandleZoom(EventInfo: TGestureEventInfo);
 begin
   var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
-  if not(TInteractiveGestureFlag.gfBegin in EventInfo.Flags) then
+  if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
+     (LObj.GetObject is TControl) then
   begin
-    var control := TControl(LObj.GetObject);
+    //BeginUpdate;
+    var Control := TControl(LObj.GetObject);
     var dHalfDistance := (EventInfo.Distance - FLastDistance) / 2;
-    with control do
+    with Control do
     begin
       Width := Width + dHalfDistance;
       Height := Height + dHalfDistance;
       Position.X := Position.X - dHalfDistance;
       Position.Y := Position.Y - dHalfDistance;
     end;
+    //EndUpdate
   end;
+
   FLastDIstance := EventInfo.Distance;
 end;
 

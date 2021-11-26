@@ -44,7 +44,7 @@ type
     procedure LoadReadCom(const Stream: TStream); virtual;
     procedure SaveReadCom(const Stream: TStream); virtual;
 
-    procedure Click; override; //preferring overriden methods instead of event handlers that get stored with saved state
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
     procedure Tap(const Point: TPointF); override;
     //procedure CanFocus(var ACanFocus: Boolean); override;
 
@@ -186,6 +186,7 @@ procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited;
   DropTarget.Visible := Value;
+  DropTarget.SendToBack; //keep always under children (setting to Visible seems to BringToFront)
 end;
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
@@ -362,14 +363,20 @@ begin
 end;
 }
 
-procedure TStoryItem.Click;
+procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
+
   inherited; //fire event handlers
-  if EditMode then
-    Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
-  else
+
+  if not EditMode then
+    begin
     if (FUrlAction <> '') then
       url_Open_In_Browser(FUrlAction);
+    end
+  else
+    if (ssRight in Shift) then
+      Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
 end;
 
 procedure TStoryItem.Tap(const Point: TPointF);

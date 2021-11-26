@@ -119,6 +119,7 @@ begin
   StoryItem.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
 
   StoryItem.Parent := Self;
+  StoryItem.BringToFront; //load as front-most
 end;
 
 procedure TPanelStoryItem.Load(const Filepaths: array of String);
