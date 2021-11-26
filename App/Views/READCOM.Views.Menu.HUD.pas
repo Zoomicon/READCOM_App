@@ -32,6 +32,7 @@ type
     procedure actionAboutExecute(Sender: TObject);
     procedure actionAddExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   protected
     {EditMode}
     function GetEditMode: Boolean;
@@ -79,6 +80,11 @@ end;
 procedure TStoryHUD.actionPreviousExecute(Sender: TObject);
 begin
   GMessaging.Post(TMessageNavigation.Create As IMessageNavigationPrevious);
+end;
+
+procedure TStoryHUD.Button1Click(Sender: TObject);
+begin
+ showMessage('test');
 end;
 
 procedure TStoryHUD.actionNextExecute(Sender: TObject);

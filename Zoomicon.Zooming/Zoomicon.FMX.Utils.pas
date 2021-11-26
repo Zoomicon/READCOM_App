@@ -14,8 +14,14 @@ interface
   function GetScrollBoxParent(const FmxObject: TFmxObject): TCustomScrollBox;
 
   type
+
+    TControlFocusHelper = class helper for TControl
+    public
+      procedure SelectNext(const CurControl: TControl; const GoFoward: Boolean = true);
+    end;
+
     {$IFDEF CONTROLSCALEHELPER}
-    TControlScaleHelper = class helper for TControl //used to expose Scale of TControl which is unfortunately "strict private" so one can't write zooming code that needs to check the Scale of TControls
+    TControlScaleHelper = class helper(TControlFocusHelper) for TControl //used to expose Scale of TControl which is unfortunately "strict private" so one can't write zooming code that needs to check the Scale of TControls
     protected
       function GetScale: TPosition;
       procedure SetScale(const Value: TPosition);
@@ -62,6 +68,40 @@ begin
     result := nil
   else
     result := ScrollContent.ScrollBox;
+end;
+
+{$ENDREGION}
+
+{$REGION 'TControlFocusHelper'}
+
+//TODO: simplify
+procedure TControlFocusHelper.SelectNext(const CurControl: TControl; const GoFoward: Boolean = true); //based on https://codeverge.com/embarcadero.delphi.firemonkey/fmx-how-to-programmatically-mov/2031600
+var
+  tablist          : ITabList;
+  next             : IControl;
+  parent, control: TControl;
+begin
+  control := CurControl;
+  parent  := control.ParentControl;
+  repeat
+    tablist := parent.GetTabList;
+    next := tablist.FindNextTabStop(control, GoFoward, True);
+    if (not Assigned(next)) or (TControl(next) = control) then
+    begin
+      control := parent;
+      parent  := parent.ParentControl;
+    end
+    else
+      Break;
+  until parent = nil;
+
+  if Assigned(next) then
+    control := TControl(next)
+  else
+    control := nil;
+
+  if Assigned(control) then
+    control.SetFocus;
 end;
 
 {$ENDREGION}

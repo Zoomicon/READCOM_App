@@ -6,17 +6,6 @@ object StoryHUD: TStoryHUD
   Size.PlatformDefault = False
   ParentShowHint = False
   ShowHint = True
-  object BtnMenu: TSpeedButton
-    Action = actionMenu
-    Anchors = [akLeft, akBottom]
-    Enabled = True
-    Images = SVGIconImageList
-    ImageIndex = -1
-    Size.Width = 33.000000000000000000
-    Size.Height = 33.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'drawertoolbutton'
-  end
   object layoutAll: TLayout
     Align = Client
     Size.Width = 912.000000000000000000
@@ -87,6 +76,16 @@ object StoryHUD: TStoryHUD
       Size.PlatformDefault = False
       StyleLookup = 'priortoolbutton'
     end
+  end
+  object BtnMenu: TSpeedButton
+    Action = actionMenu
+    Enabled = True
+    Images = SVGIconImageList
+    ImageIndex = -1
+    Size.Width = 33.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'drawertoolbutton'
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <

@@ -15,44 +15,6 @@ object MainForm: TMainForm
   OnShow = FormShow
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
-  inline StoryHUD1: TStoryHUD
-    Align = Client
-    HitTest = False
-    Size.Width = 876.000000000000000000
-    Size.Height = 616.000000000000000000
-    Size.PlatformDefault = False
-    ParentShowHint = False
-    ShowHint = True
-    inherited BtnMenu: TSpeedButton
-      Position.Y = 8.000000000000000000
-    end
-    inherited layoutAll: TLayout
-      Size.Width = 876.000000000000000000
-      Size.Height = 616.000000000000000000
-      inherited layoutEdit: TLayout
-        Position.X = 836.000000000000000000
-        Size.Height = 576.000000000000000000
-      end
-      inherited layoutNavigation: TLayout
-        Position.Y = 576.000000000000000000
-        Size.Width = 876.000000000000000000
-        inherited BtnNext: TSpeedButton
-          Position.X = 820.000000000000000000
-        end
-      end
-    end
-    inherited ActionList1: TActionList
-      inherited actionPrevious: TAction
-        ImageIndex = 1
-      end
-      inherited actionNext: TAction
-        ImageIndex = 2
-      end
-      inherited actionEdit: TAction
-        ImageIndex = 0
-      end
-    end
-  end
   object ZoomFrame: TZoomFrame
     Align = Client
     Size.Width = 876.000000000000000000

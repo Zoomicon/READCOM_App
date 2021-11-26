@@ -20,13 +20,14 @@ uses
 type
   TMainForm = class(TForm, IStory)
     ZoomFrame: TZoomFrame;
-    StoryHUD1: TStoryHUD;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
 
   protected
+    HUD: TStoryHUD;
+
     function LoadSavedState: Boolean;
     {Story}
     function GetStory: IStoryItem;
@@ -99,16 +100,30 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+
+  procedure CreateHUD;
+  begin
+    HUD := TStoryHud.Create(Self);
+    HUD.Parent := Self;
+    //HUD.BringToFront;
+  end;
+
+  procedure LoadSavedStateOrNewStory;
+  begin
+    if (not LoadSavedState) then
+      begin
+      var TheStory := TPanelStoryItem.Create(Self);
+      TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+      StoryView := TheStory;
+      end;
+  end;
+
 begin
   CodeSite.EnterMethod('FormCreate');
   GMessaging.Subscribe(Self);
 
-  if (not LoadSavedState) then
-    begin
-    var TheStory := TPanelStoryItem.Create(Self);
-    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    StoryView := TheStory;
-    end;
+  CreateHUD;
+  LoadSavedStateOrNewStory;
 
   CodeSite.ExitMethod('FormCreate');
 end;
@@ -185,12 +200,12 @@ end;
 
 procedure TMainForm.GotoNextPanel;
 begin
-
+  //TODO// ActiveStoryItem.GotoNext; ZoomTo(ActiveStoryItem); //zoom to the new one
 end;
 
 procedure TMainForm.GotoPreviousPanel;
 begin
-
+  //TODO// ActiveStoryItem.GotoPrevious; ZoomTo(ActiveStoryItem); //zoom to the new one
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
@@ -209,9 +224,6 @@ begin
     Align := TAlignLayout.Fit;
     Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
   end;
-
-  StoryHUD1.SendToBack; //don't call BringToFront on "Value" since it is hosted deeper inside the TZoomFrame
-  ZoomFrame.BringToFront;
 end;
 
 {$endregion}

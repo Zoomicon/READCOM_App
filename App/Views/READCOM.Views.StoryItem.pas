@@ -101,6 +101,7 @@ type
   //--- Events ---
 
   protected
+    procedure KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState); override;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 
@@ -130,6 +131,7 @@ type
 implementation
   uses
     u_UrlOpen,
+    Zoomicon.FMX.Utils, //for TControlFocusHelper.SelectNext
     Zoomicon.Generics.Collections,
     READCOM.Views.Options.StoryItemOptions;
 
@@ -338,6 +340,20 @@ end;
 
 {$REGION '--- EVENTS ---'}
 
+//TODO: fix to work with items that are to be focused only (depending on mode)
+procedure TStoryItem.KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState);
+begin
+  inherited;
+
+  var CurControl := TControl(Screen.FocusControl);
+  case Key of
+    vkReturn:
+      SelectNext(CurControl);
+    vkTab:
+      SelectNext(CurControl, not (ssShift in Shift));
+  end;
+end;
+
 {
 procedure TStoryItem.CanFocus(var ACanFocus: Boolean);
 begin
@@ -372,12 +388,16 @@ end;
 
 procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
+  inherited;
+
   if EditMode then
     Operation := TDragOperation.Copy;
 end;
 
 procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 begin
+  inherited;
+
   if EditMode then
     Load(Data.Files);
 end;
