@@ -5,6 +5,7 @@ interface
 
 type
   TF = class
+    class function Clamp<T>(const Value: T; const MinValue, MaxValue: T): T; inline; //EnsureInRange
     class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
     class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: TFunc<T>): T; overload; inline;
     class function Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
@@ -13,6 +14,18 @@ type
   end;
 
 implementation
+  uses System.Generics.Defaults; //for TComparer
+
+class function TF.Clamp<T>(const Value: T; const MinValue, MaxValue: T): T;
+begin
+  result := Value;
+
+  var Comparer := TComparer<T>.Default; //TODO: document if throws exception if T is something not comparable and/or for "nil" value or bounds
+  if Comparer.Compare(result, MinValue) < 0 then //if (Value < MinValue)
+    result := MinValue
+  else if Comparer.Compare(result, MaxValue) > 0 then //if (Value > MaxValue)
+    result := MaxValue;
+end;
 
 class function TF.Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T;
 begin
