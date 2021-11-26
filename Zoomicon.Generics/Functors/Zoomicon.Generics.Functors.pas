@@ -5,7 +5,7 @@ interface
 
 type
   TF = class
-    class function Clamp<T>(const Value: T; const MinValue, MaxValue: T): T; inline; //EnsureInRange
+    class function Clamp<T>(const Value: T; const MinValue, MaxValue: T): T; inline; //EnsureRange
     class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
     class function Iff<T>(const Condition: Boolean; const ValueIfTrue, ValueIfFalse: TFunc<T>): T; overload; inline;
     class function Iff<T>(const Value: T; const Condition: TPredicate<T>; const ValueIfTrue, ValueIfFalse: T): T; overload; inline;
