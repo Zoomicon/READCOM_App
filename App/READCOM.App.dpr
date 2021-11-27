@@ -37,7 +37,8 @@ uses
   u_UrlOpen in 'u_UrlOpen.pas',
   Zoomicon.Selector in '..\Zoomicon.Manipulator\Zoomicon.Selector.pas',
   READCOM.Views.TextStoryItem in 'Views\READCOM.Views.TextStoryItem.pas' {TextStoryItem: TFrame},
-  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas';
+  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
+  READCOM.Views.Options.BitmapImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.BitmapImageStoryItemOptions.pas' {StoryItemOptions1: TFrame};
 
 {$R *.res}
 

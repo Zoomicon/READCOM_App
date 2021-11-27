@@ -96,7 +96,7 @@ type
     procedure SetStoryMode(const Value: TStoryMode);
 
     { Options }
-    function GetOptions: IStoryItemOptions;
+    function GetOptions: IStoryItemOptions; virtual; //TODO: make methods that are available via properties protected?
 
   //--- Events ---
 

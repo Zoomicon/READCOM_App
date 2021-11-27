@@ -19,19 +19,18 @@ const
 
 type
 
+  TControlObjectAtHelper = class helper for TControl //TODO: move to other unit
+    protected
+      function ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; overload;
+
+    public
+      function ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl; overload; inline;
+      function ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl; inline;
+  end;
+
   {$REGION 'TManipulator' -----------------------------------------------------}
 
   TManipulator = class(TFrame)
-    {Gestures}
-    procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
-
-    {Mouse}
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
-    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
-    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
-
   protected
     FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick in the future, remove this
 
@@ -54,23 +53,43 @@ type
     function IsProportional: Boolean; virtual;
     procedure SetProportional(value: Boolean); virtual;
 
+    {$region 'Events'}
+    {AreaSelector}
     procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
 
+    {Gestures}
+    procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
     procedure HandlePan(EventInfo: TGestureEventInfo);
     procedure HandleRotate(EventInfo: TGestureEventInfo);
     procedure HandleZoom(EventInfo: TGestureEventInfo);
     procedure HandlePressAndTap(EventInfo: TGestureEventInfo);
 
+    {Mouse}
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
+    {$endregion}
 
   public
     constructor Create(AOwner: TComponent); override;
+
+    {$region 'Manipulation'}
+    {Move}
+    procedure MoveControl(const Control: TControl; const DX, DY: Single); overload; inline;
     procedure MoveControls(const Controls: TControlList; const DX, DY: Single); overload;
-    procedure RotateControls(const Controls: TControlList; const DAngle: Single); overload;
     procedure MoveControls(const DX, DY: Single); overload;
-    procedure RotateControls(const DAngle: Single); overload;
     procedure MoveSelected(const DX, DY: Single);
+
+    {Rotate}
+    procedure SetControlAngle(const Control: TControl; const Angle: Single); overload; inline;
+    procedure RotateControl(const Control: TControl; const DAngle: Single); overload; inline;
+    procedure RotateControls(const Controls: TControlList; const DAngle: Single); overload;
+    procedure RotateControls(const DAngle: Single); overload;
     procedure RotateSelected(const DAngle: Single);
+    {$endregion}
 
   published
     property AreaSelector: TAreaSelector read FAreaSelector stored false;
@@ -95,6 +114,80 @@ uses
   System.SysUtils; //for Supports
 
 {$R *.fmx}
+
+{$region 'Utils'}
+
+procedure Swap(var a, b: Single); inline; //there's no Swap(Single, Single) or SwapF
+begin
+  var temp := a;
+  a := b;
+  b := temp;
+end;
+
+procedure Order(var a, b: Single); inline;
+begin
+  if (a > b) then
+    Swap(a, b);
+end;
+
+{
+procedure Order(var a, b, c: Single); inline;
+begin
+  if (a > b) then
+    Swap(a, b);
+  if (b > c) then
+    Swap(b, c);
+end;
+}
+
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; //based on TControl.ObjectAtPoint
+var
+  I: Integer;
+  NewObj: IControl;
+  Control: TControl;
+  LP: TPointF;
+begin
+  if not ShouldTestMouseHits then
+    Exit(nil);
+
+  LP := AScreenPoint;
+  if FScene <> nil then
+    LP := FScene.ScreenToLocal(LP);
+  if (ClipChildren or SmallSizeControl) and not PointInObject(LP.X, LP.Y) then
+    Exit(nil);
+
+  if (RecursionDepth > 0) and (ControlsCount > 0) then
+    for I := GetLastVisibleObjectIndex - 1 downto GetFirstVisibleObjectIndex do
+    begin
+      Control := Controls[I];
+      if not Control.GetVisible then
+        Continue;
+
+      NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
+      if NewObj <> nil then
+        Exit(NewObj);
+      end;
+
+  Result := nil;
+
+  if PointInObject(LP.X, LP.Y) and CheckHitTest(HitTest) then
+    Result := Self;
+end;
+
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl;
+begin
+  if Recursive then
+    result := ObjectAtPoint(AScreenPoint)
+  else
+    result := ObjectAtPoint(AScreenPoint, 1);
+end;
+
+function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl;
+begin
+  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive);
+end;
+
+{$endregion}
 
 {$REGION 'TManipulator'}
 
@@ -138,6 +231,17 @@ end;
 
 {$region 'Manipulation'}
 
+{$region 'Move'}
+
+procedure TManipulator.MoveControl(const Control: TControl; const DX, DY: Single);
+begin
+  with Control.Position do
+    Point := PointF(
+      EnsureRange(Point.X + DX, 0, Width - Control.Width),
+      EnsureRange(Point.Y + DY, 0, Height - Control.Height)
+    );
+end;
+
 procedure TManipulator.MoveControls(const Controls: TControlList; const DX, DY: Single);
 begin
   if (DX <> 0) or (DY <> 0) then
@@ -147,14 +251,44 @@ begin
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        with Control.Position do
-          Point := Point + PointF(DX, DY);
+        MoveControl(Control, DX, DY);
       end
     );
 
     DoAutoSize;
     EndUpdate;
     end;
+end;
+
+procedure TManipulator.MoveControls(const DX, DY: Single);
+begin
+  MoveControls(Controls, DX, DY);
+end;
+
+procedure TManipulator.MoveSelected(const DX, DY: Single);
+begin
+  if (DX <> 0) or (DY <> 0) then
+    begin
+    var TheSelected := AreaSelector.Selected;
+    MoveControls(TheSelected, DX, DY);
+    FreeAndNil(TheSelected);
+    end;
+end;
+
+{$endregion}
+
+{$region 'Rotate'}
+
+procedure TManipulator.SetControlAngle(const Control: TControl; const Angle: Single);
+begin
+  with (Control as IRotatedControl) do
+    RotationAngle := Angle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
+end;
+
+procedure TManipulator.RotateControl(const Control: TControl; const DAngle: Single);
+begin
+  with (Control as IRotatedControl) do
+    RotationAngle := RotationAngle + DAngle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
 end;
 
 procedure TManipulator.RotateControls(const Controls: TControlList; const DAngle: Single);
@@ -166,12 +300,11 @@ begin
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        with (Control as IRotatedControl) do
-          try
-            RotationAngle := RotationAngle + DAngle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
-          except //catch exceptions, in case any controls fail when you try to rotate them
-            //NOP //TODO: do some error logging
-          end;
+        try
+          RotateControl(Control, DAngle);
+        except //catch exceptions, in case any controls fail when you try to rotate them
+          //NOP //TODO: do some error logging
+        end;
       end
     );
 
@@ -180,24 +313,9 @@ begin
     end;
 end;
 
-procedure TManipulator.MoveControls(const DX, DY: Single);
-begin
-  MoveControls(Controls, DX, DY);
-end;
-
 procedure TManipulator.RotateControls(const DAngle: Single);
 begin
   RotateControls(Controls, DAngle);
-end;
-
-procedure TManipulator.MoveSelected(const DX, DY: Single);
-begin
-  if (DX <> 0) or (DY <> 0) then
-    begin
-    var TheSelected := AreaSelector.Selected;
-    MoveControls(TheSelected, DX, DY);
-    FreeAndNil(TheSelected);
-    end;
 end;
 
 procedure TManipulator.RotateSelected(const DAngle: Single);
@@ -211,6 +329,10 @@ begin
 end;
 
 {$endregion}
+
+{$endregion}
+
+{$REGION 'PROPERTIES'}
 
 {$region 'AutoSize'}
 
@@ -289,7 +411,11 @@ end;
 
 {$endregion}
 
-{$region 'Events handling'}
+{$ENDREGION}
+
+{$REGION 'Events'}
+
+{$region 'AreaSelector'}
 
 procedure TManipulator.HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
 begin
@@ -320,6 +446,10 @@ begin
   EndUpdate;
 end;
 
+{$endregion}
+
+{$region 'Mouse'}
+
 procedure TManipulator.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   FMouseShift := Shift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition) //Note that MouseUp fires before MouseClick so we do need to have this in MouseDown
@@ -339,29 +469,6 @@ begin
     EndUpdate;
     end;
 end;
-
-procedure Swap(var a, b: Single); inline; //there's no Swap(Single, Single) or SwapF
-begin
-  var temp := a;
-  a := b;
-  b := temp;
-end;
-
-procedure Order(var a, b: Single); inline;
-begin
-  if (a > b) then
-    Swap(a, b);
-end;
-
-{
-procedure Order(var a, b, c: Single); inline;
-begin
-  if (a > b) then
-    Swap(a, b);
-  if (b > c) then
-    Swap(b, c);
-end;
-}
 
 procedure TManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
@@ -408,7 +515,7 @@ begin
 
   if (ssLeft in Shift) then
   begin
-    var LObj := Self.ObjectAtPoint(LocalToScreen(PointF(X, Y))); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
+    var LObj := ObjectAtLocalPoint(PointF(X, Y), false); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
     if Assigned(LObj) and (LObj.GetObject is TControl) then
       with AreaSelector do
         BoundsRect := TControl(LObj.GetObject).BoundsRect;
@@ -420,7 +527,7 @@ begin
   if (ssAlt in Shift) and not EditMode then //TODO: Fix StoryItem hierarchy (DropTarget issue) to use EditMode (WILL GET FIXED WITH option to not get child items most probably), THIS ALSO AFFECTS MOUSECLICK (SO AREASELECTOR DOESN'T GET PLACED AT CLICKED CHILD BOUNDS)
   begin
     var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos);
+    var LObj := ObjectAtPoint(ScreenMousePos, false);
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject).ParentControl; //TODO: fix hack - have an ObjectAtPoint/ObjectAtPointLocal that has param to not recurse into children
@@ -445,7 +552,10 @@ begin
   inherited; //if we didn't handle the event, needed for event handlers to be fired (e.g. at ancestors)
 end;
 
+{$endregion}
+
 {$region 'Gestures'}
+//see https://docwiki.embarcadero.com/CodeExamples/Sydney/en/FMXInteractiveGestures_(Delphi)
 
 procedure TManipulator.DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean);
 begin
@@ -465,52 +575,36 @@ end;
 
 procedure TManipulator.HandlePan(EventInfo: TGestureEventInfo);
 begin
-  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
   if Assigned(LObj) then
   begin
     if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
        (LObj.GetObject is TControl) then
-    begin
-      BeginUpdate;
-      var Control := TControl(LObj.GetObject);
-      control.Position.Point := PointF(
-        EnsureRange(Control.Position.X + (EventInfo.Location.X - FLastPosition.X), 0, Width - Control.Width),
-        EnsureRange(Control.Position.Y + (EventInfo.Location.Y - FLastPosition.Y), 0, Height - Control.Height)
+      Movecontrol(TControl(LObj.GetObject),
+        EventInfo.Location.X - FLastPosition.X, //DX
+        EventInfo.Location.Y - FLastPosition.Y //DY
       );
-      EndUpdate;
-    end;
 
     FLastPosition := EventInfo.Location;
   end;
 end;
 
 procedure TManipulator.HandleRotate(eventInfo: TGestureEventInfo);
-var
-  RotatedControl: IRotatedControl;
 begin
-  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
-  if Assigned(LObj) then
-    if Supports(LObj.GetObject, IRotatedControl, RotatedControl) then
-      RotatedControl.RotationAngle := RadToDeg(-EventInfo.Angle);
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
+  if Assigned(LObj) and (LObj.GetObject is TControl) then
+    SetControlAngle(TControl(LObj.GetObject), RadToDeg(-EventInfo.Angle));
 end;
 
 procedure TManipulator.HandleZoom(EventInfo: TGestureEventInfo);
 begin
-  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
   if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
      (LObj.GetObject is TControl) then
   begin
-    //BeginUpdate;
     var Control := TControl(LObj.GetObject);
     var dHalfDistance := (EventInfo.Distance - FLastDistance) / 2;
-    with Control do
-    begin
-      Width := Width + dHalfDistance;
-      Height := Height + dHalfDistance;
-      Position.X := Position.X - dHalfDistance;
-      Position.Y := Position.Y - dHalfDistance;
-    end;
-    //EndUpdate
+    Control.SetBounds(Position.X - dHalfDistance, Position.Y - dHalfDistance, Width + dHalfDistance, Height + dHalfDistance);
   end;
 
   FLastDIstance := EventInfo.Distance;
@@ -518,11 +612,9 @@ end;
 
 procedure TManipulator.HandlePressAndTap(EventInfo: TGestureEventInfo);
 begin
-  var LObj := Self.ObjectAtPoint(LocalToScreen(EventInfo.Location));
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
   //TODO: delete object?
 end;
-
-{$endregion}
 
 {$endregion}
 

@@ -150,6 +150,18 @@ type
     property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible;
   end;
 
+  IBitmapImageStoryItemOptions = interface(IStoryItemOptions)
+    ['{DA637418-9648-48C7-A0CB-7475CAFECBAE}']
+
+    { BitmapImageStoryItem }
+    function GetBitmapImageStoryItem: IBitmapImageStoryItem;
+    procedure SetBitmapImageStoryItem(const Value: IBitmapImageStoryItem);
+
+    //-- Properties --
+    property BitmapImageStoryItem: IBitmapImageStoryItem read GetBitmapImageStoryItem write SetBitmapImageStoryItem; //stored false
+  end;
+
+
   IPanelStoryItem = interface(IStoryItem)
     ['{61292D80-36A5-4330-B52B-685D538C1E52}']
 

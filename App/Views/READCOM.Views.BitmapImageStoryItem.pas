@@ -32,7 +32,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
 
-  public
+    function GetOptions: IStoryItemOptions; override; //TODO: make protected? (and in ancestor)
+
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
@@ -46,6 +47,7 @@ type
   end;
 
 implementation
+  uses READCOM.Views.Options.BitmapImageStoryItemOptions;
 
 {$R *.fmx}
 
@@ -98,7 +100,22 @@ end;
 
 {$endregion}
 
+{$region 'Options'}
+
+function TBitmapImageStoryItem.GetOptions: IStoryItemOptions;
+begin
+  if not Assigned(FOptions) then
+    begin
+    FOptions := TBitmapImageStoryItemOptions.Create(nil); //don't set storyitem as owner, seems to always store it (irrespective of "Stored := false")
+    FOptions.StoryItem := Self;
+    end;
+
+  result := FOptions;
+end;
+
 {$endregion}
+
+{$ENDREGION}
 
 procedure RegisterClasses;
 begin
