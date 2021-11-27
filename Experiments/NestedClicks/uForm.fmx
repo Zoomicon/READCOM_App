@@ -1,0 +1,41 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  inline ClickableFrame1: TClickableFrame
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    inherited Rectangle: TRectangle
+      Size.Width = 640.000000000000000000
+      Size.Height = 480.000000000000000000
+      inline ClickableFrame2: TClickableFrame
+        Position.X = 96.000000000000000000
+        Position.Y = 80.000000000000000000
+        Size.Width = 409.000000000000000000
+        Size.Height = 321.000000000000000000
+        inherited Rectangle: TRectangle
+          Size.Width = 409.000000000000000000
+          Size.Height = 321.000000000000000000
+          inline ClickableFrame3: TClickableFrame
+            Position.X = 64.000000000000000000
+            Position.Y = 80.000000000000000000
+            Size.Width = 289.000000000000000000
+            Size.Height = 185.000000000000000000
+            inherited Rectangle: TRectangle
+              Size.Width = 289.000000000000000000
+              Size.Height = 185.000000000000000000
+            end
+          end
+        end
+      end
+    end
+  end
+end

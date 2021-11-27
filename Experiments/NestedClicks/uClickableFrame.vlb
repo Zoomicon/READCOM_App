@@ -1,0 +1,13 @@
+﻿[LabelName]
+Coordinates=110,90,69,51
+
+[Rectangle]
+Coordinates=10,71,63,33
+
+[cbHitTest]
+Coordinates=10,10,61,51
+Visible=True
+
+[]
+Coordinates=150,80,82,33
+

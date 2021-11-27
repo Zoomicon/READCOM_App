@@ -1,0 +1,29 @@
+object ClickableFrame: TClickableFrame
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  OnPaint = FramePaint
+  object Rectangle: TRectangle
+    Align = Client
+    HitTest = False
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    object cbHitTest: TCheckBox
+      Position.X = 8.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'HitTest'
+      OnChange = cbHitTestChange
+    end
+    object LabelName: TLabel
+      Position.X = 8.000000000000000000
+      Position.Y = 8.000000000000000000
+      Text = '...'
+      TabOrder = 0
+    end
+  end
+end
