@@ -21,7 +21,7 @@ implementation
 
 {$R *.fmx}
 
-{ TFrame2 }
+{ TInheritedFrame }
 
 procedure TInheritedFrame.DoDropTarget1DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin

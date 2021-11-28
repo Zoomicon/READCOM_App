@@ -26,6 +26,4 @@ implementation
 
 {$R *.fmx}
 
-
-
 end.

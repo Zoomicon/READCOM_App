@@ -1,0 +1,84 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{7A7920A6-F2C7-44A2-A949-DDCFDF8A4BA0}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="DropFiles\DropFiles.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="SizeableFrame\SizeableFrame.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ZoomableContainer\ZoomableContainer.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="NestedClicks\NestedClicks.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="MoveToTarget\MoveToTarget.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DropFiles">
+        <MSBuild Projects="DropFiles\DropFiles.dproj"/>
+    </Target>
+    <Target Name="DropFiles:Clean">
+        <MSBuild Projects="DropFiles\DropFiles.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DropFiles:Make">
+        <MSBuild Projects="DropFiles\DropFiles.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SizeableFrame">
+        <MSBuild Projects="SizeableFrame\SizeableFrame.dproj"/>
+    </Target>
+    <Target Name="SizeableFrame:Clean">
+        <MSBuild Projects="SizeableFrame\SizeableFrame.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SizeableFrame:Make">
+        <MSBuild Projects="SizeableFrame\SizeableFrame.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ZoomableContainer">
+        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj"/>
+    </Target>
+    <Target Name="ZoomableContainer:Clean">
+        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ZoomableContainer:Make">
+        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NestedClicks">
+        <MSBuild Projects="NestedClicks\NestedClicks.dproj"/>
+    </Target>
+    <Target Name="NestedClicks:Clean">
+        <MSBuild Projects="NestedClicks\NestedClicks.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NestedClicks:Make">
+        <MSBuild Projects="NestedClicks\NestedClicks.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MoveToTarget">
+        <MSBuild Projects="MoveToTarget\MoveToTarget.dproj"/>
+    </Target>
+    <Target Name="MoveToTarget:Clean">
+        <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MoveToTarget:Make">
+        <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DropFiles;SizeableFrame;ZoomableContainer;NestedClicks;MoveToTarget"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;NestedClicks:Clean;MoveToTarget:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;NestedClicks:Make;MoveToTarget:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

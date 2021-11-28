@@ -31,6 +31,8 @@ begin
   DoDropTarget1Dropped(Sender, Data, Point);
 end;
 
+//---------------------------------
+
 procedure TDropFrame.DoDropTarget1DragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin
   Operation := TDragOperation.Copy;

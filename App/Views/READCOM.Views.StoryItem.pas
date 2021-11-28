@@ -22,6 +22,7 @@ type
 
   TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     DropTarget: TDropTarget;
+    Border: TRectangle;
 
   //-- Fields ---
 
@@ -139,15 +140,26 @@ implementation
 
 constructor TStoryItem.Create(AOwner: TComponent);
 
+  procedure InitBorder;
+  begin
+    with Border do
+    begin
+      Border.Stored := false; //don't store state, should use state from designed .FMX resource
+      SendToBack;
+      Visible := EditMode; //show only in EditMode
+    end;
+  end;
+
   procedure InitDropTarget;
   begin
     with DropTarget do
     begin
       Stored := False; //don't store state, should use state from designed .FMX resource
       BringToFront;
+      Visible := EditMode; //show only in EditMode
       FilterIndex := 1; //this is the default value
       Filter := GetLoadFilesFilter;
-      OnDragOver := DropTargetDragOver;
+      //OnDragOver := DropTargetDragOver;
       OnDragDrop := DropTargetDropped;
     end;
   end;
@@ -156,6 +168,7 @@ begin
   inherited;
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
+  InitBorder;
   InitDropTarget;
 end;
 
@@ -185,6 +198,7 @@ end;
 procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited;
+  Border.Visible := Value;
   DropTarget.Visible := Value;
   DropTarget.SendToBack; //keep always under children (setting to Visible seems to BringToFront)
 end;
