@@ -77,6 +77,9 @@ type
     constructor Create(AOwner: TComponent); override;
 
     {$region 'Manipulation'}
+    {Z-order}
+    procedure BringToFrontElseSendToBack(const Control: TControl); overload; inline;
+
     {Move}
     procedure MoveControl(const Control: TControl; const DX, DY: Single); overload; inline;
     procedure MoveControls(const Controls: TControlList; const DX, DY: Single); overload;
@@ -231,6 +234,19 @@ end;
 
 {$region 'Manipulation'}
 
+{$region 'Z-order'}
+
+procedure TManipulator.BringToFrontElseSendToBack(const Control: TControl);
+begin
+  with Children do
+    if IndexOf(Control) < Count - 1 then
+      Control.BringToFront
+    else
+      Control.SendToBack;
+end;
+
+{$endregion}
+
 {$region 'Move'}
 
 procedure TManipulator.MoveControl(const Control: TControl; const DX, DY: Single);
@@ -381,17 +397,20 @@ end;
 
 procedure TManipulator.SetEditMode(const Value: Boolean);
 begin
-  TListEx<TControl>.ForEach(
+  if Assigned(FAreaSelector) then
+    FAreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point) //MUST DO FIRST (AreaSelector.Visible used to detect edit mode)
+
+  TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
     Controls,
     procedure(Control: TControl)
     begin
       if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
-        Control.Enabled := not Value;
+        begin
+        //Control.Enabled := not Value; //don't use, will show controls as semi-transparent
+        Control.HitTest := not Value; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagete to parent control, need to fix
+        end;
     end
   );
-
-  if Assigned(FAreaSelector) then
-    FAreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
 end;
 
 {$endregion}
@@ -455,6 +474,14 @@ begin
   FMouseShift := Shift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition) //Note that MouseUp fires before MouseClick so we do need to have this in MouseDown
 
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
+    if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
+      begin
+      var LObj := ObjectAtLocalPoint(PointF(X, Y), false); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
+      if Assigned(LObj) and (LObj.GetObject is TControl) then
+        BringToFrontElseSendToBack(TControl(LObj.GetObject));
+      exit;
+      end;
 
   if not EditMode then exit;
 
