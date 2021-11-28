@@ -67,7 +67,6 @@ var
 
 implementation
   uses CodeSiteLogging,
-       ObjectDebuggerFMXForm,
        FormMessage;
 
 {$R *.fmx}

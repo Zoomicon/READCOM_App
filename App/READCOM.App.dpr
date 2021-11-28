@@ -2,15 +2,20 @@ program READCOM.App;
 
 uses
   SysUtils,
-  CodeSiteLogging,
   System.StartUpCopy,
   FMX.Forms,
+  {$IFDEF DEBUG}
+  CodeSiteLogging,
+  //ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
+  //ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
+  {$ENDIF}
   iPub.Rtl.Messaging in '..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas',
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Messages.Classes in 'Messages\READCOM.Messages.Classes.pas',
   READCOM.Messages.Models in 'Messages\READCOM.Messages.Models.pas',
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
+  READCOM.Views.Options.BitmapImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.BitmapImageStoryItemOptions.pas' {BitmapImageStoryItemOptions: TFrame},
   READCOM.Views.StoryItem in 'Views\READCOM.Views.StoryItem.pas' {StoryItem: TFrame},
   READCOM.Views.ImageStoryItem in 'Views\READCOM.Views.ImageStoryItem.pas' {ImageStoryItem: TFrame},
   READCOM.Views.BitmapImageStoryItem in 'Views\READCOM.Views.BitmapImageStoryItem.pas' {BitmapImageStoryItem: TFrame},
@@ -19,8 +24,6 @@ uses
   READCOM.Views.PanelStoryItem in 'Views\READCOM.Views.PanelStoryItem.pas' {PanelStoryItem: TFrame},
   READCOM.Views.Menu.HUD in 'Views\READCOM.Views.Menu.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
-  ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
-  ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   Zoomicon.Media.Classes in '..\Zoomicon.Media\Zoomicon.Media.Classes.pas',
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
@@ -37,8 +40,7 @@ uses
   u_UrlOpen in 'u_UrlOpen.pas',
   Zoomicon.Selector in '..\Zoomicon.Manipulator\Zoomicon.Selector.pas',
   READCOM.Views.TextStoryItem in 'Views\READCOM.Views.TextStoryItem.pas' {TextStoryItem: TFrame},
-  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
-  READCOM.Views.Options.BitmapImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.BitmapImageStoryItemOptions.pas' {StoryItemOptions1: TFrame};
+  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas';
 
 {$R *.res}
 
@@ -79,11 +81,25 @@ begin
   {$ENDIF}
 
   Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
+
   //ApplicationHandleException := //...
   //ApplicationShowException := //...
+
   Application.Initialize;
+
   Application.CreateForm(TDataModule1, DataModule1);
   Application.CreateForm(TMainForm, MainForm);
+
+  {$IFDEF DEBUG}
+  //ObjectDebuggerFMXForm1 := TObjectDebuggerFMXForm.Create(MainForm);
   //ObjectDebuggerFMXForm1.Show;
-  Application.Run;
+  {$ENDIF}
+
+  try
+    Application.Run;
+  finally
+    {$IFDEF DEBUG}
+    //FreeAndNil(ObjectDebuggerFMXForm1); //the object debugger anyway seems to be leaking objects (if different objects are selected)
+    {$ENDIF}
+  end;
 end.
