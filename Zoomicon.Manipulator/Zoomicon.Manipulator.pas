@@ -144,36 +144,31 @@ end;
 }
 
 function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; //based on TControl.ObjectAtPoint
-var
-  I: Integer;
-  NewObj: IControl;
-  Control: TControl;
-  LP: TPointF;
 begin
   if not ShouldTestMouseHits then
     Exit(nil);
 
-  LP := AScreenPoint;
+  var LP := AScreenPoint;
   if FScene <> nil then
     LP := FScene.ScreenToLocal(LP);
   if (ClipChildren or SmallSizeControl) and not PointInObject(LP.X, LP.Y) then
     Exit(nil);
 
   if (RecursionDepth > 0) and (ControlsCount > 0) then
-    for I := GetLastVisibleObjectIndex - 1 downto GetFirstVisibleObjectIndex do
+    for var I := GetLastVisibleObjectIndex - 1 downto GetFirstVisibleObjectIndex do
     begin
-      Control := Controls[I];
+      var Control := Controls[I];
       if not Control.GetVisible then
         Continue;
 
-      NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
-      if NewObj <> nil then
+      var NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
+      if Assigned(NewObj) then
         Exit(NewObj);
       end;
 
   Result := nil;
 
-  if PointInObject(LP.X, LP.Y) and CheckHitTest(HitTest) then
+  if PointInObject(LP.X, LP.Y) {and CheckHitTest(HitTest)} then //TODO: allow to have option to ignore hit test
     Result := Self;
 end;
 
@@ -206,6 +201,7 @@ constructor TManipulator.Create(AOwner: TComponent);
        Size.Size := TPointF.Zero;
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
+       BringToFront;
        end;
      FAreaSelector.Parent := Self;
   end;
@@ -398,7 +394,10 @@ end;
 procedure TManipulator.SetEditMode(const Value: Boolean);
 begin
   if Assigned(FAreaSelector) then
+    begin
     FAreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point) //MUST DO FIRST (AreaSelector.Visible used to detect edit mode)
+    FAreaSelector.BringToFront; //always on top
+    end;
 
   TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
     Controls,
@@ -408,6 +407,7 @@ begin
         begin
         //Control.Enabled := not Value; //don't use, will show controls as semi-transparent
         Control.HitTest := not Value; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagete to parent control, need to fix
+        //Control.SetDesign(Value, false);
         end;
     end
   );
