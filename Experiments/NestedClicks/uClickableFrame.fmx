@@ -15,7 +15,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 73.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 1
+      TabOrder = 2
       Text = 'HitTest'
       OnChange = cbHitTestChange
     end
@@ -24,6 +24,16 @@ object ClickableFrame: TClickableFrame
       Position.Y = 8.000000000000000000
       Text = '...'
       TabOrder = 0
+    end
+    object cbFixDblClick: TCheckBox
+      Position.X = 81.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 88.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Fix DblClick'
+      OnChange = cbHitTestChange
     end
   end
 end
