@@ -6,20 +6,38 @@ object StoryHUD: TStoryHUD
   Size.PlatformDefault = False
   ParentShowHint = False
   ShowHint = True
+  object BtnMenu: TSpeedButton
+    Action = actionMenu
+    Enabled = True
+    Images = SVGIconImageList
+    ImageIndex = -1
+    Size.Width = 33.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'drawertoolbutton'
+  end
+  object Drawer: TMultiView
+    TargetControl = layoutAll
+    DrawerOptions.Mode = PushingDetailView
+    Mode = Drawer
+    Size.Width = 250.000000000000000000
+    Size.Height = 572.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    TabOrder = 3
+  end
   object layoutAll: TLayout
     Align = Client
     Size.Width = 912.000000000000000000
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
-    Visible = False
-    TabOrder = 3
+    TabOrder = 4
     object layoutEdit: TLayout
       Align = MostRight
       Position.X = 872.000000000000000000
       Size.Width = 40.000000000000000000
       Size.Height = 532.000000000000000000
       Size.PlatformDefault = False
-      Visible = False
       TabOrder = 1
       object BtnAdd: TSpeedButton
         Action = actionAdd
@@ -76,16 +94,17 @@ object StoryHUD: TStoryHUD
       Size.PlatformDefault = False
       StyleLookup = 'priortoolbutton'
     end
-  end
-  object BtnMenu: TSpeedButton
-    Action = actionMenu
-    Enabled = True
-    Images = SVGIconImageList
-    ImageIndex = -1
-    Size.Width = 33.000000000000000000
-    Size.Height = 33.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'drawertoolbutton'
+    object BtnStructure: TSpeedButton
+      Action = actionStructure
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 3
+      Position.Y = 81.000000000000000000
+      Size.Width = 41.000000000000000000
+      Size.Height = 40.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'drawertoolbutton'
+    end
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
@@ -155,6 +174,23 @@ object StoryHUD: TStoryHUD
           '97 C17.0967,53.5272,18.0664,55.0122,19.5816,55.6062z"/>'#10'  </g>'#10'<' +
           '/svg>'#10
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Width = 41
+            Height = 51
+          end>
+        IconName = 'Diagram'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.' +
+          'w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 60' +
+          ' 75" style="enable-background:new 0 0 60 60;" xml:space="preserv' +
+          'e"><path d="M53,41V29H31V19h7V3H22v16h7v10H7v12H0v16h16V41H9V31h' +
+          '20v10h-7v16h16V41h-7V31h20v10h-7v16h16V41H53z M24,5h12v12H24V5z ' +
+          'M14,55H2V43h12V55z M36,55H24V43h12V55z M58,55H46V43h12V55z"/></s' +
+          'vg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
@@ -182,6 +218,14 @@ object StoryHUD: TStoryHUD
           end>
       end
       item
+        Layers = <
+          item
+            Name = 'Diagram'
+            SourceRect.Right = 51.000000000000000000
+            SourceRect.Bottom = 51.000000000000000000
+          end>
+      end
+      item
         Layers = <>
       end>
     Size = 64
@@ -196,20 +240,17 @@ object StoryHUD: TStoryHUD
       Category = 'Navigation'
       Text = 'actionPrevious'
       ImageIndex = 1
-      OnExecute = actionPreviousExecute
       ImageIndex = 1
     end
     object actionNext: TAction
       Category = 'Navigation'
       Text = 'actionNext'
       ImageIndex = 2
-      OnExecute = actionNextExecute
       ImageIndex = 2
     end
     object actionAdd: TAction
       Category = 'Edit'
       Text = 'actionAdd'
-      OnExecute = actionAddExecute
     end
     object actionEdit: TAction
       Category = 'Edit'
@@ -225,9 +266,29 @@ object StoryHUD: TStoryHUD
       OnExecute = actionAboutExecute
     end
     object actionMenu: TAction
+      Category = 'View'
       AutoCheck = True
       Text = 'actionMenu'
       OnExecute = actionMenuExecute
     end
+    object actionStructure: TAction
+      Category = 'View'
+      AutoCheck = True
+      Text = 'actionStructure'
+      ImageIndex = 3
+      OnExecute = actionStructureExecute
+      ImageIndex = 3
+    end
+  end
+  object DrawerFrameStand: TFrameStand
+    AnimationShow = 'OnShow*'
+    AnimationHide = 'OnHide*'
+    CommonActionPrefix = 'ca_'
+    DefaultHideAndCloseDeferTimeMS = 100
+    DefaultStyleName = 'framestand'
+    DefaultStandName = 'framestand'
+    DefaultParent = Drawer
+    Left = 416
+    Top = 40
   end
 end

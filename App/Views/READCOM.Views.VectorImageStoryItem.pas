@@ -16,7 +16,6 @@ const
 
 type
   TVectorImageStoryItem = class(TImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
-    SVGIconImage: TSVGIconImage;
 
   //--- Methods ---
 
@@ -55,10 +54,15 @@ implementation
 { TVectorImageStoryItem }
 
 constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
+
+  procedure InitGlyph;
+  begin
+
+  end;
+
 begin
   inherited;
-  SVGIconImage.SetSubComponent(true);
-  SVGIconImage.Stored := false; //don't store state, should use state from designed .FMX resource
+  InitGlyph;
 end;
 
 {$region 'IStoreable'}
@@ -78,7 +82,7 @@ end;
 
 procedure TVectorImageStoryItem.LoadSVG(const Stream: TStream);
 begin
-  var bitmap := SVGIconImage.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
+  var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
   bitmap.SVG.LoadFromStream(Stream);
   //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
   bitmap.DrawSVGIcon;
@@ -94,7 +98,7 @@ end;
 
 function TVectorImageStoryItem.GetImage: TImage;
 begin
-  result := SVGIconImage;
+  result := Glyph;
 end;
 
 procedure TVectorImageStoryItem.SetImage(const Value: TImage);
@@ -108,12 +112,12 @@ end;
 
 function TVectorImageStoryItem.GetSVGImage: TSVGIconImage;
 begin
-  result := SVGIconImage;
+  result := Glyph;
 end;
 
 procedure TVectorImageStoryItem.SetSVGImage(const Value: TSVGIconImage);
 begin
-  (SVGIconImage.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
+  (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
 end;
 
 {$endregion}

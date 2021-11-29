@@ -11,8 +11,6 @@ object MainForm: TMainForm
   FormFactor.Devices = [Desktop]
   ShowFullScreenIcon = True
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  OnShow = FormShow
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
   object ZoomFrame: TZoomFrame
@@ -21,5 +19,150 @@ object MainForm: TMainForm
     Size.Height = 616.000000000000000000
     Size.PlatformDefault = False
     Proportional = True
+  end
+  inline HUD: TStoryHUD
+    Align = Client
+    HitTest = False
+    Size.Width = 876.000000000000000000
+    Size.Height = 616.000000000000000000
+    Size.PlatformDefault = False
+    ParentShowHint = False
+    ShowHint = True
+    inherited Drawer: TMultiView
+      Size.Width = 50.000000000000000000
+      Size.Height = 616.000000000000000000
+    end
+    inherited layoutAll: TLayout
+      Size.Width = 876.000000000000000000
+      Size.Height = 616.000000000000000000
+      inherited layoutEdit: TLayout
+        Position.X = 836.000000000000000000
+        Size.Height = 576.000000000000000000
+      end
+      inherited layoutNavigation: TLayout
+        Position.Y = 576.000000000000000000
+        Size.Width = 876.000000000000000000
+        inherited BtnNext: TSpeedButton
+          Position.X = 820.000000000000000000
+        end
+      end
+    end
+    inherited SVGIconImageList: TSVGIconImageList
+      Source = <
+        item
+          MultiResBitmap = <
+            item
+              Size = 30
+            end>
+          IconName = 'edit'
+          SVGText = 
+            '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+            '0/svg">'#10'  <g id="color">'#10'    <rect x="12.854" y="16.5774" width=' +
+            '"42.4977" height="42.246" fill="#FFFFFF" stroke="none"/>'#10'    <po' +
+            'lygon fill="#F4AA41" stroke="none" points="32.775,39.4058 37.493' +
+            '8,37.6238 34.5571,34.687"/>'#10'    <rect x="44.8202" y="9.0123" wid' +
+            'th="5.3523" height="31.1323" transform="matrix(0.7071 0.7071 -0.' +
+            '7071 0.7071 31.291 -26.3861)" fill="#A57939" stroke="none"/>'#10'  <' +
+            '/g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  ' +
+            '<g id="line">'#10'    <path fill="none" stroke="#000000" stroke-line' +
+            'cap="round" stroke-linejoin="round" stroke-miterlimit="10" strok' +
+            'e-width="2" d="M54.5567,28.084v30.6836c0,0.55-0.45,1-1,1H13.1685' +
+            'c-0.55,0-1-0.45-1-1V18.3794c0-0.5523,0.4477-1,1-1h31.0229"/>'#10'   ' +
+            ' <path fill="none" stroke="#000000" stroke-linecap="round" strok' +
+            'e-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M3' +
+            '8.0526,37.7487l21.4611-21.4611c0.3905-0.3905,0.3905-1.0237,0-1.4' +
+            '142l-2.3359-2.3359c-0.3905-0.3905-1.0237-0.3905-1.4142,0 L34.302' +
+            '5,33.9986l-2.6258,6.3865L38.0526,37.7487l-3.7501-3.7501"/>'#10'  </g' +
+            '>'#10'</svg>'#10
+          Opacity = 1.000000000000000000
+        end
+        item
+          MultiResBitmap = <
+            item
+              Size = 30
+            end>
+          IconName = 'reverse'
+          SVGText = 
+            '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+            '0/svg">'#10'  <g id="color"/>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g' +
+            ' id="skin-shadow"/>'#10'  <g id="line">'#10'    <path fill="none" stroke' +
+            '="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke' +
+            '-width="2" d="M52.6119,16.3937 c-0.4848-0.1782-1.0303-0.297-1.57' +
+            '58-0.297c-0.8485,0-1.697,0.297-2.4242,0.7722l-30,15.9793l-0.303,' +
+            '0.297 c-0.7879,0.7722-1.2121,1.7227-1.2121,2.7919c0,1.0692,0.424' +
+            '2,2.0791,1.2121,2.7919l0.303,0.297l30,16.0981 c1.0909,0.8316,2.6' +
+            '667,1.0098,4,0.4752c1.5152-0.594,2.4848-2.0791,2.4848-3.683V20.0' +
+            '767 C55.0967,18.4728,54.127,16.9878,52.6119,16.3937z"/>'#10'  </g>'#10'<' +
+            '/svg>'#10
+          Opacity = 1.000000000000000000
+        end
+        item
+          MultiResBitmap = <
+            item
+              Size = 30
+            end>
+          IconName = 'play'
+          SVGText = 
+            '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+            '0/svg">'#10'  <g id="color"/>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g' +
+            ' id="skin-shadow"/>'#10'  <g id="line">'#10'    <path fill="none" stroke' +
+            '="#000000" stroke-linejoin="round" stroke-miterlimit="10" stroke' +
+            '-width="2" d="M19.5816,55.6062 c0.4848,0.1782,1.0303,0.297,1.575' +
+            '8,0.297c0.8485,0,1.697-0.297,2.4242-0.7722l30-15.9793l0.303-0.29' +
+            '7 c0.7879-0.7722,1.2121-1.7227,1.2121-2.7919c0-1.0692-0.4242-2.0' +
+            '791-1.2121-2.7919l-0.303-0.297l-30-16.0981 c-1.0909-0.8316-2.666' +
+            '7-1.0098-4-0.4752c-1.5152,0.594-2.4848,2.0791-2.4848,3.683v31.83' +
+            '97 C17.0967,53.5272,18.0664,55.0122,19.5816,55.6062z"/>'#10'  </g>'#10'<' +
+            '/svg>'#10
+          Opacity = 1.000000000000000000
+        end>
+      Destination = <
+        item
+          Layers = <
+            item
+              Name = 'edit'
+              SourceRect.Right = 30.000000000000000000
+              SourceRect.Bottom = 30.000000000000000000
+            end>
+        end
+        item
+          Layers = <
+            item
+              Name = 'reverse'
+              SourceRect.Right = 30.000000000000000000
+              SourceRect.Bottom = 30.000000000000000000
+            end>
+        end
+        item
+          Layers = <
+            item
+              Name = 'play'
+              SourceRect.Right = 30.000000000000000000
+              SourceRect.Bottom = 30.000000000000000000
+            end>
+        end
+        item
+          Layers = <>
+        end>
+    end
+    inherited ActionList1: TActionList
+      inherited actionPrevious: TAction
+        ImageIndex = 1
+      end
+      inherited actionNext: TAction
+        ImageIndex = 2
+      end
+      inherited actionAdd: TAction
+        OnExecute = HUDactionAddExecute
+      end
+      inherited actionEdit: TAction
+        OnExecute = HUDactionEditExecute
+        ImageIndex = 0
+      end
+      inherited actionStructure: TAction
+        OnExecute = HUDactionStructureExecute
+        ImageIndex = 3
+      end
+    end
   end
 end

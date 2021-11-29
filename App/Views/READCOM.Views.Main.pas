@@ -5,29 +5,28 @@ unit READCOM.Views.Main;
 interface
 
 uses
-  iPub.Rtl.Messaging, //for SubscribeAttribute, TipMessagingThread
   Zoomicon.Generics.Collections, //for TObjectListEx
-  READCOM.Messages.Models, //for IMessageMenu
-  READCOM.App.Models, //for IStoryItem
+  READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, READCOM.Views.PanelStoryItem,
-  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem, Zoomicon.Zooming.ZoomFrame;
+  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem, Zoomicon.Zooming.ZoomFrame,
+  SubjectStand;
 
 type
   TMainForm = class(TForm, IStory)
     ZoomFrame: TZoomFrame;
+    HUD: TStoryHUD;
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
+    procedure HUDactionAddExecute(Sender: TObject);
+    procedure HUDactionEditExecute(Sender: TObject);
+    procedure HUDactionStructureExecute(Sender: TObject);
 
   protected
-    HUD: TStoryHUD;
-
     function LoadSavedState: Boolean;
     {Story}
     function GetStory: IStoryItem;
@@ -38,12 +37,6 @@ type
 
   public
     //--- Events
-    [Subscribe(TipMessagingThread.Main)]
-    procedure OnMenu(const AMessage: IMessageMenu);
-
-    [Subscribe(TipMessagingThread.Main)]
-    procedure OnEditModeChange(const AMessage: IMessageEditModeChange);
-
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
@@ -67,7 +60,8 @@ var
 
 implementation
   uses CodeSiteLogging,
-       FormMessage;
+  READCOM.Views.Panes.Structure, //for TStructure
+  READCOM.Views.VectorImageStoryItem; //TODO: remove
 
 {$R *.fmx}
 
@@ -100,11 +94,9 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 
-  procedure CreateHUD;
+  procedure InitHUD;
   begin
-    HUD := TStoryHud.Create(Self);
-    HUD.Parent := Self;
-    //HUD.BringToFront;
+    HUD.BringToFront;
   end;
 
   procedure LoadSavedStateOrNewStory;
@@ -119,17 +111,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
   CodeSite.EnterMethod('FormCreate');
-  GMessaging.Subscribe(Self);
 
-  CreateHUD;
+  InitHUD;
   LoadSavedStateOrNewStory;
 
   CodeSite.ExitMethod('FormCreate');
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  GMessaging.Unsubscribe(Self);
 end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);
@@ -155,32 +141,11 @@ begin
   CodeSite.ExitMethod('SaveState');
 end;
 
-procedure TMainForm.FormShow(Sender: TObject);
-begin
-{
-  Application.CreateForm(TMessageForm, MessageForm);
-  Application.CreateForm(TObjectDebuggerFMXForm, ObjectDebuggerFMXForm1);
-  ObjectDebuggerFMXForm1.Show;
-}
-end;
-
-procedure TMainForm.OnMenu(const AMessage: IMessageMenu);
-begin
-  ShowMessage('Menu');
-end;
-
-procedure TMainForm.OnEditModeChange(const AMessage: IMessageEditModeChange);
-begin
-  var view := StoryView;
-  if Assigned(view) then
-    view.EditMode := AMessage.Value;
-end;
-
 {$region 'Story'}
 
 function TMainForm.GetStory: IStoryItem;
 begin
-  result := TObjectListEx<TFmxObject>.GetFirstInterface<IStoryItem>(Children);
+  result := StoryView as IStoryItem;
 end;
 
 procedure TMainForm.SetStory(const Value: IStoryItem);
@@ -205,6 +170,43 @@ end;
 procedure TMainForm.GotoPreviousPanel;
 begin
   //TODO// ActiveStoryItem.GotoPrevious; ZoomTo(ActiveStoryItem); //zoom to the new one
+end;
+
+procedure TMainForm.HUDactionAddExecute(Sender: TObject);
+begin
+  //HUD.actionAddExecute(Sender);
+
+  //TODO: move to StoryItem (with parameter the class to create and/or file to load [see PanelStoryItem code where this came from])
+  var StoryItem := TVectorImageStoryItem.Create(Self);
+
+  StoryItem.Name := 'VectorImageStoryItem_' + IntToStr(Random(maxint)); //TODO: use a GUID
+
+  //Center the new item...
+  var ItemSize := StoryItem.Size;
+  StoryItem.Position.Point := PointF(StoryView.Size.Width/2 - ItemSize.Width/2, StoryView.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+
+  StoryItem.Parent := StoryView; //TODO: should add to current StoryItem
+  StoryItem.BringToFront; //load as front-most
+end;
+
+procedure TMainForm.HUDactionEditExecute(Sender: TObject);
+begin
+  HUD.actionEditExecute(Sender);
+
+  var view := StoryView;
+  if Assigned(view) then
+    view.EditMode := HUD.actionEdit.Checked;
+end;
+
+
+procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
+begin
+  HUD.actionStructureExecute(Sender);
+
+  HUD.DrawerFrameStand.CloseAllExcept(TStructure);
+  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructure>;
+  (frameInfo.Frame As TStructure).StoryItem := Story;
+  frameInfo.Show;
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);

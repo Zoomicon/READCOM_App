@@ -1,3 +1,8 @@
 inherited PanelStoryItem: TPanelStoryItem
   ClipChildren = True
+  inherited Glyph: TSVGIconImage
+    MultiResBitmap = <
+      item
+      end>
+  end
 end

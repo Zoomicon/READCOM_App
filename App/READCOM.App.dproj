@@ -251,14 +251,15 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\3rdPartyLib\ipub-messaging-main\iPub.Rtl.Messaging.pas"/>
         <DCCReference Include="..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas">
             <Form>Manipulator</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Models.pas"/>
-        <DCCReference Include="Messages\READCOM.Messages.Classes.pas"/>
-        <DCCReference Include="Messages\READCOM.Messages.Models.pas"/>
+        <DCCReference Include="Views\Panes\READCOM.Views.Panes.Structure.pas">
+            <Form>Structure</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
             <Form>StoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
@@ -298,9 +299,6 @@
         <DCCReference Include="Views\READCOM.Views.Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
-            <Form>MessageForm</Form>
-        </DCCReference>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Classes.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
@@ -329,6 +327,16 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
+            <Form>MessageForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
+            <Form>FMXObjectDebuggerFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
+            <Form>ObjectDebuggerFMXForm</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -429,13 +437,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Release" Class="Android_LauncherIcon36">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
                     <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
+                        <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -447,9 +455,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Release" Class="Android_LauncherIcon36">
                     <Platform Name="Android">
-                        <RemoteName>ic_notification.png</RemoteName>
+                        <RemoteName>ic_launcher.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

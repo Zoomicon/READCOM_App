@@ -4,11 +4,9 @@ interface
 
 uses
   READCOM.App.Models, //for IStoryItem
-  READCOM.Messages.Models, //for IMessageEditModeChange
   Zoomicon.Manipulator, //for TManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
   Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper
-  iPub.Rtl.Messaging, //for SubscribeAttrible, GMessaging
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation;
@@ -18,11 +16,10 @@ const
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
 
 type
-  IMessageNavigatedTo = IMessageSingleValue<IStoryItem>; //TODO: check that GUID reuse won't cause issues
-
   TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     DropTarget: TDropTarget;
     Border: TRectangle;
+    Glyph: TSVGIconImage;
 
   //-- Fields ---
 
@@ -140,6 +137,15 @@ implementation
 
 constructor TStoryItem.Create(AOwner: TComponent);
 
+  procedure InitGlyph;
+  begin
+    with Glyph do
+    begin
+      Glyph.SetSubComponent(true);
+      Glyph.Stored := false; //don't store state, should use state from designed .FMX resource
+    end;
+  end;
+
   procedure InitBorder;
   begin
     with Border do
@@ -168,6 +174,7 @@ begin
   inherited;
   FID := TGUID.NewGuid; //Generate new statistically unique ID
   FAutoSize := DEFAULT_AUTOSIZE;
+  InitGlyph;
   InitBorder;
   InitDropTarget;
 end;

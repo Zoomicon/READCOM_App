@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
-  FMX.SVGIconImageList, FMX.Layouts, System.Actions, FMX.ActnList;
+  FMX.SVGIconImageList, FMX.Layouts, System.Actions, FMX.ActnList,
+  FMX.MultiView, SubjectStand, FrameStand;
 
 type
   TStoryHUD = class(TFrame)
@@ -26,13 +27,14 @@ type
     actionAbout: TAction;
     actionMenu: TAction;
     layoutAll: TLayout;
+    Drawer: TMultiView;
+    BtnStructure: TSpeedButton;
+    actionStructure: TAction;
+    DrawerFrameStand: TFrameStand;
     procedure actionEditExecute(Sender: TObject);
-    procedure actionPreviousExecute(Sender: TObject);
-    procedure actionNextExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
-    procedure actionAddExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure actionStructureExecute(Sender: TObject);
   protected
     {EditMode}
     function GetEditMode: Boolean;
@@ -43,10 +45,7 @@ type
 
 implementation
   uses
-    READCOM.Messages.Models, //for IMessageMenu, IMessageAdd
-    READCOM.Messages.Classes, //for TMessageMenu, TMessageAdd
-    READCOM.Views.About, //for TAbout
-    iPub.Rtl.Messaging; //for GMessaging
+    READCOM.Views.About; //for TAbout
 
 {$R *.fmx}
 
@@ -70,41 +69,28 @@ end;
 
 {$REGION 'Actions'}
 
+{$region 'View actions'}
+
 procedure TStoryHUD.actionMenuExecute(Sender: TObject);
 begin
   layoutAll.Visible := actionMenu.Checked;
 end;
 
-{$region 'Navigation actions'}
-
-procedure TStoryHUD.actionPreviousExecute(Sender: TObject);
+procedure TStoryHUD.actionStructureExecute(Sender: TObject);
 begin
-  GMessaging.Post(TMessageNavigation.Create As IMessageNavigationPrevious);
-end;
-
-procedure TStoryHUD.Button1Click(Sender: TObject);
-begin
- showMessage('test');
-end;
-
-procedure TStoryHUD.actionNextExecute(Sender: TObject);
-begin
-  GMessaging.Post(TMessageNavigation.Create As IMessageNavigationNext);
+  if actionStructure.Checked then
+    Drawer.ShowMaster
+  else
+    Drawer.HideMaster;
 end;
 
 {$endregion}
 
 {$region 'Edit actions'}
 
-procedure TStoryHUD.actionAddExecute(Sender: TObject);
-begin
-  GMessaging.Post(TMessageAdd.Create As IMessageAdd);
-end;
-
 procedure TStoryHUD.actionEditExecute(Sender: TObject);
 begin
   var inEditMode := EditMode;
-  GMessaging.Post(TMessageEditModeChange.Create(inEditMode) As IMessageEditModeChange);
   layoutEdit.Visible := inEditMode;
 end;
 
