@@ -1,21 +1,20 @@
 object ClickableFrame: TClickableFrame
-  Size.Width = 320.000000000000000000
+  Size.Width = 424.000000000000000000
   Size.Height = 240.000000000000000000
   Size.PlatformDefault = False
-  OnPaint = FramePaint
   object Rectangle: TRectangle
     Align = Client
     HitTest = False
-    Size.Width = 320.000000000000000000
+    Size.Width = 424.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
     object cbHitTest: TCheckBox
       Position.X = 8.000000000000000000
       Position.Y = 33.000000000000000000
-      Size.Width = 73.000000000000000000
+      Size.Width = 65.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 2
+      TabOrder = 3
       Text = 'HitTest'
       OnChange = cbHitTestChange
     end
@@ -26,7 +25,7 @@ object ClickableFrame: TClickableFrame
       TabOrder = 0
     end
     object cbFixDblClick: TCheckBox
-      Position.X = 81.000000000000000000
+      Position.X = 290.000000000000000000
       Position.Y = 33.000000000000000000
       Size.Width = 88.000000000000000000
       Size.Height = 19.000000000000000000
@@ -34,6 +33,46 @@ object ClickableFrame: TClickableFrame
       TabOrder = 1
       Text = 'Fix DblClick'
       OnChange = cbHitTestChange
+    end
+    object cbEnabled: TCheckBox
+      Position.X = 81.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Enabled'
+      OnChange = cbEnabledChange
+      object cbAbsoluteEnabled: TCheckBox
+        Enabled = False
+        Position.X = 80.000000000000000000
+        Size.Width = 121.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        Text = 'AbsoluteEnabled'
+        OnChange = cbEnabledChange
+      end
+    end
+    object btnEnableChildren: TButton
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 9.000000000000000000
+      Position.Y = 61.000000000000000000
+      Size.Width = 93.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 4
+      Text = 'Enable Children'
+      OnClick = btnEnableChildrenClick
+    end
+    object UpdateTimer: TTimer
+      Interval = 1
+      OnTimer = UpdateTimerTimer
+      Left = 368
+      Top = 16
     end
   end
 end

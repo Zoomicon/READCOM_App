@@ -13,8 +13,14 @@ type
     Rectangle: TRectangle;
     cbHitTest: TCheckBox;
     cbFixDblClick: TCheckBox;
-    procedure FramePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+    cbEnabled: TCheckBox;
+    btnEnableChildren: TButton;
+    UpdateTimer: TTimer;
+    cbAbsoluteEnabled: TCheckBox;
     procedure cbHitTestChange(Sender: TObject);
+    procedure cbEnabledChange(Sender: TObject);
+    procedure btnEnableChildrenClick(Sender: TObject);
+    procedure UpdateTimerTimer(Sender: TObject);
   protected
     procedure DblClick; override;
     procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
@@ -54,10 +60,23 @@ begin
   HitTest := cbHitTest.IsChecked;
 end;
 
-procedure TClickableFrame.FramePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+procedure TClickableFrame.cbEnabledChange(Sender: TObject);
+begin
+  Enabled := cbEnabled.IsChecked;
+end;
+
+procedure TClickableFrame.UpdateTimerTimer(Sender: TObject);
 begin
   LabelName.Text := Name;
   cbHitTest.IsChecked := HitTest;
+  cbEnabled.IsChecked := Enabled;
+  cbAbsoluteEnabled.IsChecked := AbsoluteEnabled;
+end;
+
+procedure TClickableFrame.btnEnableChildrenClick(Sender: TObject);
+begin
+  for var Control in Rectangle.Controls do
+    Control.Enabled := true;
 end;
 
 procedure TClickableFrame.DblClick; //unfortunately there's no MouseDblClick that would also give us ShiftState (say double-clicking with Alt pressed etc.)
