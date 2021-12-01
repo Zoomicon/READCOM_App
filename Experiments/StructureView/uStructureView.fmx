@@ -9,6 +9,8 @@ object StructureView: TStructureView
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
+    ParentShowHint = False
+    ShowHint = True
     ItemHeight = 50.000000000000000000
     Images = ImageList
     Viewport.Width = 316.000000000000000000
