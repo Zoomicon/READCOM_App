@@ -1,0 +1,91 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Caption = 'TStructureView Demo'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object MainLayout: TLayout
+    Align = Contents
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    object MultiView: TMultiView
+      TargetControl = ContentLayout
+      DrawerOptions.Mode = PushingDetailView
+      MasterButton = btnMenu
+      Mode = Drawer
+      NavigationPaneOptions.CollapsedWidth = 113.000000000000000000
+      OnStartShowing = MultiViewStartShowing
+      Size.Width = 250.000000000000000000
+      Size.Height = 480.000000000000000000
+      Size.PlatformDefault = False
+      Visible = False
+      TabOrder = 1
+    end
+    object ContentLayout: TLayout
+      Align = Client
+      Size.Width = 640.000000000000000000
+      Size.Height = 480.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object btnShowChildren: TButton
+        Align = MostTop
+        Size.Width = 640.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Text = 'Show Children'
+        OnClick = btnShowChildrenClick
+      end
+      inline HidableFrame1: THidableFrame
+        Align = Client
+        Size.Width = 640.000000000000000000
+        Size.Height = 447.000000000000000000
+        Size.PlatformDefault = False
+        inherited Rectangle: TRectangle
+          Size.Width = 640.000000000000000000
+          Size.Height = 447.000000000000000000
+          inline HidableFrame2: THidableFrame
+            Position.X = 121.000000000000000000
+            Position.Y = 145.000000000000000000
+            inherited Rectangle: TRectangle
+              inline HidableFrame3: THidableFrame
+                Position.X = 137.000000000000000000
+                Position.Y = 80.000000000000000000
+                Size.Width = 272.000000000000000000
+                Size.Height = 152.000000000000000000
+                inherited Rectangle: TRectangle
+                  Size.Width = 272.000000000000000000
+                  Size.Height = 152.000000000000000000
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+  object btnMenu: TSpeedButton
+    Size.Width = 33.000000000000000000
+    Size.Height = 33.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'drawertoolbutton'
+    Text = 'btnMenu'
+  end
+  object MultiViewFrameStand: TFrameStand
+    AnimationShow = 'OnShow*'
+    AnimationHide = 'OnHide*'
+    CommonActionPrefix = 'ca_'
+    DefaultHideAndCloseDeferTimeMS = 100
+    DefaultStyleName = 'framestand'
+    DefaultStandName = 'framestand'
+    DefaultParent = MultiView
+    Left = 536
+    Top = 48
+  end
+end

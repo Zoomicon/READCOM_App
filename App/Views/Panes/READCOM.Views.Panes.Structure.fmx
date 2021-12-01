@@ -10,8 +10,8 @@ object Structure: TStructure
     Size.PlatformDefault = False
     TabOrder = 0
     ItemHeight = 100.000000000000000000
-    Viewport.Width = 320.000000000000000000
-    Viewport.Height = 256.000000000000000000
+    Viewport.Width = 324.000000000000000000
+    Viewport.Height = 260.000000000000000000
   end
   object Images: TImageList
     Source = <>

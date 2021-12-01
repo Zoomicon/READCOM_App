@@ -1,0 +1,23 @@
+object StructureView: TStructureView
+  Align = Client
+  Size.Width = 320.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object TreeView: TTreeView
+    Align = Contents
+    Size.Width = 320.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    ItemHeight = 50.000000000000000000
+    Images = ImageList
+    Viewport.Width = 316.000000000000000000
+    Viewport.Height = 236.000000000000000000
+  end
+  object ImageList: TImageList
+    Source = <>
+    Destination = <>
+    Left = 240
+    Top = 64
+  end
+end

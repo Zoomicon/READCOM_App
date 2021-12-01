@@ -1,0 +1,48 @@
+object HidableFrame: THidableFrame
+  Size.Width = 424.000000000000000000
+  Size.Height = 240.000000000000000000
+  Size.PlatformDefault = False
+  object Rectangle: TRectangle
+    Align = Client
+    HitTest = False
+    Size.Width = 424.000000000000000000
+    Size.Height = 240.000000000000000000
+    Size.PlatformDefault = False
+    object LabelName: TLabel
+      Position.X = 8.000000000000000000
+      Position.Y = 8.000000000000000000
+      Text = '...'
+      TabOrder = 0
+    end
+    object cbVisible: TCheckBox
+      Position.X = 8.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 73.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Visible'
+      OnChange = cbVisibleChange
+    end
+    object btnShowChildren: TButton
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 9.000000000000000000
+      Position.Y = 61.000000000000000000
+      Size.Width = 93.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'Show Children'
+      OnClick = btnShowChildrenClick
+    end
+    object UpdateTimer: TTimer
+      Interval = 1
+      OnTimer = UpdateTimerTimer
+      Left = 368
+      Top = 16
+    end
+  end
+end

@@ -18,6 +18,9 @@
         <Projects Include="MoveToTarget\MoveToTarget.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="StructureView\TestStructureView.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="MoveToTarget:Make">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
     </Target>
+    <Target Name="TestStructureView">
+        <MSBuild Projects="StructureView\TestStructureView.dproj"/>
+    </Target>
+    <Target Name="TestStructureView:Clean">
+        <MSBuild Projects="StructureView\TestStructureView.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="TestStructureView:Make">
+        <MSBuild Projects="StructureView\TestStructureView.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;SizeableFrame;ZoomableContainer;NestedClicks;MoveToTarget"/>
+        <CallTarget Targets="DropFiles;SizeableFrame;ZoomableContainer;NestedClicks;MoveToTarget;TestStructureView"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;NestedClicks:Clean;MoveToTarget:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;NestedClicks:Clean;MoveToTarget:Clean;TestStructureView:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;NestedClicks:Make;MoveToTarget:Make"/>
+        <CallTarget Targets="DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;NestedClicks:Make;MoveToTarget:Make;TestStructureView:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

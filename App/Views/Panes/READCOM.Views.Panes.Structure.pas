@@ -20,6 +20,7 @@ type
     procedure SetStoryItem(const Value: IStoryItem);
 
   public
+    destructor Destroy; override;
     property StoryItem: IStoryItem read FStoryItem write SetStoryItem;
   end;
 
@@ -71,6 +72,15 @@ end;
 
 { TStructure }
 
+destructor TStructure.Destroy;
+begin
+  Tree.Clear;
+  Images.ClearCache;
+  //FreeAndNil(Tree);
+  //FreeAndNil(Images);
+  inherited;
+end;
+
 procedure TStructure.LoadTree(const StoryItem: IStoryItem);
 
   procedure LoadTreeItemChild(const StoryItem: IStoryItem; const Parent: TFmxObject);
@@ -83,7 +93,7 @@ procedure TStructure.LoadTree(const StoryItem: IStoryItem);
     var TreeItem := TTreeViewItem.Create(Parent);
     TreeItem.Parent := Parent;
 
-    TreeItem.ImageIndex := Images.Add(View.MakeScreenshot);
+    TreeItem.ImageIndex := Images.Add(View.MakeScreenshot); //TODO: this causes memory leaks (just the usage of the "View" object causes some, more are caused by View.MakeScreenshot)
 
     for var ChildStoryItem in StoryItem.StoryItems do
       LoadTreeItemChild(ChildStoryItem, TreeItem);
@@ -92,7 +102,7 @@ procedure TStructure.LoadTree(const StoryItem: IStoryItem);
 begin
   Tree.Clear;
   Images.ClearCache;
-  //Images.Dormant := true; //?
+  //Images.Dormant := true; //TODO: ?
   LoadTreeItemChild(StoryItem, Tree);
 
   Tree.CollapseAll;

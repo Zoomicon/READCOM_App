@@ -25,8 +25,10 @@ type
     procedure HUDactionAddExecute(Sender: TObject);
     procedure HUDactionEditExecute(Sender: TObject);
     procedure HUDactionStructureExecute(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
 
   protected
+    procedure LoadSavedStateOrNewStory;
     function LoadSavedState: Boolean;
     {Story}
     function GetStory: IStoryItem;
@@ -65,6 +67,41 @@ implementation
 
 {$R *.fmx}
 
+procedure TMainForm.FormCreate(Sender: TObject);
+
+  procedure InitHUD;
+  begin
+    HUD.BringToFront;
+  end;
+
+begin
+  CodeSite.EnterMethod('FormCreate');
+
+  InitHUD;
+  LoadSavedStateOrNewStory;
+
+  CodeSite.ExitMethod('FormCreate');
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  HUD.DrawerFrameStand.CloseAll;
+end;
+
+{$REGION 'Properties'}
+
+{$region 'SavedState'}
+
+procedure TMainForm.LoadSavedStateOrNewStory;
+begin
+  if (not LoadSavedState) then
+    begin
+    var TheStory := TPanelStoryItem.Create(Self);
+    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+    StoryView := TheStory;
+    end;
+end;
+
 function TMainForm.LoadSavedState: Boolean;
 begin
   result := false;
@@ -92,32 +129,6 @@ begin
   end;
 end;
 
-procedure TMainForm.FormCreate(Sender: TObject);
-
-  procedure InitHUD;
-  begin
-    HUD.BringToFront;
-  end;
-
-  procedure LoadSavedStateOrNewStory;
-  begin
-    if (not LoadSavedState) then
-      begin
-      var TheStory := TPanelStoryItem.Create(Self);
-      TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-      StoryView := TheStory;
-      end;
-  end;
-
-begin
-  CodeSite.EnterMethod('FormCreate');
-
-  InitHUD;
-  LoadSavedStateOrNewStory;
-
-  CodeSite.ExitMethod('FormCreate');
-end;
-
 procedure TMainForm.FormSaveState(Sender: TObject);
 begin
   CodeSite.EnterMethod('SaveState');
@@ -140,6 +151,8 @@ begin
     end;
   CodeSite.ExitMethod('SaveState');
 end;
+
+{$endregion}
 
 {$region 'Story'}
 
@@ -187,26 +200,6 @@ begin
 
   StoryItem.Parent := StoryView; //TODO: should add to current StoryItem
   StoryItem.BringToFront; //load as front-most
-end;
-
-procedure TMainForm.HUDactionEditExecute(Sender: TObject);
-begin
-  HUD.actionEditExecute(Sender);
-
-  var view := StoryView;
-  if Assigned(view) then
-    view.EditMode := HUD.actionEdit.Checked;
-end;
-
-
-procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
-begin
-  HUD.actionStructureExecute(Sender);
-
-  HUD.DrawerFrameStand.CloseAllExcept(TStructure);
-  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructure>;
-  (frameInfo.Frame As TStructure).StoryItem := Story;
-  frameInfo.Show;
 end;
 
 procedure TMainForm.SetStoryView(const Value: TStoryItem);
@@ -260,6 +253,35 @@ procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
 begin
   ZoomFrame.ZoomTo(StoryItem.View);
 end;
+
+{$endregion}
+
+{$ENDREGION}
+
+{$REGION 'Events'}
+
+{$region 'Actions'}
+
+procedure TMainForm.HUDactionEditExecute(Sender: TObject);
+begin
+  HUD.actionEditExecute(Sender);
+
+  var view := StoryView;
+  if Assigned(view) then
+    view.EditMode := HUD.actionEdit.Checked;
+end;
+
+procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
+begin
+  HUD.actionStructureExecute(Sender);
+
+  HUD.DrawerFrameStand.CloseAllExcept(TStructure);
+  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructure>;
+  (frameInfo.Frame As TStructure).StoryItem := Story;
+  frameInfo.Show;
+end;
+
+{$endregion}
 
 {$endregion}
 
