@@ -7,7 +7,6 @@ uses
   CodeSiteLogging,
   Zoomicon.Manipulator in '..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas' {Manipulator: TFrame},
   READCOM.App.Models in 'READCOM.App.Models.pas',
-  READCOM.Views.Panes.Structure in 'Views\Panes\READCOM.Views.Panes.Structure.pas' {Structure: TFrame},
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
   READCOM.Views.Options.BitmapImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.BitmapImageStoryItemOptions.pas' {BitmapImageStoryItemOptions: TFrame},
   READCOM.Views.StoryItem in 'Views\READCOM.Views.StoryItem.pas' {StoryItem: TFrame},
@@ -37,7 +36,8 @@ uses
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
-  Zoomicon.CustomManipulator in '..\Zoomicon.Manipulator\Zoomicon.CustomManipulator.pas' {CustomManipulator: TFrame};
+  Zoomicon.CustomManipulator in '..\Zoomicon.Manipulator\Zoomicon.CustomManipulator.pas' {CustomManipulator: TFrame},
+  Zoomicon.Introspection.StructureView in '..\Zoomicon.Introspection\Zoomicon.Introspection.StructureView.pas' {StructureView: TFrame};
 
 {$R *.res}
 

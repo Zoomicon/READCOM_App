@@ -61,9 +61,10 @@ var
   MainForm: TMainForm;
 
 implementation
-  uses CodeSiteLogging,
-  READCOM.Views.Panes.Structure, //for TStructure
-  READCOM.Views.VectorImageStoryItem; //TODO: remove
+  uses
+    CodeSiteLogging,
+    Zoomicon.Introspection.StructureView, //for TStructureView
+    READCOM.Views.VectorImageStoryItem; //TODO: remove
 
 {$R *.fmx}
 
@@ -276,9 +277,9 @@ procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
 begin
   HUD.actionStructureExecute(Sender);
 
-  HUD.DrawerFrameStand.CloseAllExcept(TStructure);
-  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructure>;
-  (frameInfo.Frame As TStructure).StoryItem := Story;
+  HUD.DrawerFrameStand.CloseAllExcept(TStructureView);
+  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructureView>;
+  frameInfo.Frame.GUIRoot := StoryView;
   frameInfo.Show;
 end;
 

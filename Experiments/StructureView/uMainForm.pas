@@ -21,17 +21,13 @@ type
     MultiViewFrameStand: TFrameStand;
     procedure btnShowChildrenClick(Sender: TObject);
     procedure MultiViewStartShowing(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
   MainForm: TMainForm;
 
 implementation
-  uses uStructureView;
+  uses Zoomicon.Introspection.StructureView;
 
 {$R *.fmx}
 

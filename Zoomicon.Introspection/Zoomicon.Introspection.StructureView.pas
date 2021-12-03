@@ -1,11 +1,21 @@
-unit uStructureView;
+unit Zoomicon.Introspection.StructureView;
 
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  System.ImageList, FMX.ImgList, FMX.Layouts, FMX.TreeView;
+  System.Classes, //for TComponent, GroupDecendentsWith, RegisterComponents
+  System.SysUtils,
+  System.Types,
+  System.UITypes,
+  System.Variants,
+  System.ImageList,
+  FMX.Controls, //for TControl
+  FMX.Graphics,
+  FMX.Forms, //for TFrame
+  FMX.ImgList, //for TImageList
+  FMX.Layouts,
+  FMX.TreeView,
+  FMX.Types; //for RegisterFmxClasses
 
 const
     DEFAULT_SHOW_VISIBLE_ONLY = true;
@@ -51,6 +61,8 @@ type
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
     property ShowHintTypes: Boolean read FShowHintTypes write SetShowHintTypes default DEFAULT_SHOW_HINT_TYPES;
   end;
+
+procedure Register;
 
 implementation
   uses
@@ -218,5 +230,20 @@ begin
     end;
   EndUpdate;
 end;
+
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TStructureView]); //register for persistence (in case they're used standalone)
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TStructureView, TControl);
+  RegisterClasses;
+  RegisterComponents('Zoomicon', [TStructureView]);
+end;
+
+initialization
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
