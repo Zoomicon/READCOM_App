@@ -156,11 +156,15 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="Zoomicon.Generics.dcp"/>
+        <DCCReference Include="Zoomicon.Selector.pas"/>
+        <DCCReference Include="Zoomicon.CustomManipulator.pas">
+            <Form>CustomManipulator</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Zoomicon.Manipulator.pas">
             <Form>Manipulator</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Zoomicon.Selector.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -8,7 +8,7 @@ uses
   FMX.Objects, //for TImage
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  Zoomicon.Manipulator, FMX.ExtCtrls, FMX.Layouts;
+  Zoomicon.Manipulator, FMX.ExtCtrls, FMX.Layouts, FMX.SVGIconImage;
 
 const
   EXT_PNG = '.png';

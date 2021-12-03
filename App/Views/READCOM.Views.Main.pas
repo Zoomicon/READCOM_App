@@ -94,7 +94,7 @@ end;
 
 procedure TMainForm.LoadSavedStateOrNewStory;
 begin
-  if (not LoadSavedState) then
+  //if (not LoadSavedState) then
     begin
     var TheStory := TPanelStoryItem.Create(Self);
     TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);

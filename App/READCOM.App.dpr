@@ -36,7 +36,8 @@ uses
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
-  ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm};
+  ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
+  Zoomicon.CustomManipulator in '..\Zoomicon.Manipulator\Zoomicon.CustomManipulator.pas' {CustomManipulator: TFrame};
 
 {$R *.res}
 

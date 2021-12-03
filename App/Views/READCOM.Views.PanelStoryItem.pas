@@ -16,8 +16,11 @@ type
 
     protected
       procedure DoEditModeChange(const Value: Boolean);
+      procedure SetEditMode(const Value: Boolean); override;
 
     public
+      constructor Create(AOwner: TComponent); override;
+
       { IStoreable }
       function GetLoadFilesFilter: String; override;
       procedure Load(const Filepath: String); override;
@@ -62,10 +65,24 @@ implementation
 
 { TPanelStoryItem }
 
+constructor TPanelStoryItem.Create(AOwner: TComponent);
+begin
+  inherited;
+  BorderVisible := true;
+end;
+
 procedure TPanelStoryItem.DoEditModeChange(const Value: Boolean);
 begin
-  inherited
+  inherited;
+
   TabStop := true; //always do tab stop navigation between TStoryFrames (irrespective of EditMode)
+end;
+
+procedure TPanelStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+
+  BorderVisible := true; //always show Border
 end;
 
 {$region 'IStoreable'}

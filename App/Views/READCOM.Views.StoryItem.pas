@@ -4,7 +4,7 @@ interface
 
 uses
   READCOM.App.Models, //for IStoryItem
-  Zoomicon.Manipulator, //for TManipulator
+  Zoomicon.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
   Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
@@ -12,20 +12,17 @@ uses
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation;
 
 const
-  DEFAULT_AUTOSIZE = true;
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
 
 type
-  TStoryItem = class(TManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
-    DropTarget: TDropTarget;
+  TStoryItem = class(TCustomManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     Border: TRectangle;
     Glyph: TSVGIconImage;
 
   //-- Fields ---
 
   protected
-    FID: TGUID;
-    FAutoSize: Boolean;
+    //FID: TGUID;
     FHidden: Boolean;
     FUrlAction: String;
     FOptions: IStoryItemOptions;
@@ -34,17 +31,20 @@ type
   //--- Methods ---
 
   protected
+    procedure Init; virtual;
+    {//}procedure Loaded; override;
+    {//}procedure Updated; override;
     function GetDefaultSize: TSizeF; override;
     procedure SetParent(const Value: TFmxObject); override;
     procedure SetEditMode(const Value: Boolean); override;
 
+    {BorderVisible}
+    function GetBorderVisible: Boolean;
+    procedure SetBorderVisible(const Value: Boolean);
+
     procedure ApplyHidden;
     procedure LoadReadCom(const Stream: TStream); virtual;
     procedure SaveReadCom(const Stream: TStream); virtual;
-
-    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
-    procedure Tap(const Point: TPointF); override;
-    //procedure CanFocus(var ACanFocus: Boolean); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -99,9 +99,11 @@ type
   //--- Events ---
 
   protected
+    //procedure CanFocus(var ACanFocus: Boolean); override;
     procedure KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState); override;
-    procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-    procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
+    procedure DropTargetDropped(const Filepaths: array of string); override;
+    procedure Tap(const Point: TPointF); override;
 
   public
     //[Subscribe(TipMessagingThread.Main)]
@@ -111,8 +113,8 @@ type
   //--- Properties ---
 
   protected
-    property AutoSize: Boolean read FAutoSize write FAutoSize default DEFAULT_AUTOSIZE;
     property Options: IStoryItemOptions read GetOptions stored false;
+    property BorderVisible: Boolean read GetBorderVisible write SetBorderVisible;
 
   published
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
@@ -135,14 +137,30 @@ implementation
 
 {$R *.fmx}
 
-constructor TStoryItem.Create(AOwner: TComponent);
+{}
+procedure TStoryItem.Loaded;
+begin
+  inherited;
+  Init;
+end;
+
+procedure TStoryItem.Updated;
+begin
+  inherited;
+  Init;
+end;
+{}
+
+procedure TStoryItem.Init;
 
   procedure InitGlyph;
   begin
     with Glyph do
     begin
-      Glyph.SetSubComponent(true);
-      Glyph.Stored := false; //don't store state, should use state from designed .FMX resource
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      SendToBack;
+      HitTest := false;
     end;
   end;
 
@@ -150,8 +168,10 @@ constructor TStoryItem.Create(AOwner: TComponent);
   begin
     with Border do
     begin
-      Border.Stored := false; //don't store state, should use state from designed .FMX resource
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
       SendToBack;
+      HitTest := false;
       Visible := EditMode; //show only in EditMode
     end;
   end;
@@ -160,23 +180,24 @@ constructor TStoryItem.Create(AOwner: TComponent);
   begin
     with DropTarget do
     begin
-      Stored := False; //don't store state, should use state from designed .FMX resource
-      BringToFront;
       Visible := EditMode; //show only in EditMode
       FilterIndex := 1; //this is the default value
       Filter := GetLoadFilesFilter;
-      //OnDragOver := DropTargetDragOver;
-      OnDragDrop := DropTargetDropped;
+      DropTarget.Align := TAlignLayout.Client;
     end;
   end;
 
 begin
-  inherited;
-  FID := TGUID.NewGuid; //Generate new statistically unique ID
-  FAutoSize := DEFAULT_AUTOSIZE;
   InitGlyph;
   InitBorder;
   InitDropTarget;
+end;
+
+constructor TStoryItem.Create(AOwner: TComponent);
+begin
+  inherited;
+  //FID := TGUID.NewGuid; //Generate new statistically unique ID
+  Init;
 end;
 
 destructor TStoryItem.Destroy;
@@ -205,9 +226,16 @@ end;
 procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited;
-  Border.Visible := Value;
-  DropTarget.Visible := Value;
-  DropTarget.SendToBack; //keep always under children (setting to Visible seems to BringToFront)
+
+  if Assigned(Border) then
+    Border.Visible := Value;
+
+  if Assigned(DropTarget) then
+    with DropTarget do
+    begin
+      Visible := Value;
+      SendToBack; //keep always under children (setting to Visible seems to BringToFront)
+    end;
 end;
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
@@ -218,6 +246,21 @@ begin
 end;
 
 {$REGION '--- PROPERTIES ---'}
+
+{$region 'BorderVisible'}
+
+function TStoryItem.GetBorderVisible: Boolean;
+begin
+  result := Border.Visible;
+end;
+
+procedure TStoryItem.SetBorderVisible(const Value: Boolean);
+begin
+  if Assigned(Border) then
+    Border.Visible := Value;
+end;
+
+{$endregion}
 
 {$region 'View'}
 
@@ -312,6 +355,7 @@ end;
 {$endregion}
 
 {$region 'UrlAction'}
+
 function TStoryItem.GetUrlAction: String;
 begin
   result := FUrlAction;
@@ -321,6 +365,8 @@ procedure TStoryItem.SetUrlAction(const Value: String);
 begin
   FUrlAction := Value;
 end;
+
+{$endregion}
 
 {$region 'StoryMode'}
 
@@ -362,6 +408,13 @@ end;
 
 {$REGION '--- EVENTS ---'}
 
+{$region 'Keyboard'}
+
+procedure TStoryItem.HandleParentNavigatedToChanged;
+begin
+  //TODO
+end;
+
 //TODO: fix to work with items that are to be focused only (depending on mode)
 procedure TStoryItem.KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState);
 begin
@@ -384,6 +437,10 @@ begin
 end;
 }
 
+{$endregion}
+
+{$region 'Mouse'}
+
 procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
@@ -400,34 +457,25 @@ begin
       Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
 end;
 
+{$endregion}
+
+{$region DragDrop}
+
+procedure TStoryItem.DropTargetDropped(const Filepaths: array of string);
+begin
+  inherited;
+  Load(Filepaths);
+end;
+
+{$endregion}
+
+{$region 'Touch'}
+
 procedure TStoryItem.Tap(const Point: TPointF);
 begin
   inherited; //fire event handlers
   if EditMode then
     Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
-end;
-
-procedure TStoryItem.HandleParentNavigatedToChanged;
-begin
-  //TODO
-end;
-
-{$region 'Drop target'}
-
-procedure TStoryItem.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
-begin
-  inherited;
-
-  if EditMode then
-    Operation := TDragOperation.Copy;
-end;
-
-procedure TStoryItem.DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-begin
-  inherited;
-
-  if EditMode then
-    Load(Data.Files);
 end;
 
 {$endregion}

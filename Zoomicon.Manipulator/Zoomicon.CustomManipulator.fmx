@@ -1,0 +1,5 @@
+object CustomManipulator: TCustomManipulator
+  Size.Width = 640.000000000000000000
+  Size.Height = 480.000000000000000000
+  Size.PlatformDefault = False
+end
