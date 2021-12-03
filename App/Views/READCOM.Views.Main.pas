@@ -164,6 +164,7 @@ end;
 procedure TMainForm.SetStory(const Value: IStoryItem);
 begin
   StoryView := Value.GetView as TStoryItem;
+  Value.Active := true; //set as the Active StoryItem
 end;
 
 {$endregion}

@@ -1,5 +1,10 @@
 inherited TextStoryItem: TTextStoryItem
   Align = Contents
+  inherited Glyph: TSVGIconImage
+    MultiResBitmap = <
+      item
+      end>
+  end
   object Memo: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
     DataDetectorTypes = []
@@ -9,7 +14,7 @@ inherited TextStoryItem: TTextStoryItem
     Size.PlatformDefault = False
     TabOrder = 2
     OnApplyStyleLookup = MemoApplyStyleLookup
-    Viewport.Width = 836.000000000000000000
-    Viewport.Height = 532.000000000000000000
+    Viewport.Width = 832.000000000000000000
+    Viewport.Height = 528.000000000000000000
   end
 end

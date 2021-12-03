@@ -2,7 +2,14 @@ inherited AudioStoryItem: TAudioStoryItem
   Size.Width = 232.000000000000000000
   Size.Height = 204.000000000000000000
   OnClick = FrameClick
-  inherited DropTarget: TDropTarget
+  inherited Glyph: TSVGIconImage
+    MultiResBitmap = <
+      item
+      end>
+    Size.Width = 232.000000000000000000
+    Size.Height = 204.000000000000000000
+  end
+  inherited Border: TRectangle
     Size.Width = 232.000000000000000000
     Size.Height = 204.000000000000000000
   end

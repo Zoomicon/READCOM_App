@@ -1,3 +1,6 @@
+//Description: READ-COM ImageStoryItem View
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.Views.ImageStoryItem;
 
 interface

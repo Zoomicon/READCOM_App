@@ -1,3 +1,6 @@
+//Description: READ-COM App Models
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.App.Models;
 
 interface
@@ -93,6 +96,10 @@ type
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList;
 
+    { Active }
+    function IsActive: Boolean;
+    procedure SetActive(const Value: Boolean);
+
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
@@ -112,14 +119,12 @@ type
     { Options }
     function GetOptions: IStoryItemOptions;
 
-    //--- Messages ---
-    procedure HandleParentNavigatedToChanged;
-
     //--- Properties ---
     property View: TControl read GetView;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
+    property Active: Boolean read IsActive write SetActive; //default false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property Options: IStoryItemOptions read GetOptions; //stored false

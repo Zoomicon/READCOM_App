@@ -1,3 +1,6 @@
+//Description: READ-COM AudioStoryItem View
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.Views.AudioStoryItem;
 
 interface

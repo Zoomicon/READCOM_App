@@ -1,3 +1,6 @@
+//Description: READ-COM StoryItem View
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.Views.StoryItem;
 
 interface
@@ -27,13 +30,18 @@ type
     FUrlAction: String;
     FOptions: IStoryItemOptions;
     FStoryMode: TStoryMode;
+    FOnActiveChanged: TNotifyEvent;
+
+    class var
+      FActiveStoryItem: IStoryItem;
+      FOnActiveStoryItemChanged: TNotifyEvent;
 
   //--- Methods ---
 
   protected
     procedure Init; virtual;
-    {//}procedure Loaded; override;
-    {//}procedure Updated; override;
+    //procedure Loaded; override;
+    //procedure Updated; override;
     function GetDefaultSize: TSizeF; override;
     procedure SetParent(const Value: TFmxObject); override;
     procedure SetEditMode(const Value: Boolean); override;
@@ -42,6 +50,10 @@ type
     function GetBorderVisible: Boolean;
     procedure SetBorderVisible(const Value: Boolean);
 
+    {ActiveStoryItem}
+    class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
+
+    procedure ActiveChanged;
     procedure ApplyHidden;
     procedure LoadReadCom(const Stream: TStream); virtual;
     procedure SaveReadCom(const Stream: TStream); virtual;
@@ -77,6 +89,10 @@ type
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList;
 
+    { Active }
+    function IsActive: Boolean;
+    procedure SetActive(const Value: Boolean);
+
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
@@ -105,21 +121,20 @@ type
     procedure DropTargetDropped(const Filepaths: array of string); override;
     procedure Tap(const Point: TPointF); override;
 
-  public
-    //[Subscribe(TipMessagingThread.Main)]
-    //procedure OnNavigatedTo(const AMessage: IMessageNavigatedTo);
-    procedure HandleParentNavigatedToChanged;
-
   //--- Properties ---
 
   protected
     property Options: IStoryItemOptions read GetOptions stored false;
     property BorderVisible: Boolean read GetBorderVisible write SetBorderVisible;
 
+    class property ActiveStoryItem: IStoryItem read FActiveStoryItem write SetActiveStoryItem;
+    class property OnActiveStoryItemChanged: TNotifyEvent read FOnActiveStoryItemChanged write FOnActiveStoryItemChanged;
+
   published
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
+    property Active: Boolean read IsActive write SetActive; //default false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Anchored: Boolean read IsAnchored write SetAnchored; //default false
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil
@@ -137,7 +152,7 @@ implementation
 
 {$R *.fmx}
 
-{}
+{
 procedure TStoryItem.Loaded;
 begin
   inherited;
@@ -149,7 +164,7 @@ begin
   inherited;
   Init;
 end;
-{}
+}
 
 procedure TStoryItem.Init;
 
@@ -320,6 +335,47 @@ end;
 
 {$endregion}
 
+{$region 'Active'}
+
+function TStoryItem.IsActive: Boolean;
+begin
+  result := Assigned(FActiveStoryItem) and (FActiveStoryItem.View = Self);
+end;
+
+procedure TStoryItem.SetActive(const Value: Boolean);
+begin
+  if (Value = IsActive) then exit; //Important
+
+  if (Value) then //make active
+    begin
+    FActiveStoryItem.Active := false;
+    FActiveStoryItem := Self;
+    end
+  else //make inactive
+    FActiveStoryItem := nil;
+
+  ActiveChanged;
+end;
+
+class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
+begin
+  if Assigned(Value) then
+    Value.Active := true
+  else if Assigned(FActiveStoryItem) then
+    FActiveStoryItem.Active := false;
+end;
+
+procedure TStoryItem.ActiveChanged;
+begin
+  if Assigned(FOnActiveChanged) then
+    FOnActiveChanged(Self);
+
+  if IsActive and Assigned(FOnActiveStoryItemChanged) then //fire class-level event only for the now active StoryItem
+    FOnActiveStoryItemChanged(Self);
+end;
+
+{$endregion}
+
 {$region 'Hidden'}
 
 function TStoryItem.IsHidden: Boolean;
@@ -409,11 +465,6 @@ end;
 {$REGION '--- EVENTS ---'}
 
 {$region 'Keyboard'}
-
-procedure TStoryItem.HandleParentNavigatedToChanged;
-begin
-  //TODO
-end;
 
 //TODO: fix to work with items that are to be focused only (depending on mode)
 procedure TStoryItem.KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState);

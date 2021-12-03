@@ -1,3 +1,6 @@
+//Description: READ-COM PanelStoryItem View
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.Views.PanelStoryItem;
 
 interface
@@ -69,6 +72,7 @@ constructor TPanelStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
   BorderVisible := true;
+  Navigatable := true;
 end;
 
 procedure TPanelStoryItem.DoEditModeChange(const Value: Boolean);
@@ -89,7 +93,7 @@ end;
 
 function TPanelStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_READCOM + '|' + FILTER_SVG + '|' + FILTER_PNG_JPEG_JPG + '|' + FILTER_MP3 {+ '|' + FILTER_TXT};
+  result := 'READ-COM Files, Images, Audio|*.readcom;*.png;*.jpg;*.jpeg;*.svg;*.mp3' + '|' + FILTER_READCOM + '|' + FILTER_SVG + '|' + FILTER_PNG_JPEG_JPG + '|' + FILTER_MP3 {+ '|' + FILTER_TXT};
 end;
 
 function RemoveNonAllowedIdentifierChars(const s: String): String;
