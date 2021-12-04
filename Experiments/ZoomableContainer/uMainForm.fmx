@@ -75,7 +75,7 @@ object MainForm: TMainForm
             Size.Width = 81.000000000000000000
             Size.Height = 17.000000000000000000
             Size.PlatformDefault = False
-            TabOrder = 4
+            TabOrder = 5
             Text = 'Zoom to Child'
             OnClick = btnZoomClick
           end
@@ -115,7 +115,7 @@ object MainForm: TMainForm
           object btnCenterChild: TButton
             Position.X = 113.000000000000000000
             Position.Y = 59.000000000000000000
-            TabOrder = 4
+            TabOrder = 5
             Text = 'Zoom to Child'
             OnClick = btnZoomClick
           end
@@ -140,7 +140,7 @@ object MainForm: TMainForm
             Size.Width = 160.000000000000000000
             Size.Height = 22.000000000000000000
             Size.PlatformDefault = False
-            TabOrder = 4
+            TabOrder = 5
             Text = 'Zoom to down-scaled Child'
             OnClick = btnZoomClick
           end

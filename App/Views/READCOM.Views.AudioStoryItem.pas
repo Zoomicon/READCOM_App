@@ -6,11 +6,11 @@ unit READCOM.Views.AudioStoryItem;
 interface
 
 uses
-  Zoomicon.Media.Classes, //for TMediaPlayerEx
+  Zoomicon.Media.FMX, //for TMediaPlayerEx
   READCOM.App.Models, //for TStoryItem, IAudioStoryItem, IStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  READCOM.Views.StoryItem, Zoomicon.Manipulator, FMX.ExtCtrls, FMX.Objects,
+  READCOM.Views.StoryItem, FMX.ExtCtrls, FMX.Objects,
   FMX.SVGIconImage, FMX.Media;
 
 const

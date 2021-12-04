@@ -78,7 +78,7 @@ var
 
 implementation
   uses
-    Zoomicon.FMX.Utils, //for TScaledLayoutHelper
+    Zoomicon.Zooming.FMX.Utils, //for TScaledLayoutHelper
     Math; //for Sign
 
 {$R *.fmx}

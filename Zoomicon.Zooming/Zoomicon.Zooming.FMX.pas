@@ -1,4 +1,4 @@
-unit Zoomicon.Zooming.Classes;
+unit Zoomicon.Zooming.FMX;
 
 //TODO: NOT WORKING (for now use TZoomFrame instead)
 
@@ -49,7 +49,7 @@ procedure Register;
 
 implementation
   uses
-    Zoomicon.FMX.Utils,
+    Zoomicon.Zooming.FMX.Utils,
     Math, //for Sign
     System.SysUtils; //for FreeAndNil
 

@@ -1,4 +1,4 @@
-package Zoomicon.Manipulator;
+package Zoomicon.Media.FMX;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -29,14 +29,12 @@ package Zoomicon.Manipulator;
 
 requires
   rtl,
-  fmx,
-  Zoomicon.Generics;
+  fmx;
 
 contains
-  Zoomicon.Selector in 'Zoomicon.Selector.pas',
-  Zoomicon.CustomManipulator in 'Zoomicon.CustomManipulator.pas' {CustomManipulator: TFrame},
-  Zoomicon.Manipulator in 'Zoomicon.Manipulator.pas' {Manipulator: TFrame};
+  Zoomicon.Media.FMX in 'Zoomicon.Media.FMX.pas',
+  Zoomicon.Media.Models in 'Zoomicon.Media.Models.pas';
 
-{$Description 'Zoomicon Manipulator'}
+{$Description 'Zoomicon Media FMX Controls'}
 
 end.

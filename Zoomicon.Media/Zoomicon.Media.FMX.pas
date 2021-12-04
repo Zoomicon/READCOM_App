@@ -1,4 +1,4 @@
-unit Zoomicon.Media.Classes;
+unit Zoomicon.Media.FMX;
 
 interface
 

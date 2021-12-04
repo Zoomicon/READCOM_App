@@ -27,7 +27,7 @@ var
   MainForm: TMainForm;
 
 implementation
-  uses Zoomicon.Introspection.StructureView;
+  uses Zoomicon.Introspection.FMX.StructureView;
 
 {$R *.fmx}
 

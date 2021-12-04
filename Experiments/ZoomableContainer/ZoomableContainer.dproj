@@ -255,17 +255,16 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.FMX.Utils.pas"/>
+        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.Utils.pas"/>
         <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
         <DCCReference Include="uMainForm.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas">
+        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
             <Form>ZoomFrame</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.Classes.pas"/>
+        <DCCReference Include="..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
         <DCCReference Include="uZoomFrameForm.pas">
             <Form>ZoomFrameForm</Form>
             <FormType>fmx</FormType>
@@ -1118,10 +1117,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

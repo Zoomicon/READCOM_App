@@ -6,6 +6,7 @@ interface
 
 uses
   Zoomicon.Generics.Collections, //for TObjectListEx
+  Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
@@ -13,7 +14,7 @@ uses
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, READCOM.Views.PanelStoryItem,
-  Zoomicon.Manipulator, READCOM.Views.AudioStoryItem, Zoomicon.Zooming.ZoomFrame,
+  READCOM.Views.AudioStoryItem,
   SubjectStand;
 
 type
@@ -64,7 +65,7 @@ implementation
   uses
     System.Contnrs, //for TClassList
     CodeSiteLogging,
-    Zoomicon.Introspection.StructureView, //for TStructureView
+    Zoomicon.Introspection.FMX.StructureView, //for TStructureView
     READCOM.Views.VectorImageStoryItem; //TODO: remove
 
 {$R *.fmx}

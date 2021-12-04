@@ -1,12 +1,12 @@
-unit Zoomicon.Zooming.ZoomFrame;
+unit Zoomicon.Zooming.FMX.ZoomFrame;
 
 interface
 
 uses
+  Zoomicon.Zooming.Models, //for IZoomable
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, FMX.Layouts,
-  Zoomicon.Zooming.Models;
+  FMX.Controls.Presentation, FMX.Layouts;
 
 const
   DEFAULT_ZOOM_CONTROLS_VISIBLE = false;
@@ -61,7 +61,7 @@ procedure Register;
 
 implementation
   uses
-    Zoomicon.FMX.Utils, //for TScaledLayoutHelper
+    Zoomicon.Zooming.FMX.Utils, //for TScaledLayoutHelper
     FMX.Objects, //for TGrabHandleRectangle
     Math; //for Sign
 

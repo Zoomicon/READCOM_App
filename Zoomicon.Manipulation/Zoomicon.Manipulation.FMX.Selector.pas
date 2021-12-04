@@ -1,4 +1,4 @@
-unit Zoomicon.Selector;
+unit Zoomicon.Manipulation.FMX.Selector;
 
 interface
   uses
@@ -176,3 +176,4 @@ initialization
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
+

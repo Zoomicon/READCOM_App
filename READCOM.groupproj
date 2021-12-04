@@ -18,29 +18,29 @@
         <Projects Include="Zoomicon.GitStore\Zoomicon.GitStore.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj</Dependencies>
         </Projects>
-        <Projects Include="Zoomicon.Media\Zoomicon.Media.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj">
             <Dependencies>Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
-        <Projects Include="Zoomicon.Zooming\Zoomicon.Zooming.dproj">
+        <Projects Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
+        <Projects Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
+            <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj">
             <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
-        </Projects>
-        <Projects Include="Zoomicon.Introspection\Zoomicon.Introspection.dproj">
-            <Dependencies/>
         </Projects>
         <Projects Include="READCOM.Gallery\READCOM.GalleryLib.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="App\READCOM.App.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zoomicon.Media\Zoomicon.Media.dproj;Zoomicon.Zooming\Zoomicon.Zooming.dproj;Zoomicon.Manipulator\Zoomicon.Manipulator.dproj;Zoomicon.Puzzler\Zoomicon.Puzzler.dproj</Dependencies>
+            <Dependencies>Zoomicon.Puzzler\Zoomicon.Puzzler.dproj;Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj;Zoomicon.Media\Zoomicon.Media.FMX.dproj;Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -95,15 +95,6 @@
     <Target Name="Zoomicon_GitStore:Make" DependsOnTargets="Zoomicon.Downloader:Make">
         <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Media">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Media:Clean">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Media:Make">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Zoomicon_GitStore_Tests" DependsOnTargets="Zoomicon.GitStore">
         <MSBuild Projects="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj"/>
     </Target>
@@ -113,23 +104,41 @@
     <Target Name="Zoomicon_GitStore_Tests:Make" DependsOnTargets="Zoomicon.GitStore:Make">
         <MSBuild Projects="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Zooming">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.dproj"/>
+    <Target Name="Zoomicon_Introspection_FMX">
+        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Zooming:Clean">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.dproj" Targets="Clean"/>
+    <Target Name="Zoomicon_Introspection_FMX:Clean">
+        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Zooming:Make">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.dproj" Targets="Make"/>
+    <Target Name="Zoomicon_Introspection_FMX:Make">
+        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator" DependsOnTargets="Zoomicon.Generics">
-        <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj"/>
+    <Target Name="Zoomicon_Manipulation_FMX">
+        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Clean" DependsOnTargets="Zoomicon.Generics:Clean">
-        <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Clean"/>
+    <Target Name="Zoomicon_Manipulation_FMX:Clean">
+        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Manipulator:Make" DependsOnTargets="Zoomicon.Generics:Make">
-        <MSBuild Projects="Zoomicon.Manipulator\Zoomicon.Manipulator.dproj" Targets="Make"/>
+    <Target Name="Zoomicon_Manipulation_FMX:Make">
+        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Zoomicon_Zooming_FMX">
+        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Zooming_FMX:Clean">
+        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Zooming_FMX:Make">
+        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX">
+        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Clean">
+        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Make">
+        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_Puzzler" DependsOnTargets="Zoomicon.Generics">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj"/>
@@ -140,15 +149,6 @@
     <Target Name="Zoomicon_Puzzler:Make" DependsOnTargets="Zoomicon.Generics:Make">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Introspection">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Introspection:Clean">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Introspection:Make">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.dproj" Targets="Make"/>
-    </Target>
     <Target Name="READCOM_GalleryLib" DependsOnTargets="Zoomicon.Downloader;Zoomicon.GitStore">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj"/>
     </Target>
@@ -158,23 +158,23 @@
     <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="Zoomicon.Downloader:Make;Zoomicon.GitStore:Make">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Generics;Zoomicon.Media;Zoomicon.Zooming;Zoomicon.Manipulator;Zoomicon.Puzzler">
+    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Puzzler;Zoomicon.Zooming.FMX;Zoomicon.Media.FMX;Zoomicon.Generics">
         <MSBuild Projects="App\READCOM.App.dproj"/>
     </Target>
-    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Media:Clean;Zoomicon.Zooming:Clean;Zoomicon.Manipulator:Clean;Zoomicon.Puzzler:Clean">
+    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Puzzler:Clean;Zoomicon.Zooming.FMX:Clean;Zoomicon.Media.FMX:Clean;Zoomicon.Generics:Clean">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Media:Make;Zoomicon.Zooming:Make;Zoomicon.Manipulator:Make;Zoomicon.Puzzler:Make">
+    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Puzzler:Make;Zoomicon.Zooming.FMX:Make;Zoomicon.Media.FMX:Make;Zoomicon.Generics:Make">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Generics;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_Media;Zoomicon_GitStore_Tests;Zoomicon_Zooming;Zoomicon_Manipulator;Zoomicon_Puzzler;Zoomicon_Introspection;READCOM_GalleryLib;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Generics;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Downloader_Tests;Zoomicon_GitStore;Zoomicon_GitStore_Tests;Zoomicon_Introspection_FMX;Zoomicon_Manipulation_FMX;Zoomicon_Zooming_FMX;Zoomicon_Media_FMX;Zoomicon_Puzzler;READCOM_GalleryLib;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Generics:Clean;Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_Media:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Zooming:Clean;Zoomicon_Manipulator:Clean;Zoomicon_Puzzler:Clean;Zoomicon_Introspection:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Generics:Clean;Zoomicon_Cache:Clean;Zoomicon_Downloader:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore:Clean;Zoomicon_GitStore_Tests:Clean;Zoomicon_Introspection_FMX:Clean;Zoomicon_Manipulation_FMX:Clean;Zoomicon_Zooming_FMX:Clean;Zoomicon_Media_FMX:Clean;Zoomicon_Puzzler:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Generics:Make;Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_Media:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Zooming:Make;Zoomicon_Manipulator:Make;Zoomicon_Puzzler:Make;Zoomicon_Introspection:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Generics:Make;Zoomicon_Cache:Make;Zoomicon_Downloader:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore:Make;Zoomicon_GitStore_Tests:Make;Zoomicon_Introspection_FMX:Make;Zoomicon_Manipulation_FMX:Make;Zoomicon_Zooming_FMX:Make;Zoomicon_Media_FMX:Make;Zoomicon_Puzzler:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

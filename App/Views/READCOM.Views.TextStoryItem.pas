@@ -6,13 +6,15 @@ unit READCOM.Views.TextStoryItem;
 interface
 
 uses
-  READCOM.App.Models, //for IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable
+  READCOM.App.Models,
+  READCOM.Views.StoryItem, //for TStoryItem
   READCOM.Views.ImageStoryItem, //for TImageStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.SVGIconImage, Zoomicon.Manipulator,
-  FMX.ExtCtrls, FMX.Controls.Presentation, READCOM.Views.StoryItem,
-  FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
+  FMX.Objects, FMX.SVGIconImage,
+  FMX.ExtCtrls, FMX.Controls.Presentation,
+  FMX.ScrollBox,
+  FMX.Memo, FMX.Memo.Types;
 
 const
   EXT_TXT = '.txt';

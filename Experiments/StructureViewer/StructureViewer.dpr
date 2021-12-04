@@ -1,11 +1,11 @@
-program TestStructureView;
+program StructureViewer;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
   uMainForm in 'uMainForm.pas' {MainForm},
   uHidableFrame in 'uHidableFrame.pas' {HidableFrame: TFrame},
-  Zoomicon.Introspection.StructureView in '..\..\Zoomicon.Introspection\Zoomicon.Introspection.StructureView.pas' {StructureView: TFrame};
+  Zoomicon.Introspection.FMX.StructureView in '..\..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame};
 
 {$R *.res}
 

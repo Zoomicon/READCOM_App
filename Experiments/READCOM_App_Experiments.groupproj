@@ -18,7 +18,7 @@
         <Projects Include="MoveToTarget\MoveToTarget.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="StructureView\TestStructureView.dproj">
+        <Projects Include="StructureViewer\StructureViewer.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -74,23 +74,23 @@
     <Target Name="MoveToTarget:Make">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
     </Target>
-    <Target Name="TestStructureView">
-        <MSBuild Projects="StructureView\TestStructureView.dproj"/>
+    <Target Name="StructureViewer">
+        <MSBuild Projects="StructureViewer\StructureViewer.dproj"/>
     </Target>
-    <Target Name="TestStructureView:Clean">
-        <MSBuild Projects="StructureView\TestStructureView.dproj" Targets="Clean"/>
+    <Target Name="StructureViewer:Clean">
+        <MSBuild Projects="StructureViewer\StructureViewer.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="TestStructureView:Make">
-        <MSBuild Projects="StructureView\TestStructureView.dproj" Targets="Make"/>
+    <Target Name="StructureViewer:Make">
+        <MSBuild Projects="StructureViewer\StructureViewer.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;SizeableFrame;ZoomableContainer;NestedClicks;MoveToTarget;TestStructureView"/>
+        <CallTarget Targets="DropFiles;SizeableFrame;ZoomableContainer;NestedClicks;MoveToTarget;StructureViewer"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;NestedClicks:Clean;MoveToTarget:Clean;TestStructureView:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;SizeableFrame:Clean;ZoomableContainer:Clean;NestedClicks:Clean;MoveToTarget:Clean;StructureViewer:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;NestedClicks:Make;MoveToTarget:Make;TestStructureView:Make"/>
+        <CallTarget Targets="DropFiles:Make;SizeableFrame:Make;ZoomableContainer:Make;NestedClicks:Make;MoveToTarget:Make;StructureViewer:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

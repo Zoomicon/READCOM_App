@@ -45,6 +45,8 @@ object MainForm: TMainForm
       end
     end
     inherited Drawer: TMultiView
+      Size.Width = 50.000000000000000000
+      Size.Height = 616.000000000000000000
     end
     inherited SVGIconImageList: TSVGIconImageList
       Source = <

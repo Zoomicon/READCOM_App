@@ -10,7 +10,7 @@ uses
   READCOM.Views.StoryItem, //for TStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  Zoomicon.Manipulator, FMX.ExtCtrls, FMX.Objects, FMX.SVGIconImage;
+  FMX.ExtCtrls, FMX.Objects, FMX.SVGIconImage;
 
 type
   {A PanelStoryItem is the only thing that takes part in navigation [TAB flow] when not in edit mode}

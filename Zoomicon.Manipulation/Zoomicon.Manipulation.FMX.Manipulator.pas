@@ -1,9 +1,9 @@
-unit Zoomicon.Manipulator;
+unit Zoomicon.Manipulation.FMX.Manipulator;
 
 interface
 
 uses
-  Zoomicon.CustomManipulator; //for TCustomManipulator
+  Zoomicon.Manipulation.FMX.CustomManipulator; //for TCustomManipulator
 
 type
 

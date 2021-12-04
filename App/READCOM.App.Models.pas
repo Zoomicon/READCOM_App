@@ -7,7 +7,7 @@ interface
 
 uses
   Zoomicon.Generics.Collections, //for TListEx
-  Zoomicon.Media.Classes, //for TMediaPlayerEx
+  Zoomicon.Media.FMX, //for TMediaPlayerEx
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
   System.UITypes, //for TAlphaColor

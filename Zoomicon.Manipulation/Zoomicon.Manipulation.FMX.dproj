@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
-        <MainSource>Zoomicon.Manipulator.dpk</MainSource>
+        <MainSource>Zoomicon.Manipulation.FMX.dpk</MainSource>
         <ProjectVersion>19.3</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
@@ -76,7 +76,7 @@
         <GenPackage>true</GenPackage>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
-        <SanitizedProjectName>Zoomicon_Manipulator</SanitizedProjectName>
+        <SanitizedProjectName>Zoomicon_Manipulation_FMX</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_CBuilderOutput>None</DCC_CBuilderOutput>
@@ -156,12 +156,12 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="Zoomicon.Generics.dcp"/>
-        <DCCReference Include="Zoomicon.Selector.pas"/>
-        <DCCReference Include="Zoomicon.CustomManipulator.pas">
+        <DCCReference Include="Zoomicon.Manipulation.FMX.Selector.pas"/>
+        <DCCReference Include="Zoomicon.Manipulation.FMX.CustomManipulator.pas">
             <Form>CustomManipulator</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Zoomicon.Manipulator.pas">
+        <DCCReference Include="Zoomicon.Manipulation.FMX.Manipulator.pas">
             <Form>Manipulator</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
@@ -183,19 +183,19 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">Zoomicon.Manipulator.dpk</Source>
+                    <Source Name="MainSource">Zoomicon.Manipulation.FMX.dpk</Source>
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\Zoomicon.Manipulator.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\Zoomicon.Manipulation.FMX.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>Zoomicon_Manipulator.bpl</RemoteName>
+                        <RemoteName>Zoomicon_Manipulation_FMX.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\Win64\Zoomicon.Manipulator.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\Win64\Zoomicon_Manipulation_FMX.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Zoomicon_Manipulator.bpl</RemoteName>
+                        <RemoteName>Zoomicon_Manipulation_FMX.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

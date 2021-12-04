@@ -1,4 +1,4 @@
-package Zoomicon.Media;
+package Zoomicon.Zooming.FMX;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -32,9 +32,11 @@ requires
   fmx;
 
 contains
-  Zoomicon.Media.Classes in 'Zoomicon.Media.Classes.pas',
-  Zoomicon.Media.Models in 'Zoomicon.Media.Models.pas';
+  Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas',
+  Zoomicon.Zooming.FMX in 'Zoomicon.Zooming.FMX.pas',
+  Zoomicon.Zooming.FMX.Utils in 'Zoomicon.Zooming.FMX.Utils.pas',
+  Zoomicon.Zooming.FMX.ZoomFrame in 'Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame};
 
-{$Description 'Zoomicon Media'}
+{$Description 'Zoomicon Zooming FMX Controls'}
 
 end.

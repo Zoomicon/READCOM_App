@@ -1,4 +1,4 @@
-package Zoomicon.Zooming;
+package Zoomicon.Manipulation.FMX;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -29,14 +29,14 @@ package Zoomicon.Zooming;
 
 requires
   rtl,
-  fmx;
+  fmx,
+  Zoomicon.Generics;
 
 contains
-  Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas',
-  Zoomicon.Zooming.Classes in 'Zoomicon.Zooming.Classes.pas',
-  Zoomicon.FMX.Utils in 'Zoomicon.FMX.Utils.pas',
-  Zoomicon.Zooming.ZoomFrame in 'Zoomicon.Zooming.ZoomFrame.pas' {ZoomFrame: TFrame};
+  Zoomicon.Manipulation.FMX.Selector in 'Zoomicon.Manipulation.FMX.Selector.pas',
+  Zoomicon.Manipulation.FMX.CustomManipulator in 'Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
+  Zoomicon.Manipulation.FMX.Manipulator in 'Zoomicon.Manipulation.FMX.Manipulator.pas' {Manipulator: TFrame};
 
-{$Description 'Zoomicon Zooming'}
+{$Description 'Zoomicon Manipulation FMX Controls'}
 
 end.

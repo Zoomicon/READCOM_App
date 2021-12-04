@@ -1,4 +1,4 @@
-unit Zoomicon.Introspection.StructureView;
+unit Zoomicon.Introspection.FMX.StructureView;
 
 interface
 

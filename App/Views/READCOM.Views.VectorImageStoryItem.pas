@@ -10,7 +10,7 @@ uses
   READCOM.Views.ImageStoryItem, //for TImageStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.SVGIconImage, Zoomicon.Manipulator,
+  FMX.Objects, FMX.SVGIconImage,
   FMX.ExtCtrls, FMX.Controls.Presentation;
 
 const

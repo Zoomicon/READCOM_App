@@ -1,4 +1,4 @@
-unit Zoomicon.FMX.Utils;
+unit Zoomicon.Zooming.FMX.Utils;
 
 {-$DEFINE CONTROLSCALEHELPER} //Uncomment only if really needed - else it will make code that uses Scale at TControl descendents that expose that property slower since it uses RTTI
 

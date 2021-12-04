@@ -7,7 +7,7 @@ interface
 
 uses
   READCOM.App.Models, //for IStoryItem
-  Zoomicon.CustomManipulator, //for TCustomManipulator
+  Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
   Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
@@ -146,7 +146,7 @@ type
 implementation
   uses
     u_UrlOpen,
-    Zoomicon.FMX.Utils, //for TControlFocusHelper.SelectNext
+    Zoomicon.Zooming.FMX.Utils, //for TControlFocusHelper.SelectNext
     Zoomicon.Generics.Collections,
     READCOM.Views.Options.StoryItemOptions;
 

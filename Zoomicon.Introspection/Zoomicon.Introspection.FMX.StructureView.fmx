@@ -13,8 +13,8 @@ object StructureView: TStructureView
     ShowHint = True
     ItemHeight = 50.000000000000000000
     Images = ImageList
-    Viewport.Width = 316.000000000000000000
-    Viewport.Height = 236.000000000000000000
+    Viewport.Width = 320.000000000000000000
+    Viewport.Height = 240.000000000000000000
   end
   object ImageList: TImageList
     Source = <>

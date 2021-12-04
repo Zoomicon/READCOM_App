@@ -1,4 +1,4 @@
-package Zoomicon.Introspection;
+package Zoomicon.Introspection.FMX;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -32,6 +32,8 @@ requires
   fmx;
 
 contains
-  Zoomicon.Introspection.StructureView in 'Zoomicon.Introspection.StructureView.pas' {StructureView: TFrame};
+  Zoomicon.Introspection.FMX.StructureView in 'Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame};
+
+{$Description 'Zoomicon Introspection FMX Controls'}
 
 end.

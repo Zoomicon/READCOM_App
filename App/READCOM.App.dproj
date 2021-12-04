@@ -251,10 +251,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\Zoomicon.Manipulator\Zoomicon.Manipulator.pas">
-            <Form>Manipulator</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="READCOM.App.Models.pas"/>
         <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
             <Form>StoryItemOptions</Form>
@@ -295,7 +291,7 @@
         <DCCReference Include="Views\READCOM.Views.Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
@@ -304,12 +300,6 @@
             <Form>DataModule1</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.FMX.Utils.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.ZoomFrame.pas">
-            <Form>ZoomFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
         <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
         <DCCReference Include="Views\READCOM.Views.About.pas">
@@ -317,7 +307,6 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="u_UrlOpen.pas"/>
-        <DCCReference Include="..\Zoomicon.Manipulator\Zoomicon.Selector.pas"/>
         <DCCReference Include="Views\READCOM.Views.TextStoryItem.pas">
             <Form>TextStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
@@ -333,16 +322,30 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
             <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulator\Zoomicon.CustomManipulator.pas">
-            <Form>CustomManipulator</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.StructureView.pas">
+        <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas">
             <Form>StructureView</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
+            <Form>CustomManipulator</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas">
+            <Form>Manipulator</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.Utils.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
+            <Form>ZoomFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -432,6 +435,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Release" Class="Android_LauncherIcon72">
                     <Platform Name="Android">
                         <RemoteName>ic_launcher.png</RemoteName>
@@ -443,15 +452,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -461,7 +464,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>

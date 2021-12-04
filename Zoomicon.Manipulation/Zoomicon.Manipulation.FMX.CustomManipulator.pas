@@ -1,9 +1,9 @@
-unit Zoomicon.CustomManipulator;
+unit Zoomicon.Manipulation.FMX.CustomManipulator;
 
 interface
 
 uses
-  Zoomicon.Selector, //for TLocationSelector, TAreaSelector
+  Zoomicon.Manipulation.FMX.Selector, //for TLocationSelector, TAreaSelector
   System.Types,
   System.UITypes,
   System.Classes,
