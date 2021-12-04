@@ -16,17 +16,6 @@ object StoryHUD: TStoryHUD
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
   end
-  object Drawer: TMultiView
-    TargetControl = layoutAll
-    DrawerOptions.Mode = PushingDetailView
-    Mode = Drawer
-    HitTest = False
-    Size.Width = 250.000000000000000000
-    Size.Height = 572.000000000000000000
-    Size.PlatformDefault = False
-    Visible = False
-    TabOrder = 3
-  end
   object layoutAll: TLayout
     Align = Client
     Size.Width = 912.000000000000000000
@@ -106,6 +95,15 @@ object StoryHUD: TStoryHUD
       Size.PlatformDefault = False
       StyleLookup = 'drawertoolbutton'
     end
+  end
+  object Drawer: TMultiView
+    Mode = Drawer
+    HitTest = False
+    Size.Width = 400.000000000000000000
+    Size.Height = 572.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    TabOrder = 3
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <

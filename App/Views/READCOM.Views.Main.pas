@@ -62,6 +62,7 @@ var
 
 implementation
   uses
+    System.Contnrs, //for TClassList
     CodeSiteLogging,
     Zoomicon.Introspection.StructureView, //for TStructureView
     READCOM.Views.VectorImageStoryItem; //TODO: remove
@@ -279,7 +280,13 @@ begin
 
   HUD.DrawerFrameStand.CloseAllExcept(TStructureView);
   var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructureView>;
-  frameInfo.Frame.GUIRoot := StoryView;
+  with frameInfo.Frame do
+  begin
+    ShowOnlyClasses := TClassList.Create([TStoryItem]);
+    ShowNames := true;
+    ShowTypes := true;
+    GUIRoot := StoryView;
+  end;
   frameInfo.Show;
 end;
 

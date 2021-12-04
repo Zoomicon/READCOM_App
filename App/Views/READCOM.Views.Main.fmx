@@ -29,10 +29,6 @@ object MainForm: TMainForm
     Size.PlatformDefault = False
     ParentShowHint = False
     ShowHint = True
-    inherited Drawer: TMultiView
-      Size.Width = 50.000000000000000000
-      Size.Height = 616.000000000000000000
-    end
     inherited layoutAll: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
@@ -47,6 +43,8 @@ object MainForm: TMainForm
           Position.X = 820.000000000000000000
         end
       end
+    end
+    inherited Drawer: TMultiView
     end
     inherited SVGIconImageList: TSVGIconImageList
       Source = <

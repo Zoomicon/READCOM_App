@@ -4,6 +4,8 @@ interface
 
 uses
   System.Classes, //for TComponent, GroupDecendentsWith, RegisterComponents
+  System.Contnrs, //for TClassList
+  System.Generics.Collections, //for TList
   System.SysUtils,
   System.Types,
   System.UITypes,
@@ -18,29 +20,44 @@ uses
   FMX.Types; //for RegisterFmxClasses
 
 const
-    DEFAULT_SHOW_VISIBLE_ONLY = true;
-    DEFAULT_SHOW_NAMED_ONLY = true;
-    DEFAULT_SHOW_NAMES = false;
-    DEFAULT_SHOW_TYPES = false;
-    DEFAULT_SHOW_HINT_NAMES = true;
-    DEFAULT_SHOW_HINT_TYPES = false;
+  DEFAULT_SHOW_ONLY_VISIBLE = true;
+  DEFAULT_SHOW_ONLY_NAMED = true;
+  DEFAULT_SHOW_NAMES = false;
+  DEFAULT_SHOW_TYPES = false;
+  DEFAULT_SHOW_HINT_NAMES = true;
+  DEFAULT_SHOW_HINT_TYPES = false;
 
 type
+
+  TClassArray = array of TClass;
+  //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
+
+  TClassListFindClassOfHelper = class helper for TClassList
+    constructor Create(const Items: TClassArray); overload; virtual;
+    function FindClassOf(const AObject: TObject; const AExact: Boolean = True; const AStartAt: Integer = 0): Integer;
+  end;
+
+  TImageListHelper = class helper for TImageList
+    function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
+  end;
+
   TStructureView = class(TFrame)
     TreeView: TTreeView;
     ImageList: TImageList;
 
   protected
     FGUIRoot: TControl;
-    FShowNamedOnly: Boolean;
-    FShowTypes: Boolean;
-    FShowVisibleOnly: Boolean;
+    FShowOnlyClasses: TClassList;
+    FShowOnlyNamed: Boolean;
+    FShowOnlyVisible: Boolean;
     FShowNames: Boolean;
+    FShowTypes: Boolean;
     FShowHintNames: Boolean;
     FShowHintTypes: Boolean;
 
-    procedure SetShowVisibleOnly(const Value: Boolean);
-    procedure SetShowNamedOnly(const Value: Boolean);
+    procedure SetShowOnlyClasses(const Value: TClassList);
+    procedure SetShowOnlyVisible(const Value: Boolean);
+    procedure SetShowOnlyNamed(const Value: Boolean);
     procedure SetShowNames(const Value: Boolean);
     procedure SetShowTypes(const Value: Boolean);
     procedure SetShowHintNames(const Value: Boolean);
@@ -54,8 +71,9 @@ type
     destructor Destroy; override;
 
     property GUIRoot: TControl read FGUIRoot write SetGUIRoot;
-    property ShowVisibleOnly: Boolean read FShowVisibleOnly write SetShowVisibleOnly default DEFAULT_SHOW_VISIBLE_ONLY;
-    property ShowNamedOnly: Boolean read FShowNamedOnly write SetShowNamedOnly default DEFAULT_SHOW_NAMED_ONLY;
+    property ShowOnlyClasses: TClassList read FShowOnlyClasses write SetShowOnlyClasses; //default nil
+    property ShowOnlyVisible: Boolean read FShowOnlyVisible write SetShowOnlyVisible default DEFAULT_SHOW_ONLY_VISIBLE;
+    property ShowOnlyNamed: Boolean read FShowOnlyNamed write SetShowOnlyNamed default DEFAULT_SHOW_ONLY_NAMED;
     property ShowNames: Boolean read FShowNames write SetShowNames default DEFAULT_SHOW_NAMES;
     property ShowTypes: Boolean read FShowTypes write SetShowTypes default DEFAULT_SHOW_TYPES;
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
@@ -69,13 +87,31 @@ implementation
     System.Rtti, //for TValue
     FMX.MultiResBitmap; //for TSizeKind
 
-{$REGION 'ImageListHelper'}
-//based on https://stackoverflow.com/a/43086181/903783
+{$REGION 'TClassListFindClassOfHelper'} //TODO: move to other package
 
-type
-  TImageListHelper = class helper for TImageList
-    function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
-  end;
+constructor TClassListFindClassOfHelper.Create(const Items: TClassArray);
+begin
+  inherited Create;
+  for var AClass in Items do
+    Add(AClass);
+end;
+
+function TClassListFindClassOfHelper.FindClassOf(const AObject: TObject; const AExact: Boolean = True; const AStartAt: Integer = 0): Integer;
+begin
+  for var i := AStartAt to Count - 1 do
+    if (AExact and (Items[i] = AObject.ClassType)) or
+       (not AExact and AObject.InheritsFrom(Items[i])) then
+    begin
+      Result := i;
+      exit;
+    end;
+  Result := -1;
+end;
+
+{$ENDREGION}
+
+{$REGION 'ImageListHelper'} //TODO: move to other package
+//based on https://stackoverflow.com/a/43086181/903783
 
 function TImageListHelper.Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
 begin
@@ -117,8 +153,9 @@ end;
 constructor TStructureView.Create(AOwner: TComponent);
 begin
   inherited;
-  FShowVisibleOnly := DEFAULT_SHOW_VISIBLE_ONLY;
-  FShowNamedOnly := DEFAULT_SHOW_NAMED_ONLY;
+  FShowOnlyClasses := nil;
+  FShowOnlyVisible := DEFAULT_SHOW_ONLY_VISIBLE;
+  FShowOnlyNamed := DEFAULT_SHOW_ONLY_NAMED;
   FShowNames := DEFAULT_SHOW_NAMES;
   FShowTypes := DEFAULT_SHOW_TYPES;
   FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
@@ -142,15 +179,21 @@ begin
   LoadTreeView;
 end;
 
-procedure TStructureView.SetShowVisibleOnly(const Value: Boolean);
+procedure TStructureView.SetShowOnlyClasses(const Value: TClassList);
 begin
-  FShowVisibleOnly := Value;
+  FShowOnlyClasses := Value;
   LoadTreeView;
 end;
 
-procedure TStructureView.SetShowNamedOnly(const Value: Boolean);
+procedure TStructureView.SetShowOnlyVisible(const Value: Boolean);
 begin
-  FShowNamedOnly := Value;
+  FShowOnlyVisible := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowOnlyNamed(const Value: Boolean);
+begin
+  FShowOnlyNamed := Value;
   LoadTreeView;
 end;
 
@@ -185,8 +228,9 @@ procedure TStructureView.LoadTreeView;
   procedure LoadTreeItemChild(const Control: TControl; const Parent: TFmxObject; const IconHeight: Single);
   begin
     if not Assigned(Control) or
-       (FShowVisibleOnly and (not Control.Visible)) or
-       (FShowNamedOnly and (Control.Name = '')) //ignore style-related controls (unnamed), including their children
+       (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(Control, false) < 0)) or //if FShowOnlyClasses is empty ignore it
+       (FShowOnlyVisible and (not Control.Visible)) or
+       (FShowOnlyNamed and (Control.Name = '')) //ignore style-related controls (unnamed), including their children
       then exit;
 
     var TreeItem := TTreeViewItem.Create(Parent);

@@ -165,7 +165,7 @@ begin
   begin
     Filter := StoryItem.GetLoadFilesFilter;
     if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
-      StoryItem.Load(Filename);
+      StoryItem.Load(Files.ToStringArray);
   end;
 end;
 

@@ -97,10 +97,12 @@ object StoryItemOptions: TStoryItemOptions
     end
   end
   object OpenDialog: TOpenDialog
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 24
     Top = 144
   end
   object SaveDialog: TSaveDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
     Left = 88
     Top = 144
   end
@@ -138,6 +140,7 @@ object StoryItemOptions: TStoryItemOptions
       item
         MultiResBitmap = <
           item
+            Size = 30
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -163,6 +166,7 @@ object StoryItemOptions: TStoryItemOptions
       item
         MultiResBitmap = <
           item
+            Size = 30
           end>
         IconName = 'OpenFileFolder'
         SVGText = 
@@ -198,6 +202,7 @@ object StoryItemOptions: TStoryItemOptions
       item
         MultiResBitmap = <
           item
+            Size = 30
           end>
         IconName = 'Save'
         SVGText = 
@@ -230,6 +235,7 @@ object StoryItemOptions: TStoryItemOptions
       item
         MultiResBitmap = <
           item
+            Size = 30
           end>
         IconName = 'Delete'
         SVGText = 
@@ -264,6 +270,7 @@ object StoryItemOptions: TStoryItemOptions
       item
         MultiResBitmap = <
           item
+            Size = 41
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -294,40 +301,40 @@ object StoryItemOptions: TStoryItemOptions
         Layers = <
           item
             Name = 'Anchor'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'OpenFileFolder'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Save'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Delete'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
-            SourceRect.Right = 32.000000000000000000
-            SourceRect.Bottom = 32.000000000000000000
+            SourceRect.Right = 41.000000000000000000
+            SourceRect.Bottom = 41.000000000000000000
           end>
       end
       item
