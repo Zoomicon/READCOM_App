@@ -50,7 +50,11 @@ type
     FAutoSize: Boolean;
     FDragStartLocation: TPointF;
 
+    procedure ApplyEditModeToChild(Control: TControl);
+    procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoAutoSize;
+
+    {AutoSize}
     procedure SetAutoSize(const Value: Boolean);
 
     {EditMode}
@@ -392,6 +396,14 @@ end;
 
 {$endregion}
 
+procedure TCustomManipulator.DoAddObject(const AObject: TFmxObject);
+begin
+  inherited;
+  AreaSelector.BringToFront;
+  if (AObject is TControl) then
+    ApplyEditModeToChild(TControl(AObject));
+end;
+
 {$REGION 'PROPERTIES'}
 
 {$region 'AutoSize'}
@@ -439,6 +451,16 @@ begin
   result := AreaSelector.Visible;
 end;
 
+procedure TCustomManipulator.ApplyEditModeToChild(Control: TControl);
+begin
+  if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
+    begin
+    //Control.Enabled := not Value; //don't use, will show controls as semi-transparent
+    Control.HitTest := not EditMode; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagate to parent control, need to fix
+    //Control.SetDesign(Value, false);
+    end;
+end;
+
 procedure TCustomManipulator.SetEditMode(const Value: Boolean);
 begin
   if Assigned(FAreaSelector) then
@@ -449,15 +471,7 @@ begin
 
   TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
     Controls,
-    procedure(Control: TControl)
-    begin
-      if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
-        begin
-        //Control.Enabled := not Value; //don't use, will show controls as semi-transparent
-        Control.HitTest := not Value; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagete to parent control, need to fix
-        //Control.SetDesign(Value, false);
-        end;
-    end
+    ApplyEditModeToChild
   );
 end;
 
