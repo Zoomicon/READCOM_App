@@ -29,12 +29,12 @@ package Zoomicon.Zooming.FMX;
 
 requires
   rtl,
-  fmx;
+  fmx,
+  Zoomicon.Helpers.FMX;
 
 contains
   Zoomicon.Zooming.Models in 'Zoomicon.Zooming.Models.pas',
   Zoomicon.Zooming.FMX in 'Zoomicon.Zooming.FMX.pas',
-  Zoomicon.Zooming.FMX.Utils in 'Zoomicon.Zooming.FMX.Utils.pas',
   Zoomicon.Zooming.FMX.ZoomFrame in 'Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame};
 
 {$Description 'Zoomicon Zooming FMX Controls'}

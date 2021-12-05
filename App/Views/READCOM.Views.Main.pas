@@ -66,6 +66,7 @@ implementation
     System.Contnrs, //for TClassList
     CodeSiteLogging,
     Zoomicon.Introspection.FMX.StructureView, //for TStructureView
+    Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     READCOM.Views.VectorImageStoryItem; //TODO: remove
 
 {$R *.fmx}
@@ -284,8 +285,8 @@ begin
   with frameInfo.Frame do
   begin
     ShowOnlyClasses := TClassList.Create([TStoryItem]);
-    ShowNames := true;
-    ShowTypes := true;
+    ShowNames := false;
+    ShowTypes := false;
     GUIRoot := StoryView;
   end;
   frameInfo.Show;

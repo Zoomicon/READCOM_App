@@ -3,13 +3,14 @@ program ZoomableContainer;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  Zoomicon.Zooming.FMX.Utils in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.Utils.pas',
   Zoomicon.Zooming.Models in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
-  uMainForm in 'uMainForm.pas' {MainForm},
   Zoomicon.Zooming.FMX.ZoomFrame in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame},
   Zoomicon.Zooming.FMX in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas',
+  uMainForm in 'uMainForm.pas' {MainForm},
   uZoomFrameForm in 'uZoomFrameForm.pas' {ZoomFrameForm},
-  uZoomedLayoutForm in 'uZoomedLayoutForm.pas' {ZoomedLayoutForm};
+  uZoomedLayoutForm in 'uZoomedLayoutForm.pas' {ZoomedLayoutForm},
+  Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
+  Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas';
 
 {$R *.res}
 

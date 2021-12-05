@@ -1,4 +1,4 @@
-package Zoomicon.Puzzler;
+package Zoomicon.Helpers.RTL;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -28,14 +28,11 @@ package Zoomicon.Puzzler;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  fmx,
-  Zoomicon.Generics;
+  rtl;
 
 contains
-  Zoomicon.Puzzler.Models in 'Zoomicon.Puzzler.Models.pas',
-  Zoomicon.Puzzler.Classes in 'Zoomicon.Puzzler.Classes.pas';
+  Zoomicon.Helpers.RTL.ClassListHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
 
-{$DESCRIPTION 'Zoomicon Puzzler FMX Controls'}
+{$DESCRIPTION 'Zoomicon Helpers for RTL'}
 
 end.

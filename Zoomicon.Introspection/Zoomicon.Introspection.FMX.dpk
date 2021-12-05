@@ -29,7 +29,8 @@ package Zoomicon.Introspection.FMX;
 
 requires
   rtl,
-  fmx;
+  fmx,
+  Zoomicon.Helpers.RTL;
 
 contains
   Zoomicon.Introspection.FMX.StructureView in 'Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame};

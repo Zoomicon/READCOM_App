@@ -61,8 +61,8 @@ procedure Register;
 
 implementation
   uses
-    Zoomicon.Zooming.FMX.Utils, //for TScaledLayoutHelper
-    FMX.Objects, //for TGrabHandleRectangle
+    Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers, //for GetScrollBoxParent
+    Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers, //for TScaledLayout.ScalingFactor
     Math; //for Sign
 
 {$R *.fmx}

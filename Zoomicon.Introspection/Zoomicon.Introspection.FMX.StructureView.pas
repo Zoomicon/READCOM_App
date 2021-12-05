@@ -29,13 +29,7 @@ const
 
 type
 
-  TClassArray = array of TClass;
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
-
-  TClassListFindClassOfHelper = class helper for TClassList
-    constructor Create(const Items: TClassArray); overload; virtual;
-    function FindClassOf(const AObject: TObject; const AExact: Boolean = True; const AStartAt: Integer = 0): Integer;
-  end;
 
   TImageListHelper = class helper for TImageList
     function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
@@ -44,6 +38,7 @@ type
   TStructureView = class(TFrame)
     TreeView: TTreeView;
     ImageList: TImageList;
+    procedure TreeViewChange(Sender: TObject);
 
   protected
     FGUIRoot: TControl;
@@ -85,30 +80,9 @@ procedure Register;
 implementation
   uses
     System.Rtti, //for TValue
-    FMX.MultiResBitmap; //for TSizeKind
-
-{$REGION 'TClassListFindClassOfHelper'} //TODO: move to other package
-
-constructor TClassListFindClassOfHelper.Create(const Items: TClassArray);
-begin
-  inherited Create;
-  for var AClass in Items do
-    Add(AClass);
-end;
-
-function TClassListFindClassOfHelper.FindClassOf(const AObject: TObject; const AExact: Boolean = True; const AStartAt: Integer = 0): Integer;
-begin
-  for var i := AStartAt to Count - 1 do
-    if (AExact and (Items[i] = AObject.ClassType)) or
-       (not AExact and AObject.InheritsFrom(Items[i])) then
-    begin
-      Result := i;
-      exit;
-    end;
-  Result := -1;
-end;
-
-{$ENDREGION}
+    FMX.Dialogs, //for ShowMessage
+    FMX.MultiResBitmap, //for TSizeKind
+    Zoomicon.Helpers.RTL.ClassListHelpers; //for TClassList.FindClassOf
 
 {$REGION 'ImageListHelper'} //TODO: move to other package
 //based on https://stackoverflow.com/a/43086181/903783
@@ -274,6 +248,15 @@ begin
     end;
   EndUpdate;
 end;
+
+{$region 'Events'}
+
+procedure TStructureView.TreeViewChange(Sender: TObject);
+begin
+  ShowMessage(TreeView.Selected.Text);
+end;
+
+{$endregion}
 
 procedure RegisterClasses;
 begin

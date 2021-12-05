@@ -78,7 +78,8 @@ var
 
 implementation
   uses
-    Zoomicon.Zooming.FMX.Utils, //for TScaledLayoutHelper
+    Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers, //for TScaledLayout.ScalingFactor
+    Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers, //for GetScrollBoxParent
     Math; //for Sign
 
 {$R *.fmx}

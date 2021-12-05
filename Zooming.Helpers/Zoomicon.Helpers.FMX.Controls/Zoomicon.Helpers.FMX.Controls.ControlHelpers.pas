@@ -1,4 +1,4 @@
-unit Zoomicon.Zooming.FMX.Utils;
+unit Zoomicon.Helpers.FMX.Controls.ControlHelpers;
 
 {-$DEFINE CONTROLSCALEHELPER} //Uncomment only if really needed - else it will make code that uses Scale at TControl descendents that expose that property slower since it uses RTTI
 
@@ -10,9 +10,6 @@ interface
     FMX.Types,
     FMX.Objects;
 
-  function GetScrollContentParent(const FmxObject: TFmxObject): TScrollContent;
-  function GetScrollBoxParent(const FmxObject: TFmxObject): TCustomScrollBox;
-
   type
 
     TControlFocusHelper = class helper for TControl
@@ -21,7 +18,7 @@ interface
     end;
 
     {$IFDEF CONTROLSCALEHELPER}
-    TControlScaleHelper = class helper(TControlFocusHelper) for TControl //used to expose Scale of TControl which is unfortunately "strict private" so one can't write zooming code that needs to check the Scale of TControls
+    TControlScaleHelper = class helper(TControlFocusHelper) for TControl //used to expose Scale of TControl which is unfortunately "strict private" so one can't write zooming code that needs to check the Scale of TControls //using class helper inheritance, else only last helper defined for same Class is seen by compiler
     protected
       function GetScale: TPosition;
       procedure SetScale(const Value: TPosition);
@@ -30,47 +27,10 @@ interface
     end;
     {$ENDIF}
 
-    TCustomScrollBoxViewportHelper = class helper for TCustomScrollBox
-    protected
-      function GetViewportSize: TSizeF;
-    public
-      /// <summary>Size of view port of the ScrollBox's content.</summary>
-      property ViewportSize: TSizeF read GetViewportSize;
-    end;
-
-    TScaledLayoutScalingFactorHelper = class helper for TScaledLayout
-    protected
-      function GetScalingFactor: TPointF;
-    public
-      property ScalingFactor: TPointF read GetScalingFactor;
-    end;
-
 implementation
   {$IFDEF CONTROLSCALEHELPER}
   uses System.Rtti; //uncomment only if you uncomment TControlScaleHelper
   {$ENDIF}
-
-{$REGION 'Functions'}
-
-function GetScrollContentParent(const FmxObject: TFmxObject): TScrollContent;
-begin
-  var parent := FmxObject.Parent;
-  if parent is TScrollContent then
-    result := (parent as TScrollContent)
-  else
-    result := nil;
-end;
-
-function GetScrollBoxParent(const FmxObject: TFmxObject): TCustomScrollBox;
-begin
-  var ScrollContent := GetScrollContentParent(FmxObject);
-  if ScrollContent = nil then
-    result := nil
-  else
-    result := ScrollContent.ScrollBox;
-end;
-
-{$ENDREGION}
 
 {$REGION 'TControlFocusHelper'}
 
@@ -127,24 +87,6 @@ begin
 end;
 
 {$ENDIF}
-{$ENDREGION}
-
-{$REGION 'TCustomScrollBoxViewportHelper'}
-
-function TCustomScrollBoxViewportHelper.GetViewportSize: TSizeF;
-begin
-  result := Size.Size; //TODO: adjust for scrollbar sizes
-end;
-
-{$ENDREGION}
-
-{$REGION 'TScaledLayoutScalingFactorHelper'}
-
-function TScaledLayoutScalingFactorHelper.GetScalingFactor: TPointF;
-begin
-  result := PointF(Width/OriginalWidth, Height/OriginalHeight); //need to use OriginalWidth/OriginalHeight, not Width/Height (since we may have resized)
-end;
-
 {$ENDREGION}
 
 end.

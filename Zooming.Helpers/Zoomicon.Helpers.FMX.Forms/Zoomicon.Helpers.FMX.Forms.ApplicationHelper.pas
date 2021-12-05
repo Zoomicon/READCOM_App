@@ -1,3 +1,5 @@
+unit Zoomicon.Helpers.FMX.Forms.ApplicationHelper;
+
 (*
  * ExeName method is added to TApplication.
  *
@@ -7,6 +9,7 @@
  *   Twitter @pik or freeonterminate@gmail.com
  *
  * LAST UPDATE
+ *   2021/05/12  Packaged with other helpers by George Birbilis (Zoomicon.com)
  *   2015/12/15  First Release
  *
  * PLATFORM
@@ -19,10 +22,8 @@
  *
  * HOW TO USE
  *   1. uses FMX.ApplicationHelper;
- *   2, You want to Exe Path, call Application.ExeName !
+ *   2. You want to Exe Path, call Application.ExeName
  *)
-
-unit FMX.ApplicationHelper;
 
 interface
 
@@ -39,9 +40,8 @@ implementation
 
 {$IFDEF ANDROID}
 uses
-  System.SysUtils
-  , Androidapi.Helpers
-  ;
+  System.SysUtils, //TODO: is this needed?
+  Androidapi.Helpers; //for TAndroidHelper, JStringToString
 {$ENDIF}
 
 { TApplicationHelper }
@@ -57,3 +57,4 @@ begin
 end;
 
 end.
+

@@ -49,9 +49,9 @@ procedure Register;
 
 implementation
   uses
-    Zoomicon.Zooming.FMX.Utils,
-    Math, //for Sign
-    System.SysUtils; //for FreeAndNil
+    Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers, //for GetScrollBoxParent
+    Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers, //for TScaledLayout.ScalingFactor
+    Math; //for Sign
 
 { TZoomedLayout }
 
