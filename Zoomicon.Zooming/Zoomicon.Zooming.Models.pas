@@ -16,7 +16,7 @@ type
     procedure SetZoom(const ValueX, ValueY: Single); overload;
     procedure SetZoom(const Value: TPointF); overload;
     procedure SetZoom(const Value: Single); overload;
-    procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
+    procedure ZoomTo(const Control: TControl = nil; const KeepRatio: Boolean = true); //ZoomTo(nil) zooms to all content
     //
     property Zoom: TPointF read GetZoom write SetZoom;
   end;

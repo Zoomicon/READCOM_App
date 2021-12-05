@@ -45,7 +45,7 @@ type
 
     //IZoomable
     function GetZoom: TPointF;
-    procedure ZoomTo(const Control: TControl; const KeepRatio: Boolean = true);
+    procedure ZoomTo(const Control: TControl = nil; const KeepRatio: Boolean = true); //ZoomTo(nil) zooms to all content
     procedure SetZoom(const ValueX, ValueY: Single); overload;
     procedure SetZoom(const Value: TPointF); overload;
     procedure SetZoom(const Value: Single); overload;
@@ -152,13 +152,17 @@ begin
 end;
 
 //TODO: take in mind scrollbar size
-procedure TZoomFrame.ZoomTo(const Control: TControl; const KeepRatio: Boolean = true); //TODO: adjust for scrollbar sizes
+procedure TZoomFrame.ZoomTo(const Control: TControl = nil; const KeepRatio: Boolean = true); //ZoomTo(nil) zooms to all content
 begin
   {$region 'Zoom'}
   //BeginUpdate; //Not needed
 
   var ZoomerAbsRect := Zoomer.AbsoluteRect;
-  var ControlAbsRect := Control.AbsoluteRect;
+  var ControlAbsRect: TRectF;
+  if Assigned(Control) then
+    ControlAbsRect := Control.AbsoluteRect
+  else
+    ControlAbsRect := ScaledLayout.AbsoluteRect;
 
   if KeepRatio then
     begin
@@ -178,7 +182,11 @@ begin
 
   {$region 'Pan (center)'}
 
-  ControlAbsRect := Control.AbsoluteRect; //NEEDED TO RECALCULATE AFTER ZOOMING IN ORDER TO FIND THE CORRECT CENTER
+  //NEEDED TO RECALCULATE AFTER ZOOMING IN ORDER TO FIND THE CORRECT CENTER
+  if Assigned(Control) then
+    ControlAbsRect := Control.AbsoluteRect
+  else
+    ControlAbsRect := ScaledLayout.AbsoluteRect;
 
   var ZoomerParent := Zoomer.ParentControl;
   var CenterPointNewCoords := ZoomerParent.AbsoluteToLocal(ControlAbsRect.CenterPoint);

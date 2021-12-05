@@ -73,7 +73,7 @@ type
     procedure SetCurrentPanel(const Value: IPanelStoryItem);
     property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
 
-    procedure ZoomTo(const StoryItem: IStoryItem);
+    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
   end;
 
   IStoryItem = interface(IStoreable)

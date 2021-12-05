@@ -15,8 +15,6 @@ uses
 
 type
   TBitmapImageStoryItemOptions = class(TStoryItemOptions, IBitmapImageStoryItemOptions, IStoryItemOptions)
-    TakePhotoFromCameraAction: TTakePhotoFromCameraAction;
-    SpeedButton1: TSpeedButton;
     procedure actionCameraExecute(Sender: TObject);
   protected
     procedure DoDidFinish(Image: TBitmap);
@@ -77,7 +75,7 @@ begin
       RequiredResolution := TSize.Create(640, 640);
       OnDidFinishTaking := DoDidFinish;
     end;
-    Service.TakePhoto(SpeedButton1, Params);
+    //Service.TakePhoto(SpeedButton1, Params); //TODO
   end
   else
     ShowMessage('This device does not support the camera service');

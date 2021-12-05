@@ -37,6 +37,7 @@ type
     {StoryView}
     function GetStoryView: TStoryItem;
     procedure SetStoryView(const Value: TStoryItem);
+    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
 
   public
     //--- Events
@@ -51,7 +52,7 @@ type
     procedure SetCurrentPanel(const Value: IPanelStoryItem);
     property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
 
-    procedure ZoomTo(const StoryItem: IStoryItem);
+    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
   published
     property Story: IStoryItem read GetStory write SetStory stored false;
@@ -256,7 +257,10 @@ end;
 
 procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
 begin
-  ZoomFrame.ZoomTo(StoryItem.View);
+  if Assigned(StoryItem) then
+    ZoomFrame.ZoomTo(StoryItem.View)
+  else
+    ZoomFrame.ZoomTo; //Zoom to all content
 end;
 
 {$endregion}
@@ -276,6 +280,11 @@ begin
     view.EditMode := HUD.actionEdit.Checked;
 end;
 
+procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
+begin
+  ZoomFrame.ZoomTo(TControl(Selection));
+end;
+
 procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
 begin
   HUD.actionStructureExecute(Sender);
@@ -288,6 +297,7 @@ begin
     ShowNames := false;
     ShowTypes := false;
     GUIRoot := StoryView;
+    OnSelection := StructureViewSelection;
   end;
   frameInfo.Show;
 end;

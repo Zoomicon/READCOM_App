@@ -35,10 +35,12 @@ type
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionStructureExecute(Sender: TObject);
+
   protected
     {EditMode}
     function GetEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
+
   public
     property EditMode: Boolean read GetEditMode write SetEditMode;
   end;

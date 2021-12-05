@@ -28,12 +28,15 @@ const
   DEFAULT_SHOW_HINT_TYPES = false;
 
 type
+  TStructureView = class;
 
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
 
   TImageListHelper = class helper for TImageList
     function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
   end;
+
+  TSelectionEvent = procedure(Sender: TComponent; Selection: TObject) of object;
 
   TStructureView = class(TFrame)
     TreeView: TTreeView;
@@ -49,6 +52,7 @@ type
     FShowTypes: Boolean;
     FShowHintNames: Boolean;
     FShowHintTypes: Boolean;
+    FOnSelection: TSelectionEvent;
 
     procedure SetShowOnlyClasses(const Value: TClassList);
     procedure SetShowOnlyVisible(const Value: Boolean);
@@ -73,6 +77,9 @@ type
     property ShowTypes: Boolean read FShowTypes write SetShowTypes default DEFAULT_SHOW_TYPES;
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
     property ShowHintTypes: Boolean read FShowHintTypes write SetShowHintTypes default DEFAULT_SHOW_HINT_TYPES;
+
+  published
+    property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
   end;
 
 procedure Register;
@@ -140,8 +147,8 @@ destructor TStructureView.Destroy;
 begin
   TreeView.Clear;
   ImageList.ClearCache;
-  //FreeAndNil(TreeView);
-  //FreeAndNil(Images);
+  //FreeAndNil(TreeView); //should be done automatically when "inherited" is called
+  //FreeAndNil(Images); //should be done automatically when "inherited" is called
   inherited;
 end;
 
@@ -211,6 +218,8 @@ procedure TStructureView.LoadTreeView;
     TreeItem.BeginUpdate;
     TreeItem.Parent := Parent;
 
+    TreeItem.Tag := NativeInt(Control);
+
     var imgIndex := ImageList.Add(Control.MakeScreenshot);
     TreeItem.ImageIndex := imgIndex; //TODO: check if causes mem leaks
     var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
@@ -253,7 +262,8 @@ end;
 
 procedure TStructureView.TreeViewChange(Sender: TObject);
 begin
-  ShowMessage(TreeView.Selected.Text);
+  if Assigned(FOnSelection) then
+    FOnSelection(Self, TObject(TreeView.Selected.Tag));
 end;
 
 {$endregion}
