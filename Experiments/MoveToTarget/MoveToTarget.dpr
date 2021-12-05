@@ -4,7 +4,10 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   uMainForm in 'uMainForm.pas' {Form2},
-  uDraggable in 'uDraggable.pas';
+  uDraggable in 'uDraggable.pas',
+  Zoomicon.Puzzler.Classes in '..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
+  Zoomicon.Puzzler.Models in '..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
+  Zoomicon.Generics.Collections in '..\..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas';
 
 {$R *.res}
 

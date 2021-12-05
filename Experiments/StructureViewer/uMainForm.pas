@@ -21,13 +21,15 @@ type
     MultiViewFrameStand: TFrameStand;
     procedure btnShowChildrenClick(Sender: TObject);
     procedure MultiViewStartShowing(Sender: TObject);
+  protected
+    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
   end;
 
 var
   MainForm: TMainForm;
 
 implementation
-  uses Zoomicon.Introspection.FMX.StructureView;
+  uses Zoomicon.Introspection.FMX.StructureView; //for TStructureView
 
 {$R *.fmx}
 
@@ -37,13 +39,23 @@ begin
     Control.Visible := true;
 end;
 
+procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
+begin
+  ShowMessage(TControl(Selection).ClassName);
+  MultiView.HideMaster;
+end;
+
 procedure TMainForm.MultiViewStartShowing(Sender: TObject);
 begin
   with MultiViewFrameStand do
   begin
     CloseAllExcept(TStructureView);
     var info:= MultiViewFrameStand.GetFrameInfo<TStructureView>;
-    info.Frame.GUIRoot := ContentLayout;
+    with info.Frame do
+    begin
+      GUIRoot := ContentLayout;
+      OnSelection := StructureViewSelection;
+    end;
     info.Show;
   end;
 end;
