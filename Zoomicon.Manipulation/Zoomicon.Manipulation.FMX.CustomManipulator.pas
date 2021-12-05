@@ -116,19 +116,6 @@ type
 
   {$ENDREGION}
 
-  {$REGION 'TManipulator' -----------------------------------------------------}
-
-  TManipulator = class(TCustomManipulator)
-  published
-    property AreaSelector;
-    property DropTarget;
-    property AutoSize;
-    property EditMode;
-    property Proportional;
-  end;
-
-  {$ENDREGION}
-
 procedure Register;
 
 implementation
@@ -293,11 +280,21 @@ end;
 
 procedure TCustomManipulator.MoveControl(const Control: TControl; const DX, DY: Single);
 begin
+  BeginUpdate;
+
   with Control.Position do
-    Point := PointF(
-      EnsureRange(Point.X + DX, 0, Width - Control.Width),
-      EnsureRange(Point.Y + DY, 0, Height - Control.Height)
-    );
+  begin
+    var NewX := Point.X + DX;
+    var NewY := Point.Y + DY;
+
+    if AutoSize then
+      Point := PointF(NewX, NewY)
+    else
+      Point := PointF( EnsureRange(NewX, 0, Width - Control.Width), EnsureRange(NewY, 0, Height - Control.Height) );
+  end;
+
+  DoAutoSize;
+  EndUpdate;
 end;
 
 procedure TCustomManipulator.MoveControls(const Controls: TControlList; const DX, DY: Single);
@@ -345,8 +342,13 @@ end;
 
 procedure TCustomManipulator.RotateControl(const Control: TControl; const DAngle: Single);
 begin
+  BeginUpdate;
+
   with (Control as IRotatedControl) do
     RotationAngle := RotationAngle + DAngle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
+
+  DoAutoSize;
+  EndUpdate;
 end;
 
 procedure TCustomManipulator.RotateControls(const Controls: TControlList; const DAngle: Single);
