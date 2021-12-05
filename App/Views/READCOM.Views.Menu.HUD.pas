@@ -26,11 +26,12 @@ type
     actionEdit: TAction;
     actionAbout: TAction;
     actionMenu: TAction;
-    layoutAll: TLayout;
-    Drawer: TMultiView;
+    layoutButtons: TLayout;
+    MultiView: TMultiView;
     BtnStructure: TSpeedButton;
     actionStructure: TAction;
     DrawerFrameStand: TFrameStand;
+    layoutContent: TLayout;
     procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
@@ -75,15 +76,12 @@ end;
 
 procedure TStoryHUD.actionMenuExecute(Sender: TObject);
 begin
-  layoutAll.Visible := actionMenu.Checked;
+  layoutButtons.Visible := actionMenu.Checked;
 end;
 
 procedure TStoryHUD.actionStructureExecute(Sender: TObject);
 begin
-  if actionStructure.Checked then
-    Drawer.ShowMaster
-  else
-    Drawer.HideMaster;
+  MultiView.ShowMaster
 end;
 
 {$endregion}

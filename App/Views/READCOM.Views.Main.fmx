@@ -14,13 +14,6 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
-  object ZoomFrame: TZoomFrame
-    Align = Client
-    Size.Width = 876.000000000000000000
-    Size.Height = 616.000000000000000000
-    Size.PlatformDefault = False
-    Proportional = True
-  end
   inline HUD: TStoryHUD
     Align = Client
     HitTest = False
@@ -29,7 +22,7 @@ object MainForm: TMainForm
     Size.PlatformDefault = False
     ParentShowHint = False
     ShowHint = True
-    inherited layoutAll: TLayout
+    inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
       inherited layoutEdit: TLayout
@@ -44,8 +37,19 @@ object MainForm: TMainForm
         end
       end
     end
-    inherited Drawer: TMultiView
-      Size.Width = 50.000000000000000000
+    inherited layoutContent: TLayout
+      Size.Width = 876.000000000000000000
+      Size.Height = 616.000000000000000000
+      object ZoomFrame: TZoomFrame
+        Align = Client
+        Size.Width = 876.000000000000000000
+        Size.Height = 616.000000000000000000
+        Size.PlatformDefault = False
+        Proportional = True
+      end
+    end
+    inherited MultiView: TMultiView
+      Size.Width = 350.000000000000000000
       Size.Height = 616.000000000000000000
     end
     inherited ActionList1: TActionList

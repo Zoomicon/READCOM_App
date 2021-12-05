@@ -16,7 +16,7 @@ object StoryHUD: TStoryHUD
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
   end
-  object layoutAll: TLayout
+  object layoutButtons: TLayout
     Align = Client
     Size.Width = 912.000000000000000000
     Size.Height = 572.000000000000000000
@@ -96,7 +96,15 @@ object StoryHUD: TStoryHUD
       StyleLookup = 'drawertoolbutton'
     end
   end
-  object Drawer: TMultiView
+  object layoutContent: TLayout
+    Align = Client
+    Size.Width = 912.000000000000000000
+    Size.Height = 572.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+  end
+  object MultiView: TMultiView
+    TargetControl = layoutContent
     Mode = Drawer
     HitTest = False
     Size.Width = 400.000000000000000000
@@ -272,7 +280,6 @@ object StoryHUD: TStoryHUD
     end
     object actionStructure: TAction
       Category = 'View'
-      AutoCheck = True
       Text = 'actionStructure'
       ImageIndex = 3
       OnExecute = actionStructureExecute
@@ -286,7 +293,7 @@ object StoryHUD: TStoryHUD
     DefaultHideAndCloseDeferTimeMS = 100
     DefaultStyleName = 'framestand'
     DefaultStandName = 'framestand'
-    DefaultParent = Drawer
+    DefaultParent = MultiView
     Left = 416
     Top = 40
   end

@@ -19,8 +19,8 @@ uses
 
 type
   TMainForm = class(TForm, IStory)
-    ZoomFrame: TZoomFrame;
     HUD: TStoryHUD;
+    ZoomFrame: TZoomFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
     procedure HUDactionAddExecute(Sender: TObject);
@@ -77,6 +77,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
   procedure InitHUD;
   begin
     HUD.BringToFront;
+    HUD.BtnMenu.BringToFront;
+    HUD.layoutButtons.BringToFront;
   end;
 
 begin
