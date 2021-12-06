@@ -19,6 +19,9 @@ const
 
 type
   TVectorImageStoryItem = class(TImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
+  private
+    function GetSVGText: String;
+    procedure SetSVGText(const Value: String);
 
   //--- Methods ---
 
@@ -44,8 +47,9 @@ type
 
   published
     property Image: TImage read GetImage stored false; //overrides ancestor's "write" and "stored" settings
-    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage default nil;
-
+    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage stored false default nil;
+    property SVGText: String read GetSVGText write SetSVGText;
+    property AutoSize default true;
   end;
 
   procedure Register;
@@ -57,15 +61,9 @@ implementation
 { TVectorImageStoryItem }
 
 constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
-
-  procedure InitGlyph;
-  begin
-
-  end;
-
 begin
   inherited;
-  InitGlyph;
+  FAutoSize := true;
 end;
 
 {$region 'IStoreable'}
@@ -85,12 +83,18 @@ end;
 
 procedure TVectorImageStoryItem.LoadSVG(const Stream: TStream);
 begin
+  if FAutoSize then
+    Glyph.Align := TAlignLayout.None;
   var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
-  bitmap.SVG.LoadFromStream(Stream);
+  bitmap.SVG.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
   //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
   bitmap.DrawSVGIcon;
   if FAutoSize then
-    SetSize(bitmap.Width, bitmap.Height);
+    begin
+    //SetSize(bitmap.Width, bitmap.Height); //TODO
+    SetSize(100,100);
+    Glyph.Align := TAlignLayout.Contents;
+    end;
 end;
 
 {$endregion}
@@ -120,7 +124,28 @@ end;
 
 procedure TVectorImageStoryItem.SetSVGImage(const Value: TSVGIconImage);
 begin
-  (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
+  SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText; //this will also set Size
+end;
+
+{$endregion}
+
+{$region 'SVGText'}
+
+function TVectorImageStoryItem.GetSVGText: String;
+begin
+  result := (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
+end;
+
+procedure TVectorImageStoryItem.SetSVGText(const Value: String);
+begin
+  if FAutoSize then
+    Glyph.Align := TAlignLayout.None;
+  (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := Value;
+  if FAutoSize then
+    begin
+    Size.Size := Glyph.Size.Size;
+    Glyph.Align := TAlignLayout.Contents;
+    end;
 end;
 
 {$endregion}

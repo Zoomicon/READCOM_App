@@ -177,7 +177,11 @@ end;
 
 procedure TTextStoryItem.LoadTXT(const Stream: TStream);
 begin
-  Text := ReadAllText(Stream);
+  //Text := ReadAllText(Stream);
+  var s := TStringList.Create(#0, #13);
+  s.LoadFromStream(Stream);
+  Text := s.DelimitedText;
+  FreeAndNil(s);
 end;
 
 procedure TTextStoryItem.MemoApplyStyleLookup(Sender: TObject);

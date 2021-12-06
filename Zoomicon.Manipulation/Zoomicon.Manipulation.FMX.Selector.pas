@@ -43,13 +43,17 @@ type
 
   TAreaSelector = class(TSelection)
   protected
+    FOnlyFromTop: Boolean;
+
     function DoGetUpdateRect: TRectF; override; //used to fix bug in TSelection that doesn't consider usage inside a TScaledLayout
     function GetControls(const RectPicker: TRectFPredicate): TControlList;
     function GetIntersected: TControlList; virtual;
     function GetContained: TControlList; virtual;
+
   published
     property Intersected: TControlList read GetIntersected stored false;
     property Selected: TControlList read GetContained stored false;
+    property OnlyFromTop: Boolean read FOnlyFromTop write FOnlyFromTop;
   end;
 
   {$ENDREGION .................................................................}
@@ -154,6 +158,8 @@ begin
                     and RectPicker(AControl.BoundsRect);
         end
       );
+      if OnlyFromTop and (result.Count > 1) then
+        result := TControlList.Create(result.Last);
     end;
 end;
 

@@ -18,7 +18,7 @@ const
   SELECTION_GRIP_SIZE = 8;
   DEFAULT_AUTOSIZE = false;
   DEFAULT_EDITMODE = false;
-  DEFAULT_PROPORTIONAL = true;
+  DEFAULT_PROPORTIONAL = false;
 
 type
 
@@ -69,6 +69,7 @@ type
     {AreaSelector}
     procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
+    procedure HandleAreaSelectorTrack(Sender: TObject);
 
     {Gestures}
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
@@ -102,6 +103,12 @@ type
     procedure MoveControls(const Controls: TControlList; const DX, DY: Single); overload;
     procedure MoveControls(const DX, DY: Single); overload;
     procedure MoveSelected(const DX, DY: Single);
+
+    {Resize}
+    procedure ResizeControl(const Control: TControl; const DW, DH: Single); overload; inline;
+    procedure ResizeControls(const Controls: TControlList; const DW, DH: Single); overload;
+    procedure ResizeControls(const DW, DH: Single); overload;
+    procedure ResizeSelected(const DW, DH: Single);
 
     {Rotate}
     procedure SetControlAngle(const Control: TControl; const Angle: Single); overload; inline;
@@ -217,6 +224,8 @@ constructor TCustomManipulator.Create(AOwner: TComponent);
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
        BringToFront;
+       OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
+       OnTrack := HandleAreaSelectorTrack;
        end;
      FAreaSelector.Parent := Self;
   end;
@@ -288,8 +297,8 @@ begin
 
   with Control.Position do
   begin
-    var NewX := Point.X + DX;
-    var NewY := Point.Y + DY;
+    var NewX := X + DX;
+    var NewY := Y + DY;
 
     if AutoSize then
       Point := PointF(NewX, NewY)
@@ -330,6 +339,64 @@ begin
     begin
     var TheSelected := AreaSelector.Selected;
     MoveControls(TheSelected, DX, DY);
+    FreeAndNil(TheSelected);
+    end;
+end;
+
+{$endregion}
+
+{$region 'Resize'}
+
+procedure TCustomManipulator.ResizeControl(const Control: TControl; const DW, DH: Single);
+begin
+  BeginUpdate;
+
+  with Control.Size do
+  begin
+    var NewWidth := Width + DW;
+    var NewHeight := Height + DH;
+
+    //if AutoSize then //TODO: should we clamp Width/Height for child to always be inside parent?
+      Size := TSizeF.Create(NewWidth, NewHeight)
+    //else
+      //Size := ...EnsureRange...
+  end;
+
+  Control.Position.Point := Control.Position.Point - PointF(DW/2, DH/2); //resize from center
+
+  DoAutoSize;
+  EndUpdate;
+end;
+
+procedure TCustomManipulator.ResizeControls(const Controls: TControlList; const DW, DH: Single);
+begin
+  if (DW <> 0) or (DH <> 0) then
+    begin
+    BeginUpdate;
+
+    TListEx<TControl>.ForEach(Controls,
+      procedure (Control: TControl)
+      begin
+        ResizeControl(Control, DW, DH);
+      end
+    );
+
+    DoAutoSize;
+    EndUpdate;
+    end;
+end;
+
+procedure TCustomManipulator.ResizeControls(const DW, DH: Single);
+begin
+  ResizeControls(Controls, DW, DH);
+end;
+
+procedure TCustomManipulator.ResizeSelected(const DW, DH: Single);
+begin
+  if (DW <> 0) or (DH <> 0) then
+    begin
+    var TheSelected := AreaSelector.Selected;
+    ResizeControls(TheSelected, DW, DH);
     FreeAndNil(TheSelected);
     end;
 end;
@@ -455,9 +522,10 @@ procedure TCustomManipulator.ApplyEditModeToChild(Control: TControl);
 begin
   if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
     begin
-    //Control.Enabled := not Value; //don't use, will show controls as semi-transparent
-    Control.HitTest := not EditMode; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagate to parent control, need to fix
-    //Control.SetDesign(Value, false);
+    var NotEditing := not EditMode;
+    Control.Enabled := NotEditing; //don't use, will show controls as semi-transparent
+    //Control.HitTest := NotEditing; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagate to parent control, need to fix
+    //Control.SetDesign(EditMode, false);
     end;
 end;
 
@@ -525,6 +593,15 @@ begin
     //Align := TAlignLayout.Center;
     end;
   EndUpdate;
+end;
+
+var lastAreaSelectorSize: TSizeF;
+
+procedure TCustomManipulator.HandleAreaSelectorTrack(Sender: TObject);
+begin
+  var dSize := AreaSelector.Size.Size - lastAreaSelectorSize;
+  ResizeSelected(dSize.Width, dSize.Height);
+  lastAreaSelectorSize := AreaSelector.Size.Size;
 end;
 
 {$endregion}
@@ -677,10 +754,10 @@ end;
 
 procedure TCustomManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
-  if (ssAlt in Shift) and not EditMode then //TODO: Fix StoryItem hierarchy (DropTarget issue) to use EditMode (WILL GET FIXED WITH option to not get child items most probably), THIS ALSO AFFECTS MOUSECLICK (SO AREASELECTOR DOESN'T GET PLACED AT CLICKED CHILD BOUNDS)
+  if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos, false);
+    var LObj := ObjectAtPoint(ScreenMousePos, 1);
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject).ParentControl; //TODO: fix hack - have an ObjectAtPoint/ObjectAtPointLocal that has param to not recurse into children
@@ -698,11 +775,12 @@ begin
       Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale), Control.Position.Y + zoom_center.y * (1-new_scale));
       EndUpdate;
 
+      Handled := true; //TODO: is this needed?
       exit;
     end; //adapted from https://stackoverflow.com/a/66049562/903783
   end;
 
-  inherited; //if we didn't handle the event, needed for event handlers to be fired (e.g. at ancestors)
+  inherited; //needed for event handlers to be fired (e.g. at ancestors)
 end;
 
 {$endregion}

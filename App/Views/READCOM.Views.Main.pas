@@ -72,6 +72,8 @@ implementation
 
 {$R *.fmx}
 
+{$REGION 'Init / Destroy'}
+
 procedure TMainForm.FormCreate(Sender: TObject);
 
   procedure InitHUD;
@@ -95,71 +97,9 @@ begin
   HUD.DrawerFrameStand.CloseAll;
 end;
 
+{$ENDREGION}
+
 {$REGION 'Properties'}
-
-{$region 'SavedState'}
-
-procedure TMainForm.LoadSavedStateOrNewStory;
-begin
-  //if (not LoadSavedState) then
-    begin
-    var TheStory := TPanelStoryItem.Create(Self);
-    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    StoryView := TheStory;
-    end;
-end;
-
-function TMainForm.LoadSavedState: Boolean;
-begin
-  result := false;
-  With SaveState do
-  begin
-    //StoragePath := ... //TODO: default is transient, change to make permanent
-    if Stream.Size > 0 then
-    begin
-      var TheStory := TPanelStoryItem.Create(Self);
-      try
-        TheStory.Load(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheStory.SaveToString);
-        StoryView := TheStory; //only set StoryView
-        result := true;
-      except
-        on E: Exception do
-          begin
-          Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-          CodeSite.SendException(E);
-          ShowException(E, @TMainForm.FormCreate);
-          FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
-          end;
-      end;
-    end;
-  end;
-end;
-
-procedure TMainForm.FormSaveState(Sender: TObject);
-begin
-  CodeSite.EnterMethod('SaveState');
-  //StoragePath := ... //TODO: default is transient, change to make permanent
-  SaveState.Stream.Clear;
-
-  var TheStory := StoryView;
-  if Assigned(TheStory) then
-    with SaveState do
-      try
-        TheStory.Save(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheStory.SaveToString);
-      except
-        On E: Exception do
-          begin
-          Stream.Clear; //clear stream in case it got corrupted
-          CodeSite.SendException(E);
-          ShowException(E, @TMainForm.FormCreate);
-          end;
-    end;
-  CodeSite.ExitMethod('SaveState');
-end;
-
-{$endregion}
 
 {$region 'Story'}
 
@@ -224,7 +164,7 @@ begin
   with Value do
   begin
     Align := TAlignLayout.Fit;
-    AutoSize := true; //the Root StoryItem should be expandable
+    //AutoSize := true; //the Root StoryItem should be expandable //TODO: fix in manipulator to work
     Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
   end;
 end;
@@ -306,6 +246,70 @@ begin
 end;
 
 {$endregion}
+
+{$endregion}
+
+{$region 'SavedState'}
+
+procedure TMainForm.LoadSavedStateOrNewStory;
+begin
+  //if (not LoadSavedState) then
+    begin
+    var TheStory := TPanelStoryItem.Create(Self);
+    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+    StoryView := TheStory;
+    end;
+end;
+
+function TMainForm.LoadSavedState: Boolean;
+begin
+  result := false;
+  With SaveState do
+  begin
+    //StoragePath := ... //TODO: default is transient, change to make permanent
+    if Stream.Size > 0 then
+    begin
+      var TheStory := TPanelStoryItem.Create(Self);
+      try
+        TheStory.Load(Stream); //default file format is EXT_READCOM
+        {}CodeSite.Send(TheStory.SaveToString);
+        StoryView := TheStory; //only set StoryView
+        result := true;
+      except
+        on E: Exception do
+          begin
+          Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
+          CodeSite.SendException(E);
+          ShowException(E, @TMainForm.FormCreate);
+          FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
+          end;
+      end;
+    end;
+  end;
+end;
+
+procedure TMainForm.FormSaveState(Sender: TObject);
+begin
+  CodeSite.EnterMethod('SaveState');
+  //StoragePath := ... //TODO: default is transient, change to make permanent
+  SaveState.Stream.Clear;
+
+  var TheStory := StoryView;
+  if Assigned(TheStory) then
+    with SaveState do
+      try
+        TheStory.Save(Stream); //default file format is EXT_READCOM
+        {}CodeSite.Send(TheStory.SaveToString);
+      except
+        On E: Exception do
+          begin
+          Stream.Clear; //clear stream in case it got corrupted
+          CodeSite.SendException(E);
+          ShowException(E, @TMainForm.FormCreate);
+          end;
+    end;
+  CodeSite.ExitMethod('SaveState');
+end;
 
 {$endregion}
 

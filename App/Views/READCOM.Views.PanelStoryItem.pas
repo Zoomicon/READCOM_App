@@ -62,6 +62,7 @@ implementation
     READCOM.Views.BitmapImageStoryItem, //for TBitmapImageStoryItem
     READCOM.Views.VectorImageStoryItem, //for TVectorImageStoryItem
     READCOM.Views.AudioStoryItem, //for TAudioStoryItem
+    READCOM.Views.TextStoryItem, //for TTextStoryItem
     System.IOUtils; //for TPath
 
 {$R *.fmx}
@@ -93,7 +94,7 @@ end;
 
 function TPanelStoryItem.GetLoadFilesFilter: String;
 begin
-  result := 'READ-COM Files, Images, Audio|*.readcom;*.png;*.jpg;*.jpeg;*.svg;*.mp3' + '|' + FILTER_READCOM + '|' + FILTER_SVG + '|' + FILTER_PNG_JPEG_JPG + '|' + FILTER_MP3 {+ '|' + FILTER_TXT};
+  result := 'READ-COM Files, Images, Audio, Text|*.readcom;*.png;*.jpg;*.jpeg;*.svg;*.mp3; *.txt' + '|' + FILTER_READCOM + '|' + FILTER_SVG + '|' + FILTER_PNG_JPEG_JPG + '|' + FILTER_MP3 + '|' + FILTER_TXT;
 end;
 
 function RemoveNonAllowedIdentifierChars(const s: String): String;
@@ -126,6 +127,8 @@ begin
     StoryItemClass := TBitmapImageStoryItem
   else if (FileExt = EXT_MP3) then
     StoryItemClass := TAudioStoryItem
+  else if (FileExt = EXT_TXT) then
+    StoryItemClass := TTextStoryItem
   else
     exit;
 
