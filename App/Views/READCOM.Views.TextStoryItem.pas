@@ -181,6 +181,7 @@ begin
   var s := TStringList.Create(#0, #13);
   s.LoadFromStream(Stream);
   Text := s.DelimitedText;
+  Size.Size := TSizeF.Create(300, 200); //TODO: judge on text volume
   FreeAndNil(s);
 end;
 
