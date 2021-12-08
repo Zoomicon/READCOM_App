@@ -12,7 +12,24 @@ interface
 
   type
 
-    TControlFocusHelper = class helper for TControl
+    TControlObjectAtHelper = class helper for TControl
+    protected
+      function ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; overload;
+
+    public
+      function ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl; overload; inline;
+      function ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl; inline;
+    end;
+
+    TControlConvertLocalRectHelper = class helper(TControlObjectAtHelper) for TControl
+    public
+      /// <summary>Converts a rect from the coordinate system of a given <c>AControl</c> to that of the control.</summary>
+      function ConvertLocalRectFrom(const AControl: TControl; const AControlLocalRect: TRectF): TRectF;
+      /// <summary>Converts a rect from the control's coordinate system to that of the specified control <c>AControl</c>.</summary>
+      function ConvertLocalRectTo(const AControl: TControl; const ALocalRect: TRectF): TRectF;
+    end;
+
+    TControlFocusHelper = class helper(TControlConvertLocalRectHelper) for TControl
     public
       procedure SelectNext(const CurControl: TControl; const GoFoward: Boolean = true);
     end;
@@ -31,6 +48,66 @@ implementation
   {$IFDEF CONTROLSCALEHELPER}
   uses System.Rtti; //uncomment only if you uncomment TControlScaleHelper
   {$ENDIF}
+
+{$region 'TControlObjectAtHelper'}
+
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; //based on TControl.ObjectAtPoint
+begin
+  if not ShouldTestMouseHits then
+    Exit(nil);
+
+  var LP := AScreenPoint;
+  if FScene <> nil then
+    LP := FScene.ScreenToLocal(LP);
+  if (ClipChildren or SmallSizeControl) and not PointInObject(LP.X, LP.Y) then
+    Exit(nil);
+
+  if (RecursionDepth > 0) and (ControlsCount > 0) then
+    for var I := GetLastVisibleObjectIndex - 1 downto GetFirstVisibleObjectIndex do
+    begin
+      var Control := Controls[I];
+      if not Control.GetVisible then
+        Continue;
+
+      var NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
+      if Assigned(NewObj) then
+        Exit(NewObj);
+      end;
+
+  Result := nil;
+
+  if PointInObject(LP.X, LP.Y) {and CheckHitTest(HitTest)} then //TODO: allow to have option to ignore hit test
+    Result := Self;
+end;
+
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl;
+begin
+  if Recursive then
+    result := ObjectAtPoint(AScreenPoint)
+  else
+    result := ObjectAtPoint(AScreenPoint, 1);
+end;
+
+function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl;
+begin
+  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive);
+end;
+
+{$endregion}
+
+{$region 'TControlConvertLocalRectHelper'}
+
+function TControlConvertLocalRectHelper.ConvertLocalRectFrom(const AControl: TControl; const AControlLocalRect: TRectF): TRectF;
+begin
+  result := TRectF.Create(ConvertLocalPointFrom(AControl, AControlLocalRect.TopLeft), ConvertLocalPointFrom(AControl, AControlLocalRect.BottomRight));
+end;
+
+function TControlConvertLocalRectHelper.ConvertLocalRectTo(const AControl: TControl; const ALocalRect: TRectF): TRectF;
+begin
+  result := TRectF.Create(ConvertLocalPointTo(AControl, ALocalRect.TopLeft), ConvertLocalPointTo(AControl, ALocalRect.BottomRight));
+end;
+
+{$endregion}
 
 {$REGION 'TControlFocusHelper'}
 

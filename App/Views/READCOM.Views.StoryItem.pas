@@ -55,8 +55,6 @@ type
 
     procedure ActiveChanged;
     procedure ApplyHidden;
-    procedure LoadReadCom(const Stream: TStream); virtual;
-    procedure SaveReadCom(const Stream: TStream); virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -70,10 +68,15 @@ type
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Load(const Filepath: string); overload; virtual;
     procedure Load(const Filepaths: array of string); overload; virtual;
+    procedure LoadReadCom(const Stream: TStream); virtual;
+    procedure LoadReadComBin(const Stream: TStream); virtual;
+
     function GetSaveFilesFilter: String; virtual;
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
+    procedure SaveReadCom(const Stream: TStream); virtual;
+    procedure SaveReadComBin(const Stream: TStream); virtual;
 
     { View }
     function GetView: TControl;
@@ -550,7 +553,7 @@ begin
     try
       ObjectTextToBinary(StrStream, BinStream);
       BinStream.Seek(0, soFromBeginning);
-      LoadReadCom(BinStream);
+      LoadReadComBin(BinStream);
     finally
       BinStream.Free;
     end;
@@ -560,6 +563,14 @@ begin
 end;
 
 procedure TStoryItem.LoadReadCom(const Stream: TStream);
+
+begin
+  var reader := TStreamReader.Create(Stream);
+  LoadFromString(reader.ReadToEnd);
+  FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
+end;
+
+procedure TStoryItem.LoadReadComBin(const Stream: TStream);
 begin
   Stream.ReadComponent(Self);
 end;
@@ -605,7 +616,7 @@ begin
   try
     var StrStream := TStringStream.Create(s);
     try
-      SaveReadCom(BinStream);
+      SaveReadComBin(BinStream);
       BinStream.Seek(0, soFromBeginning);
       ObjectBinaryToText(BinStream, StrStream);
       StrStream.Seek(0, soFromBeginning);
@@ -619,6 +630,13 @@ begin
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);
+begin
+  var writer := TStreamWriter.Create(Stream);
+  writer.Write(SaveToString);
+  FreeAndNil(writer); //the writer doesn't own the stream by default, so this won't close the stream
+end;
+
+procedure TStoryItem.SaveReadComBin(const Stream: TStream);
 begin
   Stream.WriteComponent(Self);
 end;

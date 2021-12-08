@@ -22,19 +22,6 @@ const
 
 type
 
-  {$REGION 'TControlObjectAtHelper' -----------------------------------------------------}
-
-  TControlObjectAtHelper = class helper for TControl //TODO: move to other unit
-    protected
-      function ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; overload;
-
-    public
-      function ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl; overload; inline;
-      function ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl; inline;
-  end;
-
-  {$ENDREGION}
-
   {$REGION 'TCustomManipulator' -----------------------------------------------------}
 
   TCustomManipulator = class(TFrame)
@@ -99,20 +86,20 @@ type
     procedure BringToFrontElseSendToBack(const Control: TControl); overload; inline;
 
     {Move}
-    procedure MoveControl(const Control: TControl; const DX, DY: Single); overload; inline;
+    procedure MoveControl(const Control: TControl; const DX, DY: Single; const SkipAutoSize: Boolean = false); overload; inline;
     procedure MoveControls(const Controls: TControlList; const DX, DY: Single); overload;
     procedure MoveControls(const DX, DY: Single); overload;
     procedure MoveSelected(const DX, DY: Single);
 
     {Resize}
-    procedure ResizeControl(const Control: TControl; const DW, DH: Single); overload; inline;
+    procedure ResizeControl(const Control: TControl; const DW, DH: Single; const SkipAutoSize: Boolean = false); overload; inline;
     procedure ResizeControls(const Controls: TControlList; const DW, DH: Single); overload;
     procedure ResizeControls(const DW, DH: Single); overload;
     procedure ResizeSelected(const DW, DH: Single);
 
     {Rotate}
     procedure SetControlAngle(const Control: TControl; const Angle: Single); overload; inline;
-    procedure RotateControl(const Control: TControl; const DAngle: Single); overload; inline;
+    procedure RotateControl(const Control: TControl; const DAngle: Single; const SkipAutoSize: Boolean = false); overload; inline;
     procedure RotateControls(const Controls: TControlList; const DAngle: Single); overload;
     procedure RotateControls(const DAngle: Single); overload;
     procedure RotateSelected(const DAngle: Single);
@@ -132,6 +119,7 @@ procedure Register;
 implementation
 
 uses
+  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper
   Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections, //for TListEx
   System.Math, //for Min, EnsureInRange
@@ -163,48 +151,6 @@ begin
     Swap(b, c);
 end;
 }
-
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; //based on TControl.ObjectAtPoint
-begin
-  if not ShouldTestMouseHits then
-    Exit(nil);
-
-  var LP := AScreenPoint;
-  if FScene <> nil then
-    LP := FScene.ScreenToLocal(LP);
-  if (ClipChildren or SmallSizeControl) and not PointInObject(LP.X, LP.Y) then
-    Exit(nil);
-
-  if (RecursionDepth > 0) and (ControlsCount > 0) then
-    for var I := GetLastVisibleObjectIndex - 1 downto GetFirstVisibleObjectIndex do
-    begin
-      var Control := Controls[I];
-      if not Control.GetVisible then
-        Continue;
-
-      var NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
-      if Assigned(NewObj) then
-        Exit(NewObj);
-      end;
-
-  Result := nil;
-
-  if PointInObject(LP.X, LP.Y) {and CheckHitTest(HitTest)} then //TODO: allow to have option to ignore hit test
-    Result := Self;
-end;
-
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl;
-begin
-  if Recursive then
-    result := ObjectAtPoint(AScreenPoint)
-  else
-    result := ObjectAtPoint(AScreenPoint, 1);
-end;
-
-function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl;
-begin
-  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive);
-end;
 
 {$endregion}
 
@@ -291,7 +237,7 @@ end;
 
 {$region 'Move'}
 
-procedure TCustomManipulator.MoveControl(const Control: TControl; const DX, DY: Single);
+procedure TCustomManipulator.MoveControl(const Control: TControl; const DX, DY: Single; const SkipAutoSize: Boolean = false);
 begin
   BeginUpdate;
 
@@ -306,7 +252,8 @@ begin
       Point := PointF( EnsureRange(NewX, 0, Width - Control.Width), EnsureRange(NewY, 0, Height - Control.Height) );
   end;
 
-  DoAutoSize;
+  if not SkipAutoSize then
+    DoAutoSize;
   EndUpdate;
 end;
 
@@ -319,7 +266,7 @@ begin
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        MoveControl(Control, DX, DY);
+        MoveControl(Control, DX, DY, true); //skip autosizing separately for each control
       end
     );
 
@@ -347,7 +294,7 @@ end;
 
 {$region 'Resize'}
 
-procedure TCustomManipulator.ResizeControl(const Control: TControl; const DW, DH: Single);
+procedure TCustomManipulator.ResizeControl(const Control: TControl; const DW, DH: Single; const SkipAutoSize: Boolean = false);
 begin
   BeginUpdate;
 
@@ -364,7 +311,8 @@ begin
 
   Control.Position.Point := Control.Position.Point - PointF(DW/2, DH/2); //resize from center
 
-  DoAutoSize;
+  if not SkipAutoSize then
+    DoAutoSize;
   EndUpdate;
 end;
 
@@ -377,7 +325,7 @@ begin
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        ResizeControl(Control, DW, DH);
+        ResizeControl(Control, DW, DH, true); //skip autosizing separately for each control
       end
     );
 
@@ -411,14 +359,15 @@ begin
     RotationAngle := Angle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
 end;
 
-procedure TCustomManipulator.RotateControl(const Control: TControl; const DAngle: Single);
+procedure TCustomManipulator.RotateControl(const Control: TControl; const DAngle: Single; const SkipAutoSize: Boolean = false);
 begin
   BeginUpdate;
 
   with (Control as IRotatedControl) do
     RotationAngle := RotationAngle + DAngle; //seems RotationAngle is protected, but since TControl implements IRotatedControl we can access that property through that interface
 
-  DoAutoSize;
+  if not SkipAutoSize then
+    DoAutoSize;
   EndUpdate;
 end;
 
@@ -432,7 +381,7 @@ begin
       procedure (Control: TControl)
       begin
         try
-          RotateControl(Control, DAngle);
+          RotateControl(Control, DAngle); //skip autosizing separately for each control
         except //catch exceptions, in case any controls fail when you try to rotate them
           //NOP //TODO: do some error logging
         end;
@@ -487,23 +436,31 @@ begin
 end;
 
 procedure TCustomManipulator.DoAutoSize;
+
+  procedure SetControlsAlign(const List: TControlList; const TheAlignment: TAlignLayout);
+  begin
+    for var Control in List do
+      if not ((Control is TDropTarget) or (Control is TRectangle) or (Control is TAreaSelector)) then //TODO: should have some info on which to excempt? or just do this for ones that have TAlignLayout.Scale? Or use some function that sets size without affecting children
+        Control.Align := TheAlignment;
+  end;
+
 begin
   if (FAutoSize) then
     begin
     BeginUpdate;
 
-    //temporarily disable Align:=Scale setting of all Selections and set it back again when done
-    //var theSelections := Selections;
-    try
-      //SetControlsAlign(TAlignLayout.None);
+    //temporarily disable Align:=Scale setting of children and set it back again when done
+    SetControlsAlign(Controls, TAlignLayout.None);
 
-      var rect := GetChildrenRect;
-      SetSize(rect.Width, rect.Height);
+    var rect := GetChildrenRect;
+    if Assigned(Parent) then
+      rect := ConvertLocalRectTo(Parent as TControl, rect); //TODO: is there a chance the Parent is nil?
 
-      //SetControlsAlign(TAlignLayout.Scale);
-    finally
-      //FreeAndNil(theSelections);
-    end;
+    //with BoundsRect do
+      //if (rect.Left < Left) or (rect.Top < Top) or (rect.Right > Right) or (rect.Bottom > Bottom) then //only AutoSize to expand, never shrink down (else would disappear when there were no children)
+        //BoundsRect := rect; //TODO: seems to fail (probably should invoke later, not in the Track event of the PositionSelector)
+
+    SetControlsAlign(Controls, TAlignLayout.Scale);
 
     EndUpdate;
     end;
@@ -757,7 +714,7 @@ begin
   if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos, 1);
+    var LObj := ObjectAtPoint(ScreenMousePos, false);
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject).ParentControl; //TODO: fix hack - have an ObjectAtPoint/ObjectAtPointLocal that has param to not recurse into children

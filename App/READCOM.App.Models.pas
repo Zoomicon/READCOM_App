@@ -34,12 +34,16 @@ type
     procedure Load(const Filepath: string); overload;
     procedure Load(const Filepaths: array of string); overload;
     procedure LoadFromString(const Data: String);
+    procedure LoadReadCom(const Stream: TStream);
+    procedure LoadReadComBin(const Stream: TStream);
 
     { Save }
     function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
     function SaveToString: string; overload;
+    procedure SaveReadCom(const Stream: TStream);
+    procedure SaveReadComBin(const Stream: TStream);
   end;
 
 {$endregion -------------------------------------------------------------------}

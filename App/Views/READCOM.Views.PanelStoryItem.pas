@@ -140,7 +140,7 @@ begin
   //Center the new item...
   var ItemSize := StoryItem.Size;
   StoryItem.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
-
+  StoryItem.Align := TAlignLayout.Scale; //adjust when parent scales
   StoryItem.Parent := Self;
   StoryItem.BringToFront; //load as front-most
 end;

@@ -163,9 +163,10 @@ begin
   //Add new story
   with Value do
   begin
-    Align := TAlignLayout.Fit;
-    AutoSize := true; //the Root StoryItem should be expandable
+    //AutoSize := true; //the Root StoryItem should be expandable
     Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+    Align := TAlignLayout.Contents;
+    Align := TAlignLayout.None;
   end;
 end;
 
