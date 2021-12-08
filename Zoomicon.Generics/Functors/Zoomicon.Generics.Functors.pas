@@ -1,7 +1,9 @@
 unit Zoomicon.Generics.Functors;
 
 interface
-  uses SysUtils; //for TPredicate
+  uses
+    System.Generics.Defaults, //for TComparer //needed at "interface" section in order to expand TComparer.Default inline function, since it's being used at Generic functions
+    SysUtils; //for TPredicate
 
 type
   TF = class
@@ -14,7 +16,6 @@ type
   end;
 
 implementation
-  uses System.Generics.Defaults; //for TComparer
 
 class function TF.Clamp<T>(const Value: T; const MinValue, MaxValue: T): T;
 begin

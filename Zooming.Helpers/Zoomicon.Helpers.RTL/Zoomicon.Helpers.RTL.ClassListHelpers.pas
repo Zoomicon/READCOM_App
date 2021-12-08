@@ -16,6 +16,7 @@ interface
     end;
 
 implementation
+  uses System.Classes; //seems to be needed to expand TClassList inline functions
 
 {$REGION 'TClassListFindClassOfHelper'}
 
