@@ -57,7 +57,7 @@ object MainForm: TMainForm
         item
           MultiResBitmap = <
             item
-              Size = 30
+              Size = 24
             end>
           IconName = 'edit'
           SVGText = 
@@ -84,7 +84,7 @@ object MainForm: TMainForm
         item
           MultiResBitmap = <
             item
-              Size = 30
+              Size = 24
             end>
           IconName = 'reverse'
           SVGText = 
@@ -104,7 +104,7 @@ object MainForm: TMainForm
         item
           MultiResBitmap = <
             item
-              Size = 30
+              Size = 24
             end>
           IconName = 'play'
           SVGText = 
@@ -124,8 +124,8 @@ object MainForm: TMainForm
         item
           MultiResBitmap = <
             item
-              Width = 24
-              Height = 30
+              Width = 19
+              Height = 24
             end>
           IconName = 'Diagram'
           SVGText = 
@@ -143,32 +143,32 @@ object MainForm: TMainForm
           Layers = <
             item
               Name = 'edit'
-              SourceRect.Right = 30.000000000000000000
-              SourceRect.Bottom = 30.000000000000000000
+              SourceRect.Right = 24.000000000000000000
+              SourceRect.Bottom = 24.000000000000000000
             end>
         end
         item
           Layers = <
             item
               Name = 'reverse'
-              SourceRect.Right = 30.000000000000000000
-              SourceRect.Bottom = 30.000000000000000000
+              SourceRect.Right = 24.000000000000000000
+              SourceRect.Bottom = 24.000000000000000000
             end>
         end
         item
           Layers = <
             item
               Name = 'play'
-              SourceRect.Right = 30.000000000000000000
-              SourceRect.Bottom = 30.000000000000000000
+              SourceRect.Right = 24.000000000000000000
+              SourceRect.Bottom = 24.000000000000000000
             end>
         end
         item
           Layers = <
             item
               Name = 'Diagram'
-              SourceRect.Right = 30.000000000000000000
-              SourceRect.Bottom = 30.000000000000000000
+              SourceRect.Right = 24.000000000000000000
+              SourceRect.Bottom = 24.000000000000000000
             end>
         end
         item

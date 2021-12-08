@@ -164,7 +164,7 @@ begin
   with Value do
   begin
     Align := TAlignLayout.Fit;
-    //AutoSize := true; //the Root StoryItem should be expandable //TODO: fix in manipulator to work
+    AutoSize := true; //the Root StoryItem should be expandable
     Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
   end;
 end;
@@ -253,7 +253,7 @@ end;
 
 procedure TMainForm.LoadSavedStateOrNewStory;
 begin
-  //if (not LoadSavedState) then
+  if (not LoadSavedState) then //Note: if it keeps on failing at load comment out this line for one run //TODO: shouldn't need to do that
     begin
     var TheStory := TPanelStoryItem.Create(Self);
     TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);

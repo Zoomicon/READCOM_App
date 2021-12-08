@@ -91,7 +91,7 @@ begin
   bitmap.DrawSVGIcon;
   if FAutoSize then
     begin
-    //SetSize(bitmap.Width, bitmap.Height); //TODO
+    //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
     SetSize(100,100);
     Glyph.Align := TAlignLayout.Contents;
     end;
@@ -140,10 +140,12 @@ procedure TVectorImageStoryItem.SetSVGText(const Value: String);
 begin
   if FAutoSize then
     Glyph.Align := TAlignLayout.None;
-  (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText := Value;
+  var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
+  bitmap.SVGText := Value;
   if FAutoSize then
     begin
-    Size.Size := Glyph.Size.Size;
+    //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
+    SetSize(100,100);
     Glyph.Align := TAlignLayout.Contents;
     end;
 end;
