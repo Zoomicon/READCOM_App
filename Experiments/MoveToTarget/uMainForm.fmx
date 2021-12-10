@@ -8,12 +8,36 @@ object Form2: TForm2
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   DesignerMasterStyle = 0
-  object Line1: TLine
+  object Button2: TButton
+    Position.X = 504.000000000000000000
+    Position.Y = 274.000000000000000000
+    TabOrder = 2
+    Text = 'Button2'
+  end
+  object Button1: TButton
+    Position.X = 56.000000000000000000
+    Position.Y = 98.000000000000000000
+    TabOrder = 1
+    Text = 'Button2'
+    OnClick = Button1Click
+  end
+  object Link1: TLink
     LineType = Diagonal
-    Position.X = 160.000000000000000000
-    Position.Y = 240.000000000000000000
-    Size.Width = 193.000000000000000000
-    Size.Height = 73.000000000000000000
+    Position.X = 136.000000000000000000
+    Position.Y = 274.000000000000000000
+    Size.Width = 368.000000000000000000
+    Size.Height = 0.000000000000000000
     Size.PlatformDefault = False
+    TipSize = 6.000000000000000000
+    Source = Button2
+  end
+  object Arrow1: TArrow
+    LineType = Diagonal
+    Position.X = 177.000000000000000000
+    Position.Y = 216.000000000000000000
+    Size.Width = 215.000000000000000000
+    Size.Height = 137.000000000000000000
+    Size.PlatformDefault = False
+    TipSize = 6.000000000000000000
   end
 end

@@ -11,12 +11,22 @@ type
     procedure ShuffleItems;
   end;
 
+  IHasSource = interface
+    ['{F99C9779-7DA1-490D-8DCF-69A2677F27E8}']
+
+    {Source}
+    function GetSource: TControl;
+    procedure SetSource(const Value: TControl);
+
+    property Source: TControl read GetSource write SetSource;
+  end;
+
   IHasTarget = interface
     ['{54AB2AEC-5158-44B7-904B-00E85E0F169A}']
 
     {Target}
     function GetTarget: TControl;
-    procedure SetTarget(const Target: TControl);
+    procedure SetTarget(const Value: TControl);
 
     {DistanceToTarget}
     function GetDistanceToTarget: Single;

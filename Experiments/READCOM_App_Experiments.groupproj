@@ -18,8 +18,11 @@
         <Projects Include="ZoomableContainer\ZoomableContainer.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="MoveToTarget\MoveToTarget.dproj">
+        <Projects Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.dproj">
             <Dependencies/>
+        </Projects>
+        <Projects Include="MoveToTarget\MoveToTarget.dproj">
+            <Dependencies>..\Zoomicon.Puzzler\Zoomicon.Puzzler.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -74,23 +77,32 @@
     <Target Name="ZoomableContainer:Make">
         <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj" Targets="Make"/>
     </Target>
-    <Target Name="MoveToTarget">
+    <Target Name="Zoomicon_Puzzler">
+        <MSBuild Projects="..\Zoomicon.Puzzler\Zoomicon.Puzzler.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Puzzler:Clean">
+        <MSBuild Projects="..\Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Puzzler:Make">
+        <MSBuild Projects="..\Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MoveToTarget" DependsOnTargets="Zoomicon.Puzzler">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj"/>
     </Target>
-    <Target Name="MoveToTarget:Clean">
+    <Target Name="MoveToTarget:Clean" DependsOnTargets="Zoomicon.Puzzler:Clean">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="MoveToTarget:Make">
+    <Target Name="MoveToTarget:Make" DependsOnTargets="Zoomicon.Puzzler:Make">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget"/>
+        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;Zoomicon_Puzzler;MoveToTarget"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;Zoomicon_Puzzler:Clean;MoveToTarget:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make"/>
+        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;Zoomicon_Puzzler:Make;MoveToTarget:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
