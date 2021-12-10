@@ -27,8 +27,8 @@ implementation
 procedure TForm2.Button1Click(Sender: TObject);
 begin
   Link1.Target := Button1;
-  Arrow1.SourcePoint := PointF(0,200);
-  Arrow1.TargetPoint := PointF(100,200);
+  Arrow1.SourcePoint := PointF(0, 200);
+  Arrow1.TargetPoint := PointF(100, 200);
 end;
 
 end.

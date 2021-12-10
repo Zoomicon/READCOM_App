@@ -6,7 +6,8 @@ interface
     System.Classes, //for TComponent
     System.Types, //for TPointF
     FMX.Objects, //for TLine, TCircle
-    FMX.Controls; //for TControl
+    FMX.Controls, //for TControl
+    FMX.Graphics; //for TStrokeBrush
 
 {$REGION 'Shuffler'}
 
@@ -31,6 +32,7 @@ type
     class var TargetTolerance: Single;
     class constructor Create; //initializes TargetTolerance to DEFAULT_TARGET_TOLERANCE
 
+  protected
     {Target}
     function GetTarget: TControl; virtual;
     procedure SetTarget(const Target: TControl); virtual;
@@ -41,7 +43,7 @@ type
     {OverTarget}
     function IsOverTarget: Boolean; virtual;
 
-  published
+  public
     property Target: TControl read GetTarget write SetTarget;
     property DistanceToTarget: Single read GetDistanceToTarget;
     property OverTarget: Boolean read IsOverTarget;
@@ -49,10 +51,13 @@ type
 
 type
   TControlMultipleHasTargetHelper = class helper(TControlHasTargetHelper) for TControl//(IMultipleHasTarget) //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
-  public
+  protected
+    procedure PaintTargetLines(const Opacity: Single = 1; const Brush: TStrokeBrush = nil);
+
     {AllOverTarget}
     function AreAllOverTarget: Boolean;
 
+  public
     property AllOverTarget: Boolean read AreAllOverTarget;
   end;
 
@@ -208,18 +213,40 @@ end;
 
 function TControlMultipleHasTargetHelper.AreAllOverTarget: Boolean;
 begin
-  result := TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).All(function(item: IHasTarget): Boolean
+  result :=
+    TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).All(function(item: IHasTarget): Boolean
       begin
         result := item.OverTarget;
       end
     );
 end;
 
+procedure TControlMultipleHasTargetHelper.PaintTargetLines(const Opacity: Single = 1; const Brush: TStrokeBrush = nil);
+begin
+  TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).ForEach(procedure(item: IHasTarget)
+    begin
+      var TargetToleranceTwice := TargetTolerance * 2;
+      var TargetRect := TRectF.Create(Target.Position.Point, TargetToleranceTwice, TargetToleranceTwice);
+      TargetRect.Offset(-TargetTolerance, -TargetTolerance);
+      if Assigned(Brush) then
+        begin
+        Canvas.DrawLine((item As TControl).Position.Point, Target.Position.Point, Opacity, Brush);
+        Canvas.DrawEllipse(TargetRect, Opacity, Brush);
+        end
+      else
+        begin
+        Canvas.DrawLine((item As TControl).Position.Point, Target.Position.Point, Opacity);
+        Canvas.DrawEllipse(TargetRect, Opacity);
+        end;
+    end
+  );
+end;
+
 {$ENDREGION}
 
 {$REGION 'TArrow'}
 
-constructor TArrow.Create(AOwner: TComponent);
+constructor TArrow.Create(AOwner: TComponent); //TODO: not implemented correctly, bounds always have top-left and bottom-right ordered, need to also keep a mode=1,2,3,4 depending on which opposite corners have source and target and draw accordingly (say via scale=-scale for other line corners and move the target circle)
 
   procedure AddTipShape;
   begin
