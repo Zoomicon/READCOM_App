@@ -92,9 +92,13 @@ type
     class procedure ForEachInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
     procedure ForEachInterface<AInterface: IInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
 
-    {ForEachClass}
+    { ForEachClass }
     class procedure ForEachClass<AClass: class>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
     procedure ForEachClass<AClass: class>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
+
+    { AllClasses }
+    class function AllClasses<AClass: class>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean; overload;
+    function AllClasses<AClass: class>(const Predicate: TPredicate<AClass>): Boolean; overload;
   end;
 
 implementation
@@ -570,6 +574,24 @@ end;
 procedure TObjectListEx<T>.ForEachClass<AClass>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
 begin
   {TObjectListEx<T>.}ForEachClass<AClass>(Self, Proc, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
+{$region 'AllClasses'}
+
+class function TObjectListEx<T>.AllClasses<AClass>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean;
+begin
+  result := false;
+  if Assigned(Enum) and Assigned(Predicate) then
+    for var item in Enum do
+      if (item is AClass) and not Predicate(item as AClass) then exit;
+  result := true;
+end;
+
+function TObjectListEx<T>.AllClasses<AClass>(const Predicate: TPredicate<AClass>): Boolean;
+begin
+  result := {TObjectListEx<T>.}AllClasses<AClass>(Self, Predicate);
 end;
 
 {$endregion}
