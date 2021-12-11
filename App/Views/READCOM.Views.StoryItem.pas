@@ -6,13 +6,14 @@ unit READCOM.Views.StoryItem;
 interface
 
 uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
+  FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation,
   READCOM.App.Models, //for IStoryItem
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
-  Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation;
+  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlFocusHelper.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
+  Zoomicon.Puzzler.Classes; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
 
 const
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
@@ -30,6 +31,7 @@ type
     FUrlAction: String;
     FOptions: IStoryItemOptions;
     FStoryMode: TStoryMode;
+    FTargetsVisible: Boolean;
     FOnActiveChanged: TNotifyEvent;
 
     class var
@@ -56,28 +58,6 @@ type
     procedure ActiveChanged;
     procedure ApplyHidden;
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    procedure PlayRandomAudioStoryItem;
-
-    { IStoreable }
-    function GetLoadFilesFilter: String; virtual;
-    procedure LoadFromString(const Data: String); virtual;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
-    procedure Load(const Filepath: string); overload; virtual;
-    procedure Load(const Filepaths: array of string); overload; virtual;
-    procedure LoadReadCom(const Stream: TStream); virtual;
-    procedure LoadReadComBin(const Stream: TStream); virtual;
-
-    function GetSaveFilesFilter: String; virtual;
-    function SaveToString: string; virtual;
-    procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
-    procedure Save(const Filepath: string); overload; virtual;
-    procedure SaveReadCom(const Stream: TStream); virtual;
-    procedure SaveReadComBin(const Stream: TStream); virtual;
-
     { View }
     function GetView: TControl;
 
@@ -91,6 +71,10 @@ type
 
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList;
+
+    { ActivationOrder }
+    function GetActivationOrder: Integer;
+    procedure SetActivationOrder(const Value: Integer); //-1 for not taking part in activation chain
 
     { Active }
     function IsActive: Boolean;
@@ -112,8 +96,36 @@ type
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
+    { TargetsVisible }
+    function GetTargetsVisible: Boolean;
+    procedure SetTargetsVisible(const Value: Boolean);
+
     { Options }
     function GetOptions: IStoryItemOptions; virtual; //TODO: make methods that are available via properties protected?
+
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Paint; override;
+
+    procedure PlayRandomAudioStoryItem;
+
+    { IStoreable }
+    function GetLoadFilesFilter: String; virtual;
+    procedure LoadFromString(const Data: String); virtual;
+    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
+    procedure Load(const Filepath: string); overload; virtual;
+    procedure Load(const Filepaths: array of string); overload; virtual;
+    procedure LoadReadCom(const Stream: TStream); virtual;
+    procedure LoadReadComBin(const Stream: TStream); virtual;
+
+    function GetSaveFilesFilter: String; virtual;
+    function SaveToString: string; virtual;
+    procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
+    procedure Save(const Filepath: string); overload; virtual;
+    procedure SaveReadCom(const Stream: TStream); virtual;
+    procedure SaveReadComBin(const Stream: TStream); virtual;
 
   //--- Events ---
 
@@ -126,7 +138,7 @@ type
 
   //--- Properties ---
 
-  protected
+  public
     property Options: IStoryItemOptions read GetOptions stored false;
     property BorderVisible: Boolean read GetBorderVisible write SetBorderVisible;
 
@@ -137,10 +149,12 @@ type
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
+    property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation order)
     property Active: Boolean read IsActive write SetActive; //default false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Anchored: Boolean read IsAnchored write SetAnchored; //default false
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil
+    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
@@ -149,7 +163,6 @@ type
 implementation
   uses
     u_UrlOpen,
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlFocusHelper.SelectNext
     Zoomicon.Generics.Collections,
     READCOM.Views.Options.StoryItemOptions;
 
@@ -256,6 +269,12 @@ begin
     end;
 end;
 
+procedure TStoryItem.Paint;
+begin
+  inherited;
+  PaintTargetLines;
+end;
+
 procedure TStoryItem.PlayRandomAudioStoryItem;
 begin
   var RandomAudioStoryItem := AudioStoryItems.GetRandom;
@@ -338,6 +357,26 @@ end;
 
 {$endregion}
 
+{$region 'ActivationOrder'}
+
+function TStoryItem.GetActivationOrder: Integer;
+begin
+  if TabStop then
+    result := TabOrder
+  else
+    result := -1;
+end;
+
+procedure TStoryITem.SetActivationOrder(const Value: Integer);
+begin
+  if Value < 0 then
+    TabStop := false
+  else
+    TabOrder := Value;
+end;
+
+{$endregion}
+
 {$region 'Active'}
 
 function TStoryItem.IsActive: Boolean;
@@ -350,10 +389,7 @@ begin
   if (Value = IsActive) then exit; //Important
 
   if (Value) then //make active
-    begin
-    FActiveStoryItem.Active := false;
-    FActiveStoryItem := Self;
-    end
+    FActiveStoryItem := Self //note: don't call Active := false on any previously ActiveStoryItem, this is a singleton pattern and want to raise a single event
   else //make inactive
     FActiveStoryItem := nil;
 
@@ -362,9 +398,9 @@ end;
 
 class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
 begin
-  if Assigned(Value) then
-    Value.Active := true
-  else if Assigned(FActiveStoryItem) then
+  if Assigned(Value) then //not checking if ActivationOrder <> -1, since an out-of-activation-order StoryItem may be activated directly via a target
+    Value.Active := true //this will also deactivate the ActiveStoryItem if any
+  else if Assigned(FActiveStoryItem) then //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem if any
     FActiveStoryItem.Active := false;
 end;
 
@@ -447,6 +483,19 @@ begin
 end;
 
 {$endregion}
+
+{$region 'TargetsVisible'}
+
+function TStoryItem.GetTargetsVisible: Boolean;
+begin
+  result := FTargetsVisible;
+end;
+
+procedure TStoryItem.SetTargetsVisible(const Value: Boolean);
+begin
+  FTargetsVisible := Value;
+  InvalidateRect(BoundsRect);
+end;
 
 {$region 'Options'}
 

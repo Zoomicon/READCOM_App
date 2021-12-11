@@ -18,7 +18,6 @@ type
     //--- Methods ---
 
     protected
-      procedure DoEditModeChange(const Value: Boolean);
       procedure SetEditMode(const Value: Boolean); override;
 
     public
@@ -28,32 +27,6 @@ type
       function GetLoadFilesFilter: String; override;
       procedure Load(const Filepath: String); override;
       procedure Load(const Filepaths: array of String); override;
-
-      procedure NavigateTo;
-
-      { Active }
-      function IsActive: Boolean;
-      procedure SetActive(const Value: Boolean);
-
-      { Navigatable }
-      function IsNavigatable: Boolean;
-      procedure SetNavigatable(const Value: Boolean);
-
-      { NavigationOrder }
-      function GetNavigationOrder: Integer;
-      procedure SetNavigationOrder(const Value: Integer);
-
-    //--- Events ---
-
-    public
-      procedure HandleStoryModeChanged;
-
-    //--- Properties ---
-
-    published
-      property Active: Boolean read IsActive write SetActive; //default false
-      property Navigatable: Boolean read IsNavigatable write SetNavigatable; //default true
-      property NavigationOrder: Integer read GetNavigationOrder write SetNavigationOrder; //default 0
   end;
 
 implementation
@@ -73,20 +46,12 @@ constructor TPanelStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
   BorderVisible := true;
-  Navigatable := true;
-end;
-
-procedure TPanelStoryItem.DoEditModeChange(const Value: Boolean);
-begin
-  inherited;
-
-  TabStop := true; //always do tab stop navigation between TStoryFrames (irrespective of EditMode)
+  ActivationOrder := High(TTabOrder); //Integer.MaxValue //TODO: when we stop using tab order internally for this, won't need the TTabOrder limit
 end;
 
 procedure TPanelStoryItem.SetEditMode(const Value: Boolean);
 begin
-  inherited;
-
+  inherited; //this may hide the Border
   BorderVisible := true; //always show Border
 end;
 
@@ -152,50 +117,5 @@ begin
 end;
 
 {$endregion}
-
-{$region 'NavigationOrder'}
-
-function TPanelStoryItem.GetNavigationOrder: Integer;
-begin
-  result := TabOrder;
-end;
-
-procedure TPanelStoryItem.SetNavigationOrder(const Value: Integer);
-begin
-  TabOrder := Value;
-end;
-
-{$endregion}
-
-procedure TPanelStoryItem.HandleStoryModeChanged;
-begin
-
-end;
-
-function TPanelStoryItem.IsActive: Boolean;
-begin
-
-end;
-
-procedure TPanelStoryItem.SetActive(const Value: Boolean);
-begin
-  //TODO
-  NavigateTo;
-end;
-
-procedure TPanelStoryItem.NavigateTo;
-begin
-  //TODO: send message to zoom container or find Story Root? (could search for first ancestor that is ZoomPanel but makes dependency to it, better use messaging or ask to be given an IZoomable)
-end;
-
-function TPanelStoryItem.IsNavigatable: Boolean;
-begin
-  result := CanFocus;
-end;
-
-procedure TPanelStoryItem.SetNavigatable(const Value: Boolean);
-begin
-  CanFocus := Value;
-end;
 
 end.

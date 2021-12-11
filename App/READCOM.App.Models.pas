@@ -66,18 +66,26 @@ type
 
   IStory = interface
     ['{3A6CAD51-3787-4D18-9DA7-A07895BC4661}']
+    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+
+    { RootStoryItem }
+    function GetRootStoryItem: IStoryItem;
+    procedure SetRootStoryItem(const Value: IStoryItem);
+
+    { ActiveStoryItem }
+    function GetActiveStoryItem: IStoryItem;
+    procedure SetActiveStoryItem(const Value: IStoryItem);
+
+    { Navigation }
+    procedure ActivatePrevious;
+    procedure ActivateNext;
+
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
-    { Navigation }
-    procedure GotoPreviousPanel;
-    procedure GotoNextPanel;
-    { CurrentPanel }
-    function GetCurrentPanel: IPanelStoryItem;
-    procedure SetCurrentPanel(const Value: IPanelStoryItem);
-    property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
 
-    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+    property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem;
+    property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem;
   end;
 
   IStoryItem = interface(IStoreable)
@@ -100,6 +108,10 @@ type
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList;
 
+    { ActivationOrder }
+    function GetActivationOrder: Integer;
+    procedure SetActivationOrder(const Value: Integer); //-1 for not taking part in activation chain
+
     { Active }
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
@@ -120,6 +132,10 @@ type
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
+    { TargetsVisible }
+    function GetTargetsVisible: Boolean;
+    procedure SetTargetsVisible(const Value: Boolean);
+
     { Options }
     function GetOptions: IStoryItemOptions;
 
@@ -128,9 +144,11 @@ type
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
+    property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation chain)
     property Active: Boolean read IsActive write SetActive; //default false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
+    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
     property Options: IStoryItemOptions read GetOptions; //stored false
   end;
 
@@ -173,29 +191,6 @@ type
 
   IPanelStoryItem = interface(IStoryItem)
     ['{61292D80-36A5-4330-B52B-685D538C1E52}']
-
-    //--- Methods ---
-    procedure NavigateTo;
-
-    { Active }
-    function IsActive: Boolean;
-    procedure SetActive(const Value: Boolean);
-
-    { Navigatable }
-    function IsNavigatable: Boolean;
-    procedure SetNavigatable(const Value: Boolean);
-
-    { NavigationOrder }
-    function GetNavigationOrder: Integer;
-    procedure SetNavigationOrder(const Value: Integer);
-
-    //--- Events ---
-    procedure HandleStoryModeChanged;
-
-    //--- Properties ---
-    property Active: Boolean read IsActive write SetActive; //default false
-    property Navigatable: Boolean read IsNavigatable write SetNavigatable; //default true
-    property NavigationOrder: Integer read GetNavigationOrder write SetNavigationOrder; //default 0
   end;
 
   IImageStoryItem = interface(IStoryItem)

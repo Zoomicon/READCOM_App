@@ -27,36 +27,43 @@ type
     procedure HUDactionEditExecute(Sender: TObject);
     procedure HUDactionStructureExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HUDactionTargetsExecute(Sender: TObject);
 
   protected
-    procedure LoadSavedStateOrNewStory;
-    function LoadSavedState: Boolean;
-    {Story}
-    function GetStory: IStoryItem;
-    procedure SetStory(const Value: IStoryItem);
-    {StoryView}
-    function GetStoryView: TStoryItem;
-    procedure SetStoryView(const Value: TStoryItem);
+    { StructureView }
     procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
 
-  public
-    //--- Events
+    { SavedState}
+    procedure LoadSavedStateOrNewStory;
+    function LoadSavedState: Boolean;
+
+    { RootStoryItemStoryView }
+    function GetRootStoryItemView: TStoryItem;
+    procedure SetRootStoryItemView(const Value: TStoryItem);
+
+    { RootStoryItem }
+    function GetRootStoryItem: IStoryItem;
+    procedure SetRootStoryItem(const Value: IStoryItem);
+
+    { ActiveStoryItem }
+    function GetActiveStoryItem: IStoryItem;
+    procedure SetActiveStoryItem(const Value: IStoryItem);
+
+    { Navigation }
+    procedure ActivatePrevious;
+    procedure ActivateNext;
+
     { StoryMode }
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
-    { Navigation }
-    procedure GotoPreviousPanel;
-    procedure GotoNextPanel;
-    { CurrentPanel }
-    function GetCurrentPanel: IPanelStoryItem;
-    procedure SetCurrentPanel(const Value: IPanelStoryItem);
-    property CurrentPanel: IPanelStoryItem read GetCurrentPanel write SetCurrentPanel;
 
+  public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
   published
-    property Story: IStoryItem read GetStory write SetStory stored false;
-    property StoryView: TStoryItem read GetStoryView write SetStoryView stored false;
+    property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem stored false;
+    property RootStoryItemView: TStoryItem read GetRootStoryItemView write SetRootStoryItemView stored false;
+    property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem stored false;
   end;
 
 var
@@ -94,43 +101,151 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  HUD.DrawerFrameStand.CloseAll;
+  HUD.MultiViewFrameStand.CloseAll;
 end;
 
 {$ENDREGION}
 
-{$REGION 'Properties'}
+{$region 'IStory'}
 
-{$region 'Story'}
+{$region 'RootStoryItem'}
 
-function TMainForm.GetStory: IStoryItem;
+function TMainForm.GetRootStoryItem: IStoryItem;
 begin
-  result := StoryView as IStoryItem;
+  result := RootStoryItemView as IStoryItem;
 end;
 
-procedure TMainForm.SetStory(const Value: IStoryItem);
+procedure TMainForm.SetRootStoryItem(const Value: IStoryItem);
 begin
-  StoryView := Value.GetView as TStoryItem;
+  RootStoryItemView := Value.GetView as TStoryItem;
   Value.Active := true; //set as the Active StoryItem
 end;
 
 {$endregion}
 
-{$region 'StoryView'}
+{$region 'RootStoryItemView'}
 
-function TMainForm.GetStoryView: TStoryItem;
+function TMainForm.GetRootStoryItemView: TStoryItem;
 begin
   result := TObjectListEx<TControl>.GetFirstClass<TStoryItem>(ZoomFrame.ScaledLayout.Controls)
 end;
 
-procedure TMainForm.GotoNextPanel;
+procedure TMainForm.SetRootStoryItemView(const Value: TStoryItem);
+begin
+  //Remove old story
+  var TheRootStoryItemView := RootStoryItemView;
+  if Assigned(TheRootStoryItemView) then
+    begin
+    //TheStory.Parent := nil; //shouldn't be needed
+    FreeAndNil(TheRootStoryItemView); //destroy the old RootStoryItem //FREE THE CONTROL, DON'T FREE JUST THE INTERFACE
+    end;
+
+  //Add new story
+  with Value do
+  begin
+    //AutoSize := true; //the Root StoryItem should be expandable
+    Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+    Align := TAlignLayout.Contents;
+    Align := TAlignLayout.None;
+    ActiveStoryItem := Value;
+  end;
+end;
+
+{$endregion}
+
+{$region 'ActiveStoryItem'}
+
+function TMainForm.GetActiveStoryItem: IStoryItem;
+begin
+  result := TStoryItem.ActiveStoryItem;
+end;
+
+procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
+begin
+  TStoryItem.ActiveStoryItem := Value;
+  ZoomTo(Value);
+end;
+
+{$endregion}
+
+{$region 'Navigation'}
+
+procedure TMainForm.ActivateNext;
 begin
   //TODO// ActiveStoryItem.GotoNext; ZoomTo(ActiveStoryItem); //zoom to the new one
 end;
 
-procedure TMainForm.GotoPreviousPanel;
+procedure TMainForm.ActivatePrevious;
 begin
   //TODO// ActiveStoryItem.GotoPrevious; ZoomTo(ActiveStoryItem); //zoom to the new one
+end;
+
+{$endregion}
+
+{$region 'StoryMode'}
+
+function TMainForm.GetStoryMode: TStoryMode;
+begin
+  result := RootStoryItem.StoryMode; //TODO: propage or make class attribute?
+end;
+
+procedure TMainForm.SetStoryMode(const Value: TStoryMode);
+begin
+  RootStoryItem.StoryMode := Value; //TODO: propage or make class attribute?
+end;
+
+{$endregion}
+
+{$region 'ZoomTo'}
+
+procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
+begin
+  if Assigned(StoryItem) then
+    ZoomFrame.ZoomTo(StoryItem.View)
+  else
+    ZoomFrame.ZoomTo; //Zoom to all content
+end;
+
+{$endregion}
+
+{$endregion}
+
+{$REGION 'Events'}
+
+{$region 'Actions'}
+
+procedure TMainForm.HUDactionEditExecute(Sender: TObject);
+begin
+  HUD.actionEditExecute(Sender);
+
+  var view := ActiveStoryItem.View as TStoryItem;
+  if Assigned(view) then
+    view.EditMode := HUD.actionEdit.Checked;
+end;
+
+procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
+begin
+  HUD.actionStructureExecute(Sender);
+
+  HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
+  var frameInfo := HUD.MultiViewFrameStand.GetFrameInfo<TStructureView>;
+  with frameInfo.Frame do
+  begin
+    ShowOnlyClasses := TClassList.Create([TStoryItem]);
+    ShowNames := false;
+    ShowTypes := false;
+    GUIRoot := RootStoryItemView;
+    OnSelection := StructureViewSelection;
+  end;
+  frameInfo.Show;
+end;
+
+procedure TMainForm.HUDactionTargetsExecute(Sender: TObject);
+begin
+  //HUD.actionTargetsExecute(Sender);
+
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.TargetsVisible := HUD.actionTargets.Checked;
 end;
 
 procedure TMainForm.HUDactionAddExecute(Sender: TObject);
@@ -144,111 +259,20 @@ begin
 
   //Center the new item...
   var ItemSize := StoryItem.Size;
-  StoryItem.Position.Point := PointF(StoryView.Size.Width/2 - ItemSize.Width/2, StoryView.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  StoryItem.Position.Point := PointF(ActiveStoryItem.View.Size.Width/2 - ItemSize.Width/2, ActiveStoryItem.View.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
 
-  StoryItem.Parent := StoryView; //TODO: should add to current StoryItem
+  StoryItem.Parent := ActiveStoryItem.View; //TODO: should add to current StoryItem
   StoryItem.BringToFront; //load as front-most
 end;
 
-procedure TMainForm.SetStoryView(const Value: TStoryItem);
-begin
-  //Remove old story
-  var TheStory := StoryView;
-  if Assigned(TheStory) then
-    begin
-    //TheStory.Parent := nil; //shouldn't be needed
-    FreeAndNil(TheStory); //destroy the old Story
-    end;
-
-  //Add new story
-  with Value do
-  begin
-    //AutoSize := true; //the Root StoryItem should be expandable
-    Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
-    Align := TAlignLayout.Contents;
-    Align := TAlignLayout.None;
-  end;
-end;
-
 {$endregion}
-
-{$region 'IStory'}
-
-{ CurrentPanel }
-function TMainForm.GetCurrentPanel: IPanelStoryItem;
-begin
-  //TODO
-end;
-
-procedure TMainForm.SetCurrentPanel(const Value: IPanelStoryItem);
-begin
-  //TODO
-end;
-
-{ StoryMode }
-
-function TMainForm.GetStoryMode: TStoryMode;
-begin
-  result := Story.StoryMode;
-end;
-
-procedure TMainForm.SetStoryMode(const Value: TStoryMode);
-begin
-  Story.StoryMode := Value;
-end;
-
-{ ZoomTo }
-
-procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
-begin
-  if Assigned(StoryItem) then
-    ZoomFrame.ZoomTo(StoryItem.View)
-  else
-    ZoomFrame.ZoomTo; //Zoom to all content
-end;
-
-{$endregion}
-
-{$ENDREGION}
-
-{$REGION 'Events'}
-
-{$region 'Actions'}
-
-procedure TMainForm.HUDactionEditExecute(Sender: TObject);
-begin
-  HUD.actionEditExecute(Sender);
-
-  var view := StoryView;
-  if Assigned(view) then
-    view.EditMode := HUD.actionEdit.Checked;
-end;
 
 procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
 begin
   ZoomFrame.ZoomTo(TControl(Selection));
 end;
 
-procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
-begin
-  HUD.actionStructureExecute(Sender);
-
-  HUD.DrawerFrameStand.CloseAllExcept(TStructureView);
-  var frameInfo := HUD.DrawerFrameStand.GetFrameInfo<TStructureView>;
-  with frameInfo.Frame do
-  begin
-    ShowOnlyClasses := TClassList.Create([TStoryItem]);
-    ShowNames := false;
-    ShowTypes := false;
-    GUIRoot := StoryView;
-    OnSelection := StructureViewSelection;
-  end;
-  frameInfo.Show;
-end;
-
-{$endregion}
-
-{$endregion}
+{$ENDREGION}
 
 {$region 'SavedState'}
 
@@ -258,7 +282,7 @@ begin
     begin
     var TheStory := TPanelStoryItem.Create(Self);
     TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    StoryView := TheStory;
+    RootStoryItemView := TheStory;
     end;
 end;
 
@@ -270,11 +294,11 @@ begin
     //StoragePath := ... //TODO: default is transient, change to make permanent
     if Stream.Size > 0 then
     begin
-      var TheStory := TPanelStoryItem.Create(Self);
+      var TheRootStoryItemView := TPanelStoryItem.Create(Self);
       try
-        TheStory.Load(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheStory.SaveToString);
-        StoryView := TheStory; //only set StoryView
+        TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
+        {}CodeSite.Send(TheRootStoryItemView.SaveToString);
+        RootStoryItemView := TheRootStoryItemView; //only set StoryView
         result := true;
       except
         on E: Exception do
@@ -282,7 +306,7 @@ begin
           Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
           CodeSite.SendException(E);
           ShowException(E, @TMainForm.FormCreate);
-          FreeAndNil(TheStory); //Free partially loaded - corrupted StoryItem
+          FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
           end;
       end;
     end;
@@ -295,12 +319,12 @@ begin
   //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
-  var TheStory := StoryView;
-  if Assigned(TheStory) then
+  var TheRootStoryItemView := RootStoryItemView;
+  if Assigned(TheRootStoryItemView) then
     with SaveState do
       try
-        TheStory.Save(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheStory.SaveToString);
+        TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
+        {}CodeSite.Send(TheRootStoryItemView.SaveToString);
       except
         On E: Exception do
           begin

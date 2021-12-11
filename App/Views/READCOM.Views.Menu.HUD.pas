@@ -17,9 +17,8 @@ type
     BtnMenu: TSpeedButton;
     BtnNext: TSpeedButton;
     SVGIconImageList: TSVGIconImageList;
-    layoutEdit: TLayout;
     layoutNavigation: TLayout;
-    ActionList1: TActionList;
+    ActionList: TActionList;
     actionPrevious: TAction;
     actionNext: TAction;
     actionAdd: TAction;
@@ -30,8 +29,12 @@ type
     MultiView: TMultiView;
     BtnStructure: TSpeedButton;
     actionStructure: TAction;
-    DrawerFrameStand: TFrameStand;
+    MultiViewFrameStand: TFrameStand;
     layoutContent: TLayout;
+    actionTargets: TAction;
+    btnTargets: TSpeedButton;
+    layoutButtonsSide: TFlowLayout;
+    layoutEdit: TFlowLayout;
     procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);

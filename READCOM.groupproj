@@ -40,13 +40,13 @@
             <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
+            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zooming.Helpers\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="READCOM.Gallery\READCOM.GalleryLib.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
         <Projects Include="App\READCOM.App.dproj">
-            <Dependencies>Zoomicon.Puzzler\Zoomicon.Puzzler.dproj;Zoomicon.Media\Zoomicon.Media.FMX.dproj;Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj;Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
+            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zooming.Helpers\Zoomicon.Helpers.FMX.dproj;Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj;Zoomicon.Media\Zoomicon.Media.FMX.dproj;Zoomicon.Puzzler\Zoomicon.Puzzler.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -164,13 +164,13 @@
     <Target Name="Zoomicon_Media_FMX:Make">
         <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler" DependsOnTargets="Zoomicon.Generics">
+    <Target Name="Zoomicon_Puzzler" DependsOnTargets="Zoomicon.Generics;Zoomicon.Helpers.FMX">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler:Clean" DependsOnTargets="Zoomicon.Generics:Clean">
+    <Target Name="Zoomicon_Puzzler:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Helpers.FMX:Clean">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler:Make" DependsOnTargets="Zoomicon.Generics:Make">
+    <Target Name="Zoomicon_Puzzler:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Make"/>
     </Target>
     <Target Name="READCOM_GalleryLib" DependsOnTargets="Zoomicon.Downloader;Zoomicon.GitStore">
@@ -182,13 +182,13 @@
     <Target Name="READCOM_GalleryLib:Make" DependsOnTargets="Zoomicon.Downloader:Make;Zoomicon.GitStore:Make">
         <MSBuild Projects="READCOM.Gallery\READCOM.GalleryLib.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Puzzler;Zoomicon.Media.FMX;Zoomicon.Zooming.FMX;Zoomicon.Generics">
+    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Generics;Zoomicon.Helpers.FMX;Zoomicon.Zooming.FMX;Zoomicon.Media.FMX;Zoomicon.Puzzler">
         <MSBuild Projects="App\READCOM.App.dproj"/>
     </Target>
-    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Puzzler:Clean;Zoomicon.Media.FMX:Clean;Zoomicon.Zooming.FMX:Clean;Zoomicon.Generics:Clean">
+    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Helpers.FMX:Clean;Zoomicon.Zooming.FMX:Clean;Zoomicon.Media.FMX:Clean;Zoomicon.Puzzler:Clean">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Puzzler:Make;Zoomicon.Media.FMX:Make;Zoomicon.Zooming.FMX:Make;Zoomicon.Generics:Make">
+    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Helpers.FMX:Make;Zoomicon.Zooming.FMX:Make;Zoomicon.Media.FMX:Make;Zoomicon.Puzzler:Make">
         <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
