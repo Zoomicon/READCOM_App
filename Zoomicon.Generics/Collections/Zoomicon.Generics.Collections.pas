@@ -59,6 +59,10 @@ type
     { ForEachInterface }
     class procedure ForEachInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
     procedure ForEachInterface<AInterface: IInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
+
+    { AllInterfaces }
+    class function AllInterfaces<AInterface: IInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean; overload;
+    function AllInterfaces<AInterface: IInterface>(const Predicate: TPredicate<AInterface>): Boolean; overload;
   end;
 
   //----------------------------------------------------------------------------
@@ -95,6 +99,10 @@ type
     { ForEachClass }
     class procedure ForEachClass<AClass: class>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
     procedure ForEachClass<AClass: class>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
+
+    { AllInterfaces }
+    class function AllInterfaces<AInterface: IInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean; overload;
+    function AllInterfaces<AInterface: IInterface>(const Predicate: TPredicate<AInterface>): Boolean; overload;
 
     { AllClasses }
     class function AllClasses<AClass: class>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean; overload;
@@ -216,10 +224,13 @@ end;
 
 class function TListEx<T>.All(const Enum: TEnumerable<T>; const Predicate: TPredicate<T>): Boolean;
 begin
-  result := false;
   if Assigned(Enum) and Assigned(Predicate) then
     for var item in Enum do
-      if not Predicate(item) then exit;
+      if not Predicate(item) then
+      begin
+        result := false;
+        exit;
+      end;
   result := true;
 end;
 
@@ -372,6 +383,31 @@ end;
 procedure TInterfaceListEx<T>.ForEachInterface<AInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
 begin
   {TInterfaceListEx<T>.}ForEachInterface<AInterface>(Self, Proc, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
+{$region 'AllInterfaces'}
+
+class function TInterfaceListEx<T>.AllInterfaces<AInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  if Assigned(Enum) and Assigned(Predicate) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and not Predicate(itemAsAInterface) then
+      begin
+        result := false;
+        exit;
+      end;
+  end;
+  result := true;
+end;
+
+function TInterfaceListEx<T>.AllInterfaces<AInterface>(const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  result := {TInterfaceListEx<T>.}AllInterfaces<AInterface>(Self, Predicate);
 end;
 
 {$endregion}
@@ -578,14 +614,42 @@ end;
 
 {$endregion}
 
+{$region 'AllInterfaces'}
+
+class function TObjectListEx<T>.AllInterfaces<AInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  if Assigned(Enum) and Assigned(Predicate) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and not Predicate(itemAsAInterface) then
+      begin
+        result := false;
+        exit;
+      end;
+  end;
+  result := true;
+end;
+
+function TObjectListEx<T>.AllInterfaces<AInterface>(const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  result := {TObjectListEx<T>.}AllInterfaces<AInterface>(Self, Predicate);
+end;
+
+{$endregion}
+
 {$region 'AllClasses'}
 
 class function TObjectListEx<T>.AllClasses<AClass>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean;
 begin
-  result := false;
   if Assigned(Enum) and Assigned(Predicate) then
     for var item in Enum do
-      if (item is AClass) and not Predicate(item as AClass) then exit;
+      if (item is AClass) and not Predicate(item as AClass) then
+      begin
+        result := false;
+        exit;
+      end;
   result := true;
 end;
 
