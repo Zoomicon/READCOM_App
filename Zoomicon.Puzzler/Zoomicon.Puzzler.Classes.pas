@@ -7,12 +7,13 @@ interface
     System.Types, //for TPointF
     FMX.Objects, //for TLine, TCircle
     FMX.Controls, //for TControl
-    FMX.Graphics; //for TStrokeBrush
+    FMX.Graphics, //for TStrokeBrush
+    Zoomicon.Helpers.FMX.Controls.ControlHelpers; //to keep helper chain (Delphi compiler only sees last helper used for specific class if we don't define inheritance chain)
 
 {$REGION 'Shuffler'}
 
 type
-  TControlShufflerHelper = class helper for TControl//(IShuffler)
+  TControlShufflerHelper = class helper(TControlFocusHelper{, IShuffler}) for TControl
     //procedure IShuffler.ShuffleItems = ShufflePositions;
     procedure ShuffleItems;
     procedure ShufflePositions;
@@ -26,7 +27,7 @@ const
   DEFAULT_TARGET_TOLERANCE : Single = -1; //not using target tolerance value by default (using Min(Target.Width, Target.Height)/2 instead)
 
 type
-  TControlHasTargetHelper = class helper(TControlShufflerHelper) for TControl//(IHasTarget) //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
+  TControlHasTargetHelper = class helper(TControlShufflerHelper{, IHasTarget}) for TControl //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
   public
     {TargetTolerance}
     class var TargetTolerance: Single;
@@ -50,7 +51,7 @@ type
   end;
 
 type
-  TControlMultipleHasTargetHelper = class helper(TControlHasTargetHelper) for TControl//(IMultipleHasTarget) //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
+  TControlMultipleHasTargetHelper = class helper(TControlHasTargetHelper{, IMultipleHasTarget}) for TControl //NOTE: Make sure we use an inheritance chain in the order the helpers for TControl are declared here, else only the latest one is applied (when multiple helpers for same class with no inheritance between those helpers are declared)
   protected
     procedure PaintTargetLines(const Opacity: Single = 1; const Brush: TStrokeBrush = nil);
 
@@ -67,7 +68,7 @@ type
 
 
 type
-  TArrow = class(TLine)
+  TArrow = class(TLine{, IArrow}) //TODO: add IArrow interface
   const
     DEFAULT_TIP_SIZE = 6;
 
@@ -101,7 +102,7 @@ type
 
 {$region 'TLink'}
 
-  TLink = class(TArrow, IHasSource, IHasTarget)
+  TLink = class(TArrow, {IArrow, ILink,} IHasSource, IHasTarget) //TODO: declare IArrow and ILink (=IHasSource+IHasTarget) interfaces when added
   protected
     FSource, FTarget: TControl;
 
@@ -122,6 +123,7 @@ procedure Register;
 
 implementation
   uses
+    System.SysUtils, //for FreeAndNil
     FMX.Types, //for RegisterFmxClasses
     Math, //for Min
     Zoomicon.Generics.Collections; //for TListEx
@@ -214,7 +216,7 @@ end;
 function TControlMultipleHasTargetHelper.AreAllOverTarget: Boolean;
 begin
   result :=
-    TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).All(function(item: IHasTarget): Boolean
+    TObjectListEx<TControl>.AllInterfaces<IHasTarget>(Controls, function(item: IHasTarget): Boolean
       begin
         result := item.OverTarget;
       end
@@ -223,8 +225,10 @@ end;
 
 procedure TControlMultipleHasTargetHelper.PaintTargetLines(const Opacity: Single = 1; const Brush: TStrokeBrush = nil);
 begin
-  TObjectListEx<TControl>.GetAllInterface<IHasTarget>(Controls).ForEach(procedure(item: IHasTarget)
+  TObjectListEx<TControl>.ForEachInterface<IHasTarget>(Controls, procedure(item: IHasTarget)
     begin
+      if not Assigned(Target) then exit;
+
       var TargetToleranceTwice := TargetTolerance * 2;
       var TargetRect := TRectF.Create(Target.Position.Point, TargetToleranceTwice, TargetToleranceTwice);
       TargetRect.Offset(-TargetTolerance, -TargetTolerance);

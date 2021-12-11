@@ -2,7 +2,8 @@ unit Zoomicon.Puzzler.Models;
 
 interface
   uses
-    FMX.Controls; //for TControls
+    FMX.Controls, //for TControls
+    FMX.Graphics; //for TStrokeBrush
 
 type
 
@@ -41,6 +42,7 @@ type
 
   IMultipleHasTarget = interface
     ['{8B845E1F-1C06-42CD-8657-38A869FE68BC}']
+    procedure PaintTargetLines(const Opacity: Single = 1; const Brush: TStrokeBrush = nil);
 
     {AllOverTarget}
     function AreAllOverTarget: Boolean;

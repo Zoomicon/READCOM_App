@@ -30,7 +30,8 @@ package Zoomicon.Puzzler;
 requires
   rtl,
   fmx,
-  Zoomicon.Generics;
+  Zoomicon.Generics,
+  Zoomicon.Helpers.FMX;
 
 contains
   Zoomicon.Puzzler.Models in 'Zoomicon.Puzzler.Models.pas',
