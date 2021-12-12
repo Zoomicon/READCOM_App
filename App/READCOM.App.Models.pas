@@ -7,6 +7,7 @@ interface
 
 uses
   Zoomicon.Generics.Collections, //for TListEx
+  Zoomicon.Generics.Factories, //for IFactory, IFactoryRegistry
   Zoomicon.Media.FMX, //for TMediaPlayerEx
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
@@ -91,6 +92,9 @@ type
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem;
     property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem;
   end;
+
+  IStoryItemFactory = IFactory<IStoryItem>;
+  IStoryItemFactoryRegistry = IFactoryRegistry<String, IStoryItem>;
 
   IStoryItem = interface(IStoreable)
     ['{238909DD-45E6-463A-9698-C7C6DC1A6DFE}']

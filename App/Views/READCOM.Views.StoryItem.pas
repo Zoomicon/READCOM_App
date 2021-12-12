@@ -166,8 +166,10 @@ type
 implementation
   uses
     u_UrlOpen,
+    System.IOUtils, //for TPath
     Zoomicon.Generics.Collections,
-    READCOM.Views.Options.StoryItemOptions;
+    READCOM.Views.StoryItemFactory, //for StoryItemFactories
+    READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
 
 {$R *.fmx}
 
@@ -590,16 +592,46 @@ end;
 
 {$region 'IStoreable'}
 
+function RemoveNonAllowedIdentifierChars(const s: String): String;
+begin
+  var count := s.Length;
+  var builder := TStringBuilder.Create(count);
+  try
+    for var i := 1 to count do //strings are 1-indexed
+      begin
+      var c := s[i];
+      if IsValidIdent(c) then //keep only characters that would be allowed by themselves as an Identifier
+        builder.Append(c);
+      end;
+    result := builder.ToString;
+  finally
+    FreeAndNil(builder);
+  end;
+end;
+
 { Add }
 
 function TStoryItem.GetAddFilesFilter: String;
 begin
-  result := FILTER_READCOM; //TODO: fix to get from app all known types
+  result := StoryItemAddFileFilter;
 end;
 
 procedure TStoryItem.Add(const Filepath: String);
 begin
-  //TODO: need to have a TStoryItemFactory and each unit of storyitem register some new extensions as (Ext, Class) pairs with that factory's class (it would use some dictionary) via class functions
+  var FileExt := ExtractFileExt(Filepath);
+
+  var view := StoryItemFactories.Get(FileExt).New(Self).View; //TODO: for .READCOM should have special case with a nil object and use Stream.ReadComponent(nil) since we don't know beforehand what exact TStoryItem class the .readcom file contains (unless it allows to load descendents too)
+  view.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
+
+  var StoryItem := view as TStoryItem;
+  StoryItem.Load(Filepath); //this should also set the Size of the control
+
+  //Center the new item...
+  var ItemSize := StoryItem.Size;
+  StoryItem.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  StoryItem.Align := TAlignLayout.Scale; //adjust when parent scales
+  StoryItem.Parent := Self;
+  StoryItem.BringToFront; //load as front-most
 end;
 
 procedure TStoryItem.Add(const Filepaths: array of String);
@@ -722,5 +754,8 @@ begin
 end;
 
 {$endregion}
+
+initialization
+  StoryItemAddFileFilter := {StoryItemAddFileFilter + '|' + } FILTER_READCOM; //should make sure this is used first
 
 end.

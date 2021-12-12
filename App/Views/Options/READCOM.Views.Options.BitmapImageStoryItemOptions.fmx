@@ -25,7 +25,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -51,7 +51,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'OpenFileFolder'
         SVGText = 
@@ -87,7 +87,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'Save'
         SVGText = 
@@ -120,7 +120,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'Delete'
         SVGText = 
@@ -155,7 +155,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 41
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -184,7 +184,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'Plus'
         SVGText = 
@@ -224,7 +224,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 30
           end>
         IconName = 'Camera'
         SVGText = 
@@ -285,42 +285,56 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
         Layers = <
           item
             Name = 'Anchor'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'OpenFileFolder'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Save'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Delete'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
+            SourceRect.Right = 41.000000000000000000
+            SourceRect.Bottom = 41.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Plus'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Camera'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item

@@ -19,7 +19,7 @@ const
   EXT_JPEG = '.jpeg';
   FILTER_PNG = 'PNG bitmap images (*.png)|*.png';
   FILTER_JPEG_JPG = 'JPEG bitmap images (*.jpg, *.jpeg)|*.jpg;*.jpeg';
-  FILTER_PNG_JPEG_JPG = FILTER_PNG + '|' + FILTER_JPEG_JPG;
+  FILTER_BITMAP_IMAGE = FILTER_PNG + '|' + FILTER_JPEG_JPG;
 
 type
   TBitmapImageStoryItem = class(TImageStoryItem, IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
@@ -49,10 +49,18 @@ type
 
   end;
 
+  TBitmapImageStoryItemFactory = class(TComponent, IStoryItemFactory)
+    function New(const AOwner: TComponent = nil): IStoryItem;
+  end;
+
 implementation
-  uses READCOM.Views.Options.BitmapImageStoryItemOptions;
+  uses
+    READCOM.Views.StoryItemFactory, //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Views.Options.BitmapImageStoryItemOptions; //for TBitmapImageStoryItemOptions
 
 {$R *.fmx}
+
+{$REGION 'TBitmapImageStoryItem'}
 
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 begin
@@ -61,13 +69,11 @@ begin
   ImageControl.Stored := false; //don't store state, should use state from designed .FMX resource
 end;
 
-{ TBitmapImageStoryItem }
-
 {$region 'IStorable'}
 
 function TBitmapImageStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_PNG_JPEG_JPG;
+  result := FILTER_BITMAP_IMAGE;
 end;
 
 procedure TBitmapImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -120,6 +126,17 @@ end;
 
 {$ENDREGION}
 
+{$ENDREGION}
+
+{$REGION 'TBitmapImageStoryItemFactory'}
+
+function TBitmapImageStoryItemFactory.New(const AOwner: TComponent = nil): IStoryItem;
+begin
+  result := TBitmapImageStoryItem.Create(AOwner);
+end;
+
+{$ENDREGION}
+
 procedure RegisterClasses;
 begin
   RegisterFmxClasses([TBitmapImageStoryItem]); //register for persistence
@@ -133,6 +150,9 @@ begin
 end;
 
 initialization
+  StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create(nil));
+  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_BITMAP_IMAGE;
+
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

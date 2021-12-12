@@ -19,6 +19,7 @@ uses
 const
   EXT_TXT = '.txt';
   FILTER_TXT = 'Text files (*.txt)|*.txt';
+  FILTER_TEXT = FILTER_TXT;
 
 type
   TTextStoryItem = class(TStoryItem, ITextStoryItem, IStoryItem, IStoreable)
@@ -67,17 +68,22 @@ type
     property TextColor: TAlphaColor read GetTextColor write SetTextColor;
   end;
 
+  TTextStoryItemFactory = class(TComponent, IStoryItemFactory)
+    function New(const AOwner: TComponent = nil): IStoryItem;
+  end;
+
   procedure Register;
 
 implementation
   uses
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
-    Zoomicon.Text; //for ReadAllText
+    Zoomicon.Text, //for ReadAllText
+    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
 
 {$R *.fmx}
 
-{ TTextStoryItem }
+{$REGION 'TTextStoryItem'}
 
 constructor TTextStoryItem.Create(AOnwer: TComponent);
 begin
@@ -164,7 +170,7 @@ end;
 
 function TTextStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_TXT;
+  result := FILTER_TEXT;
 end;
 
 procedure TTextStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -196,6 +202,17 @@ end;
 
 {$endregion}
 
+{$ENDREGION}
+
+{$REGION 'TTextStoryItemFactory'}
+
+function TTextStoryItemFactory.New(const AOwner: TComponent = nil): IStoryItem;
+begin
+  result := TTextStoryItem.Create(AOwner);
+end;
+
+{$ENDREGION}
+
 procedure RegisterClasses;
 begin
   RegisterFmxClasses([TTextStoryItem]); //register for persistence
@@ -209,6 +226,9 @@ begin
 end;
 
 initialization
+  StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create(nil));
+  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_TEXT;
+
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

@@ -16,6 +16,7 @@ uses
 const
   EXT_MP3 = '.mp3';
   FILTER_MP3 = 'MP3 audio (*.mp3)|*.mp3';
+  FILTER_AUDIO = FILTER_MP3;
 
 type
   TAudioStoryItem = class(TStoryItem , IAudioStoryItem, IStoryItem, IStoreable)
@@ -72,13 +73,19 @@ type
     //TODO: persist the audio data
   end;
 
+  TAudioStoryItemFactory = class(TComponent, IStoryItemFactory)
+    function New(const AOwner: TComponent = nil): IStoryItem;
+  end;
+
   procedure Register;
 
 implementation
+  uses
+    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
 
 {$R *.fmx}
 
-{ TAudioStoryItem }
+{$REGION 'TAudioStoryItem'}
 
 constructor TAudioStoryItem.Create(AOwner: TComponent);
 begin
@@ -91,7 +98,7 @@ end;
 
 function TAudioStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_MP3;
+  result := FILTER_AUDIO;
 end;
 
 procedure TAudioStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -224,6 +231,17 @@ end;
 
 {$ENDREGION}
 
+{$ENDREGION}
+
+{$REGION 'TAudioStoryItemFactory'}
+
+function TAudioStoryItemFactory.New(const AOwner: TComponent = nil): IStoryItem;
+begin
+  result := TAudioStoryItem.Create(AOwner);
+end;
+
+{$ENDREGION}
+
 procedure RegisterClasses;
 begin
   RegisterFmxClasses([TAudioStoryItem]); //register for persistence
@@ -237,6 +255,9 @@ begin
 end;
 
 initialization
+  StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create(nil));
+  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_AUDIO;
+
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

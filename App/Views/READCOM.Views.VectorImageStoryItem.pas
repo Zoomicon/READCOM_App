@@ -16,6 +16,8 @@ uses
 const
   EXT_SVG = '.svg';
   FILTER_SVG = 'SVG vector images (*.svg)|*.svg';
+  EXT_VECTOR_IMAGE = EXT_SVG;
+  FILTER_VECTOR_IMAGE = FILTER_SVG;
 
 type
   TVectorImageStoryItem = class(TImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
@@ -54,13 +56,19 @@ type
     property AutoSize default true;
   end;
 
+  TVectorImageStoryItemFactory = class(TComponent, IStoryItemFactory)
+    function New(const AOwner: TComponent = nil): IStoryItem;
+  end;
+
   procedure Register;
 
 implementation
+  uses
+    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
 
 {$R *.fmx}
 
-{ TVectorImageStoryItem }
+{$REGION 'TVectorImageStoryItem'}
 
 constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
 begin
@@ -72,7 +80,7 @@ end;
 
 function TVectorImageStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_SVG;
+  result := FILTER_VECTOR_IMAGE;
 end;
 
 procedure TVectorImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -159,6 +167,17 @@ end;
 
 {$ENDREGION}
 
+{$ENDREGION}
+
+{$REGION 'TVectorImageStoryItemFactory'}
+
+function TVectorImageStoryItemFactory.New(const AOwner: TComponent = nil): IStoryItem;
+begin
+  result := TVectorImageStoryItem.Create(AOwner);
+end;
+
+{$ENDREGION}
+
 procedure RegisterClasses;
 begin
   RegisterFmxClasses([TVectorImageStoryItem]); //register for persistence
@@ -172,6 +191,9 @@ begin
 end;
 
 initialization
+  StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create(nil));
+  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_VECTOR_IMAGE;
+
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

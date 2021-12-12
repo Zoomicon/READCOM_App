@@ -41,7 +41,10 @@ uses
   Zoomicon.Helpers.FMX.Forms.ApplicationHelper in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas',
   Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
   Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
-  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
+  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
+  READCOM.Views.StoryItemFactory in 'Views\READCOM.Views.StoryItemFactory.pas',
+  Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
+  Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas';
 
 {$R *.res}
 

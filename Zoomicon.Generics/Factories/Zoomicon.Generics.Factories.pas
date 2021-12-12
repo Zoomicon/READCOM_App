@@ -1,12 +1,14 @@
 unit Zoomicon.Generics.Factories;
 
 interface
-  uses Zoomicon.Generics.Registries;
+  uses
+    System.Classes, //for TComponent
+    Zoomicon.Generics.Registries; //for IRegistry, TObjectRegistry
 
   type
     IFactory<TType> = interface
       ['{D8177B34-574D-49FB-B2E6-BF02C5A30ADB}']
-      function Create: TType;
+      function New(const AOwner: TComponent = nil): TType;
     end;
 
     IFactoryRegistry<TKey, TType> = interface(IRegistry<TKey, IFactory<TType>>)
