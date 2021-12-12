@@ -5,12 +5,11 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, FMX.Objects;
+  FMX.Controls.Presentation, FMX.Objects, FMX.Layouts;
 
 type
   TClickableFrame = class(TFrame)
     LabelName: TLabel;
-    Rectangle: TRectangle;
     cbHitTest: TCheckBox;
     cbFixDblClick: TCheckBox;
     cbEnabled: TCheckBox;
@@ -18,6 +17,8 @@ type
     UpdateTimer: TTimer;
     cbAbsoluteEnabled: TCheckBox;
     cbTabStop: TCheckBox;
+    Layout: TLayout;
+    Rectangle: TRectangle;
     procedure cbHitTestChange(Sender: TObject);
     procedure cbEnabledChange(Sender: TObject);
     procedure btnEnableChildrenClick(Sender: TObject);
@@ -83,7 +84,7 @@ end;
 
 procedure TClickableFrame.btnEnableChildrenClick(Sender: TObject);
 begin
-  for var Control in Rectangle.Controls do
+  for var Control in Layout.Controls do
     if Control <> cbAbsoluteEnabled then
       Control.Enabled := true;
 end;
