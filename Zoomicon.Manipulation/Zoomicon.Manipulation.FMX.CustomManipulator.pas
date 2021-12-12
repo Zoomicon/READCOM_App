@@ -37,6 +37,7 @@ type
     FAutoSize: Boolean;
     FDragStartLocation: TPointF;
 
+    procedure Loaded; override;
     procedure ApplyEditModeToChild(Control: TControl);
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoAutoSize;
@@ -157,6 +158,15 @@ end;
 {$REGION 'TCustomManipulator'}
 
 constructor TCustomManipulator.Create(AOwner: TComponent);
+begin
+  inherited; //this will also load designer resource, which will call Loaded and create subcomponents
+
+  AutoSize := DEFAULT_AUTOSIZE; //must do after CreateAreaSelector
+  EditMode := DEFAULT_EDITMODE;
+  Proportional := DEFAULT_PROPORTIONAL;
+end;
+
+procedure TCustomManipulator.Loaded;
 
   procedure CreateAreaSelector;
   begin
@@ -209,15 +219,10 @@ constructor TCustomManipulator.Create(AOwner: TComponent);
   end;
 
 begin
+  inherited;
   CreateAreaSelector;
   CreateLocationSelector; //must do after CreateAreaSelector
   CreateDropTarget;
-
-  AutoSize := DEFAULT_AUTOSIZE; //must do after CreateAreaSelector
-  EditMode := DEFAULT_EDITMODE;
-  Proportional := DEFAULT_PROPORTIONAL;
-
-  inherited; //do last since it will also load designer resource
 end;
 
 {$region 'Manipulation'}
@@ -415,7 +420,8 @@ end;
 procedure TCustomManipulator.DoAddObject(const AObject: TFmxObject);
 begin
   inherited;
-  AreaSelector.BringToFront;
+  if Assigned(AreaSelector) then
+    AreaSelector.BringToFront;
   if (AObject is TControl) then
     ApplyEditModeToChild(TControl(AObject));
 end;
@@ -472,7 +478,7 @@ end;
 
 function TCustomManipulator.IsEditMode: Boolean;
 begin
-  result := AreaSelector.Visible;
+  result := Assigned(AreaSelector) and AreaSelector.Visible;
 end;
 
 procedure TCustomManipulator.ApplyEditModeToChild(Control: TControl);
