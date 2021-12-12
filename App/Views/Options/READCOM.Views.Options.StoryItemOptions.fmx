@@ -1,55 +1,67 @@
 object StoryItemOptions: TStoryItemOptions
   Size.Width = 344.000000000000000000
-  Size.Height = 204.000000000000000000
+  Size.Height = 260.000000000000000000
   Size.PlatformDefault = False
-  object GridPanelLayout: TGridPanelLayout
-    Align = Horizontal
+  object AddDialog: TOpenDialog
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Left = 16
+    Top = 192
+  end
+  object SaveDialog: TSaveDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    Left = 144
+    Top = 192
+  end
+  object panelUrlAction: TPanel
+    Align = MostTop
+    Position.Y = 50.000000000000000000
     Size.Width = 344.000000000000000000
-    Size.Height = 57.000000000000000000
+    Size.Height = 41.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 0
-    ColumnCollection = <
-      item
-        SizeStyle = Absolute
-        Value = 64.000000000000000000
-      end
-      item
-        SizeStyle = Absolute
-        Value = 64.000000000000000000
-      end
-      item
-        SizeStyle = Absolute
-        Value = 64.000000000000000000
-      end
-      item
-        SizeStyle = Auto
-      end>
-    ControlCollection = <
-      item
-        Column = 0
-        Control = btnAnchor
-        Row = 0
-      end
-      item
-        Column = 1
-        Control = btnDelete
-        Row = 0
-      end
-      item
-        Column = 2
-        Control = btnLoad
-        Row = 0
-      end
-      item
-        Column = 3
-        Control = btnSave
-        Row = 0
-      end>
-    ExpandStyle = AddColumns
-    RowCollection = <
-      item
-        Value = 100.000000000000000000
-      end>
+    TabOrder = 8
+    object glyphUrlAction: TGlyph
+      Margins.Left = 5.000000000000000000
+      Align = MostLeft
+      Position.X = 5.000000000000000000
+      Size.Width = 33.000000000000000000
+      Size.Height = 41.000000000000000000
+      Size.PlatformDefault = False
+      ImageIndex = 4
+      Images = SVGIconImageList
+    end
+    object editUrlAction: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Client
+      TabOrder = 4
+      Margins.Left = 5.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 41.000000000000000000
+      Size.PlatformDefault = False
+      OnChangeTracking = editUrlActionChangeTracking
+      OnMouseDown = editUrlActionMouseDown
+    end
+  end
+  object layoutButtons: TFlowLayout
+    Align = MostTop
+    Size.Width = 344.000000000000000000
+    Size.Height = 50.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 13
+    Justify = Left
+    JustifyLastLine = Left
+    FlowDirection = LeftToRight
+    object btnAnchor: TSpeedButton
+      Action = actionAnchor
+      Align = Client
+      Anchors = []
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 0
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'escapetoolbutton'
+    end
     object btnDelete: TSpeedButton
       Action = actionDelete
       Align = Client
@@ -60,6 +72,17 @@ object StoryItemOptions: TStoryItemOptions
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'trashtoolbutton'
+    end
+    object btnAdd: TSpeedButton
+      Action = actionAdd
+      Align = Client
+      Enabled = True
+      Images = SVGIconImageList
+      ImageIndex = 5
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'escapetoolbutton'
     end
     object btnLoad: TSpeedButton
       Action = actionOpen
@@ -83,57 +106,11 @@ object StoryItemOptions: TStoryItemOptions
       Size.PlatformDefault = False
       StyleLookup = 'escapetoolbutton'
     end
-    object btnAnchor: TSpeedButton
-      Action = actionAnchor
-      Align = Client
-      Anchors = []
-      Enabled = True
-      Images = SVGIconImageList
-      ImageIndex = 0
-      Size.Width = 64.000000000000000000
-      Size.Height = 57.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'escapetoolbutton'
-    end
   end
   object OpenDialog: TOpenDialog
-    Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 24
-    Top = 144
-  end
-  object SaveDialog: TSaveDialog
-    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 88
-    Top = 144
-  end
-  object Panel1: TPanel
-    Align = Horizontal
-    Position.Y = 65.000000000000000000
-    Size.Width = 344.000000000000000000
-    Size.Height = 41.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 9
-    object glyphUrlAction: TGlyph
-      Margins.Left = 5.000000000000000000
-      Align = MostLeft
-      Position.X = 5.000000000000000000
-      Size.Width = 33.000000000000000000
-      Size.Height = 41.000000000000000000
-      Size.PlatformDefault = False
-      ImageIndex = 4
-      Images = SVGIconImageList
-    end
-    object editUrlAction: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Client
-      TabOrder = 4
-      Margins.Left = 5.000000000000000000
-      Size.Width = 301.000000000000000000
-      Size.Height = 41.000000000000000000
-      Size.PlatformDefault = False
-      OnChangeTracking = editUrlActionChangeTracking
-      OnMouseDown = editUrlActionMouseDown
-    end
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Left = 80
+    Top = 192
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
@@ -295,6 +272,46 @@ object StoryItemOptions: TStoryItemOptions
           'ap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke' +
           '-width="2"/>'#10'  </g>'#10'</svg>'#10
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Plus'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="none" stroke="#FFFFFF" ' +
+          'stroke-miterlimit="10" stroke-width="2" d="M29.8234,45.3972"/>'#10' ' +
+          '   <path fill="none" stroke="#FFFFFF" stroke-miterlimit="10" str' +
+          'oke-width="2" d="M27.23,21.0879"/>'#10'    <path fill="none" stroke=' +
+          '"#FFFFFF" stroke-miterlimit="10" stroke-width="2" d="M48.0598,45' +
+          '.2754"/>'#10'    <path fill="none" stroke="#FFFFFF" stroke-miterlimi' +
+          't="10" stroke-width="2" d="M45.4664,20.966"/>'#10'    <polygon fill=' +
+          '"#D0CFCE" stroke="none" points="31.8532,29.8741 31.8532,12.521 4' +
+          '2.1488,12.521 42.1488,29.8805 42.1967,29.8806 46.2484,29.8832 59' +
+          '.6052,29.8832 59.6052,40.1789 46.2562,40.1789 42.1493,40.1762 42' +
+          '.1488,40.206 42.1488,58.8513 31.8532,58.8513 31.8532,40.1694 31.' +
+          '7534,40.1693 27.9357,40.1667 14,40.1667 14,29.8711 27.9331,29.87' +
+          '11 31.7687,29.8737"/>'#10'    <path fill="none" stroke="#FFFFFF" str' +
+          'oke-miterlimit="10" stroke-width="2" d="M29.8234,45.3972"/>'#10'    ' +
+          '<path fill="none" stroke="#FFFFFF" stroke-miterlimit="10" stroke' +
+          '-width="2" d="M27.23,21.0879"/>'#10'    <path fill="none" stroke="#F' +
+          'FFFFF" stroke-miterlimit="10" stroke-width="2" d="M48.0598,45.27' +
+          '54"/>'#10'    <path fill="none" stroke="#FFFFFF" stroke-miterlimit="' +
+          '10" stroke-width="2" d="M45.4664,20.966"/>'#10'  </g>'#10'  <g id="hair"' +
+          '/>'#10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  <g id="line">'#10'    ' +
+          '<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M67' +
+          ',28.3957"/>'#10'    <path fill="none" stroke="#000000" stroke-miterl' +
+          'imit="10" d="M67,28.3957"/>'#10'    <polygon fill="none" stroke="#00' +
+          '0000" stroke-linecap="round" stroke-linejoin="round" stroke-mite' +
+          'rlimit="10" stroke-width="2" points="31.8532,29.8741 31.8532,12.' +
+          '521 42.1488,12.521 42.1488,29.8805 42.1967,29.8806 46.2484,29.88' +
+          '32 59.6052,29.8832 59.6052,40.1789 46.2562,40.1789 42.1493,40.17' +
+          '62 42.1488,40.206 42.1488,58.8513 31.8532,58.8513 31.8532,40.169' +
+          '4 31.7534,40.1693 27.9357,40.1667 14,40.1667 14,29.8711 27.9331,' +
+          '29.8711 31.7687,29.8737"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
@@ -338,15 +355,23 @@ object StoryItemOptions: TStoryItemOptions
           end>
       end
       item
+        Layers = <
+          item
+            Name = 'Plus'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
         Layers = <>
       end>
-    Left = 176
-    Top = 144
+    Left = 48
+    Top = 136
   end
   object ActionList: TActionList
     Images = SVGIconImageList
-    Left = 264
-    Top = 144
+    Left = 128
+    Top = 136
     object actionDelete: TAction
       Text = 'Delete'
       ImageIndex = 3
@@ -373,7 +398,15 @@ object StoryItemOptions: TStoryItemOptions
     end
     object actionChangeUrlAction: TAction
       Text = 'Change URL Action'
+      ImageIndex = 4
       OnExecute = actionChangeUrlActionExecute
+      ImageIndex = 4
+    end
+    object actionAdd: TAction
+      Text = 'Add'
+      ImageIndex = 5
+      OnExecute = actionAddExecute
+      ImageIndex = 5
     end
   end
 end

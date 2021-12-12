@@ -145,7 +145,7 @@ object StoryHUD: TStoryHUD
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'edit'
         SVGText = 
@@ -172,7 +172,7 @@ object StoryHUD: TStoryHUD
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'reverse'
         SVGText = 
@@ -192,7 +192,7 @@ object StoryHUD: TStoryHUD
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'play'
         SVGText = 
@@ -212,8 +212,8 @@ object StoryHUD: TStoryHUD
       item
         MultiResBitmap = <
           item
-            Width = 24
-            Height = 30
+            Width = 41
+            Height = 51
           end>
         IconName = 'Diagram'
         SVGText = 
@@ -229,7 +229,7 @@ object StoryHUD: TStoryHUD
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'TargetArrow'
         SVGText = 
@@ -285,40 +285,40 @@ object StoryHUD: TStoryHUD
         Layers = <
           item
             Name = 'edit'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'reverse'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'play'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Diagram'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 51.000000000000000000
+            SourceRect.Bottom = 51.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'TargetArrow'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item

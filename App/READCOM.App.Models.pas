@@ -28,11 +28,15 @@ type
     ['{A08F7880-FBE5-40C5-B695-FF0F3A18EF3E}']
     //--- Methods ---
 
+    { Add }
+    function GetAddFilesFilter: String;
+    procedure Add(const Filepath: String); overload;
+    procedure Add(const Filepaths: array of string); overload;
+
     { Load }
     function GetLoadFilesFilter: String;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Load(const Filepath: string); overload;
-    procedure Load(const Filepaths: array of string); overload;
     procedure LoadFromString(const Data: String);
     procedure LoadReadCom(const Stream: TStream);
     procedure LoadReadComBin(const Stream: TStream);

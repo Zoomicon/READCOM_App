@@ -112,11 +112,14 @@ type
     procedure PlayRandomAudioStoryItem;
 
     { IStoreable }
+    function GetAddFilesFilter: String; virtual;
+    procedure Add(const Filepath: String); overload; virtual;
+    procedure Add(const Filepaths: array of string); overload; virtual;
+
     function GetLoadFilesFilter: String; virtual;
     procedure LoadFromString(const Data: String); virtual;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Load(const Filepath: string); overload; virtual;
-    procedure Load(const Filepaths: array of string); overload; virtual;
     procedure LoadReadCom(const Stream: TStream); virtual;
     procedure LoadReadComBin(const Stream: TStream); virtual;
 
@@ -213,7 +216,7 @@ procedure TStoryItem.Init;
     begin
       Visible := EditMode; //show only in EditMode
       FilterIndex := 1; //this is the default value
-      Filter := GetLoadFilesFilter;
+      Filter := GetAddFilesFilter;
       DropTarget.Align := TAlignLayout.Client;
     end;
   end;
@@ -567,7 +570,7 @@ end;
 procedure TStoryItem.DropTargetDropped(const Filepaths: array of string);
 begin
   inherited;
-  Load(Filepaths);
+  Add(Filepaths);
 end;
 
 {$endregion}
@@ -586,6 +589,24 @@ end;
 {$ENDREGION}
 
 {$region 'IStoreable'}
+
+{ Add }
+
+function TStoryItem.GetAddFilesFilter: String;
+begin
+  result := FILTER_READCOM; //TODO: fix to get from app all known types
+end;
+
+procedure TStoryItem.Add(const Filepath: String);
+begin
+  //TODO: need to have a TStoryItemFactory and each unit of storyitem register some new extensions as (Ext, Class) pairs with that factory's class (it would use some dictionary) via class functions
+end;
+
+procedure TStoryItem.Add(const Filepaths: array of String);
+begin
+  for var filepath in Filepaths do
+    Add(filepath); //Adding all files one by one
+end;
 
 { Load }
 
@@ -621,6 +642,7 @@ end;
 
 procedure TStoryItem.LoadReadComBin(const Stream: TStream);
 begin
+  Self.Controls.Clear; //Remove StoryItems
   Stream.ReadComponent(Self);
 end;
 
@@ -639,15 +661,6 @@ begin
     Load(InputFileStream, ExtractFileExt(Filepath));
   finally
     FreeAndNil(InputFileStream);
-  end;
-end;
-
-procedure TStoryItem.Load(const Filepaths: array of String);
-begin
-  for var f in Filepaths do
-  begin
-    Load(f);
-    exit; //by default use just the 1st file in case multiple were dropped
   end;
 end;
 

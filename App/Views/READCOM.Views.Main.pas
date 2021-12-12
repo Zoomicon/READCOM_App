@@ -146,7 +146,7 @@ begin
     //AutoSize := true; //the Root StoryItem should be expandable
     Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
     Align := TAlignLayout.Contents;
-    Align := TAlignLayout.None;
+    Align := TAlignLayout.Center;
     ActiveStoryItem := Value;
   end;
 end;
@@ -218,9 +218,12 @@ procedure TMainForm.HUDactionEditExecute(Sender: TObject);
 begin
   HUD.actionEditExecute(Sender);
 
-  var view := ActiveStoryItem.View as TStoryItem;
-  if Assigned(view) then
-    view.EditMode := HUD.actionEdit.Checked;
+  if Assigned(ActiveStoryItem) then
+  begin
+    var view := ActiveStoryItem.View as TStoryItem;
+    if Assigned(view) then
+      view.EditMode := HUD.actionEdit.Checked;
+  end;
 end;
 
 procedure TMainForm.HUDactionStructureExecute(Sender: TObject);

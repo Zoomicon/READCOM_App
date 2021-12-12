@@ -24,9 +24,8 @@ type
       constructor Create(AOwner: TComponent); override;
 
       { IStoreable }
-      function GetLoadFilesFilter: String; override;
-      procedure Load(const Filepath: String); override;
-      procedure Load(const Filepaths: array of String); override;
+      function GetAddFilesFilter: String; override;
+      procedure Add(const Filepath: String); override;
   end;
 
 implementation
@@ -57,7 +56,7 @@ end;
 
 {$region 'IStoreable'}
 
-function TPanelStoryItem.GetLoadFilesFilter: String;
+function TPanelStoryItem.GetAddFilesFilter: String;
 begin
   result := 'READ-COM Files, Images, Audio, Text|*.readcom;*.png;*.jpg;*.jpeg;*.svg;*.mp3; *.txt' + '|' + FILTER_READCOM + '|' + FILTER_SVG + '|' + FILTER_PNG_JPEG_JPG + '|' + FILTER_MP3 + '|' + FILTER_TXT;
 end;
@@ -79,13 +78,13 @@ begin
   end;
 end;
 
-procedure TPanelStoryItem.Load(const Filepath: String);
+procedure TPanelStoryItem.Add(const Filepath: String); //TODO: move to TStoryItem, using a TStoryItemFactory (see notes there)
 var StoryItemClass: TStoryItemClass;
 begin
   var FileExt := ExtractFileExt(Filepath);
 
   if (FileExt =  EXT_READCOM) then
-    StoryItemClass := TStoryItem //TODO: this is wrong, don't want to add an item that then hosts something in it
+    StoryItemClass := TStoryItem
   else if (FileExt = EXT_SVG) then
     StoryItemClass := TVectorImageStoryItem
   else if (FileExt = EXT_PNG) or (FileExt = EXT_JPEG) or (FileExt = EXT_JPG) then
@@ -108,12 +107,6 @@ begin
   StoryItem.Align := TAlignLayout.Scale; //adjust when parent scales
   StoryItem.Parent := Self;
   StoryItem.BringToFront; //load as front-most
-end;
-
-procedure TPanelStoryItem.Load(const Filepaths: array of String);
-begin
-  for var filepath in Filepaths do
-    Load(filepath); //Loading all files one by one
 end;
 
 {$endregion}

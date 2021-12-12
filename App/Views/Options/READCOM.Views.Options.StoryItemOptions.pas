@@ -3,7 +3,9 @@ unit READCOM.Views.Options.StoryItemOptions;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.SysUtils, System.Types,
+  System.UITypes, //for TOpenOption
+  System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts,
   READCOM.App.Models, FMX.Controls.Presentation, System.ImageList,
@@ -11,11 +13,7 @@ uses
 
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
-    GridPanelLayout: TGridPanelLayout;
-    btnDelete: TSpeedButton;
-    btnLoad: TSpeedButton;
-    OpenDialog: TOpenDialog;
-    btnSave: TSpeedButton;
+    AddDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
     SVGIconImageList: TSVGIconImageList;
     ActionList: TActionList;
@@ -23,11 +21,18 @@ type
     actionOpen: TAction;
     actionSave: TAction;
     actionAnchor: TAction;
-    btnAnchor: TSpeedButton;
-    Panel1: TPanel;
+    panelUrlAction: TPanel;
     glyphUrlAction: TGlyph;
     editUrlAction: TEdit;
     actionChangeUrlAction: TAction;
+    actionAdd: TAction;
+    layoutButtons: TFlowLayout;
+    btnAnchor: TSpeedButton;
+    btnDelete: TSpeedButton;
+    btnAdd: TSpeedButton;
+    btnLoad: TSpeedButton;
+    btnSave: TSpeedButton;
+    OpenDialog: TOpenDialog;
     procedure actionAnchorExecute(Sender: TObject);
     procedure actionDeleteExecute(Sender: TObject);
     procedure actionOpenExecute(Sender: TObject);
@@ -36,6 +41,7 @@ type
     procedure Glyph1Tap(Sender: TObject; const Point: TPointF);
     procedure editUrlActionChangeTracking(Sender: TObject);
     procedure editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure actionAddExecute(Sender: TObject);
 
   protected
     FStoryItem: IStoryItem;
@@ -68,7 +74,7 @@ type
 
 implementation
   uses
-    FMX.DialogService.Async,
+    FMX.DialogService.Async, //for TDialogServiceAsync
     FMX.Objects, //for TImageWrapMode
     FMX.Styles.Objects; //for TStyleObject
 
@@ -159,13 +165,27 @@ begin
   FreeAndNil(GetStoryItem As TComponent);
 end;
 
+procedure TStoryItemOptions.actionAddExecute(Sender: TObject);
+begin
+  with AddDialog do
+  begin
+    DefaultExt := EXT_READCOM;
+    Filter := StoryItem.GetAddFilesFilter;
+    //Options := Options + [TOpenOption.ofAllowMultiSelect]; //Multi-selection
+    if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
+      StoryItem.Add(Files.ToStringArray);
+  end;
+end;
+
 procedure TStoryItemOptions.actionOpenExecute(Sender: TObject);
 begin
   with OpenDialog do
   begin
+    DefaultExt := EXT_READCOM;
     Filter := StoryItem.GetLoadFilesFilter;
+    //Options := Options - [TOpenOption.ofAllowMultiSelect]; //Single-selection
     if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
-      StoryItem.Load(Files.ToStringArray);
+      StoryItem.Load(Filename);
   end;
 end;
 

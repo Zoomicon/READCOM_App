@@ -15,10 +15,13 @@ uses
 
 type
   TBitmapImageStoryItemOptions = class(TStoryItemOptions, IBitmapImageStoryItemOptions, IStoryItemOptions)
-    procedure actionCameraExecute(Sender: TObject);
+    TakePhotoFromCameraAction: TTakePhotoFromCameraAction;
+    btnCamera: TSpeedButton;
+    //procedure actionCameraExecute(Sender: TObject);
+    procedure TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
   protected
-    procedure DoDidFinish(Image: TBitmap);
-    procedure DoMessageListener(const Sender: TObject; const M: TMessage); //for Android in case app restarted: see https://docwiki.embarcadero.com/Libraries/Sydney/en/FMX.MediaLibrary.TMessageDidFinishTakingImageFromLibrary
+    //procedure DoDidFinish(Image: TBitmap);
+    //procedure DoMessageListener(const Sender: TObject; const M: TMessage); //for Android in case app restarted: see https://docwiki.embarcadero.com/Libraries/Sydney/en/FMX.MediaLibrary.TMessageDidFinishTakingImageFromLibrary
 
     {BitmapImageStoryItem}
     function GetBitmapImageStoryItem: IBitmapImageStoryItem;
@@ -49,6 +52,14 @@ end;
 
 {$endregion}
 
+procedure TBitmapImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
+begin
+  inherited;
+  BitmapImageStoryItem.Image.Bitmap.Assign(Image);
+end;
+
+{$region 'TakePhotoViaCameraService'}
+(*
 procedure TBitmapImageStoryItemOptions.DoDidFinish(Image: TBitmap);
 begin
   BitmapImageStoryItem.Image.Bitmap.Assign(Image);
@@ -80,5 +91,7 @@ begin
   else
     ShowMessage('This device does not support the camera service');
 end;
+*)
+{$endregion}
 
 end.

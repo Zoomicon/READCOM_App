@@ -19,13 +19,11 @@ const
 
 type
   TVectorImageStoryItem = class(TImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
-  private
-    function GetSVGText: String;
-    procedure SetSVGText(const Value: String);
-
   //--- Methods ---
 
   protected
+    FStoreSVG: Boolean;
+
     { Image }
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override; //allows only TSVGIconImage
@@ -33,6 +31,10 @@ type
     { SVGImage }
     function GetSVGImage: TSVGIconImage;
     procedure SetSVGImage(const Value: TSVGIconImage);
+
+    { SVGText }
+    function GetSVGText: String;
+    procedure SetSVGText(const Value: String);
 
   public
     constructor Create(AOnwer: TComponent); override;
@@ -48,7 +50,7 @@ type
   published
     property Image: TImage read GetImage stored false; //overrides ancestor's "write" and "stored" settings
     property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage stored false default nil;
-    property SVGText: String read GetSVGText write SetSVGText;
+    property SVGText: String read GetSVGText write SetSVGText stored FStoreSVG;
     property AutoSize default true;
   end;
 
@@ -88,6 +90,7 @@ begin
   var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
   bitmap.SVG.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
   //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
+  FStoreSVG := true; //mark that we loaded custom SVG
   bitmap.DrawSVGIcon;
   if FAutoSize then
     begin
@@ -148,6 +151,8 @@ begin
     SetSize(100,100);
     Glyph.Align := TAlignLayout.Contents;
     end;
+
+  FStoreSVG := true; //mark that we loaded custom SVG
 end;
 
 {$endregion}
