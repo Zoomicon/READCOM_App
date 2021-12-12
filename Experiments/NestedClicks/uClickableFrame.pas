@@ -84,7 +84,8 @@ end;
 procedure TClickableFrame.btnEnableChildrenClick(Sender: TObject);
 begin
   for var Control in Rectangle.Controls do
-    Control.Enabled := true;
+    if Control <> cbAbsoluteEnabled then
+      Control.Enabled := true;
 end;
 
 procedure TClickableFrame.DblClick; //unfortunately there's no MouseDblClick that would also give us ShiftState (say double-clicking with Alt pressed etc.)

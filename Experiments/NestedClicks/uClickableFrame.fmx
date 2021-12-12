@@ -14,7 +14,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 65.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 5
+      TabOrder = 1
       Text = 'HitTest'
       OnChange = cbHitTestChange
     end
@@ -30,7 +30,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 88.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 1
+      TabOrder = 4
       Text = 'Fix DblClick'
       OnChange = cbHitTestChange
     end
@@ -40,7 +40,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 73.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 4
+      TabOrder = 2
       Text = 'Enabled'
       OnChange = cbEnabledChange
     end
@@ -81,7 +81,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 95.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 2
+      TabOrder = 5
       Text = 'TabStop'
       OnChange = cbTabStopChange
     end
