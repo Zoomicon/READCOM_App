@@ -3,19 +3,20 @@ unit READCOM.Views.Options.StoryItemOptions;
 interface
 
 uses
+  READCOM.App.Globals, //for SVGIconImageList, SVGIconImageList1
+  READCOM.App.Models, //for IStoryItemOptions
   System.SysUtils, System.Types,
   System.UITypes, //for TOpenOption
   System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts,
-  READCOM.App.Models, FMX.Controls.Presentation, System.ImageList,
-  FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit; //for IStoryItemOptions
+  FMX.Controls.Presentation, System.ImageList,
+  FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit;
 
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
     AddDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
-    SVGIconImageList: TSVGIconImageList;
     ActionList: TActionList;
     actionDelete: TAction;
     actionOpen: TAction;
