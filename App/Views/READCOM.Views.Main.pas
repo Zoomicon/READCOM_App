@@ -15,7 +15,8 @@ uses
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts, READCOM.Views.PanelStoryItem,
   READCOM.Views.AudioStoryItem,
-  SubjectStand;
+  SubjectStand,
+  READCOM.App.Globals;
 
 type
   TMainForm = class(TForm, IStory)
@@ -71,8 +72,8 @@ var
 
 implementation
   uses
+    {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
     System.Contnrs, //for TClassList
-    CodeSiteLogging,
     Zoomicon.Introspection.FMX.StructureView, //for TStructureView
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     READCOM.Views.VectorImageStoryItem; //TODO: remove
@@ -91,12 +92,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  CodeSite.EnterMethod('FormCreate');
-
   InitHUD;
   LoadSavedStateOrNewStory;
-
-  CodeSite.ExitMethod('FormCreate');
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -300,14 +297,20 @@ begin
       var TheRootStoryItemView := TPanelStoryItem.Create(Self);
       try
         TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheRootStoryItemView.SaveToString);
+        {$IFDEF DEBUG}
+        try
+          CodeSite.Send(TheRootStoryItemView.SaveToString);
+        finally
+          //NOP
+        end;
+        {$ENDIF}
         RootStoryItemView := TheRootStoryItemView; //only set StoryView
         result := true;
       except
         on E: Exception do
           begin
           Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-          CodeSite.SendException(E);
+          {$IFDEF DEBUG}CodeSite.SendException(E);{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
           end;
@@ -318,7 +321,7 @@ end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);
 begin
-  CodeSite.EnterMethod('SaveState');
+  {$IFDEF DEBUG}CodeSite.EnterMethod('SaveState');{$ENDIF}
   //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
@@ -327,16 +330,22 @@ begin
     with SaveState do
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
-        {}CodeSite.Send(TheRootStoryItemView.SaveToString);
+        {$IFDEF DEBUG}
+        try
+          CodeSite.Send(TheRootStoryItemView.SaveToString);
+        finally
+          //NOP
+        end;
+        {$ENDIF}
       except
         On E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
-          CodeSite.SendException(E);
+          {$IFDEF DEBUG}CodeSite.SendException(E);{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           end;
     end;
-  CodeSite.ExitMethod('SaveState');
+  {$IFDEF DEBUG}CodeSite.ExitMethod('SaveState');{$ENDIF}
 end;
 
 {$endregion}

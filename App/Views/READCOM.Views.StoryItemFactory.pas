@@ -5,21 +5,28 @@ unit READCOM.Views.StoryItemFactory;
 
 interface
   uses
+    System.Generics.Collections, //for TPair, doOwnsValues (of TDictionaryOwnerships set)
     Zoomicon.Generics.Factories, //for TFactoryRegistry
     READCOM.App.Models; //for IStoryItemFactoryRegistry
 
   var
-    StoryItemAddFileFilter: String;
+    StoryItemFileFilters: TList<TPair<String, String>>;
     StoryItemFactories: IStoryItemFactoryRegistry;
 
-implementation
-  uses
-    System.Generics.Collections; //for doOwnsValues (of TDictionaryOwnerships set)
+  function AddStoryItemFileFilter(const Title: String; const Exts: String): String;
 
-  type
-    TStoryItemFactoryRegistry = TFactoryRegistry<String, IStoryItem>;
+implementation
+
+type
+  TStoryItemFactoryRegistry = TFactoryRegistry<String, IStoryItem>;
+
+function AddStoryItemFileFilter(const Title: String; const Exts: String): String;
+begin
+  StoryItemFileFilters.Add(TPair<String,String>.Create(Title, Exts));
+end;
 
 initialization
+  StoryItemFileFilters := TList<TPair<String, String>>.Create;
   StoryItemFactories := TStoryItemFactoryRegistry.Create([{doOwnsValues}]); //assuming the factory objects descend from TComponent //TODO: see why can't use "doOwnsValues"
 
 end.

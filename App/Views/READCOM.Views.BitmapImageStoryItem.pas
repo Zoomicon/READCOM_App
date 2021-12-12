@@ -17,9 +17,9 @@ const
   EXT_PNG = '.png';
   EXT_JPG = '.jpg';
   EXT_JPEG = '.jpeg';
-  FILTER_PNG = 'PNG bitmap images (*.png)|*.png';
-  FILTER_JPEG_JPG = 'JPEG bitmap images (*.jpg, *.jpeg)|*.jpg;*.jpeg';
-  FILTER_BITMAP_IMAGE = FILTER_PNG + '|' + FILTER_JPEG_JPG;
+  FILTER_BITMAP_IMAGE_TITLE = 'Bitmap images (*.png, *.jpg, *.jpeg)';
+  FILTER_BITMAP_IMAGE_EXTS = '*' + EXT_PNG + ';*' + EXT_JPG + ';*' + EXT_JPEG;
+  FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
 
 type
   TBitmapImageStoryItem = class(TImageStoryItem, IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
@@ -31,6 +31,7 @@ type
     { Image }
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
+    procedure Loaded; override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -67,6 +68,12 @@ begin
   inherited;
   ImageControl.SetSubComponent(true);
   ImageControl.Stored := false; //don't store state, should use state from designed .FMX resource
+end;
+
+procedure TBitmapImageStoryItem.Loaded;
+begin
+  inherited;
+  Glyph.Visible := not Assigned(ImageControl.Bitmap.Image); //hide default Glyph if we have a bitmap image
 end;
 
 {$region 'IStorable'}
@@ -151,7 +158,7 @@ end;
 
 initialization
   StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create(nil));
-  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_BITMAP_IMAGE;
+  AddStoryItemFileFilter(FILTER_BITMAP_IMAGE_TITLE, FILTER_BITMAP_IMAGE_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

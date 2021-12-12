@@ -22,7 +22,9 @@ uses
 
 const
   EXT_READCOM = '.readcom';
-  FILTER_READCOM = 'READ-COM StoryItem (*.read-com)|*.readcom';
+  FILTER_READCOM_TITLE = 'READ-COM StoryItem (*.readcom)';
+  FILTER_READCOM_EXTS = '*' + EXT_READCOM;
+  FILTER_READCOM = FILTER_READCOM_TITLE + '|' + FILTER_READCOM_EXTS;
 
 type
   IStoreable = interface

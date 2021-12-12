@@ -15,9 +15,9 @@ uses
 
 const
   EXT_SVG = '.svg';
-  FILTER_SVG = 'SVG vector images (*.svg)|*.svg';
-  EXT_VECTOR_IMAGE = EXT_SVG;
-  FILTER_VECTOR_IMAGE = FILTER_SVG;
+  FILTER_VECTOR_IMAGE_TITLE = 'Vector images (*.svg)';
+  FILTER_VECTOR_IMAGE_EXTS = '*' + EXT_SVG;
+  FILTER_VECTOR_IMAGE = FILTER_VECTOR_IMAGE_TITLE + '|' + FILTER_VECTOR_IMAGE_EXTS;
 
 type
   TVectorImageStoryItem = class(TImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
@@ -148,7 +148,7 @@ begin
 end;
 
 procedure TVectorImageStoryItem.SetSVGText(const Value: String);
-begin
+begin //TODO: should restore default Glyph (keep it to some global/static var once?) if SVGText is set to ''
   if FAutoSize then
     Glyph.Align := TAlignLayout.None;
   var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
@@ -192,7 +192,7 @@ end;
 
 initialization
   StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create(nil));
-  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_VECTOR_IMAGE;
+  AddStoryItemFileFilter(FILTER_VECTOR_IMAGE_TITLE, FILTER_VECTOR_IMAGE_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

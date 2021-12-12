@@ -168,7 +168,7 @@ implementation
     u_UrlOpen,
     System.IOUtils, //for TPath
     Zoomicon.Generics.Collections,
-    READCOM.Views.StoryItemFactory, //for StoryItemFactories
+    READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
 
 {$R *.fmx}
@@ -613,8 +613,17 @@ end;
 
 function TStoryItem.GetAddFilesFilter: String;
 begin
+  var listFilters := TStringList.Create(#0, '|');
+  var listExt := TStringList.Create(#0, ';');
+  for var Pair in StoryItemFileFilters do
+  begin
+    listFilters.Add(Pair.Key {+ '(' + Pair.Value.Replace(';', ',') + ')'}); //note: title already contains the exts in parentheses
+    listFilters.Add(Pair.Value);
+  end;
+  listFilters.Insert(0, listExt.DelimitedText);
+  listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text');
 
-  result := StoryItemAddFileFilter;
+  result := listFilters.DelimitedText;
 end;
 
 procedure TStoryItem.Add(const Filepath: String);
@@ -757,6 +766,6 @@ end;
 {$endregion}
 
 initialization
-  StoryItemAddFileFilter := {StoryItemAddFileFilter + '|' + } FILTER_READCOM; //should make sure this is used first
+  AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXTS); //should make sure this is used first
 
 end.

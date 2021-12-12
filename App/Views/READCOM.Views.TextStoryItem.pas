@@ -18,8 +18,9 @@ uses
 
 const
   EXT_TXT = '.txt';
-  FILTER_TXT = 'Text files (*.txt)|*.txt';
-  FILTER_TEXT = FILTER_TXT;
+  FILTER_TEXT_TITLE = 'Text (*.txt)';
+  FILTER_TEXT_EXTS = '*' + EXT_TXT;
+  FILTER_TEXT = FILTER_TEXT_TITLE + '|' + FILTER_TEXT_EXTS;
 
 type
   TTextStoryItem = class(TStoryItem, ITextStoryItem, IStoryItem, IStoreable)
@@ -79,7 +80,7 @@ implementation
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Text, //for ReadAllText
-    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Views.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
 
 {$R *.fmx}
 
@@ -227,7 +228,7 @@ end;
 
 initialization
   StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create(nil));
-  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_TEXT;
+  AddStoryItemFileFilter(FILTER_TEXT_TITLE, FILTER_TEXT_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

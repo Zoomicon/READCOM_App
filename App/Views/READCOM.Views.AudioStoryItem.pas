@@ -15,8 +15,9 @@ uses
 
 const
   EXT_MP3 = '.mp3';
-  FILTER_MP3 = 'MP3 audio (*.mp3)|*.mp3';
-  FILTER_AUDIO = FILTER_MP3;
+  FILTER_AUDIO_TITLE = 'Audio (*.mp3)';
+  FILTER_AUDIO_EXTS = '*' + EXT_MP3;
+  FILTER_AUDIO = FILTER_AUDIO_TITLE + '|' + FILTER_AUDIO_EXTS;
 
 type
   TAudioStoryItem = class(TStoryItem , IAudioStoryItem, IStoryItem, IStoreable)
@@ -256,7 +257,7 @@ end;
 
 initialization
   StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create(nil));
-  StoryItemAddFileFilter := StoryItemAddFileFilter + '|' + FILTER_AUDIO;
+  AddStoryItemFileFilter(FILTER_AUDIO_TITLE, FILTER_AUDIO_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

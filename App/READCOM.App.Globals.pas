@@ -3,12 +3,14 @@ unit READCOM.App.Globals;
 interface
 
 uses
-  System.SysUtils, System.Classes, FMX.Types, FMX.Controls;
+  System.SysUtils, System.Classes, FMX.Types, FMX.Controls,
+  System.ImageList, FMX.ImgList, FMX.SVGIconImageList;
 
 type
-  TDataModule1 = class(TDataModule)
+  TGlobals = class(TDataModule)
     DefaultStyleBook: TStyleBook;
     Lang: TLang;
+    SVGIconImageList: TSVGIconImageList;
   private
     { Private declarations }
   public
@@ -16,7 +18,7 @@ type
   end;
 
 var
-  DataModule1: TDataModule1;
+  Globals: TGlobals;
 
 implementation
 

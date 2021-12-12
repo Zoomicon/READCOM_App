@@ -20,7 +20,7 @@ uses
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
   Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
   Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
-  READCOM.App.Globals in 'READCOM.App.Globals.pas' {DataModule1: TDataModule},
+  READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
@@ -91,7 +91,7 @@ begin
 
   Application.Initialize;
 
-  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TGlobals, Globals);
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TMessageForm, MessageForm);
   {$IFDEF DEBUG}
