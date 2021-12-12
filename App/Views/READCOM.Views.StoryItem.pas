@@ -613,6 +613,7 @@ end;
 
 function TStoryItem.GetAddFilesFilter: String;
 begin
+
   result := StoryItemAddFileFilter;
 end;
 

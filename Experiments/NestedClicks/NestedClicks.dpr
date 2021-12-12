@@ -3,7 +3,7 @@ program NestedClicks;
 uses
   System.StartUpCopy,
   FMX.Forms,
-  uForm in 'uForm.pas' {Form2},
+  uMainForm in 'uMainForm.pas' {MainForm},
   uClickableFrame in 'uClickableFrame.pas' {ClickableFrame: TFrame};
 
 {$R *.res}
@@ -14,6 +14,6 @@ begin
   {$ENDIF}
 
   Application.Initialize;
-  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

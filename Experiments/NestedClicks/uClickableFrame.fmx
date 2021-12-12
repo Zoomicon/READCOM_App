@@ -1,11 +1,11 @@
 object ClickableFrame: TClickableFrame
-  Size.Width = 424.000000000000000000
+  Size.Width = 552.000000000000000000
   Size.Height = 240.000000000000000000
   Size.PlatformDefault = False
   object Rectangle: TRectangle
     Align = Client
     HitTest = False
-    Size.Width = 424.000000000000000000
+    Size.Width = 552.000000000000000000
     Size.Height = 240.000000000000000000
     Size.PlatformDefault = False
     object cbHitTest: TCheckBox
@@ -14,7 +14,7 @@ object ClickableFrame: TClickableFrame
       Size.Width = 65.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 3
+      TabOrder = 5
       Text = 'HitTest'
       OnChange = cbHitTestChange
     end
@@ -40,19 +40,9 @@ object ClickableFrame: TClickableFrame
       Size.Width = 73.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 2
+      TabOrder = 4
       Text = 'Enabled'
       OnChange = cbEnabledChange
-      object cbAbsoluteEnabled: TCheckBox
-        Enabled = False
-        Position.X = 80.000000000000000000
-        Size.Width = 121.000000000000000000
-        Size.Height = 19.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 2
-        Text = 'AbsoluteEnabled'
-        OnChange = cbEnabledChange
-      end
     end
     object btnEnableChildren: TButton
       Margins.Left = 5.000000000000000000
@@ -64,15 +54,36 @@ object ClickableFrame: TClickableFrame
       Size.Width = 93.000000000000000000
       Size.Height = 22.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 4
+      TabOrder = 6
       Text = 'Enable Children'
       OnClick = btnEnableChildrenClick
     end
     object UpdateTimer: TTimer
       Interval = 1
       OnTimer = UpdateTimerTimer
-      Left = 368
-      Top = 16
+      Left = 416
+      Top = 88
+    end
+    object cbAbsoluteEnabled: TCheckBox
+      Enabled = False
+      Position.X = 162.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 121.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      Text = 'AbsoluteEnabled'
+      OnChange = cbEnabledChange
+    end
+    object cbTabStop: TCheckBox
+      Position.X = 386.000000000000000000
+      Position.Y = 33.000000000000000000
+      Size.Width = 95.000000000000000000
+      Size.Height = 19.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Text = 'TabStop'
+      OnChange = cbTabStopChange
     end
   end
 end

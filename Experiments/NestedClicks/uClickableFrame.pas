@@ -17,10 +17,12 @@ type
     btnEnableChildren: TButton;
     UpdateTimer: TTimer;
     cbAbsoluteEnabled: TCheckBox;
+    cbTabStop: TCheckBox;
     procedure cbHitTestChange(Sender: TObject);
     procedure cbEnabledChange(Sender: TObject);
     procedure btnEnableChildrenClick(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
+    procedure cbTabStopChange(Sender: TObject);
   protected
     procedure DblClick; override;
     procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
@@ -60,6 +62,11 @@ begin
   HitTest := cbHitTest.IsChecked;
 end;
 
+procedure TClickableFrame.cbTabStopChange(Sender: TObject);
+begin
+  TabStop := cbTabStop.IsChecked;
+end;
+
 procedure TClickableFrame.cbEnabledChange(Sender: TObject);
 begin
   Enabled := cbEnabled.IsChecked;
@@ -71,6 +78,7 @@ begin
   cbHitTest.IsChecked := HitTest;
   cbEnabled.IsChecked := Enabled;
   cbAbsoluteEnabled.IsChecked := AbsoluteEnabled;
+  cbTabStop.IsChecked := TabStop;
 end;
 
 procedure TClickableFrame.btnEnableChildrenClick(Sender: TObject);

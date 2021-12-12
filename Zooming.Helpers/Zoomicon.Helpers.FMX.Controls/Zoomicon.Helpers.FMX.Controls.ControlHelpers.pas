@@ -101,7 +101,7 @@ begin
 
   Result := nil;
 
-  if PointInObject(LP.X, LP.Y) {and CheckHitTest(HitTest)} then //TODO: allow to have option to ignore hit test
+  if PointInObject(LP.X, LP.Y) and CheckHitTest(HitTest) then //TODO: allow to have option to ignore hit test
     Result := Self;
 end;
 

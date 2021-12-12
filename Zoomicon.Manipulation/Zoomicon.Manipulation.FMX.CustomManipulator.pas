@@ -717,13 +717,15 @@ end;
 
 procedure TCustomManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
+  inherited; //needed for event handlers to be fired (e.g. at ancestors)
+
   if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
     var LObj := ObjectAtPoint(ScreenMousePos, false);
     if Assigned(LObj) then
     begin
-      var Control := TControl(LObj.GetObject).ParentControl; //TODO: fix hack - have an ObjectAtPoint/ObjectAtPointLocal that has param to not recurse into children
+      var Control := TControl(LObj.GetObject);
       var zoom_center := Control.ScreenToLocal(ScreenMousePos);
 
       var new_scale : single;
@@ -742,8 +744,6 @@ begin
       exit;
     end; //adapted from https://stackoverflow.com/a/66049562/903783
   end;
-
-  inherited; //needed for event handlers to be fired (e.g. at ancestors)
 end;
 
 {$endregion}
