@@ -32,7 +32,9 @@ requires
 
 contains
   Zoomicon.Generics.Collections in 'Collections\Zoomicon.Generics.Collections.pas',
-  Zoomicon.Generics.Functors in 'Functors\Zoomicon.Generics.Functors.pas';
+  Zoomicon.Generics.Functors in 'Functors\Zoomicon.Generics.Functors.pas',
+  Zoomicon.Generics.Factories in 'Factories\Zoomicon.Generics.Factories.pas',
+  Zoomicon.Generics.Registries in 'Collections\Zoomicon.Generics.Registries.pas';
 
 {$Description 'Zoomicon Generics'}
 

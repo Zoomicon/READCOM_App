@@ -155,6 +155,8 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="Collections\Zoomicon.Generics.Collections.pas"/>
         <DCCReference Include="Functors\Zoomicon.Generics.Functors.pas"/>
+        <DCCReference Include="Factories\Zoomicon.Generics.Factories.pas"/>
+        <DCCReference Include="Collections\Zoomicon.Generics.Registries.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -910,9 +912,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
