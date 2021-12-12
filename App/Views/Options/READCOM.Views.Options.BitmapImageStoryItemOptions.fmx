@@ -12,7 +12,8 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       Action = TakePhotoFromCameraAction
       Align = Client
       Enabled = True
-      ImageIndex = 6
+      Images = Globals.SVGIconImageList
+      ImageIndex = 11
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -21,28 +22,28 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
   end
   inherited ActionList: TActionList
     inherited actionDelete: TAction
-      ImageIndex = 3
+      ImageIndex = 8
     end
     inherited actionOpen: TAction
-      ImageIndex = 1
+      ImageIndex = 6
     end
     inherited actionSave: TAction
-      ImageIndex = 2
+      ImageIndex = 7
     end
     inherited actionAnchor: TAction
-      ImageIndex = 0
+      ImageIndex = 5
     end
     inherited actionChangeUrlAction: TAction
-      ImageIndex = 4
+      ImageIndex = 9
     end
     inherited actionAdd: TAction
-      ImageIndex = 5
+      ImageIndex = 10
     end
     object TakePhotoFromCameraAction: TTakePhotoFromCameraAction
       Category = 'Media Library'
-      ImageIndex = 6
+      ImageIndex = 11
       OnDidFinishTaking = TakePhotoFromCameraActionDidFinishTaking
-      ImageIndex = 6
+      ImageIndex = 11
     end
   end
 end

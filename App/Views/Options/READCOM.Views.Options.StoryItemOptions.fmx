@@ -26,8 +26,8 @@ object StoryItemOptions: TStoryItemOptions
       Size.Width = 33.000000000000000000
       Size.Height = 41.000000000000000000
       Size.PlatformDefault = False
-      ImageIndex = 4
-      Images = Globals.SVGIconImageList1
+      ImageIndex = 9
+      Images = Globals.SVGIconImageList
     end
     object editUrlAction: TEdit
       Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -55,8 +55,8 @@ object StoryItemOptions: TStoryItemOptions
       Align = Client
       Anchors = []
       Enabled = True
-      Images = Globals.SVGIconImageList1
-      ImageIndex = 0
+      Images = Globals.SVGIconImageList
+      ImageIndex = 5
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -66,8 +66,8 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionDelete
       Align = Client
       Enabled = True
-      Images = Globals.SVGIconImageList1
-      ImageIndex = 3
+      Images = Globals.SVGIconImageList
+      ImageIndex = 8
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -77,8 +77,8 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionAdd
       Align = Client
       Enabled = True
-      Images = Globals.SVGIconImageList1
-      ImageIndex = 5
+      Images = Globals.SVGIconImageList
+      ImageIndex = 10
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -88,8 +88,8 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionOpen
       Align = Client
       Enabled = True
-      Images = Globals.SVGIconImageList1
-      ImageIndex = 1
+      Images = Globals.SVGIconImageList
+      ImageIndex = 6
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -99,8 +99,8 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionSave
       Align = Client
       Enabled = True
-      Images = Globals.SVGIconImageList1
-      ImageIndex = 2
+      Images = Globals.SVGIconImageList
+      ImageIndex = 7
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
@@ -113,44 +113,44 @@ object StoryItemOptions: TStoryItemOptions
     Top = 192
   end
   object ActionList: TActionList
-    Images = Globals.SVGIconImageList1
+    Images = Globals.SVGIconImageList
     Left = 128
     Top = 136
     object actionDelete: TAction
       Text = 'Delete'
-      ImageIndex = 3
+      ImageIndex = 8
       OnExecute = actionDeleteExecute
-      ImageIndex = 3
+      ImageIndex = 8
     end
     object actionOpen: TAction
       Text = 'Open'
-      ImageIndex = 1
+      ImageIndex = 6
       OnExecute = actionOpenExecute
-      ImageIndex = 1
+      ImageIndex = 6
     end
     object actionSave: TAction
       Text = 'Save'
-      ImageIndex = 2
+      ImageIndex = 7
       OnExecute = actionSaveExecute
-      ImageIndex = 2
+      ImageIndex = 7
     end
     object actionAnchor: TAction
       Text = 'Anchor'
-      ImageIndex = 0
+      ImageIndex = 5
       OnExecute = actionAnchorExecute
-      ImageIndex = 0
+      ImageIndex = 5
     end
     object actionChangeUrlAction: TAction
       Text = 'Change URL Action'
-      ImageIndex = 4
+      ImageIndex = 9
       OnExecute = actionChangeUrlActionExecute
-      ImageIndex = 4
+      ImageIndex = 9
     end
     object actionAdd: TAction
       Text = 'Add'
-      ImageIndex = 5
+      ImageIndex = 10
       OnExecute = actionAddExecute
-      ImageIndex = 5
+      ImageIndex = 10
     end
   end
 end
