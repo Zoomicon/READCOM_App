@@ -153,11 +153,11 @@ type
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
     property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation order)
-    property Active: Boolean read IsActive write SetActive; //default false
-    property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property Anchored: Boolean read IsAnchored write SetAnchored; //default false
-    property UrlAction: String read GetUrlAction write SetUrlAction; //default nil
-    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
+    property Active: Boolean read IsActive write SetActive default false;
+    property Hidden: Boolean read IsHidden write SetHidden default false;
+    property Anchored: Boolean read IsAnchored write SetAnchored default false;
+    property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
+    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible default false;
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
