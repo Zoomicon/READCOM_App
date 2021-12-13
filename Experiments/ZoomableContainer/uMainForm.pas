@@ -55,7 +55,7 @@ type
     FStoredWheelDelta: extended;
     FOnZoomChanged: TZoomChangedEvent;
     procedure UpdateZoomFromTrackbars;
-    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
+    procedure StructureViewSelection(Sender: TObject; Selection: TObject);
 
     {Proportional}
     function IsProportional: Boolean;
@@ -305,7 +305,7 @@ begin
   //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition after: (%f, %f)', [x, y]);
 end;
 
-procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
+procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
 begin
   ZoomTo(TControl(Selection)); //TODO: see why while in deeper zooms the StructureView item structure (and bitmaps) don't show up properly
   MultiView.HideMaster;
