@@ -31,13 +31,15 @@ type
     procedure HUDactionTargetsExecute(Sender: TObject);
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
+    procedure HUDactionNewExecute(Sender: TObject);
+    procedure HUDactionHomeExecute(Sender: TObject);
+    procedure HUDactionPreviousExecute(Sender: TObject);
+    procedure HUDactionNextExecute(Sender: TObject);
 
   protected
-    { StructureView }
-    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
-
     { SavedState}
-    procedure LoadSavedStateOrNewStory;
+    procedure NewRootStoryItem;
+    procedure LoadSavedStateOrNewRootStoryItem;
     function LoadSavedState: Boolean;
 
     { RootStoryItemStoryView }
@@ -60,6 +62,9 @@ type
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
+    { StructureView }
+    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
+
   public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
@@ -76,6 +81,7 @@ implementation
   uses
     {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
     System.Contnrs, //for TClassList
+    System.Math, //for Max
     Zoomicon.Introspection.FMX.StructureView, //for TStructureView
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     READCOM.Views.VectorImageStoryItem; //TODO: remove
@@ -95,7 +101,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
   InitHUD;
-  LoadSavedStateOrNewStory;
+  LoadSavedStateOrNewRootStoryItem;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -133,20 +139,42 @@ procedure TMainForm.SetRootStoryItemView(const Value: TStoryItem);
 begin
   //Remove old story
   var TheRootStoryItemView := RootStoryItemView;
-  if Assigned(TheRootStoryItemView) then
+  if Assigned(TheRootStoryItemView) and (Value <> TheRootStoryItemView) then //must check that the same one isn't set again to avoid destroying it
     begin
     //TheStory.Parent := nil; //shouldn't be needed
+    ActiveStoryItem := nil; //must clear reference to old ActiveStoryItem since all StoryItems will be destroyed
     FreeAndNil(TheRootStoryItemView); //destroy the old RootStoryItem //FREE THE CONTROL, DON'T FREE JUST THE INTERFACE
     end;
 
-  //Add new story
-  with Value do
+  //Add new story, if any
+  if Assigned(Value) then //allowing to set the same one to update any zooming/positioning calculations if needed
   begin
-    //AutoSize := true; //the Root StoryItem should be expandable
-    Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
-    Align := TAlignLayout.Contents;
-    Align := TAlignLayout.Center;
-    ActiveStoryItem := Value;
+    with Value do
+    begin
+      //AutoSize := true; //TODO: the Root StoryItem should be expandable (need to handle resize event of it though and do like below)
+
+      var newSize := Size.Size;
+
+      {
+      var currentZoomerSize := ZoomFrame.Zoomer.Size.Size; //don't get size of zoomFrame itself
+      var newZoomerSize := TSizeF.Create(Max(currentZoomerSize.cx, newSize.cx), Max(currentZoomerSize.cy, newSize.cy));
+      ZoomFrame.Zoomer.Size.Size := newZoomerSize; //use the next line instead
+      ZoomFrame.SetZoomerSize(newZoomerSize); //must use this since it sets other zoomer params too
+      }
+
+      BeginUpdate; //TODO: move this working code to TZoomFrame
+      ZoomFrame.ScaledLayout.Align := TAlignLayout.None;
+      ZoomFrame.ScaledLayout.Size.Size := newSize;
+      ZoomFrame.ScaledLayout.OriginalWidth := newSize.cx; //needed to reset the ScalingFactor
+      ZoomFrame.ScaledLayout.OriginalHeight := newSize.cy; //needed to reset the ScalingFactor
+      ZoomFrame.ScaledLayout.Align := TAlignLayout.Fit;
+      EndUpdate;
+
+      //Align := TAlignLayout.Center; //TODO: this won't work correctly, need the parents chain to be AutoSized too (ScaledLayout and ZoomLayout [that one without losing its ratio when reverse-fitting out of child]) //TODO: add ParentLayout property for the child control to try to layout its parent on its own Resize event? (could do infinite loops), that is if code above won't work
+      Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+    end;
+
+    ActiveStoryItem := Value; //this will ZoomTo the RootStoryItemView //don't put in the with statement, will call it on the storyitem and won't ZoomTo //TODO: listen to TStoryItem class event for active story item changes instead?
   end;
 end;
 
@@ -215,11 +243,19 @@ end;
 
 {$region 'File actions'}
 
+procedure TMainForm.HUDactionNewExecute(Sender: TObject);
+begin
+  //if ConfirmClose then //TODO (should show some image asking?)
+    NewRootStoryItem;
+end;
+
 procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
 begin
   //HUD.actionLoadExecute(Sender);
 
-  RootStoryItem.Options.ActLoad;
+  RootStoryItem.Options.ActLoad; //assuming this is blocking action
+
+  RootStoryItemView := RootStoryItemView; //temp patch till we listen for resizing of the RootStoryItemView to adapt ZoomFrame.ScaledLayout size
 end;
 
 procedure TMainForm.HUDactionSaveExecute(Sender: TObject);
@@ -293,10 +329,30 @@ end;
 
 {$endregion}
 
+{$region 'Navigation actions'}
+
+procedure TMainForm.HUDactionHomeExecute(Sender: TObject);
+begin
+  ActiveStoryItem := RootStoryItem;
+end;
+
+procedure TMainForm.HUDactionNextExecute(Sender: TObject);
+begin
+  //TODO
+end;
+
+procedure TMainForm.HUDactionPreviousExecute(Sender: TObject);
+begin
+  //TODO
+end;
+
+{$endregion}
+
 {$endregion}
 
 procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
 begin
+  HUD.MultiView.HideMaster; //first close the structure drawer, then do ZoomTo so that any zooming animation will be visible
   ZoomFrame.ZoomTo(TControl(Selection));
 end;
 
@@ -304,14 +360,19 @@ end;
 
 {$region 'SavedState'}
 
-procedure TMainForm.LoadSavedStateOrNewStory;
+procedure TMainForm.NewRootStoryItem;
+begin
+  RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
+  var TheStory := TPanelStoryItem.Create(Self);
+  TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+  TheStory.EditMode := HUD.actionEdit.Checked; //TODO: add EditMode property to IStory or use its originally intended mode one
+  RootStoryItemView := TheStory;
+end;
+
+procedure TMainForm.LoadSavedStateOrNewRootStoryItem;
 begin
   if (not LoadSavedState) then //Note: if it keeps on failing at load comment out this line for one run //TODO: shouldn't need to do that
-    begin
-    var TheStory := TPanelStoryItem.Create(Self);
-    TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    RootStoryItemView := TheStory;
-    end;
+    NewRootStoryItem;
 end;
 
 function TMainForm.LoadSavedState: Boolean;

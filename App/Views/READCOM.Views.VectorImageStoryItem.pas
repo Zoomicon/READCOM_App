@@ -103,7 +103,7 @@ begin
   if FAutoSize then
     begin
     //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
-    SetSize(100,100);
+    SetSize(100,100); //TODO: fix this
     Glyph.Align := TAlignLayout.Contents;
     end;
 end;
@@ -153,10 +153,10 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
     Glyph.Align := TAlignLayout.None;
   var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
   bitmap.SVGText := Value;
-  if FAutoSize then
+  if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
     begin
     //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
-    SetSize(100,100);
+    //SetSize(100,100);
     Glyph.Align := TAlignLayout.Contents;
     end;
 

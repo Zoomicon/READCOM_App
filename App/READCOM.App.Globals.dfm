@@ -30312,26 +30312,44 @@ object Globals: TGlobals
           item
             Size = 30
           end>
-        IconName = 'edit'
+        IconName = 'Edit'
         SVGText = 
           '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
-          '0/svg">'#10'  <g id="color">'#10'    <rect x="12.854" y="16.5774" width=' +
-          '"42.4977" height="42.246" fill="#FFFFFF" stroke="none"/>'#10'    <po' +
-          'lygon fill="#F4AA41" stroke="none" points="32.775,39.4058 37.493' +
-          '8,37.6238 34.5571,34.687"/>'#10'    <rect x="44.8202" y="9.0123" wid' +
-          'th="5.3523" height="31.1323" transform="matrix(0.7071 0.7071 -0.' +
-          '7071 0.7071 31.291 -26.3861)" fill="#A57939" stroke="none"/>'#10'  <' +
-          '/g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  ' +
-          '<g id="line">'#10'    <path fill="none" stroke="#000000" stroke-line' +
-          'cap="round" stroke-linejoin="round" stroke-miterlimit="10" strok' +
-          'e-width="2" d="M54.5567,28.084v30.6836c0,0.55-0.45,1-1,1H13.1685' +
-          'c-0.55,0-1-0.45-1-1V18.3794c0-0.5523,0.4477-1,1-1h31.0229"/>'#10'   ' +
-          ' <path fill="none" stroke="#000000" stroke-linecap="round" strok' +
-          'e-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M3' +
-          '8.0526,37.7487l21.4611-21.4611c0.3905-0.3905,0.3905-1.0237,0-1.4' +
-          '142l-2.3359-2.3359c-0.3905-0.3905-1.0237-0.3905-1.4142,0 L34.302' +
-          '5,33.9986l-2.6258,6.3865L38.0526,37.7487l-3.7501-3.7501"/>'#10'  </g' +
-          '>'#10'</svg>'#10
+          '0/svg">'#10'  <g id="color">'#10'    <polygon fill="#FCEA2B" stroke="#FC' +
+          'EA2B" stroke-linecap="round" stroke-linejoin="round" stroke-mite' +
+          'rlimit="10" stroke-width="1.8" points="35.25,12 46.375,23.25 46.' +
+          '375,62 13,62 13,12"/>'#10'    <polygon fill="#F1B31C" stroke="#F1B31' +
+          'C" stroke-linecap="round" stroke-linejoin="round" stroke-miterli' +
+          'mit="10" stroke-width="1.8" points="15.688,62 12.625,62 46.375,6' +
+          '2 46.375,36.625 20.9375,62"/>'#10'    <polygon fill="#FFFFFF" stroke' +
+          '="none" stroke-linecap="round" stroke-linejoin="round" stroke-mi' +
+          'terlimit="10" stroke-width="2" points="34,49 34,54 39,54 63,30 5' +
+          '8,25"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-s' +
+          'hadow"/>'#10'  <g id="line">'#10'    <polyline fill="none" stroke="#0000' +
+          '00" stroke-linecap="round" stroke-linejoin="round" stroke-miterl' +
+          'imit="10" stroke-width="2" points="46.375,30.9999 46.375,23.25 3' +
+          '5.125,23.25 35.125,12 12.625,12 12.625,62 46.375,62 46.375,52.16' +
+          '66"/>'#10'    <line x1="35.125" x2="46.375" y1="12" y2="23.25" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="4' +
+          '1" x2="18" y1="30" y2="30" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="24" y2="24" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="4' +
+          '1" x2="18" y1="36" y2="36" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="42" y2="42" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="2' +
+          '8" x2="18" y1="48" y2="48" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="54" y2="54" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <polygon fi' +
+          'll="none" stroke="#000000" stroke-linecap="round" stroke-linejoi' +
+          'n="round" stroke-miterlimit="10" stroke-width="2" points="34,49 ' +
+          '34,54 39,54 63,30 58,25"/>'#10'  </g>'#10'</svg>'#10
         Opacity = 1.000000000000000000
       end
       item
@@ -30702,12 +30720,62 @@ object Globals: TGlobals
           '82c0-0.5638-0.4692-1.0208-1.048-1.0208h-7.6766c-0.5787,0-1.048,0' +
           '.457-1.048,1.0208v1.0782"/>'#10'  </g>'#10'</svg>'#10
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'PaperA4'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <polyline fill="#D0CFCE" stroke="no' +
+          'ne" stroke-linecap="round" stroke-linejoin="round" stroke-miterl' +
+          'imit="10" stroke-width="2" points="36,10.9583 55.9577,31.0626 55' +
+          '.9577,60.9583 16.0423,60.9583 16.0423,10.9583 36,10.9583"/>'#10'  </' +
+          'g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  <' +
+          'g id="line">'#10'    <polyline fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2" points="36,10.9583 55.9577,31.0626 55.9577,60.958' +
+          '3 16.0423,60.9583 16.0423,10.9583 36,10.9583"/>'#10'    <polyline fi' +
+          'll="none" stroke="#000000" stroke-linecap="round" stroke-linejoi' +
+          'n="round" stroke-miterlimit="10" stroke-width="2" points="36,10.' +
+          '9583 35.9577,31.0626 49.1463,31.0626"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Home'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <polygon fill="#D0CFCE" stroke="non' +
+          'e" points="17.1289,59.7384 16.0605,34.7399 16.0812,27.7956 36.14' +
+          '91,8.1103 55.9811,27.9203 55.9766,43.3584 55.0371,52.0185 54.921' +
+          '9,59.7384 41.7865,59.1623 41.8149,41.6273 30.2251,41.6273 30.149' +
+          ',59.1623"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="sk' +
+          'in-shadow"/>'#10'  <g id="line">'#10'    <path fill="none" stroke="#0000' +
+          '00" stroke-linecap="round" stroke-linejoin="round" stroke-miterl' +
+          'imit="10" stroke-width="2" d="M41.9901,59.9508H53.982c0.55,0,1-0' +
+          '.45,1-1v-24.938"/>'#10'    <path fill="none" stroke="#000000" stroke' +
+          '-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" ' +
+          'stroke-width="2" d="M17.058,34.0128v24.938c0,0.55,0.45,1,1,1h12.' +
+          '1346"/>'#10'    <polyline fill="none" stroke="#000000" stroke-lineca' +
+          'p="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-' +
+          'width="2" points="8.4925,35.5947 36.0155,7.9766 63.5958,35.3474"' +
+          '/>'#10'    <polyline fill="none" stroke="#000000" stroke-linecap="ro' +
+          'und" stroke-linejoin="round" stroke-miterlimit="10" stroke-width' +
+          '="2" points="41.8149,59.9327 41.8149,41.6273 30.2251,41.6273 30.' +
+          '2251,59.9327"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
-            Name = 'edit'
+            Name = 'Edit'
             SourceRect.Right = 30.000000000000000000
             SourceRect.Bottom = 30.000000000000000000
           end>
@@ -30798,6 +30866,22 @@ object Globals: TGlobals
             Name = 'Camera'
             SourceRect.Right = 64.000000000000000000
             SourceRect.Bottom = 64.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'PaperA4'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Home'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item

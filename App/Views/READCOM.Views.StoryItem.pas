@@ -195,6 +195,7 @@ procedure TStoryItem.Init;
     begin
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
+      Align := TAlignLayout.Client;
       SendToBack;
       HitTest := false;
     end;
@@ -206,6 +207,7 @@ procedure TStoryItem.Init;
     begin
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
+      Align := TAlignLayout.Client;
       SendToBack;
       HitTest := false;
       Visible := EditMode; //show only in EditMode
@@ -216,17 +218,19 @@ procedure TStoryItem.Init;
   begin
     with DropTarget do
     begin
-      Visible := EditMode; //show only in EditMode
+      Visible := EditMode;
       FilterIndex := 1; //this is the default value
       Filter := GetAddFilesFilter;
-      DropTarget.Align := TAlignLayout.Client;
+      Align := TAlignLayout.Client;
+      HitTest := True; //TODO: done at ancestor anyway?
+      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order)
     end;
   end;
 
 begin
+  InitDropTarget;
   InitGlyph;
   InitBorder;
-  InitDropTarget;
 end;
 
 constructor TStoryItem.Create(AOwner: TComponent);

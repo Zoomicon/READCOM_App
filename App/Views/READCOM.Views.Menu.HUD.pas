@@ -39,6 +39,10 @@ type
     actionSave: TAction;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
+    actionNew: TAction;
+    btnNew: TSpeedButton;
+    actionHome: TAction;
+    btnHome: TSpeedButton;
     procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
@@ -100,7 +104,7 @@ end;
 
 procedure TStoryHUD.actionStructureExecute(Sender: TObject);
 begin
-  MultiView.ShowMaster
+  MultiView.ShowMaster;
 end;
 
 {$endregion}

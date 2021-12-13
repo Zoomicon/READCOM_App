@@ -209,9 +209,10 @@ procedure TCustomManipulator.Loaded;
     begin
       Stored := False; //don't store state
       SetSubComponent(true); //don't show in Designer for descendents
-      HitTest := False;
+      HitTest := True; //TODO: check if needed for drag-drop
       SendToBack;
-      //DropTarget.Align := TAlignLayout.Client; //TODO: report to Embarcadero that it fails either before or after setting Parent (have to do at ancestor's constructor)
+      Visible := EditMode;
+      DropTarget.Align := TAlignLayout.Client;
       OnDragOver := DropTargetDragOver;
       OnDropped := DropTargetDropped;
     end;

@@ -50,6 +50,8 @@ type
     procedure SetZoom(const Value: TPointF); overload;
     procedure SetZoom(const Value: Single); overload;
 
+    procedure SetZoomerSize(const ASize: TSizeF); //TODO: use some other better way for clients to tell us that their contents resized?
+
   published
     property Proportional: Boolean read IsProportional write SetProportional;
     property Zoom: TPointF read GetZoom write SetZoom;
@@ -228,25 +230,29 @@ end;
 
 procedure TZoomFrame.ScrollBoxResize(Sender: TObject);
 begin
-  var oldZoom := Zoomer.ScalingFactor;
-
   var Viewport := Sender as TControl;
   var ViewportSize := Viewport.Size.Size;
   if not ViewportSize.IsZero then
-    begin
-    BeginUpdate;
-    Zoomer.Size.Size := ViewportSize;
+    SetZoomerSize(ViewportSize);
+end;
 
-    with Zoomer do
-    begin
-      OriginalWidth := Width;
-      OriginalHeight := Height;
-    end;
+procedure TZoomFrame.SetZoomerSize(const ASize: TSizeF); //TODO: add to rest of code (and to related experiment)
+begin
+  var oldZoom := Zoomer.ScalingFactor;
 
-    SetZoom(oldZoom); //UpdateZoomFromTrackbars;
-    //ScrollBox.InvalidateContentSize;
-    EndUpdate;
-    end;
+  BeginUpdate;
+
+  Zoomer.Size.Size := ASize;
+  with Zoomer do
+  begin
+    OriginalWidth := Width;
+    OriginalHeight := Height;
+  end;
+
+  SetZoom(oldZoom); //UpdateZoomFromTrackbars;
+  //ScrollBox.InvalidateContentSize; //TODO: probably needed when we explicitly call this method
+
+  EndUpdate;
 end;
 
 {$endregion}

@@ -66,12 +66,23 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
+      object btnNew: TSpeedButton
+        Action = actionNew
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 12
+        Position.Y = 40.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'drawertoolbutton'
+      end
       object btnLoad: TSpeedButton
         Action = actionLoad
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 6
-        Position.Y = 40.000000000000000000
+        Position.Y = 80.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -82,7 +93,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 7
-        Position.Y = 80.000000000000000000
+        Position.Y = 120.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -93,7 +104,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 0
-        Position.Y = 120.000000000000000000
+        Position.Y = 160.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -104,7 +115,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 3
-        Position.Y = 160.000000000000000000
+        Position.Y = 200.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -115,7 +126,18 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 4
-        Position.Y = 200.000000000000000000
+        Position.Y = 240.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'drawertoolbutton'
+      end
+      object btnHome: TSpeedButton
+        Action = actionHome
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 13
+        Position.Y = 280.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -166,6 +188,12 @@ object StoryHUD: TStoryHUD
     Images = Globals.SVGIconImageList
     Left = 312
     Top = 40
+    object actionHome: TAction
+      Category = 'Navigation'
+      Text = 'actionHome'
+      ImageIndex = 13
+      ImageIndex = 13
+    end
     object actionPrevious: TAction
       Category = 'Navigation'
       Text = 'actionPrevious'
@@ -178,10 +206,6 @@ object StoryHUD: TStoryHUD
       ImageIndex = 2
       ImageIndex = 2
     end
-    object actionAdd: TAction
-      Category = 'Edit'
-      Text = 'actionAdd'
-    end
     object actionEdit: TAction
       Category = 'Edit'
       AutoCheck = True
@@ -189,6 +213,10 @@ object StoryHUD: TStoryHUD
       ImageIndex = 0
       OnExecute = actionEditExecute
       ImageIndex = 0
+    end
+    object actionAdd: TAction
+      Category = 'Edit'
+      Text = 'actionAdd'
     end
     object actionAbout: TAction
       Category = 'Help'
@@ -214,6 +242,12 @@ object StoryHUD: TStoryHUD
       Text = 'Targets'
       ImageIndex = 4
       ImageIndex = 4
+    end
+    object actionNew: TAction
+      Category = 'File'
+      Text = 'New'
+      ImageIndex = 12
+      ImageIndex = 12
     end
     object actionLoad: TAction
       Category = 'File'
