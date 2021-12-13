@@ -677,11 +677,10 @@ end;
 
 procedure TObjectListEx<T>.FreeAll;
 begin
-  {TObjectListEx<T>.}FreeAll;
+  {TObjectListEx<T>.}FreeAll(Self);
 end;
 
 {$endregion}
-
 
 {$ENDREGION ...................................................................}
 
