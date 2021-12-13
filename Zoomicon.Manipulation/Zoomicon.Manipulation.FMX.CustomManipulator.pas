@@ -209,7 +209,7 @@ procedure TCustomManipulator.Loaded;
     begin
       Stored := False; //don't store state
       SetSubComponent(true); //don't show in Designer for descendents
-      HitTest := True; //TODO: check if needed for drag-drop
+      HitTest := False; //TODO: check if needed for drag-drop
       SendToBack;
       Visible := EditMode;
       DropTarget.Align := TAlignLayout.Client;
@@ -223,7 +223,7 @@ begin
   inherited;
   CreateAreaSelector;
   CreateLocationSelector; //must do after CreateAreaSelector
-  CreateDropTarget;
+  CreateDropTarget; //must do after CreateAreaSelector (to send below it)
 end;
 
 {$region 'Manipulation'}

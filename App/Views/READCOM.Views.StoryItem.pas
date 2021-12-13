@@ -222,7 +222,7 @@ procedure TStoryItem.Init;
       FilterIndex := 1; //this is the default value
       Filter := GetAddFilesFilter;
       Align := TAlignLayout.Client;
-      HitTest := True; //TODO: done at ancestor anyway?
+      HitTest := False; //TODO: done at ancestor anyway?
       SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order)
     end;
   end;
