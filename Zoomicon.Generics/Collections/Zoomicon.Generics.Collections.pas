@@ -1,3 +1,6 @@
+//Description: Generic Collections
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Generics.Collections;
 
 interface
@@ -107,6 +110,10 @@ type
     { AllClasses }
     class function AllClasses<AClass: class>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean; overload;
     function AllClasses<AClass: class>(const Predicate: TPredicate<AClass>): Boolean; overload;
+
+    { FreeAll }
+    class procedure FreeAll(const Enum: TEnumerable<T>); overload;
+    procedure FreeAll; overload;
   end;
 
 implementation
@@ -659,6 +666,22 @@ begin
 end;
 
 {$endregion}
+
+{$region 'FreeAll'}
+
+class procedure TObjectListEx<T>.FreeAll(const Enum: TEnumerable<T>);
+begin
+  for var Item in Enum do
+    FreeAndNil(Item);
+end;
+
+procedure TObjectListEx<T>.FreeAll;
+begin
+  {TObjectListEx<T>.}FreeAll;
+end;
+
+{$endregion}
+
 
 {$ENDREGION ...................................................................}
 
