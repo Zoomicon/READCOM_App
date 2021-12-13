@@ -63,7 +63,9 @@ type
     procedure SetStoryMode(const Value: TStoryMode);
 
     { StructureView }
-    procedure StructureViewSelection(Sender: TComponent; Selection: TObject);
+    procedure StructureViewSelection(Sender: TObject; Selection: TObject);
+
+    procedure RootStoryItemViewResized(Sender: TObject);
 
   public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
@@ -151,7 +153,8 @@ begin
   begin
     with Value do
     begin
-      //AutoSize := true; //TODO: the Root StoryItem should be expandable (need to handle resize event of it though and do like below)
+      AutoSize := true; //TODO: the Root StoryItem should be expandable
+      OnResized := RootStoryItemViewResized; //listen for resizing to adapt ZoomFrame.ScaledLayout's size //TODO: this doesn't seem to get called
 
       var newSize := Size.Size;
 
@@ -163,6 +166,7 @@ begin
       }
 
       BeginUpdate; //TODO: move this working code to TZoomFrame
+      Parent := nil; //remove from parent first (needed if we're calling this code to adjust for RootStoryItem resize action)
       ZoomFrame.ScaledLayout.Align := TAlignLayout.None;
       ZoomFrame.ScaledLayout.Size.Size := newSize;
       ZoomFrame.ScaledLayout.OriginalWidth := newSize.cx; //needed to reset the ScalingFactor
@@ -170,12 +174,16 @@ begin
       ZoomFrame.ScaledLayout.Align := TAlignLayout.Fit;
       EndUpdate;
 
-      //Align := TAlignLayout.Center; //TODO: this won't work correctly, need the parents chain to be AutoSized too (ScaledLayout and ZoomLayout [that one without losing its ratio when reverse-fitting out of child]) //TODO: add ParentLayout property for the child control to try to layout its parent on its own Resize event? (could do infinite loops), that is if code above won't work
       Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
     end;
 
     ActiveStoryItem := Value; //this will ZoomTo the RootStoryItemView //don't put in the with statement, will call it on the storyitem and won't ZoomTo //TODO: listen to TStoryItem class event for active story item changes instead?
   end;
+end;
+
+procedure TMainForm.RootStoryItemViewResized(Sender: TObject); //TODO: this doesn't seem to get called (needed for AutoSize of RootStoryItemView to work)
+begin
+  RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size
 end;
 
 {$endregion}
@@ -255,7 +263,7 @@ begin
 
   RootStoryItem.Options.ActLoad; //assuming this is blocking action
 
-  RootStoryItemView := RootStoryItemView; //temp patch till we listen for resizing of the RootStoryItemView to adapt ZoomFrame.ScaledLayout size
+  RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
 end;
 
 procedure TMainForm.HUDactionSaveExecute(Sender: TObject);
@@ -350,10 +358,14 @@ end;
 
 {$endregion}
 
-procedure TMainForm.StructureViewSelection(Sender: TComponent; Selection: TObject);
+procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
 begin
   HUD.MultiView.HideMaster; //first close the structure drawer, then do ZoomTo so that any zooming animation will be visible
-  ZoomFrame.ZoomTo(TControl(Selection));
+
+  //ZoomFrame.ZoomTo(TControl(Selection)); //just zoom
+
+  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class
+  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
 end;
 
 {$ENDREGION}

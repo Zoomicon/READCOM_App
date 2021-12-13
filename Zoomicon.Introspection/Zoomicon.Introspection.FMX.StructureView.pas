@@ -36,7 +36,7 @@ type
     function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
   end;
 
-  TSelectionEvent = procedure(Sender: TComponent; Selection: TObject) of object;
+  TSelectionEvent = procedure(Sender: TObject; Selection: TObject) of object;
 
   TStructureView = class(TFrame)
     TreeView: TTreeView;
