@@ -66,12 +66,34 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
+      object btnLoad: TSpeedButton
+        Action = actionLoad
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 6
+        Position.Y = 40.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'priortoolbutton'
+      end
+      object btnSave: TSpeedButton
+        Action = actionSave
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 7
+        Position.Y = 80.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'priortoolbutton'
+      end
       object BtnEdit: TSpeedButton
         Action = actionEdit
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 0
-        Position.Y = 40.000000000000000000
+        Position.Y = 120.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -82,7 +104,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 3
-        Position.Y = 80.000000000000000000
+        Position.Y = 160.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -93,7 +115,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 4
-        Position.Y = 120.000000000000000000
+        Position.Y = 200.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -192,6 +214,18 @@ object StoryHUD: TStoryHUD
       Text = 'Targets'
       ImageIndex = 4
       ImageIndex = 4
+    end
+    object actionLoad: TAction
+      Category = 'File'
+      Text = 'Load'
+      ImageIndex = 6
+      ImageIndex = 6
+    end
+    object actionSave: TAction
+      Category = 'File'
+      Text = 'Save'
+      ImageIndex = 7
+      ImageIndex = 7
     end
   end
   object MultiViewFrameStand: TFrameStand

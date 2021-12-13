@@ -30310,7 +30310,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'edit'
         SVGText = 
@@ -30377,8 +30377,8 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Width = 19
-            Height = 24
+            Width = 24
+            Height = 30
           end>
         IconName = 'Diagram'
         SVGText = 
@@ -30394,7 +30394,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'TargetArrow'
         SVGText = 
@@ -30448,7 +30448,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -30474,7 +30474,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'OpenFileFolder'
         SVGText = 
@@ -30510,7 +30510,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'Save'
         SVGText = 
@@ -30543,7 +30543,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Delete'
         SVGText = 
@@ -30578,7 +30578,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 64
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -30607,7 +30607,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Plus'
         SVGText = 
@@ -30647,7 +30647,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 64
           end>
         IconName = 'Camera'
         SVGText = 
@@ -30708,8 +30708,8 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'edit'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
@@ -30732,72 +30732,72 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Diagram'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'TargetArrow'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Anchor'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'OpenFileFolder'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Save'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Delete'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Plus'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Camera'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item

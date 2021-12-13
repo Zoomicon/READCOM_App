@@ -85,7 +85,7 @@ object StoryItemOptions: TStoryItemOptions
       StyleLookup = 'escapetoolbutton'
     end
     object btnLoad: TSpeedButton
-      Action = actionOpen
+      Action = actionLoad
       Align = Client
       Enabled = True
       Images = Globals.SVGIconImageList
@@ -117,18 +117,21 @@ object StoryItemOptions: TStoryItemOptions
     Left = 128
     Top = 136
     object actionDelete: TAction
+      Category = 'File'
       Text = 'Delete'
       ImageIndex = 8
       OnExecute = actionDeleteExecute
       ImageIndex = 8
     end
-    object actionOpen: TAction
-      Text = 'Open'
+    object actionLoad: TAction
+      Category = 'File'
+      Text = 'Load'
       ImageIndex = 6
-      OnExecute = actionOpenExecute
+      OnExecute = actionLoadExecute
       ImageIndex = 6
     end
     object actionSave: TAction
+      Category = 'File'
       Text = 'Save'
       ImageIndex = 7
       OnExecute = actionSaveExecute
@@ -147,6 +150,7 @@ object StoryItemOptions: TStoryItemOptions
       ImageIndex = 9
     end
     object actionAdd: TAction
+      Category = 'File'
       Text = 'Add'
       ImageIndex = 10
       OnExecute = actionAddExecute

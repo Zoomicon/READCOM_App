@@ -684,7 +684,9 @@ end;
 
 procedure TStoryItem.LoadReadComBin(const Stream: TStream);
 begin
-  Self.Controls.Clear; //Remove StoryItems
+  var list := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls);
+  list.FreeAll;
+  FreeAndNil(list);
   Stream.ReadComponent(Self);
 end;
 

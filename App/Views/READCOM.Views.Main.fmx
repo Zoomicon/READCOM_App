@@ -78,6 +78,14 @@ object MainForm: TMainForm
         OnExecute = HUDactionTargetsExecute
         ImageIndex = 4
       end
+      inherited actionLoad: TAction
+        OnExecute = HUDactionLoadExecute
+        ImageIndex = 6
+      end
+      inherited actionSave: TAction
+        OnExecute = HUDactionSaveExecute
+        ImageIndex = 7
+      end
     end
     inherited MultiViewFrameStand: TFrameStand
       Left = 432

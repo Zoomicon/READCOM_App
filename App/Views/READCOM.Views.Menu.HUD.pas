@@ -35,6 +35,10 @@ type
     btnTargets: TSpeedButton;
     layoutButtonsSide: TFlowLayout;
     layoutEdit: TFlowLayout;
+    actionLoad: TAction;
+    actionSave: TAction;
+    btnLoad: TSpeedButton;
+    btnSave: TSpeedButton;
     procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
@@ -75,16 +79,9 @@ end;
 
 {$REGION 'Actions'}
 
-{$region 'View actions'}
-
 procedure TStoryHUD.actionMenuExecute(Sender: TObject);
 begin
   layoutButtons.Visible := actionMenu.Checked;
-end;
-
-procedure TStoryHUD.actionStructureExecute(Sender: TObject);
-begin
-  MultiView.ShowMaster
 end;
 
 {$endregion}
@@ -95,6 +92,15 @@ procedure TStoryHUD.actionEditExecute(Sender: TObject);
 begin
   var inEditMode := EditMode;
   layoutEdit.Visible := inEditMode;
+end;
+
+{$endregion}
+
+{$region 'View actions'}
+
+procedure TStoryHUD.actionStructureExecute(Sender: TObject);
+begin
+  MultiView.ShowMaster
 end;
 
 {$endregion}

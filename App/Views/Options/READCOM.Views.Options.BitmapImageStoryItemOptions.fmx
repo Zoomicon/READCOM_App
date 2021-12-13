@@ -24,7 +24,7 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
     inherited actionDelete: TAction
       ImageIndex = 8
     end
-    inherited actionOpen: TAction
+    inherited actionLoad: TAction
       ImageIndex = 6
     end
     inherited actionSave: TAction

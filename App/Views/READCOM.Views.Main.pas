@@ -29,6 +29,8 @@ type
     procedure HUDactionStructureExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HUDactionTargetsExecute(Sender: TObject);
+    procedure HUDactionLoadExecute(Sender: TObject);
+    procedure HUDactionSaveExecute(Sender: TObject);
 
   protected
     { StructureView }
@@ -211,17 +213,25 @@ end;
 
 {$region 'Actions'}
 
-procedure TMainForm.HUDactionEditExecute(Sender: TObject);
-begin
-  HUD.actionEditExecute(Sender);
+{$region 'File actions'}
 
-  if Assigned(ActiveStoryItem) then
-  begin
-    var view := ActiveStoryItem.View as TStoryItem;
-    if Assigned(view) then
-      view.EditMode := HUD.actionEdit.Checked;
-  end;
+procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
+begin
+  //HUD.actionLoadExecute(Sender);
+
+  RootStoryItem.Options.ActLoad;
 end;
+
+procedure TMainForm.HUDactionSaveExecute(Sender: TObject);
+begin
+  //HUD.actionSaveExecute(Sender);
+
+  RootStoryItem.Options.ActSave;
+end;
+
+{$endregion}
+
+{$region 'View actions'}
 
 procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
 begin
@@ -248,14 +258,30 @@ begin
     ActiveStoryItem.TargetsVisible := HUD.actionTargets.Checked;
 end;
 
+{$endregion}
+
+{$region 'Edit actions'}
+
+procedure TMainForm.HUDactionEditExecute(Sender: TObject);
+begin
+  HUD.actionEditExecute(Sender);
+
+  if Assigned(ActiveStoryItem) then
+  begin
+    var view := ActiveStoryItem.View as TStoryItem;
+    if Assigned(view) then
+      view.EditMode := HUD.actionEdit.Checked;
+  end;
+end;
+
 procedure TMainForm.HUDactionAddExecute(Sender: TObject);
 begin
   //HUD.actionAddExecute(Sender);
 
   //TODO: move to StoryItem (with parameter the class to create and/or file to load [see PanelStoryItem code where this came from])
-  var StoryItem := TVectorImageStoryItem.Create(Self);
+  var StoryItem := TPanelStoryItem.Create(Self);
 
-  StoryItem.Name := 'VectorImageStoryItem_' + IntToStr(Random(maxint)); //TODO: use a GUID
+  StoryItem.Name := 'PanelStoryItem_' + IntToStr(Random(maxint)); //TODO: use a GUID
 
   //Center the new item...
   var ItemSize := StoryItem.Size;
@@ -264,6 +290,8 @@ begin
   StoryItem.Parent := ActiveStoryItem.View; //TODO: should add to current StoryItem
   StoryItem.BringToFront; //load as front-most
 end;
+
+{$endregion}
 
 {$endregion}
 

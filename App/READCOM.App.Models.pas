@@ -181,6 +181,11 @@ type
     procedure ShowPopup;
     procedure HidePopup;
 
+    { File }
+    procedure ActAdd;
+    procedure ActLoad;
+    procedure ActSave;
+
     //--- Properties ---
     property View: TControl read GetView; //stored false
     property StoryItem: IStoryItem read GetStoryItem write SetStoryItem; //stored false

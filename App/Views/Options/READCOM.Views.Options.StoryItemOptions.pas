@@ -19,7 +19,7 @@ type
     SaveDialog: TSaveDialog;
     ActionList: TActionList;
     actionDelete: TAction;
-    actionOpen: TAction;
+    actionLoad: TAction;
     actionSave: TAction;
     actionAnchor: TAction;
     panelUrlAction: TPanel;
@@ -36,7 +36,7 @@ type
     OpenDialog: TOpenDialog;
     procedure actionAnchorExecute(Sender: TObject);
     procedure actionDeleteExecute(Sender: TObject);
-    procedure actionOpenExecute(Sender: TObject);
+    procedure actionLoadExecute(Sender: TObject);
     procedure actionSaveExecute(Sender: TObject);
     procedure actionChangeUrlActionExecute(Sender: TObject);
     procedure Glyph1Tap(Sender: TObject; const Point: TPointF);
@@ -65,6 +65,11 @@ type
 
     procedure ShowPopup; //TODO: use PopupVisible boolean property instead
     procedure HidePopup;
+
+    procedure ActAdd;
+    procedure ActLoad;
+    procedure ActSave;
+
     property Popup: TPopup read FPopup write FPopup stored false;
 
   published
@@ -154,6 +159,21 @@ end;
 
 {$region 'Actions'}
 
+procedure TStoryItemOptions.ActAdd;
+begin
+  actionAddExecute(actionAdd);
+end;
+
+procedure TStoryItemOptions.ActLoad;
+begin
+  actionLoadExecute(actionLoad);
+end;
+
+procedure TStoryItemOptions.ActSave;
+begin
+  actionSaveExecute(actionSave);
+end;
+
 procedure TStoryItemOptions.actionAnchorExecute(Sender: TObject);
 begin
   actionAnchor.Checked := not actionAnchor.Checked;
@@ -178,7 +198,7 @@ begin
   end;
 end;
 
-procedure TStoryItemOptions.actionOpenExecute(Sender: TObject);
+procedure TStoryItemOptions.actionLoadExecute(Sender: TObject);
 begin
   with OpenDialog do
   begin
