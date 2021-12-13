@@ -591,7 +591,7 @@ end;
 
 procedure TCustomManipulator.HandlePan(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, false); //only checking the immediate children
   if Assigned(LObj) then
   begin
     if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
@@ -607,14 +607,14 @@ end;
 
 procedure TCustomManipulator.HandleRotate(eventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, false); //only checking the immediate children
   if Assigned(LObj) and (LObj.GetObject is TControl) then
     SetControlAngle(TControl(LObj.GetObject), RadToDeg(-EventInfo.Angle));
 end;
 
 procedure TCustomManipulator.HandleZoom(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, false); //only checking the immediate children
   if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
      (LObj.GetObject is TControl) then
   begin
@@ -628,7 +628,7 @@ end;
 
 procedure TCustomManipulator.HandlePressAndTap(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false);
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, false); //only checking the immediate children
   //TODO: delete object?
 end;
 
@@ -644,7 +644,7 @@ begin
 
     if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
       begin
-      var LObj := ObjectAtLocalPoint(PointF(X, Y), false); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
+      var LObj := ObjectAtLocalPoint(PointF(X, Y), false, false); //only checking the immediate children
       if Assigned(LObj) and (LObj.GetObject is TControl) then
         BringToFrontElseSendToBack(TControl(LObj.GetObject));
       exit;
@@ -709,7 +709,7 @@ begin
 
   if (ssLeft in Shift) then
   begin
-    var LObj := ObjectAtLocalPoint(PointF(X, Y), false); //TODO: define ObjectAtPoint and ObjectAtPointLocal, also add param to not do iteration to grand-children (see internal impl)
+    var LObj := ObjectAtLocalPoint(PointF(X, Y), false, false); //only checking the immediate children
     if Assigned(LObj) and (LObj.GetObject is TControl) then
       with AreaSelector do
         BoundsRect := TControl(LObj.GetObject).BoundsRect;
@@ -723,7 +723,7 @@ begin
   if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos, false);
+    var LObj := ObjectAtPoint(ScreenMousePos, false, false); //only checking the immediate children
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject);

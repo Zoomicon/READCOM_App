@@ -20,11 +20,11 @@ interface
 
     TControlObjectAtHelper = class helper(TControlScaleHelper) for TControl //using class helper inheritance, else only last helper defined for same Class is seen by compiler
     protected
-      function ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; overload;
+      function ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeSelf: Boolean = true): IControl; overload;
 
     public
-      function ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl; overload; inline;
-      function ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl; inline;
+      function ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeSelf: Boolean = true): IControl; overload; inline;
+      function ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeSelf: Boolean = true): IControl; inline;
     end;
 
     TControlConvertLocalRectHelper = class helper(TControlObjectAtHelper) for TControl
@@ -76,7 +76,7 @@ end;
 
 {$region 'TControlObjectAtHelper'}
 
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; RecursionDepth: Integer = 0): IControl; //based on TControl.ObjectAtPoint
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeSelf: Boolean = true): IControl; //based on TControl.ObjectAtPoint
 begin
   if not ShouldTestMouseHits then
     Exit(nil);
@@ -101,21 +101,21 @@ begin
 
   Result := nil;
 
-  if PointInObject(LP.X, LP.Y) and CheckHitTest(HitTest) then //TODO: allow to have option to ignore hit test
+  if IncludeSelf and PointInObject(LP.X, LP.Y) and CheckHitTest(HitTest) then //TODO: allow to have option to ignore hit test
     Result := Self;
 end;
 
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; Recursive: Boolean): IControl;
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeSelf: Boolean = true): IControl;
 begin
-  if Recursive then
+  if Recursive and IncludeSelf then
     result := ObjectAtPoint(AScreenPoint)
   else
-    result := ObjectAtPoint(AScreenPoint, 1);
+    result := ObjectAtPoint(AScreenPoint, 1, IncludeSelf);
 end;
 
-function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; Recursive: Boolean = true): IControl;
+function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeSelf: Boolean = true): IControl;
 begin
-  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive);
+  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive, IncludeSelf);
 end;
 
 {$endregion}

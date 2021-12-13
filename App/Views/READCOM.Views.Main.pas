@@ -203,6 +203,7 @@ procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
       for var StoryItem in partialRoot.StoryItems do
         begin
         TStoryItem(StoryItem).EditMode := false; //TODO: see StoryMode of IStoryItem instead
+        TStoryItem(StoryItem).Enabled := true; //re-enable if previously disabled due to EditMode of its parent
         RecursiveClearEditMode(StoryItem); //do for item's children too if any
         end;
   end;
@@ -215,7 +216,10 @@ begin
 
   //Set any current editmode to the newly active item
   if Assigned(Value) then
-    TStoryItem(Value.View).EditMode := HUD.actionEdit.Checked; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
+    begin
+    var StoryItem := TStoryItem(Value.View);
+    StoryItem.EditMode := HUD.actionEdit.Checked; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
+    end;
 end;
 
 {$endregion}
