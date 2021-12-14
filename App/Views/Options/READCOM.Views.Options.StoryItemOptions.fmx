@@ -8,7 +8,7 @@ object StoryItemOptions: TStoryItemOptions
     Top = 192
   end
   object SaveDialog: TSaveDialog
-    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
     Left = 144
     Top = 192
   end
