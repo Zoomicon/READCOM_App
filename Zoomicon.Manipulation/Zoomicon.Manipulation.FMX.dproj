@@ -157,8 +157,8 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="fmx.dcp"/>
-        <DCCReference Include="Zoomicon.Generics.dcp"/>
         <DCCReference Include="Zoomicon.Helpers.FMX.dcp"/>
+        <DCCReference Include="Zoomicon.Generics.dcp"/>
         <DCCReference Include="Zoomicon.Manipulation.FMX.Selector.pas"/>
         <DCCReference Include="Zoomicon.Manipulation.FMX.CustomManipulator.pas">
             <Form>CustomManipulator</Form>

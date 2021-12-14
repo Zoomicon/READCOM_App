@@ -4,9 +4,9 @@ interface
 
 uses
   Zoomicon.Manipulation.FMX.Selector, //for TLocationSelector, TAreaSelector
+  System.Classes, //for TShiftState
   System.Types,
   System.UITypes,
-  System.Classes,
   FMX.Types,
   FMX.Controls,
   FMX.Forms,
@@ -120,7 +120,7 @@ procedure Register;
 implementation
 
 uses
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper
+  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper, TControlSubComponentHelper
   Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections, //for TListEx
   System.Math, //for Min, EnsureInRange
@@ -245,6 +245,8 @@ end;
 
 procedure TCustomManipulator.MoveControl(const Control: TControl; const DX, DY: Single; const SkipAutoSize: Boolean = false);
 begin
+  if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
+
   BeginUpdate;
 
   with Control.Position do
@@ -302,6 +304,8 @@ end;
 
 procedure TCustomManipulator.ResizeControl(const Control: TControl; const DW, DH: Single; const SkipAutoSize: Boolean = false);
 begin
+  if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
+
   BeginUpdate;
 
   with Control.Size do
@@ -367,6 +371,8 @@ end;
 
 procedure TCustomManipulator.RotateControl(const Control: TControl; const DAngle: Single; const SkipAutoSize: Boolean = false);
 begin
+  if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
+
   BeginUpdate;
 
   with (Control as IRotatedControl) do
@@ -463,9 +469,9 @@ begin
     if Assigned(Parent) then
       rect := ConvertLocalRectTo(Parent as TControl, rect); //TODO: is there a chance the Parent is nil?
 
-    //with BoundsRect do
-      //if (rect.Left < Left) or (rect.Top < Top) or (rect.Right > Right) or (rect.Bottom > Bottom) then //only AutoSize to expand, never shrink down (else would disappear when there were no children)
-        //BoundsRect := rect; //TODO: seems to fail (probably should invoke later, not in the Track event of the PositionSelector)
+    with BoundsRect do
+      if (rect.Left < Left) or (rect.Top < Top) or (rect.Right > Right) or (rect.Bottom > Bottom) then //only AutoSize to expand, never shrink down (else would disappear when there were no children)
+        BoundsRect := rect; //TODO: seems to fail (probably should invoke later, not in the Track event of the PositionSelector)
 
     SetControlsAlign(Controls, TAlignLayout.Scale);
 
@@ -549,8 +555,9 @@ begin
     var newX := ParentPos.X;
     var newY := ParentPos.Y;
 
-    //Offset all controls (including this one) by the amount this control got into negative coordinates:
-    MoveControls(TF.Iff<Single>(newX < 0, newX, 0), TF.Iff<Single>(newY < 0, newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"
+    //if AutoSize and (AreaSelector.SelectedCount > 0) then //Offset all controls (including this one) by the amount the selector got into negative coordinates (ONLY DOING IT FOR NEGATIVE COORDINATES)
+      //MoveControls(TF.Iff<Single>(newX < 0, -newX, 0), TF.Iff<Single>(newY < 0, -newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"
+      //TODO: fix this: should only do for controls that moved into negative coordinates, not if the selector moved into such
 
     //PressedPosition := TPointF.Zero;
     Position.Point := TPointF.Zero;
