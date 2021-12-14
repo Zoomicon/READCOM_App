@@ -254,7 +254,7 @@ begin
     var NewX := X + DX;
     var NewY := Y + DY;
 
-    if AutoSize then
+    if AutoSize then //TODO: maybe should allow controls to move out of bounds (at least partially) if we're set to not clip them
       Point := PointF(NewX, NewY)
     else
       Point := PointF( EnsureRange(NewX, 0, Width - Control.Width), EnsureRange(NewY, 0, Height - Control.Height) );
@@ -440,7 +440,7 @@ end;
 procedure TCustomManipulator.SetAutoSize(const Value: Boolean);
 begin
   FAutoSize := Value;
-  DoAutoSize;
+  DoAutoSize; //will act only if FAutoSize
 end;
 
 function IsSelection(obj: TFmxObject): Boolean;
@@ -458,8 +458,9 @@ procedure TCustomManipulator.DoAutoSize;
   end;
 
 begin
+(* //TODO: FAILS TRYING TO SET HUGE SIZE TO BOUNDSRECT
   if (FAutoSize) then
-    begin
+  begin
     BeginUpdate;
 
     //temporarily disable Align:=Scale setting of children and set it back again when done
@@ -476,7 +477,8 @@ begin
     SetControlsAlign(Controls, TAlignLayout.Scale);
 
     EndUpdate;
-    end;
+  end;
+*)
 end;
 
 {$endregion}
@@ -493,7 +495,7 @@ begin
   if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
     begin
     var NotEditing := not EditMode;
-    Control.Enabled := NotEditing; //don't use, will show controls as semi-transparent
+    Control.Enabled := NotEditing; //note this will show controls as semi-transparent
     //Control.HitTest := NotEditing; //TODO: seems "HitTest=false" eats up Double-Clicks, they don't propagate to parent control, need to fix
     //Control.SetDesign(EditMode, false);
     end;

@@ -1,7 +1,5 @@
 unit Zoomicon.Manipulation.FMX.Selector;
 
-{-$DEFINE SELECT_INTERSECTED} //uncomment to not select just contained controls, but even intersected ones that aren't fully contained by selection area
-
 interface
   uses
     System.Classes, //for TComponent
@@ -41,35 +39,43 @@ type
 
   {$ENDREGION .................................................................}
 
+  TAreaSelectionMode = (asmoIntersected, asmoContained);
+
   {$REGION 'TAreaSelector' ----------------------------------------------------}
 
   TAreaSelector = class(TSelection)
   protected
+    FSelectionMode: TAreaSelectionMode;
     FOnlyFromTop: Boolean;
 
     function DoGetUpdateRect: TRectF; override; //used to fix bug in TSelection that doesn't consider usage inside a TScaledLayout
 
     function GetControls(const RectPicker: TRectFPredicate): TControlList;
-    function GetIntersected: TControlList; virtual;
     function GetContained: TControlList; virtual;
+    function GetIntersected: TControlList; virtual;
+    function GetSelected: TControlList; virtual;
 
     function GetControlCount(const RectPicker: TRectFPredicate): Integer;
-    function GetIntersectedCount: Integer; virtual;
     function GetContainedCount: Integer; virtual;
+    function GetIntersectedCount: Integer; virtual;
+    function GetSelectedCount: Integer; virtual;
 
   published
-    property Intersected: TControlList read GetIntersected stored false;
-    property Contained: TControlList read GetContained stored false;
-    property Selected: TControlList read {$IFDEF SELECT_INTERSECTED}GetIntersected{$ELSE}GetContained{$ENDIF} stored false;
+    property Contained: TControlList read GetContained;
+    property Intersected: TControlList read GetIntersected;
+    property Selected: TControlList read GetSelected;
 
-    property IntersectedCount: Integer read GetIntersectedCount;
     property ContainedCount: Integer read GetContainedCount;
-    property SelectedCount: Integer read {$IFDEF SELECT_INTERSECTED}GetIntersectedCount{$ELSE}GetContainedCount{$ENDIF};
+    property IntersectedCount: Integer read GetIntersectedCount;
+    property SelectedCount: Integer read GetSelectedCount;
 
+    property SelectionMode: TAreaSelectionMode read FSelectionMode write FSelectionMode;
     property OnlyFromTop: Boolean read FOnlyFromTop write FOnlyFromTop;
   end;
 
   {$ENDREGION .................................................................}
+
+  procedure Register;
 
 implementation
   uses
@@ -156,6 +162,17 @@ begin
     end;
 end;
 
+function TAreaSelector.GetContained: TControlList;
+begin
+  var TheBounds := BoundsRect;
+  result := GetControls(
+      function (ARect: TRectF): Boolean
+      begin
+        result := TheBounds.Contains(ARect);
+      end
+    );
+end;
+
 function TAreaSelector.GetIntersected: TControlList;
 begin
   var TheBounds := BoundsRect;
@@ -167,15 +184,14 @@ begin
     );
 end;
 
-function TAreaSelector.GetContained: TControlList;
+function TAreaSelector.GetSelected: TControlList;
 begin
-  var TheBounds := BoundsRect;
-  result := GetControls(
-      function (ARect: TRectF): Boolean
-      begin
-        result := TheBounds.Contains(ARect);
-      end
-    );
+  case FSelectionMode of
+    asmoContained: result := GetContained;
+    asmoIntersected: result := GetIntersected;
+  else
+    result := nil;
+  end;
 end;
 
 {$endregion}
@@ -203,6 +219,16 @@ begin
     end;
 end;
 
+function TAreaSelector.GetContainedCount: Integer;
+begin
+  var TheBounds := BoundsRect;
+  result := GetControlCount(
+      function (ARect: TRectF): Boolean
+      begin
+        result := TheBounds.Contains(ARect);
+      end
+    );
+end;
 
 function TAreaSelector.GetIntersectedCount: Integer;
 begin
@@ -215,15 +241,14 @@ begin
     );
 end;
 
-function TAreaSelector.GetContainedCount: Integer;
+function TAreaSelector.GetSelectedCount: Integer;
 begin
-  var TheBounds := BoundsRect;
-  result := GetControlCount(
-      function (ARect: TRectF): Boolean
-      begin
-        result := TheBounds.Contains(ARect);
-      end
-    );
+  case FSelectionMode of
+    asmoContained: result := GetContainedCount;
+    asmoIntersected: result := GetIntersectedCount;
+  else
+    result := 0;
+  end;
 end;
 
 {$endregion}
