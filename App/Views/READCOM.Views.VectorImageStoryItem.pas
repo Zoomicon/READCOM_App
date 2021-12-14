@@ -39,7 +39,6 @@ type
     procedure SetSVGText(const Value: String);
 
   public
-    constructor Create(AOnwer: TComponent); override;
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
@@ -69,12 +68,6 @@ implementation
 {$R *.fmx}
 
 {$REGION 'TVectorImageStoryItem'}
-
-constructor TVectorImageStoryItem.Create(AOnwer: TComponent);
-begin
-  inherited;
-  FAutoSize := true;
-end;
 
 {$region 'IStoreable'}
 

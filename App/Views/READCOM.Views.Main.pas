@@ -200,12 +200,12 @@ procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
   procedure RecursiveClearEditMode(const partialRoot: IStoryItem);
   begin
     if Assigned(partialRoot) then
+    begin
+      TStoryItem(partialRoot).EditMode := false; //TODO: see StoryMode of IStoryItem instead
+      TStoryItem(partialRoot).Enabled := true; //re-enable if previously disabled due to EditMode of its parent
       for var StoryItem in partialRoot.StoryItems do
-        begin
-        TStoryItem(StoryItem).EditMode := false; //TODO: see StoryMode of IStoryItem instead
-        TStoryItem(StoryItem).Enabled := true; //re-enable if previously disabled due to EditMode of its parent
         RecursiveClearEditMode(StoryItem); //do for item's children too if any
-        end;
+    end;
   end;
 
 begin

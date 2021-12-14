@@ -250,7 +250,7 @@ end;
 
 function TStoryItem.GetDefaultSize: TSizeF;
 begin
-  Result := TSizeF.Create(640, 480);
+  Result := TSizeF.Create(300, 300);
 end;
 
 procedure TStoryItem.SetParent(const Value: TFmxObject);
