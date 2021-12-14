@@ -35,17 +35,23 @@ interface
       function ConvertLocalRectTo(const AControl: TControl; const ALocalRect: TRectF): TRectF;
     end;
 
-    TControlFocusHelper = class helper(TControlConvertLocalRectHelper) for TControl
+    TControlSubComponentHelper = class helper(TControlConvertLocalRectHelper) for TControl
+    protected
+      function IsSubComponent: Boolean;
+      procedure SetSubComponent(const Value: Boolean); //even though there is TComponent.SetSubComponent, Delphi 11 compiler seems to not find it for the property setter below
+    public
+      property SubComponent: Boolean read IsSubComponent write SetSubComponent stored false;
+    end;
+
+    TControlFocusHelper = class helper(TControlSubComponentHelper) for TControl
     public
       procedure SelectNext(const CurControl: TControl; const GoFoward: Boolean = true);
     end;
 
 implementation
-  (*
-  {$IFDEF CONTROLSCALEHELPER}
-  uses System.Rtti;
-  {$ENDIF}
-  *)
+  uses 
+    //System.Rtti,
+    System.Classes; //for csSubComponent
 
 {$REGION 'TControlScaleHelper'}
 
@@ -133,6 +139,20 @@ begin
 end;
 
 {$endregion}
+
+{$REGION 'TControlSubComponentHelper'}
+
+function TControlSubComponentHelper.IsSubComponent: Boolean;
+begin
+  result := csSubComponent in FComponentStyle;
+end;
+
+procedure TControlSubComponentHelper.SetSubComponent(const Value: Boolean); //see comment at method definition on why this method is needed
+begin
+  inherited SetSubComponent(Value);
+end;
+
+{$ENDREGION}
 
 {$REGION 'TControlFocusHelper'}
 
