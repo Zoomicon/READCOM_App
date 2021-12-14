@@ -10,6 +10,8 @@ interface
 
 type
 
+  {$region 'TListEx' ---------------------------------------------------------}
+
   TListEx<T> = class(TList<T>)
     { GetRandom }
     class function GetRandom(const List: TList<T>): T; overload;
@@ -18,6 +20,10 @@ type
     { GetAll }
     class function GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
     function GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
+
+    { GetCount }
+    class function GetCount(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): Integer; overload;
+    function GetCount(const Predicate: TPredicate<T> = nil): Integer; overload;
 
     { GetFirst }
     class function GetFirst(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): T; overload;
@@ -44,12 +50,18 @@ type
     procedure AddOnce(const Item: T); overload;
   end;
 
-  //----------------------------------------------------------------------------
+  {$endregion ................................................................}
+
+  {$region 'TIntefaceListEx' -------------------------------------------------}
 
   TInterfaceListEx<T: IInterface> = class(TListEx<T>)
     { GetAllInterface }
     class function GetAllInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
     function GetAllInterface<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
+
+    { GetInterfaceCount }
+    class function GetInterfaceCount<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer; overload;
+    function GetInterfaceCount<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer; overload;
 
     { GetFirstInterface }
     class function GetFirstInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface; overload;
@@ -68,12 +80,20 @@ type
     function AllInterfaces<AInterface: IInterface>(const Predicate: TPredicate<AInterface>): Boolean; overload;
   end;
 
-  //----------------------------------------------------------------------------
+  {$endregion ................................................................}
+
+  {$region 'TObjectListEx' ---------------------------------------------------}
+
+  //Note: unfortunately we can't define a common ancestor for TInterfaceListEx and TObjectListEx to move all interface methods there. The reason is there's no constaint to say "either class or TInterface" (and Supports just has overloaded versions that take either a class or an interface)
 
   TObjectListEx<T: class> = class(TListEx<T>)
     { GetAllInterface }
     class function GetAllInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
     function GetAllInterface<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): TInterfaceListEx<AInterface>; overload;
+
+    { GetInterfaceCount }
+    class function GetInterfaceCount<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer; overload;
+    function GetInterfaceCount<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer; overload;
 
     { GetFirstInterface }
     class function GetFirstInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface; overload;
@@ -83,9 +103,21 @@ type
     class function GetLastInterface<AInterface: IInterface>(const List: TList<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface; overload;
     function GetLastInterface<AInterface: IInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface; overload;
 
+    { ForEachInterface }
+    class procedure ForEachInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
+    procedure ForEachInterface<AInterface: IInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
+
+    { AllInterfaces }
+    class function AllInterfaces<AInterface: IInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean; overload;
+    function AllInterfaces<AInterface: IInterface>(const Predicate: TPredicate<AInterface>): Boolean; overload;
+
     { GetAllClass }
     class function GetAllClass<AClass: class>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TObjectListEx<AClass>; overload;
     function GetAllClass<AClass: class>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TListEx<AClass>; overload;
+
+    { GetClassCount }
+    class function GetClassCount<AClass: class>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): Integer; overload;
+    function GetClassCount<AClass: class>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): Integer; overload;
 
     { GetFirstClass }
     class function GetFirstClass<AClass: class>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass; overload;
@@ -95,17 +127,9 @@ type
     class function GetLastClass<AClass: class>(const List: TList<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass; overload;
     function GetLastClass<AClass: class>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): AClass; overload;
 
-    { ForEachInterface }
-    class procedure ForEachInterface<AInterface: IInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
-    procedure ForEachInterface<AInterface: IInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil); overload;
-
     { ForEachClass }
     class procedure ForEachClass<AClass: class>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
     procedure ForEachClass<AClass: class>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil); overload;
-
-    { AllInterfaces }
-    class function AllInterfaces<AInterface: IInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean; overload;
-    function AllInterfaces<AInterface: IInterface>(const Predicate: TPredicate<AInterface>): Boolean; overload;
 
     { AllClasses }
     class function AllClasses<AClass: class>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AClass>): Boolean; overload;
@@ -115,6 +139,8 @@ type
     class procedure FreeAll(const Enum: TEnumerable<T>); overload;
     procedure FreeAll; overload;
   end;
+
+  {$endregion ................................................................}
 
 implementation
   uses
@@ -161,6 +187,25 @@ end;
 function TListEx<T>.GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>;
 begin
   result := {TListEx<T>.}GetAll(self);
+end;
+
+{$endregion}
+
+{$region 'GetCount'}
+
+class function TListEx<T>.GetCount(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): Integer;
+begin
+  var Count: Integer := 0;
+  ForEach(Enum, procedure(item: T) //TODO: if this doesn't get inlined should use a for loop like in GetAll
+    begin
+      Inc(Count);
+    end,
+  Predicate);
+end;
+
+function TListEx<T>.GetCount(const Predicate: TPredicate<T> = nil): Integer;
+begin
+  result := {TListEx<T>.}GetCount(self);
 end;
 
 {$endregion}
@@ -317,6 +362,25 @@ end;
 
 {$endregion}
 
+{$region 'GetInterfaceCount'}
+
+class function TInterfaceListEx<T>.GetInterfaceCount<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
+begin
+  var Count: Integer := 0;
+  ForEachInterface<AInterface>(Enum, procedure(item: AInterface) //TODO: if this doesn't get inlined should use a for loop like in GetAllInterface
+    begin
+      Inc(Count);
+    end,
+  OuterPredicate, InnerPredicate);
+end;
+
+function TInterfaceListEx<T>.GetInterfaceCount<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
+begin
+  result := {TInterfaceListEx<T>.}GetInterfaceCount<AInterface>(Self, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
 {$region 'GetFirstInterface'}
 
 class function TInterfaceListEx<T>.GetFirstInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -447,6 +511,25 @@ end;
 
 {$endregion}
 
+{$region 'GetInterfaceCount'}
+
+class function TObjectListEx<T>.GetInterfaceCount<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
+begin
+  var Count: Integer := 0;
+  ForEachInterface<AInterface>(Enum, procedure(item: AInterface) //TODO: if this doesn't get inlined should use a for loop like in GetAllInterface
+    begin
+      Inc(Count);
+    end,
+  OuterPredicate, InnerPredicate);
+end;
+
+function TObjectListEx<T>.GetInterfaceCount<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
+begin
+  result := {TObjectListEx<T>.}GetInterfaceCount<AInterface>(Self, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
 {$region 'GetFirstInterface'}
 
 class function TObjectListEx<T>.GetFirstInterface<AInterface>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): AInterface;
@@ -502,6 +585,53 @@ end;
 
 {$endregion}
 
+{$region 'ForEachInterface'}
+
+class procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
+begin
+  if Assigned(Enum) and Assigned(Proc) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
+        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
+          Proc(itemAsAInterface);
+  end;
+end;
+
+procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
+begin
+  {TObjectListEx<T>.}ForEachInterface<AInterface>(Self, Proc, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
+{$region 'AllInterfaces'}
+
+class function TObjectListEx<T>.AllInterfaces<AInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  if Assigned(Enum) and Assigned(Predicate) then
+  begin
+    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
+    var itemAsAInterface: AInterface;
+    for var item in Enum do
+      if Supports(item, guid, itemAsAInterface) and not Predicate(itemAsAInterface) then
+      begin
+        result := false;
+        exit;
+      end;
+  end;
+  result := true;
+end;
+
+function TObjectListEx<T>.AllInterfaces<AInterface>(const Predicate: TPredicate<AInterface>): Boolean;
+begin
+  result := {TObjectListEx<T>.}AllInterfaces<AInterface>(Self, Predicate);
+end;
+
+{$endregion}
+
 {$region 'GetAllClass'}
 
 class function TObjectListEx<T>.GetAllClass<AClass>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TObjectListEx<AClass>;
@@ -521,6 +651,25 @@ end;
 function TObjectListEx<T>.GetAllClass<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): TListEx<AClass>;
 begin
   result := {TObjectListEx<T>.}GetAllClass<AClass>(Self, OuterPredicate, InnerPredicate);
+end;
+
+{$endregion}
+
+{$region 'GetClassCount'}
+
+class function TObjectListEx<T>.GetClassCount<AClass>(const Enum: TEnumerable<T>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): Integer;
+begin
+  var Count: Integer := 0;
+  ForEachClass<AClass>(Enum, procedure(item: AClass) //TODO: if this doesn't get inlined should use a for loop like in GetAllClass
+    begin
+      Inc(Count);
+    end,
+  OuterPredicate, InnerPredicate);
+end;
+
+function TObjectListEx<T>.GetClassCount<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): Integer;
+begin
+  result := {TObjectListEx<T>.}GetClassCount<AClass>(Self, OuterPredicate, InnerPredicate);
 end;
 
 {$endregion}
@@ -578,28 +727,6 @@ end;
 
 {$endregion}
 
-{$region 'ForEachInterface'}
-
-class procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Enum: TEnumerable<T>; const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
-begin
-  if Assigned(Enum) and Assigned(Proc) then
-  begin
-    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-    var itemAsAInterface: AInterface;
-    for var item in Enum do
-      if Supports(item, guid, itemAsAInterface) and ((not Assigned(OuterPredicate)) or OuterPredicate(item)) then
-        if (not Assigned(InnerPredicate)) or InnerPredicate(itemAsAInterface) then
-          Proc(itemAsAInterface);
-  end;
-end;
-
-procedure TObjectListEx<T>.ForEachInterface<AInterface>(const Proc: TProc<AInterface>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil);
-begin
-  {TObjectListEx<T>.}ForEachInterface<AInterface>(Self, Proc, OuterPredicate, InnerPredicate);
-end;
-
-{$endregion}
-
 {$region 'ForEachClass'}
 
 class procedure TObjectListEx<T>.ForEachClass<AClass>(const Enum: TEnumerable<T>; const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
@@ -617,31 +744,6 @@ end;
 procedure TObjectListEx<T>.ForEachClass<AClass>(const Proc: TProc<AClass>; const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil);
 begin
   {TObjectListEx<T>.}ForEachClass<AClass>(Self, Proc, OuterPredicate, InnerPredicate);
-end;
-
-{$endregion}
-
-{$region 'AllInterfaces'}
-
-class function TObjectListEx<T>.AllInterfaces<AInterface>(const Enum: TEnumerable<T>; const Predicate: TPredicate<AInterface>): Boolean;
-begin
-  if Assigned(Enum) and Assigned(Predicate) then
-  begin
-    var guid := TRttiInterfaceType(TRttiContext.Create.GetType(TypeInfo(AInterface))).GUID;
-    var itemAsAInterface: AInterface;
-    for var item in Enum do
-      if Supports(item, guid, itemAsAInterface) and not Predicate(itemAsAInterface) then
-      begin
-        result := false;
-        exit;
-      end;
-  end;
-  result := true;
-end;
-
-function TObjectListEx<T>.AllInterfaces<AInterface>(const Predicate: TPredicate<AInterface>): Boolean;
-begin
-  result := {TObjectListEx<T>.}AllInterfaces<AInterface>(Self, Predicate);
 end;
 
 {$endregion}
