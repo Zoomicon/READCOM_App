@@ -20,11 +20,11 @@ interface
 
     TControlObjectAtHelper = class helper(TControlScaleHelper) for TControl //using class helper inheritance, else only last helper defined for same Class is seen by compiler
     protected
-      function ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeSelf: Boolean = true): IControl; overload;
+      function ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; overload;
 
     public
-      function ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeSelf: Boolean = true): IControl; overload; inline;
-      function ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeSelf: Boolean = true): IControl; inline;
+      function ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; overload; inline;
+      function ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; inline;
     end;
 
     TControlConvertLocalRectHelper = class helper(TControlObjectAtHelper) for TControl
@@ -82,7 +82,13 @@ end;
 
 {$region 'TControlObjectAtHelper'}
 
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeSelf: Boolean = true): IControl; //based on TControl.ObjectAtPoint
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; //based on TControl.ObjectAtPoint
+
+  function ShouldTestMouseHits: Boolean; //locally hiding the ShoutTestMouseHits method to override that behaviour below
+  begin
+    Result := Visible and (IncludeDisabled or AbsoluteEnabled or (csDesigning in ComponentState));
+  end;
+
 begin
   if not ShouldTestMouseHits then
     Exit(nil);
@@ -100,7 +106,7 @@ begin
       if not Control.GetVisible then
         Continue;
 
-      var NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1);
+      var NewObj := Control.ObjectAtPoint(AScreenPoint, RecursionDepth - 1, IncludeDisabled); //not propagating the IncludeSelf, need the default true value for children else it would find none
       if Assigned(NewObj) then
         Exit(NewObj);
       end;
@@ -111,17 +117,17 @@ begin
     Result := Self;
 end;
 
-function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeSelf: Boolean = true): IControl;
+function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const Recursive: Boolean; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl;
 begin
-  if Recursive and IncludeSelf then
-    result := ObjectAtPoint(AScreenPoint)
+  if Recursive and (not IncludeDisabled) and IncludeSelf then
+    result := ObjectAtPoint(AScreenPoint) //the default Delphi implementation (unbounded recursion)
   else
-    result := ObjectAtPoint(AScreenPoint, 1, IncludeSelf);
+    result := ObjectAtPoint(AScreenPoint, 1, IncludeDisabled, IncludeSelf);
 end;
 
-function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeSelf: Boolean = true): IControl;
+function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl;
 begin
-  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive, IncludeSelf);
+  result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive, IncludeDisabled, IncludeSelf);
 end;
 
 {$endregion}
