@@ -320,7 +320,7 @@ begin
     with info.Frame do
     begin
       GUIRoot := ScaledLayout;
-      ShowOnlyClasses := TClassList.Create([TScaledLayout, TButton]);
+      ShowOnlyClasses := TClassList.Create([TScaledLayout, TButton]); //TStructureView's destructor will FreeAndNil that TClassList instance
       OnSelection := StructureViewSelection;
     end;
     info.Show;
