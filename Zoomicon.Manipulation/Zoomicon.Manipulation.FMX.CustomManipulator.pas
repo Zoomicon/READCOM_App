@@ -553,9 +553,9 @@ begin
   var SelectionPoint := TSelectionPoint(Sender); //assuming events are sent by TSelectionPoint
   with SelectionPoint do
     begin
-    var ParentPos := ParentControl.Position.Point;
-    var newX := ParentPos.X;
-    var newY := ParentPos.Y;
+    //var ParentPos := ParentControl.Position.Point;
+    //var newX := ParentPos.X;
+    //var newY := ParentPos.Y;
 
     //if AutoSize and (AreaSelector.SelectedCount > 0) then //Offset all controls (including this one) by the amount the selector got into negative coordinates (ONLY DOING IT FOR NEGATIVE COORDINATES)
       //MoveControls(TF.Iff<Single>(newX < 0, -newX, 0), TF.Iff<Single>(newY < 0, -newY, 0)); //this will also call DoAutoSize //there's also IfThen from System.Math, but those aren't marked as "Inline"

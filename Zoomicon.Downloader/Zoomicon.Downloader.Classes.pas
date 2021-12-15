@@ -112,6 +112,7 @@ uses
   //Winapi.Windows, //for OutputDebugStr
   {$endif}
   System.IOUtils, //for TPath, TDirectory
+  //System.NetConsts, //to expand inline THTTPClient.SetAccept
   System.Net.HttpClient, //for THTTPClient
   System.SysUtils; //for fmOpenWrite, fmShareDenyNone
 
