@@ -25,13 +25,13 @@ package Zoomicon.Introspection.FMX;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
   fmx,
-  Zoomicon.Helpers.RTL;
+  Zoomicon.Helpers.RTL,
+  Zoomicon.Helpers.FMX;
 
 contains
   Zoomicon.Introspection.FMX.StructureView in 'Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame};

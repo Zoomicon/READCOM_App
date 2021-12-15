@@ -11,7 +11,6 @@ uses
   System.Generics.Collections, //for TList
   System.SysUtils,
   System.Types,
-  System.UITypes,
   System.Variants,
   System.ImageList,
   FMX.Controls, //for TControl
@@ -31,15 +30,11 @@ const
   DEFAULT_SHOW_HINT_TYPES = false;
 
 type
-  TStructureView = class;
-
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
 
-  TImageListHelper = class helper for TImageList
-    function Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
-  end;
-
   TSelectionEvent = procedure(Sender: TObject; Selection: TObject) of object;
+
+  {$REGION 'TStructureView' --------------------------------------------------------}
 
   TStructureView = class(TFrame)
     TreeView: TTreeView;
@@ -85,54 +80,20 @@ type
     property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
   end;
 
+  {$ENDREGION ......................................................................}
+
 procedure Register;
 
 implementation
   uses
     System.Rtti, //for TValue
     FMX.Dialogs, //for ShowMessage
-    FMX.MultiResBitmap, //for TSizeKind
-    Zoomicon.Helpers.RTL.ClassListHelpers; //for TClassList.FindClassOf
-
-{$REGION 'ImageListHelper'} //TODO: move to other package
-//based on https://stackoverflow.com/a/43086181/903783
-
-function TImageListHelper.Add(const aBitmap: TBitmap; const Scale: Single = 1): integer;
-begin
-  Result := -1;
-  if (aBitmap.Width = 0) or (aBitmap.Height = 0) then exit;
-
-  // add source bitmap
-  var vSource := Source.Add;
-  var vBitmapItem: TCustomBitmapItem;
-  with vSource.MultiResBitmap do
-  begin
-    TransparentColor := TColorRec.Fuchsia;
-    SizeKind := TSizeKind.Source;
-    Width := Round(aBitmap.Width / SCALE);
-    Height := Round(aBitmap.Height / SCALE);
-    vBitmapItem := ItemByScale(SCALE, True, True);
-  end;
-
-  if vBitmapItem = nil then
-  begin
-    vBitmapItem := vSource.MultiResBitmap.Add;
-    vBitmapItem.Scale := SCALE;
-  end;
-  vBitmapItem.Bitmap.Assign(aBitmap);
-
-  var vDest := Destination.Add;
-  var vLayer := vDest.Layers.Add;
-  vLayer.SourceRect.Rect := TRectF.Create(TPoint.Zero, vSource.MultiResBitmap.Width, vSource.MultiResBitmap.Height);
-  vLayer.Name := vSource.Name;
-  Result := vDest.Index;
-end;
-
-{$endregion}
+    Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
+    Zoomicon.Helpers.FMX.ImgList.ImageListHelpers; //for TImageListAddBitmapHelper
 
 {$R *.fmx}
 
-{ TGUIStructure }
+{$REGION 'TStructureView'}
 
 constructor TStructureView.Create(AOwner: TComponent);
 begin
@@ -224,8 +185,11 @@ procedure TStructureView.LoadTreeView;
 
     TreeItem.Tag := NativeInt(Control);
 
-    var imgIndex := ImageList.Add(Control.MakeScreenshot);
-    TreeItem.ImageIndex := imgIndex; //TODO: check if causes mem leaks
+    var ControlToBitmap := Control.MakeScreenshot; //this seems to leak memory
+    var imgIndex := ImageList.Add(ControlToBitmap); //this will copy from the bitmap
+    FreeAndNil(ControlToBitmap); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+
+    TreeItem.ImageIndex := imgIndex;
     var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
     TreeItem.StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
 
@@ -271,6 +235,8 @@ begin
 end;
 
 {$endregion}
+
+{$ENDREGION}
 
 procedure RegisterClasses;
 begin

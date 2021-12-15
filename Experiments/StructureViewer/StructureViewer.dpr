@@ -6,7 +6,8 @@ uses
   uMainForm in 'uMainForm.pas' {MainForm},
   uHidableFrame in 'uHidableFrame.pas' {HidableFrame: TFrame},
   Zoomicon.Introspection.FMX.StructureView in '..\..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame},
-  Zoomicon.Helpers.RTL.ClassListHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
+  Zoomicon.Helpers.RTL.ClassListHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
+  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas';
 
 {$R *.res}
 
