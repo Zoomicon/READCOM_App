@@ -12,13 +12,28 @@ type
 
   {$region 'TListEx' ---------------------------------------------------------}
 
-  TListEx<T> = class(TList<T>)
+  (* //TODO: TList doesn't descend from some TInterfacedObject so we'd need to implement our own QueryInterface and ref counting to use interfaces. Could maybe else do at some descendent TInterfacedListEx that would implement IListEx and have extra methods to return such
+  IListEx<T> = interface
+    ['{F6DB7965-D05E-4303-8415-12A0E85097DB}']
+    function GetRandom: T; overload;
+    function GetAll(const Predicate: TPredicate<T> = nil): IListEx<T>; overload;
+    function GetCount(const Predicate: TPredicate<T> = nil): Integer; overload;
+    function GetFirst(const Predicate: TPredicate<T> = nil): T; overload;
+    function GetLast(const Predicate: TPredicate<T> = nil): T; overload;
+    procedure ForEach(const Proc: TProc<T>; const Predicate: TPredicate<T> = nil); overload;
+    function All(const Predicate: TPredicate<T>): Boolean; overload;
+    procedure Shuffle; overload;
+    procedure AddOnce(const Item: T); overload;
+  end;
+  *)
+
+  TListEx<T> = class(TList<T>{, IListEx<T>})
     { GetRandom }
     class function GetRandom(const List: TList<T>): T; overload;
-    function GetRandom: T; overload; virtual;
+    function GetRandom: T; overload;
 
     { GetAll }
-    class function GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
+    class function GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): {IListEx}TListEx<T>; overload;
     function GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>; overload;
 
     { GetCount }
@@ -174,7 +189,7 @@ end;
 
 {$region 'GetAll'}
 
-class function TListEx<T>.GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): TListEx<T>;
+class function TListEx<T>.GetAll(const Enum: TEnumerable<T>; const Predicate: TPredicate<T> = nil): {IListEx}TListEx<T>;
 begin
   var ResultList := TListEx<T>.Create;
   if Assigned(Enum) then

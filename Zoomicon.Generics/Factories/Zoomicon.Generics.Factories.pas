@@ -15,8 +15,7 @@ interface
       ['{88541345-6E83-46D0-A909-8DDE40D16C38}']
     end;
 
-    TFactoryRegistry<TKey, TType> = class(TObjectRegistry<TKey, IFactory<TType>>, IFactoryRegistry<TKey, TType>, IRegistry<TKey, IFactory<TType>>) //Delphi doesn't auto-declare ancestor interfaces
-    end;
+    TFactoryRegistry<TKey, TType> = class(TObjectRegistry<TKey, IFactory<TType>>, IFactoryRegistry<TKey, TType>, IRegistry<TKey, IFactory<TType>>); //Delphi doesn't auto-declare ancestor interfaces
 
 implementation
 
