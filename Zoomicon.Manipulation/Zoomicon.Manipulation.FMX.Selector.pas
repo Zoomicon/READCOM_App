@@ -39,7 +39,7 @@ type
 
   {$ENDREGION .................................................................}
 
-  TAreaSelectionMode = (asmoIntersected, asmoContained);
+  TAreaSelectionMode = (asmoContained, asmoIntersected); //the default is the 1st one (select only contained items in area selection)
 
   {$REGION 'TAreaSelector' ----------------------------------------------------}
 
@@ -69,7 +69,7 @@ type
     property IntersectedCount: Integer read GetIntersectedCount;
     property SelectedCount: Integer read GetSelectedCount;
 
-    property SelectionMode: TAreaSelectionMode read FSelectionMode write FSelectionMode;
+    property SelectionMode: TAreaSelectionMode read FSelectionMode write FSelectionMode default Low(TAreaSelectionMode);
     property OnlyFromTop: Boolean read FOnlyFromTop write FOnlyFromTop;
   end;
 
@@ -143,23 +143,22 @@ end;
 
 function TAreaSelector.GetControls(const RectPicker: TRectFPredicate): TControlList;
 begin
-  if not Assigned(RectPicker) then
-    result := nil
-  else
+  if not Assigned(RectPicker) or (Parent = nil) then exit(nil);
+
+  result := TListEx<TControl>.GetAll(ParentControl.Controls,
+    function(AControl: TControl): Boolean
     begin
-    if (Parent = nil) then
-      result := nil
-    else
-      result := TListEx<TControl>.GetAll(ParentControl.Controls,
-        function(AControl: TControl): Boolean
-        begin
-          result := (AControl <> Self) //not selecting ourselves
-                    and RectPicker(AControl.BoundsRect);
-        end
-      );
-      if OnlyFromTop and (result.Count > 1) then
-        result := TControlList.Create(result.Last);
-    end;
+      result := (AControl <> Self) //not selecting ourselves
+                and RectPicker(AControl.BoundsRect);
+    end
+  );
+
+  if OnlyFromTop and (result.Count > 1) then
+  begin
+    var TopOneSelected := result.Last;
+    result.Clear; //clear the previously calculated result, avoid creating new list (would have to free previous one)
+    result.Add(TopOneSelected); //return single result in a list
+  end;
 end;
 
 function TAreaSelector.GetContained: TControlList;
@@ -200,23 +199,18 @@ end;
 
 function TAreaSelector.GetControlCount(const RectPicker: TRectFPredicate): Integer;
 begin
-  if not Assigned(RectPicker) then
-    result := 0
-  else
+  if not Assigned(RectPicker) or (Parent = nil) then exit(0);
+
+  result := TListEx<TControl>.GetCount(ParentControl.Controls,
+    function(AControl: TControl): Boolean
     begin
-    if (Parent = nil) then
-      result := 0
-    else
-      result := TListEx<TControl>.GetCount(ParentControl.Controls,
-        function(AControl: TControl): Boolean
-        begin
-          result := (AControl <> Self) //not selecting ourselves
-                    and RectPicker(AControl.BoundsRect);
-        end
-      );
-      if OnlyFromTop and (result > 1) then
-        result := 1;
-    end;
+      result := (AControl <> Self) //not selecting ourselves
+                and RectPicker(AControl.BoundsRect);
+    end
+  );
+
+  if OnlyFromTop and (result > 1) then
+    result := 1;
 end;
 
 function TAreaSelector.GetContainedCount: Integer;
