@@ -1766,6 +1766,8 @@ begin
 
   // Replacement for ShowMessage below also lets us set the caption.
   MessageForm.ShowMessage(Lines.Text, 'RTTI Details for ' + GetTypeName(pti));
+
+  FreeAndNil(Lines); //change by birbilis to avoid memory leak (untested)
 end;
 
 {$IFDEF OLD}  // Code snippets that had something useful or that may need to be revisited.

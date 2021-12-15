@@ -1,3 +1,6 @@
+//Description: Zooming Classes for FMX
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Zooming.FMX;
 
 //TODO: NOT WORKING (for now use TZoomFrame instead)

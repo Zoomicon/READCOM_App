@@ -23,6 +23,9 @@ const
   FILTER_TEXT = FILTER_TEXT_TITLE + '|' + FILTER_TEXT_EXTS;
 
 type
+
+  {$REGION 'TTextStoryItem' ----------------------------------------------------------}
+
   TTextStoryItem = class(TStoryItem, ITextStoryItem, IStoryItem, IStoreable)
     Memo: TMemo;
     procedure MemoApplyStyleLookup(Sender: TObject);
@@ -69,9 +72,15 @@ type
     property TextColor: TAlphaColor read GetTextColor write SetTextColor;
   end;
 
-  TTextStoryItemFactory = class(TComponent, IStoryItemFactory)
+  {$ENDREGION ........................................................................}
+
+  {$REGION 'TTextStoryItemFactory' ---------------------------------------------------}
+
+  TTextStoryItemFactory = class(TInterfacedObject, IStoryItemFactory)
     function New(const AOwner: TComponent = nil): IStoryItem;
   end;
+
+  {$ENDREGION ........................................................................}
 
   procedure Register;
 
@@ -186,9 +195,11 @@ procedure TTextStoryItem.LoadTXT(const Stream: TStream);
 begin
   //Text := ReadAllText(Stream);
   var s := TStringList.Create(#0, #13);
+
   s.LoadFromStream(Stream);
   Text := s.DelimitedText;
   Size.Size := TSizeF.Create(300, 200); //TODO: judge on text volume
+
   FreeAndNil(s);
 end;
 
@@ -227,7 +238,7 @@ begin
 end;
 
 initialization
-  StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create(nil));
+  StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_TEXT_TITLE, FILTER_TEXT_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

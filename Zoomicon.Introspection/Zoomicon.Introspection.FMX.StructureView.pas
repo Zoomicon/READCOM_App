@@ -1,3 +1,6 @@
+//Description: StructureView Control for FMX
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Introspection.FMX.StructureView;
 
 interface
@@ -149,6 +152,7 @@ begin
   ImageList.ClearCache;
   //FreeAndNil(TreeView); //should be done automatically when "inherited" is called
   //FreeAndNil(Images); //should be done automatically when "inherited" is called
+  FreeAndNil(ShowOnlyClasses); //freeing any TClassList that had been allocated and assigned to the "ShowOnlyClasses" property to avoid external code having to do it (obviously that TClassList shouldn't be assigned elsewhere)
   inherited;
 end;
 

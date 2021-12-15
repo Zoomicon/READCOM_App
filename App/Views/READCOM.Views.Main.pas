@@ -5,7 +5,9 @@ unit READCOM.Views.Main;
 interface
 
 uses
+  FrameStand, //for TFrameInfo
   Zoomicon.Generics.Collections, //for TObjectListEx
+  Zoomicon.Introspection.FMX.StructureView, //for TStructureView
   Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItem, //for TStoryItem
@@ -37,6 +39,8 @@ type
     procedure HUDactionNextExecute(Sender: TObject);
 
   protected
+    FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
+
     { SavedState}
     procedure NewRootStoryItem;
     procedure LoadSavedStateOrNewRootStoryItem;
@@ -84,7 +88,6 @@ implementation
     {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
-    Zoomicon.Introspection.FMX.StructureView, //for TStructureView
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     READCOM.Views.VectorImageStoryItem; //TODO: remove
 
@@ -303,16 +306,22 @@ begin
   HUD.actionStructureExecute(Sender);
 
   HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
-  var frameInfo := HUD.MultiViewFrameStand.GetFrameInfo<TStructureView>;
-  with frameInfo.Frame do
+
+  if not Assigned (FStructureViewFrameInfo) then
   begin
-    ShowOnlyClasses := TClassList.Create([TStoryItem]);
-    ShowNames := false;
-    ShowTypes := false;
-    GUIRoot := RootStoryItemView;
-    OnSelection := StructureViewSelection;
+    FStructureViewFrameInfo := HUD.MultiViewFrameStand.GetFrameInfo<TStructureView>;
+    with FStructureViewFrameInfo.Frame do
+    begin
+      ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
+      ShowNames := false;
+      ShowTypes := false;
+      OnSelection := StructureViewSelection;
+    end;
   end;
-  frameInfo.Show;
+
+  FStructureViewFrameInfo.Frame.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
+
+  FStructureViewFrameInfo.Show;
 end;
 
 procedure TMainForm.HUDactionTargetsExecute(Sender: TObject);

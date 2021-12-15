@@ -1,6 +1,7 @@
 package Zoomicon.Downloader;
 
 {$R *.res}
+
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -25,6 +26,7 @@ package Zoomicon.Downloader;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+
 {$IMPLICITBUILD ON}
 
 requires

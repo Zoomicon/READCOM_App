@@ -31,7 +31,7 @@ implementation
 
 procedure TestTGitStore.SetUp;
 begin
-  FGitStore := TGitStore.Create('Zoomicon', 'READCOM_Gallery', 'main', TFileCache.Create()); //the FileCache is used via IContentCache so it is reference counted
+  FGitStore := TGitStore.Create(nil, 'Zoomicon', 'READCOM_Gallery', 'main', TFileCache.Create()); //the FileCache is used via IContentCache so it is reference counted
 end;
 
 procedure TestTGitStore.TearDown;

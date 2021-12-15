@@ -1,3 +1,6 @@
+//Description: Zooming Models
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Zooming.Models;
 
 interface

@@ -14,14 +14,14 @@ interface
 
     TGitStore = class;
 
-    TGitItem = class(TInterfacedObject, IGitItem)
+    TGitItem = class(TComponent, IGitItem)
       protected
         FSHA: String;
         FPath: String;
         FGitStore: TGitStore;
 
       public
-        constructor Create(SHA: String; Path: String);
+        constructor Create(AOwner: TComponent; SHA: String; Path: String); reintroduce;
         function GetSHA: String;
         function GetPath: String;
     end;
@@ -44,12 +44,12 @@ interface
         function GetFiles(const recursive: Boolean = false): TList<IGitFile>;
     end;
 
-    TGitStore = class(TInterfacedObject, IGitStore)
+    TGitStore = class(TComponent, IGitStore)
       protected
         FContentCache: IContentCache;
         FTimeout: integer; //in msec
 
-        FOwner: String;
+        FRepositoryOwner: String;
         FRepository: String;
         FBranch: String;
 
@@ -61,7 +61,7 @@ interface
         function GetTreeAPIURI(SHA: string; Recursive: Boolean = true): String;
 
       public
-        constructor Create(const TheOwner: String; const TheRepository: String; const TheBranch: String; const TheContentCache: IContentCache = nil);
+        constructor Create(AOwner: TComponent; const TheRepositoryOwner: String; const TheRepository: String; const TheBranch: String; const TheContentCache: IContentCache = nil); reintroduce;
 
         function LoadTreeContents(const SHA: string; Recursive: Boolean = true): TFDMemTable;
         function LoadContents: TFDMemTable;
@@ -74,7 +74,7 @@ interface
 
       published
         property Timeout: Integer read FTimeout write FTimeout;
-        property Owner: String read FOwner write FOwner;
+        property RepositoryOwner: String read FRepositoryOwner write FRepositoryOwner;
         property Repository: String read FRepository write FRepository;
         property Branch: String read FBranch write FBranch;
         property ContentCache: IContentCache read FContentCache write FContentCache;
@@ -96,8 +96,10 @@ implementation
 
 {$region 'TGitItem'}
 
-constructor TGitItem.Create(SHA, Path: String);
+constructor TGitItem.Create(AOwner: TComponent; SHA, Path: String);
 begin
+  inherited Create(AOwner);
+
   FSHA := SHA;
   FPath := Path;
 end;
@@ -126,7 +128,7 @@ begin
   if (not Assigned(DownloadCompleteHandler)) or (not Assigned(FGitStore)) then exit;
 
   var Data := TMemoryStream.Create;
-  var Downloader := TDownloader.Create(FileURI, Data, FGitStore.FContentCache);
+  var Downloader := TDownloader.Create(Self, FileURI, Data, FGitStore.FContentCache);
   Downloader.OnDownloadComplete := DownloadCompleteHandler;
   Downloader.Start;
 
@@ -156,9 +158,11 @@ end;
 
 {$region 'TGitStore'}
 
-constructor TGitStore.Create(const TheOwner: String; const TheRepository: String; const TheBranch: String; const TheContentCache: IContentCache = nil);
+constructor TGitStore.Create(AOwner: TComponent; const TheRepositoryOwner: String; const TheRepository: String; const TheBranch: String; const TheContentCache: IContentCache = nil);
 begin
-  FOwner := TheOwner;
+  inherited Create(AOwner);
+
+  FRepositoryOwner := TheRepositoryOwner;
   FRepository := TheRepository;
   FBranch := TheBranch;
   FContentCache := TheContentCache;
@@ -168,12 +172,12 @@ end;
 
 function TGitStore.GetDownloadURI: String;
 begin
-  result := Format('https://raw.githubusercontent.com/%s/%s/%s/', [FOwner, FRepository, FBranch]);
+  result := Format('https://raw.githubusercontent.com/%s/%s/%s/', [FRepositoryOwner, FRepository, FBranch]);
 end;
 
 function TGitStore.GetAPIURI: String;
 begin
-  result := Format('https://api.github.com/repos/%s/%s/', [FOwner, FRepository]);
+  result := Format('https://api.github.com/repos/%s/%s/', [FRepositoryOwner, FRepository]);
 end;
 
 function TGitStore.GetBranchAPIURI: String;

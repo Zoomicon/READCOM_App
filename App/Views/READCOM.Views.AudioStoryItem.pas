@@ -20,6 +20,9 @@ const
   FILTER_AUDIO = FILTER_AUDIO_TITLE + '|' + FILTER_AUDIO_EXTS;
 
 type
+
+  {$REGION 'TAudioStoryItem' --------------------------------------------------------}
+
   TAudioStoryItem = class(TStoryItem , IAudioStoryItem, IStoryItem, IStoreable)
     GlyphImage: TSVGIconImage;
     MediaPlayer: TMediaPlayerEx;
@@ -74,9 +77,15 @@ type
     //TODO: persist the audio data
   end;
 
-  TAudioStoryItemFactory = class(TComponent, IStoryItemFactory)
+  {$ENDREGION .......................................................................}
+
+  {$REGION 'TAudioStoryItemFactory' -------------------------------------------------}
+
+  TAudioStoryItemFactory = class(TInterfacedObject, IStoryItemFactory)
     function New(const AOwner: TComponent = nil): IStoryItem;
   end;
+
+  {$ENDREGION .......................................................................}
 
   procedure Register;
 
@@ -256,7 +265,7 @@ begin
 end;
 
 initialization
-  StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create(nil));
+  StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_AUDIO_TITLE, FILTER_AUDIO_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

@@ -32,6 +32,8 @@ type
     FOptions: IStoryItemOptions;
     FStoryMode: TStoryMode;
     FTargetsVisible: Boolean;
+    FStoryItemList: TIStoryItemList;
+    FAudioStoryItemList: TIAudioStoryItemList;
     FOnActiveChanged: TNotifyEvent;
 
     class var
@@ -41,22 +43,27 @@ type
   //--- Methods ---
 
   protected
+    class destructor Destroy;
+
     procedure Init; virtual;
     //procedure Loaded; override;
     //procedure Updated; override;
+
+    { DefaultSize }
     function GetDefaultSize: TSizeF; override;
+
+    { Parent }
     procedure SetParent(const Value: TFmxObject); override;
+
+    { EditMode }
     procedure SetEditMode(const Value: Boolean); override;
 
-    {BorderVisible}
+    { BorderVisible }
     function GetBorderVisible: Boolean;
     procedure SetBorderVisible(const Value: Boolean);
 
-    {ActiveStoryItem}
+    { ActiveStoryItem }
     class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
-
-    procedure ActiveChanged;
-    procedure ApplyHidden;
 
     { View }
     function GetView: TControl;
@@ -83,6 +90,7 @@ type
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
+    procedure ApplyHidden;
 
     { Anchored }
     function IsAnchored: Boolean;
@@ -133,6 +141,8 @@ type
   //--- Events ---
 
   protected
+    procedure ActiveChanged;
+
     //procedure CanFocus(var ACanFocus: Boolean); override;
     procedure KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState); override;
     procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
@@ -173,19 +183,12 @@ implementation
 
 {$R *.fmx}
 
-{
-procedure TStoryItem.Loaded;
-begin
-  inherited;
-  Init;
-end;
+{$region 'Create / Init / Destroy'}
 
-procedure TStoryItem.Updated;
+class destructor TStoryItem.Destroy;
 begin
-  inherited;
-  Init;
+  ActiveStoryItem := nil;
 end;
-}
 
 procedure TStoryItem.Init;
 
@@ -242,11 +245,36 @@ end;
 
 destructor TStoryItem.Destroy;
 begin
+  Target := nil;
+  Active := false; //making sure an IStoryItem reference isn't held by the class var FActiveStoryItem
+
   if Assigned(FOptions) then
+    begin
+    FOptions.HidePopup;
     FreeAndNil(FOptions.View);
+    end;
+
+  FreeAndNil(FStoryItemList);
+  FreeAndNil(FAudioStoryItemList);
 
   inherited; //do last
 end;
+
+{$endregion}
+
+{
+procedure TStoryItem.Loaded;
+begin
+  inherited;
+  Init;
+end;
+
+procedure TStoryItem.Updated;
+begin
+  inherited;
+  Init;
+end;
+}
 
 function TStoryItem.GetDefaultSize: TSizeF;
 begin
@@ -346,7 +374,10 @@ end;
 
 function TStoryItem.GetStoryItems: TIStoryItemList;
 begin
-  result := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls);
+  if Assigned(FStoryItemList) then
+    FreeAndNil(FStoryItemList);
+  FStoryItemList := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls); //TODO: faster would be to recalculate it based on some flag on whether list of StoryItems has changed or not (due to removals/additions or to intiialization)
+  result := FStoryItemList;
 end;
 
 procedure TStoryItem.SetStoryItems(const Value: TIStoryItemList);
@@ -361,7 +392,10 @@ end;
 
 function TStoryItem.GetAudioStoryItems: TIAudioStoryItemList;
 begin
-  result := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls);
+  if Assigned(FAudioStoryItemList) then
+    FreeAndNil(FAudioStoryItemList);
+  FAudioStoryItemList := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls); //TODO: faster would be to recalculate it based on some flag on whether list of AudioStoryItems has changed or not (due to removals/additions or to intiialization)
+  result := FAudioStoryItemList;
 end;
 
 {$endregion}
@@ -619,6 +653,7 @@ function TStoryItem.GetAddFilesFilter: String;
 begin
   var listFilters := TStringList.Create(#0, '|');
   var listExt := TStringList.Create(#0, ';');
+
   for var Pair in StoryItemFileFilters do
   begin
     listFilters.Add(Pair.Key {+ '(' + Pair.Value.Replace(';', ',') + ')'}); //note: title already contains the exts in parentheses
@@ -628,6 +663,9 @@ begin
   listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text');
 
   result := listFilters.DelimitedText;
+
+  FreeAndNil(listExt);
+  FreeAndNil(listFilters);
 end;
 
 procedure TStoryItem.Add(const Filepath: String);

@@ -22,6 +22,8 @@ const
   FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
 
 type
+  {$REGION 'TBitmapImageStoryItem' ----------------------------------------------}
+
   TBitmapImageStoryItem = class(TImageStoryItem, IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
     ImageControl: TImage;
 
@@ -50,9 +52,15 @@ type
 
   end;
 
-  TBitmapImageStoryItemFactory = class(TComponent, IStoryItemFactory)
+  {$ENDREGION ...................................................................}
+
+  {$REGION 'TBitmapImageStoryItemFactory' ---------------------------------------}
+
+  TBitmapImageStoryItemFactory = class(TInterfacedObject, IStoryItemFactory)
     function New(const AOwner: TComponent = nil): IStoryItem;
   end;
+
+  {$ENDREGION ...................................................................}
 
 implementation
   uses
@@ -157,7 +165,7 @@ begin
 end;
 
 initialization
-  StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create(nil));
+  StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_BITMAP_IMAGE_TITLE, FILTER_BITMAP_IMAGE_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

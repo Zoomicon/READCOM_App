@@ -1,6 +1,8 @@
 //Description: READ-COM VectorImageStoryItem View
 //Author: George Birbilis (http://zoomicon.com)
 
+//TODO: merge ImageStoryItem with its children BitmapImageStoryItem and VectorImageStoryItem so that any ImageStoryItem can load its state from other "image" .READCOM file, be it bitmap or vector based (users don't need to understand the difference)
+
 unit READCOM.Views.VectorImageStoryItem;
 
 interface
@@ -55,7 +57,7 @@ type
     property AutoSize default true;
   end;
 
-  TVectorImageStoryItemFactory = class(TComponent, IStoryItemFactory)
+  TVectorImageStoryItemFactory = class(TInterfacedObject, IStoryItemFactory)
     function New(const AOwner: TComponent = nil): IStoryItem;
   end;
 
@@ -184,7 +186,7 @@ begin
 end;
 
 initialization
-  StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create(nil));
+  StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_VECTOR_IMAGE_TITLE, FILTER_VECTOR_IMAGE_EXTS);
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
