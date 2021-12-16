@@ -151,7 +151,7 @@ type
     function AllClasses<AClass: class>(const Predicate: TPredicate<AClass>): Boolean; overload;
 
     { FreeAll }
-    class procedure FreeAll(const Enum: TEnumerable<T>); overload;
+    class procedure FreeAll(const List: TList<T>); overload;
     procedure FreeAll; overload;
   end;
 
@@ -786,10 +786,14 @@ end;
 
 {$region 'FreeAll'}
 
-class procedure TObjectListEx<T>.FreeAll(const Enum: TEnumerable<T>);
+class procedure TObjectListEx<T>.FreeAll(const List: TList<T>);
 begin
-  for var Item in Enum do
-    FreeAndNil(Item);
+  for var i := List.Count-1 downto 0 do //working the list backwards since we're removing items from it
+  begin
+    var Item := List[i];
+    List.Delete(i); //in case the list contains the item multiple times
+    FreeAndNil(Item); //if this causes side-effect that calls List.Remove(Item) assuming it won't fail if item has already been removed. Issue may occur though if list contains Item multiple times since that would cause the 1st occurence found to be removed
+  end;
 end;
 
 procedure TObjectListEx<T>.FreeAll;
