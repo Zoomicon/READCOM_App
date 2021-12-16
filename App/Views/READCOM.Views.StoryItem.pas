@@ -30,10 +30,11 @@ type
     FHidden: Boolean;
     FUrlAction: String;
     FOptions: IStoryItemOptions;
-    FStoryMode: TStoryMode;
     FTargetsVisible: Boolean;
-    FStoryItemList: TIStoryItemList;
-    FAudioStoryItemList: TIAudioStoryItemList;
+
+    FStoryItems: TIStoryItemList;
+    FAudioStoryItems: TIAudioStoryItemList;
+
     FOnActiveChanged: TNotifyEvent;
 
     class var
@@ -46,8 +47,12 @@ type
     class destructor Destroy;
 
     procedure Init; virtual;
+
     //procedure Loaded; override;
     //procedure Updated; override;
+    procedure DoAddObject(const AObject: TFmxObject); override;
+    procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
+    procedure DoRemoveObject(const AObject: TFmxObject); override;
 
     { DefaultSize }
     function GetDefaultSize: TSizeF; override;
@@ -73,11 +78,11 @@ type
     procedure SetParentStoryItem(const Value: IStoryItem);
 
     { StoryItems }
-    function GetStoryItems: TIStoryItemList;
+    function GetStoryItems: TIStoryItemList; inline;
     procedure SetStoryItems(const Value: TIStoryItemList);
 
     { AudioStoryItems }
-    function GetAudioStoryItems: TIAudioStoryItemList;
+    function GetAudioStoryItems: TIAudioStoryItemList; inline;
 
     { ActivationOrder }
     function GetActivationOrder: Integer;
@@ -90,7 +95,6 @@ type
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
-    procedure ApplyHidden;
 
     { Anchored }
     function IsAnchored: Boolean;
@@ -99,10 +103,6 @@ type
     { UrlAction }
     function GetUrlAction: String;
     procedure SetUrlAction(const Value: String);
-
-    { StoryMode }
-    function GetStoryMode: TStoryMode;
-    procedure SetStoryMode(const Value: TStoryMode);
 
     { TargetsVisible }
     function GetTargetsVisible: Boolean;
@@ -168,7 +168,6 @@ type
     property Anchored: Boolean read IsAnchored write SetAnchored default false;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible default false;
-    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
   end;
 
   TStoryItemClass = class of TStoryItem;
@@ -239,6 +238,10 @@ end;
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
+
+  FStoryItems := TIStoryItemList.Create;
+  FAudioStoryItems := TIAudioStoryItemList.Create;
+
   //FID := TGUID.NewGuid; //Generate new statistically unique ID
   Init;
 end;
@@ -254,31 +257,66 @@ begin
     FreeAndNil(FOptions.View);
     end;
 
-  FreeAndNil(FStoryItemList);
-  FreeAndNil(FAudioStoryItemList);
+  FreeAndNil(FStoryItems);
+  FreeAndNil(FAudioStoryItems);
 
   inherited; //do last
 end;
 
 {$endregion}
 
-{
-procedure TStoryItem.Loaded;
+procedure TStoryItem.DoAddObject(const AObject: TFmxObject);
+  procedure AddToStoryItems;
+  begin
+    var StoryItem: IStoryItem;
+    if Supports(AObject, IStoryItem, StoryItem) then
+      FStoryItems.Add(StoryItem);
+  end;
+
+  procedure AddToAudioStoryItems;
+  begin
+    var AudioStoryItem: IAudioStoryItem;
+    if Supports(AObject, IAudioStoryItem, AudioStoryItem) then
+      FAudioStoryItems.Add(AudioStoryItem);
+  end;
+
 begin
   inherited;
-  Init;
+  AddToStoryItems;
+  AddToAudioStoryItems;
 end;
 
-procedure TStoryItem.Updated;
+procedure TStoryItem.DoInsertObject(Index: Integer; const AObject: TFmxObject);
 begin
   inherited;
-  Init;
-end;
-}
 
-function TStoryItem.GetDefaultSize: TSizeF;
+  FreeAndNil(FStoryItems); //TODO: this will fail if while looping on StoryItems we insert some new StoryItem (BUT THAT IS AN EDGE CASE, NOT DOING)
+  FStoryItems := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls); //need to recalculate the list, since the "Index" of objects is different from the one of StoryItems (the TStoryItem contains other FmxObjects too in its UI design)
+
+  FreeAndNil(FAudioStoryItems); //TODO: this will fail if while looping on StoryItems we insert some new AudioStoryItem (BUT THAT IS AN EDGE CASE, NOT DOING)
+  FAudioStoryItems := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls); //need to recalculate the list, since the "Index" of objects is different from the one of AudioStoryItems (the TStoryItem contains other FmxObjects too in its UI design)
+end;
+
+procedure TStoryItem.DoRemoveObject(const AObject: TFmxObject);
+
+  procedure RemoveFromStoryItems;
+  begin
+    var StoryItem: IStoryItem;
+    if Supports(AObject, IStoryItem, StoryItem) then
+      FStoryItems.Remove(StoryItem);
+  end;
+
+  procedure RemoveFromAudioStoryItems;
+  begin
+    var AudioStoryItem: IAudioStoryItem;
+    if Supports(AObject, IAudioStoryItem, AudioStoryItem) then
+      FStoryItems.Remove(AudioStoryItem);
+  end;
+
 begin
-  Result := TSizeF.Create(300, 300);
+  inherited;
+  RemoveFromStoryItems;
+  RemoveFromAudioStoryItems; //not checking if item was removed from StoryItems, since it may just implement IAudioStoryItem without implementing IStoryItem in Delphi (which follows COM practice), even though IAudioStoryItem extends IStoryItem
 end;
 
 procedure TStoryItem.SetParent(const Value: TFmxObject);
@@ -289,21 +327,6 @@ begin
     SetParentStoryItem(Value as IStoryItem)
   else
     inherited; //needed to add the top StoryItem to some container
-end;
-
-procedure TStoryItem.SetEditMode(const Value: Boolean);
-begin
-  inherited;
-
-  if Assigned(Border) then
-    Border.Visible := Value;
-
-  if Assigned(DropTarget) then
-    with DropTarget do
-    begin
-      Visible := Value;
-      SendToBack; //keep always under children (setting to Visible seems to BringToFront)
-    end;
 end;
 
 procedure TStoryItem.Paint;
@@ -319,7 +342,16 @@ begin
     RandomAudioStoryItem.Play;
 end;
 
-{$REGION '--- PROPERTIES ---'}
+{$REGION 'PROPERTIES' ------------}
+
+{$region 'DefaultSize'}
+
+function TStoryItem.GetDefaultSize: TSizeF;
+begin
+  Result := TSizeF.Create(300, 300);
+end;
+
+{$endregion}
 
 {$region 'BorderVisible'}
 
@@ -354,30 +386,16 @@ end;
 
 procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
 begin
-  StoryMode := Value.StoryMode;
-  inherited SetParent(Value.View); //don't use "InsertComponent" here, won't work //must use "inherited" to avoid infinite loop and stack overflow //"inherited Parent :=" also fails in Delphi11
+  inherited SetParent(Value.View); //don't use "InsertComponent" here, won't work //must use "inherited" to avoid infinite loop and stack overflow //"inherited Parent :=" also fails in Delphi11 when using with just "Value"
 end;
 
 {$endregion}
 
 {$region 'StoryItems'}
 
-function IsStoryItem(obj: TFmxObject): Boolean;
-begin
-  Result := Supports(obj, IStoryItem);
-end;
-
-function IsAudioStoryItem(obj: TFmxObject): Boolean;
-begin
-  Result := Supports(obj, IAudioStoryItem);
-end;
-
 function TStoryItem.GetStoryItems: TIStoryItemList;
 begin
-  if Assigned(FStoryItemList) then
-    FreeAndNil(FStoryItemList);
-  FStoryItemList := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls); //TODO: faster would be to recalculate it based on some flag on whether list of StoryItems has changed or not (due to removals/additions or to intiialization)
-  result := FStoryItemList;
+  result := FStoryItems;
 end;
 
 procedure TStoryItem.SetStoryItems(const Value: TIStoryItemList);
@@ -392,10 +410,7 @@ end;
 
 function TStoryItem.GetAudioStoryItems: TIAudioStoryItemList;
 begin
-  if Assigned(FAudioStoryItemList) then
-    FreeAndNil(FAudioStoryItemList);
-  FAudioStoryItemList := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls); //TODO: faster would be to recalculate it based on some flag on whether list of AudioStoryItems has changed or not (due to removals/additions or to intiialization)
-  result := FAudioStoryItemList;
+  result := FAudioStoryItems;
 end;
 
 {$endregion}
@@ -458,6 +473,29 @@ end;
 
 {$endregion}
 
+{$region 'EditMode'}
+
+procedure TStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+
+  if Assigned(Border) then
+    Border.Visible := Value;
+
+  if Assigned(DropTarget) then
+    with DropTarget do
+    begin
+      Visible := Value;
+      SendToBack; //keep always under children (setting to Visible seems to BringToFront)
+    end;
+
+  if Assigned(FStoryItems) then
+    For var StoryItem in FStoryItems do
+      StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+end;
+
+{$endregion}
+
 {$region 'Hidden'}
 
 function TStoryItem.IsHidden: Boolean;
@@ -468,12 +506,7 @@ end;
 procedure TStoryItem.SetHidden(const Value: Boolean);
 begin
   FHidden := Value;
-  ApplyHidden;
-end;
-
-procedure TStoryItem.ApplyHidden;
-begin
-  Visible := (StoryMode = TStoryMode.EditMode) or (not Hidden);
+  Visible := (not Hidden) or (Assigned(ParentStoryItem) and (ParentStoryItem.EditMode)); //always reapply this (logic in SetEditMode depends on it), not only if value changed
 end;
 
 {$endregion}
@@ -506,26 +539,7 @@ end;
 
 {$endregion}
 
-{$region 'StoryMode'}
-
-function TStoryItem.GetStoryMode: TStoryMode;
-begin
-  result := FStoryMode;
-end;
-
-procedure TStoryItem.SetStoryMode(const Value: TStoryMode);
-begin
-  FStoryMode := Value;
-  StoryItems.ForEach(procedure(StoryItem:IStoryItem) //note: can't use "const" parameter here, TProc<IStoryItem> doesn't use such
-    begin
-    StoryItem.StoryMode := Value;
-    end
-  );
-
-  ApplyHidden;
-end;
-
-{$endregion}
+{$endregion ....................}
 
 {$region 'TargetsVisible'}
 
@@ -725,10 +739,16 @@ begin
 end;
 
 procedure TStoryItem.LoadReadComBin(const Stream: TStream);
+
+  procedure RemoveStoryItems;
+  begin
+    var StoryItemViews := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls);
+    StoryItemViews.FreeAll; //this will end up having RemoveObject called for each StoryItem (which will also remove from StoryItems and AudioStoryItems [if it is such] lists)
+    FreeAndNil(StoryItemViews);
+  end;
+
 begin
-  var list := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls);
-  list.FreeAll;
-  FreeAndNil(list);
+  RemoveStoryItems;
   Stream.ReadComponent(Self);
 end;
 

@@ -14,7 +14,7 @@ uses
   FMX.ExtCtrls, FMX.SVGIconImage;
 
 type
-  TImageStoryItem = class abstract(TStoryItem, IImageStoryItem)
+  TImageStoryItem = class abstract(TStoryItem, IImageStoryItem, IStoryItem, IStoreable)
   //--- Methods ---
   protected
     { Image }

@@ -54,6 +54,17 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'drawertoolbutton'
       end
+      object btnHome: TSpeedButton
+        Action = actionHome
+        Align = Center
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 13
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'drawertoolbutton'
+      end
     end
     object layoutButtonsSide: TFlowLayout
       Align = MostLeft
@@ -127,17 +138,6 @@ object StoryHUD: TStoryHUD
         Images = Globals.SVGIconImageList
         ImageIndex = 4
         Position.Y = 240.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 40.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'drawertoolbutton'
-      end
-      object btnHome: TSpeedButton
-        Action = actionHome
-        Enabled = True
-        Images = Globals.SVGIconImageList
-        ImageIndex = 13
-        Position.Y = 280.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False

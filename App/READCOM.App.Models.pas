@@ -91,6 +91,7 @@ type
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
+    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem;
     property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem;
   end;
@@ -126,6 +127,10 @@ type
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
 
+    { EditMode }
+    function IsEditMode: Boolean;
+    procedure SetEditMode(const Value: Boolean);
+
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
@@ -137,10 +142,6 @@ type
     { UrlAction }
     function GetUrlAction: String;
     procedure SetUrlAction(const Value: String);
-
-    { StoryMode }
-    function GetStoryMode: TStoryMode;
-    procedure SetStoryMode(const Value: TStoryMode);
 
     { TargetsVisible }
     function GetTargetsVisible: Boolean;
@@ -156,8 +157,8 @@ type
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation chain)
     property Active: Boolean read IsActive write SetActive; //default false
+    property EditMode: Boolean read IsEditMode write SetEditMode; //default false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
-    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
     property Options: IStoryItemOptions read GetOptions; //stored false
   end;

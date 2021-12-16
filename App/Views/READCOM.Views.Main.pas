@@ -39,6 +39,7 @@ type
     procedure HUDactionNextExecute(Sender: TObject);
 
   protected
+    FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
     { SavedState}
@@ -146,7 +147,7 @@ begin
   var TheRootStoryItemView := RootStoryItemView;
   if Assigned(TheRootStoryItemView) and (Value <> TheRootStoryItemView) then //must check that the same one isn't set again to avoid destroying it
     begin
-    //TheStory.Parent := nil; //shouldn't be needed
+    //TheRootStoryItemView.Parent := nil; //shouldn't be needed
     ActiveStoryItem := nil; //must clear reference to old ActiveStoryItem since all StoryItems will be destroyed
     FreeAndNil(TheRootStoryItemView); //destroy the old RootStoryItem //FREE THE CONTROL, DON'T FREE JUST THE INTERFACE
     end;
@@ -245,12 +246,13 @@ end;
 
 function TMainForm.GetStoryMode: TStoryMode;
 begin
-  result := RootStoryItem.StoryMode; //TODO: propage or make class attribute?
+  result := FStoryMode;
 end;
 
 procedure TMainForm.SetStoryMode(const Value: TStoryMode);
 begin
-  RootStoryItem.StoryMode := Value; //TODO: propage or make class attribute?
+  FStoryMode := Value;
+  //TODO
 end;
 
 {$endregion}
@@ -405,10 +407,13 @@ end;
 procedure TMainForm.NewRootStoryItem;
 begin
   RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
-  var TheStory := TPanelStoryItem.Create(Self);
-  TheStory.Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-  TheStory.EditMode := HUD.actionEdit.Checked; //TODO: add EditMode property to IStory or use its originally intended mode one
-  RootStoryItemView := TheStory;
+  var newRootStoryItemView := TPanelStoryItem.Create(Self);
+  with newRootStoryItemView do
+    begin
+    Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+    EditMode := HUD.actionEdit.Checked; //TODO: add EditMode property to IStory or use its originally intended mode one
+    end;
+  RootStoryItemView := newRootStoryItemView;
 end;
 
 procedure TMainForm.LoadSavedStateOrNewRootStoryItem;

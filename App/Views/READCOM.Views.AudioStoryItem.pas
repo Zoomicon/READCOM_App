@@ -23,7 +23,7 @@ type
 
   {$REGION 'TAudioStoryItem' --------------------------------------------------------}
 
-  TAudioStoryItem = class(TStoryItem , IAudioStoryItem, IStoryItem, IStoreable)
+  TAudioStoryItem = class(TStoryItem, IAudioStoryItem, IStoryItem, IStoreable)
     GlyphImage: TSVGIconImage;
     MediaPlayer: TMediaPlayerEx;
     procedure FrameTap(Sender: TObject; const Point: TPointF);
@@ -47,6 +47,9 @@ type
     {$endregion}
 
   protected
+    { DefaultSize }
+    function GetDefaultSize: TSizeF; override;
+
     { Muted }
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
@@ -70,6 +73,7 @@ type
   //--- Properties ---
 
   published
+    property Hidden default true; //set to true in overriden constructor
     property Muted: Boolean read IsMuted write SetMuted stored false; //shouldn't store this so that interacting with the story won't store it disabled
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
@@ -102,6 +106,7 @@ begin
   inherited;
   MediaPlayer.Stored := false; //don't store state, should use state from designed .FMX resource
   GlyphImage.Stored := false; //don't store state, should use state from designed .FMX resource
+  Hidden := true;
 end;
 
 {$region 'IStoreable'}
@@ -151,6 +156,17 @@ procedure TAudioStoryItem.Stop;
 begin
   MediaPlayer.Stop; //this only Pauses...
   MediaPlayer.CurrentTime := 0; //...so we also reset CurrentTime to 0
+end;
+
+{$endregion}
+
+{$REGION 'PROPERTIES' ---------------------}
+
+{$region 'DefaultSize'}
+
+function TAudioStoryItem.GetDefaultSize: TSizeF;
+begin
+  Result := TSizeF.Create(64, 64);
 end;
 
 {$endregion}
@@ -224,6 +240,8 @@ begin
 end;
 
 {$endregion}
+
+{$ENDREGION ...............................}
 
 {$REGION 'EVENTS'}
 

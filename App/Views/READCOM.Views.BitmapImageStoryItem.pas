@@ -22,6 +22,7 @@ const
   FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
 
 type
+
   {$REGION 'TBitmapImageStoryItem' ----------------------------------------------}
 
   TBitmapImageStoryItem = class(TImageStoryItem, IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
