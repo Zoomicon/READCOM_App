@@ -81,6 +81,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     {$region 'Manipulation'}
     {Z-order}
@@ -164,6 +165,12 @@ begin
   AutoSize := DEFAULT_AUTOSIZE; //must do after CreateAreaSelector
   EditMode := DEFAULT_EDITMODE;
   Proportional := DEFAULT_PROPORTIONAL;
+end;
+
+destructor TCustomManipulator.Destroy;
+begin
+  ReleaseCapture; //make sure we always release Mouse Capture
+  inherited;
 end;
 
 procedure TCustomManipulator.Loaded;
@@ -729,6 +736,12 @@ procedure TCustomManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer;
 begin
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
+  if (ssShift in Shift) then
+  begin
+    //TODO: should tell any ScrollBox parent to pan horizontally
+    exit;
+  end;
+
   if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
@@ -736,7 +749,7 @@ begin
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject);
-      var zoom_center := Control.ScreenToLocal(ScreenMousePos);
+      var zoom_center := Control.ScreenToLocal(ScreenMousePos); //use mouse cursor as center
 
       var new_scale : single;
       if WheelDelta >= 0
@@ -744,13 +757,13 @@ begin
         else new_scale := 1 / (1 - (WheelDelta / 120)/5);
 
       BeginUpdate;
-      Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale);
+      Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality?
 
-      // correction for position when scaling
+      // correction for zoom center position
       Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale), Control.Position.Y + zoom_center.y * (1-new_scale));
       EndUpdate;
 
-      Handled := true; //TODO: is this needed?
+      Handled := true; //needed for parent containers to not scroll
       exit;
     end; //adapted from https://stackoverflow.com/a/66049562/903783
   end;
