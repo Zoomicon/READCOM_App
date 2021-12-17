@@ -28,6 +28,7 @@ const
   DEFAULT_SHOW_TYPES = false;
   DEFAULT_SHOW_HINT_NAMES = true;
   DEFAULT_SHOW_HINT_TYPES = false;
+  DEFAULT_ALLOW_DRAGDROP = true;
 
 type
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
@@ -52,16 +53,20 @@ type
     FShowHintTypes: Boolean;
     FOnSelection: TSelectionEvent;
 
-    procedure SetShowOnlyClasses(const Value: TClassList);
-    procedure SetShowOnlyVisible(const Value: Boolean);
-    procedure SetShowOnlyNamed(const Value: Boolean);
-    procedure SetShowNames(const Value: Boolean);
-    procedure SetShowTypes(const Value: Boolean);
-    procedure SetShowHintNames(const Value: Boolean);
-    procedure SetShowHintTypes(const Value: Boolean);
+    procedure SetShowOnlyClasses(const Value: TClassList); virtual;
+    procedure SetShowOnlyVisible(const Value: Boolean); virtual;
+    procedure SetShowOnlyNamed(const Value: Boolean); virtual;
+    procedure SetShowNames(const Value: Boolean); virtual;
+    procedure SetShowTypes(const Value: Boolean); virtual;
+    procedure SetShowHintNames(const Value: Boolean); virtual;
+    procedure SetShowHintTypes(const Value: Boolean); virtual;
+    function IsAllowDragDrop: Boolean; virtual;
+    procedure SetAllowDragDrop(const Value: Boolean); virtual;
 
-    procedure SetGUIRoot(const Value: TControl);
-    procedure LoadTreeView;
+    procedure SetGUIRoot(const Value: TControl); virtual;
+    procedure LoadTreeView; virtual;
+
+    procedure TreeViewItemDragDrop(Sender: TObject; const Data: TDragObject; const Point: TPointF);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -75,6 +80,7 @@ type
     property ShowTypes: Boolean read FShowTypes write SetShowTypes default DEFAULT_SHOW_TYPES;
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
     property ShowHintTypes: Boolean read FShowHintTypes write SetShowHintTypes default DEFAULT_SHOW_HINT_TYPES;
+    property AllowDragDrop: Boolean read IsAllowDragDrop write SetAllowDragDrop default DEFAULT_ALLOW_DRAGDROP;
 
   published
     property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
@@ -89,6 +95,7 @@ implementation
     System.Rtti, //for TValue
     FMX.Dialogs, //for ShowMessage
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
+    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper
     Zoomicon.Helpers.FMX.ImgList.ImageListHelpers; //for TImageListAddBitmapHelper
 
 {$R *.fmx}
@@ -98,6 +105,7 @@ implementation
 constructor TStructureView.Create(AOwner: TComponent);
 begin
   inherited;
+
   FShowOnlyClasses := nil;
   FShowOnlyVisible := DEFAULT_SHOW_ONLY_VISIBLE;
   FShowOnlyNamed := DEFAULT_SHOW_ONLY_NAMED;
@@ -105,6 +113,8 @@ begin
   FShowTypes := DEFAULT_SHOW_TYPES;
   FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
   FShowHintTypes := DEFAULT_SHOW_HINT_TYPES;
+
+  SetAllowDragDrop(DEFAULT_ALLOW_DRAGDROP);
 end;
 
 destructor TStructureView.Destroy;
@@ -118,6 +128,20 @@ begin
 end;
 
 {$region 'Properties'}
+
+{$region 'AllowDragDrop'}
+
+function TStructureView.IsAllowDragDrop: Boolean;
+begin
+  result := TreeView.AllowDrag;
+end;
+
+procedure TStructureView.SetAllowDragDrop(const Value: Boolean);
+begin
+  TreeView.AllowDrag := Value;
+end;
+
+{$endregion}
 
 procedure TStructureView.SetGUIRoot(const Value: TControl);
 begin
@@ -171,39 +195,44 @@ end;
 
 procedure TStructureView.LoadTreeView;
 
-  procedure LoadTreeItemChild(const Control: TControl; const Parent: TFmxObject; const IconHeight: Single);
+  procedure LoadTreeItemChild(const TheControl: TControl; const TheParent: TFmxObject; const IconHeight: Single);
   begin
-    if not Assigned(Control) or
-       (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(Control, false) < 0)) or //if FShowOnlyClasses is empty ignore it
-       (FShowOnlyVisible and (not Control.Visible)) or
-       (FShowOnlyNamed and (Control.Name = '')) //ignore style-related controls (unnamed), including their children
+    if not Assigned(TheControl) or
+       (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
+       (FShowOnlyVisible and (not TheControl.Visible)) or
+       (FShowOnlyNamed and (TheControl.Name = '')) //ignore style-related controls (unnamed), including their children
       then exit;
 
     var TreeItem := TTreeViewItem.Create(Parent);
-    TreeItem.BeginUpdate;
-    TreeItem.Parent := Parent;
+    with TreeItem do
+    begin
+      BeginUpdate;
+      Parent := TheParent;
 
-    TreeItem.Tag := NativeInt(Control);
+      TagObject := TheControl;
 
-    var ControlToBitmap := Control.MakeScreenshot; //this seems to leak memory
-    var imgIndex := ImageList.Add(ControlToBitmap); //this will copy from the bitmap
-    FreeAndNil(ControlToBitmap); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+      var ControlToBitmap := TheControl.MakeScreenshot; //this seems to leak memory
+      var imgIndex := ImageList.Add(ControlToBitmap); //this will copy from the bitmap
+      FreeAndNil(ControlToBitmap); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
 
-    TreeItem.ImageIndex := imgIndex;
-    var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
-    TreeItem.StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+      ImageIndex := imgIndex;
+      var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
+      StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
 
-    if FShowNames then TreeItem.Text := Control.Name;
-    if FShowTypes then TreeItem.Text := TreeItem.Text + ': ' + Control.ClassName;
-    TreeItem.ShowHint := true;
+      if FShowNames then Text := TheControl.Name;
+      if FShowTypes then Text := Text + ': ' + TheControl.ClassName;
 
-    if FShowHintNames then TreeItem.Hint := Control.Name;
-    if FShowHintTypes then TreeItem.Hint := TreeItem.Hint + ': ' + Control.ClassName;
+      if FShowHintNames then Hint := TheControl.Name;
+      if FShowHintTypes then Hint := Hint + ': ' + TheControl.ClassName;
+      ShowHint := true;
 
-    for var ChildControl in Control.Controls do
-      LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
+      for var ChildControl in TheControl.Controls do
+        LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
 
-    TreeItem.EndUpdate;
+      OnDragDrop := TreeViewItemDragDrop;
+
+      EndUpdate;
+    end;
   end;
 
 begin
@@ -231,12 +260,37 @@ end;
 procedure TStructureView.TreeViewChange(Sender: TObject);
 begin
   if Assigned(FOnSelection) then
-    FOnSelection(Self, TObject(TreeView.Selected.Tag));
+    FOnSelection(Self, TreeView.Selected.TagObject);
+end;
+
+procedure TStructureView.TreeViewItemDragDrop(Sender: TObject; const Data: TDragObject; const Point: TPointF);
+var DragSource, DropTarget: TTreeViewItem;
+begin
+  if not AllowDragDrop then exit;
+
+  {var Obj := ObjectAtLocalPoint(Point, false);
+  if not Assigned(Obj) then exit;
+  DropTarget := TTreeViewItem(Obj.GetObject);}
+
+  if not (Sender is TTreeViewItem) then exit;
+  DropTarget := TTreeViewItem(Sender);
+
+  if not (Data.Data.IsObject) then exit;
+  var DragSourceObj := Data.Data.AsObject;
+
+  if not (DragSourceObj is TTreeViewItem) then exit;
+  DragSource := TTreeViewItem(DragSourceObj);
+
+  TFmxObject(DragSource.TagObject).Parent := TFmxObject(DropTarget.TagObject); //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
+
+  inherited; //let the ancestor move the TTreeViewItems too
 end;
 
 {$endregion}
 
 {$ENDREGION}
+
+{$region 'Registration'}
 
 procedure RegisterClasses;
 begin
@@ -249,6 +303,8 @@ begin
   RegisterClasses;
   RegisterComponents('Zoomicon', [TStructureView]);
 end;
+
+{$endregion}
 
 initialization
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

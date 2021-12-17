@@ -1,3 +1,6 @@
+//Description: Control Helpers for FMX
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Helpers.FMX.Controls.ControlHelpers;
 
 interface
@@ -14,6 +17,7 @@ interface
     protected
       function GetScale: TPosition;
       procedure SetScale(const Value: TPosition);
+
     published
       property Scale: TPosition read GetScale write SetScale;
     end;
@@ -27,7 +31,16 @@ interface
       function ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; inline;
     end;
 
-    TControlConvertLocalRectHelper = class helper(TControlObjectAtHelper) for TControl
+    TControlTagObjectHelper = class helper(TControlObjectAtHelper) for TControl
+    protected
+      function GetTagObject: TObject;
+      procedure SetTagObject(const Value: TObject);
+
+    public
+      property TagObject: TObject read GetTagObject write SetTagObject stored false;
+    end;
+
+    TControlConvertLocalRectHelper = class helper(TControlTagObjectHelper) for TControl
     public
       /// <summary>Converts a rect from the coordinate system of a given <c>AControl</c> to that of the control.</summary>
       function ConvertLocalRectFrom(const AControl: TControl; const AControlLocalRect: TRectF): TRectF;
@@ -39,6 +52,7 @@ interface
     protected
       function IsSubComponent: Boolean;
       procedure SetSubComponent(const Value: Boolean); //even though there is TComponent.SetSubComponent, Delphi 11 compiler seems to not find it for the property setter below
+
     public
       property SubComponent: Boolean read IsSubComponent write SetSubComponent stored false;
     end;
@@ -49,7 +63,7 @@ interface
     end;
 
 implementation
-  uses 
+  uses
     //System.Rtti,
     System.Classes; //for csSubComponent
 
@@ -128,6 +142,20 @@ end;
 function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl;
 begin
   result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive, IncludeDisabled, IncludeSelf);
+end;
+
+{$endregion}
+
+{$region 'TControlTagObjectHelper'}
+
+function TControlTagObjectHelper.GetTagObject: TObject;
+begin
+  result := TObject(Tag);
+end;
+
+procedure TControlTagObjectHelper.SetTagObject(const Value: TObject);
+begin
+  Tag := NativeInt(Value);
 end;
 
 {$endregion}

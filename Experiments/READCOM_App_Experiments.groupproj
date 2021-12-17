@@ -12,6 +12,15 @@
         <Projects Include="SizeableFrame\SizeableFrame.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="StructureViewer\StructureViewer.dproj">
             <Dependencies/>
         </Projects>
@@ -56,6 +65,33 @@
     <Target Name="SizeableFrame:Make">
         <MSBuild Projects="SizeableFrame\SizeableFrame.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Zoomicon_Helpers_RTL">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.RTL.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Helpers_RTL:Clean">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.RTL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Helpers_RTL:Make">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.RTL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Zoomicon_Helpers_FMX">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Helpers_FMX:Clean">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Helpers_FMX:Make">
+        <MSBuild Projects="..\Zooming.Helpers\Zoomicon.Helpers.FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Zoomicon_Introspection_FMX">
+        <MSBuild Projects="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Introspection_FMX:Clean">
+        <MSBuild Projects="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Introspection_FMX:Make">
+        <MSBuild Projects="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Make"/>
+    </Target>
     <Target Name="StructureViewer">
         <MSBuild Projects="StructureViewer\StructureViewer.dproj"/>
     </Target>
@@ -84,13 +120,13 @@
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget"/>
+        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;Zoomicon_Helpers_RTL;Zoomicon_Helpers_FMX;Zoomicon_Introspection_FMX;StructureViewer;ZoomableContainer;MoveToTarget"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;Zoomicon_Helpers_RTL:Clean;Zoomicon_Helpers_FMX:Clean;Zoomicon_Introspection_FMX:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make"/>
+        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;Zoomicon_Helpers_RTL:Make;Zoomicon_Helpers_FMX:Make;Zoomicon_Introspection_FMX:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -30466,7 +30466,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -30561,7 +30561,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Delete'
         SVGText = 
@@ -30596,7 +30596,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 41
+            Size = 64
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -30625,7 +30625,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 64
           end>
         IconName = 'Plus'
         SVGText = 
@@ -30816,8 +30816,8 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Anchor'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
@@ -30840,24 +30840,24 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Delete'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
-            SourceRect.Right = 41.000000000000000000
-            SourceRect.Bottom = 41.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Plus'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item

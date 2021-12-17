@@ -41,8 +41,8 @@ end;
 
 procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
 begin
-  ShowMessage(TControl(Selection).ClassName);
-  MultiView.HideMaster;
+  //ShowMessage(TControl(Selection).ClassName);
+  //MultiView.HideMaster;
 end;
 
 procedure TMainForm.MultiViewStartShowing(Sender: TObject);
