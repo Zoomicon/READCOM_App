@@ -14,6 +14,7 @@ object StructureView: TStructureView
     ItemHeight = 50.000000000000000000
     Images = ImageList
     OnChange = TreeViewChange
+    OnDragChange = TreeViewDragChange
     Viewport.Width = 164.000000000000000000
     Viewport.Height = 284.000000000000000000
   end

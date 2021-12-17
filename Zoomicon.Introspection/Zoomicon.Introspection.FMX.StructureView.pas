@@ -28,7 +28,7 @@ const
   DEFAULT_SHOW_TYPES = false;
   DEFAULT_SHOW_HINT_NAMES = true;
   DEFAULT_SHOW_HINT_TYPES = false;
-  DEFAULT_ALLOW_DRAGDROP = true;
+  DEFAULT_ALLOW_DRAGDROP = false; //acting as structure viewer, not editor by default
 
 type
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
@@ -41,6 +41,8 @@ type
     TreeView: TTreeView;
     ImageList: TImageList;
     procedure TreeViewChange(Sender: TObject);
+    procedure TreeViewDragChange(SourceItem, DestItem: TTreeViewItem;
+      var Allow: Boolean);
 
   protected
     FGUIRoot: TControl;
@@ -66,8 +68,6 @@ type
     procedure SetGUIRoot(const Value: TControl); virtual;
     procedure LoadTreeView; virtual;
 
-    procedure TreeViewItemDragDrop(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -92,10 +92,10 @@ procedure Register;
 
 implementation
   uses
+    System.UITypes, //for TDragMode
     System.Rtti, //for TValue
     FMX.Dialogs, //for ShowMessage
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper
     Zoomicon.Helpers.FMX.ImgList.ImageListHelpers; //for TImageListAddBitmapHelper
 
 {$R *.fmx}
@@ -229,8 +229,6 @@ procedure TStructureView.LoadTreeView;
       for var ChildControl in TheControl.Controls do
         LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
 
-      OnDragDrop := TreeViewItemDragDrop;
-
       EndUpdate;
     end;
   end;
@@ -263,27 +261,11 @@ begin
     FOnSelection(Self, TreeView.Selected.TagObject);
 end;
 
-procedure TStructureView.TreeViewItemDragDrop(Sender: TObject; const Data: TDragObject; const Point: TPointF);
-var DragSource, DropTarget: TTreeViewItem;
+procedure TStructureView.TreeViewDragChange(SourceItem, DestItem: TTreeViewItem; var Allow: Boolean);
 begin
-  if not AllowDragDrop then exit;
-
-  {var Obj := ObjectAtLocalPoint(Point, false);
-  if not Assigned(Obj) then exit;
-  DropTarget := TTreeViewItem(Obj.GetObject);}
-
-  if not (Sender is TTreeViewItem) then exit;
-  DropTarget := TTreeViewItem(Sender);
-
-  if not (Data.Data.IsObject) then exit;
-  var DragSourceObj := Data.Data.AsObject;
-
-  if not (DragSourceObj is TTreeViewItem) then exit;
-  DragSource := TTreeViewItem(DragSourceObj);
-
-  TFmxObject(DragSource.TagObject).Parent := TFmxObject(DropTarget.TagObject); //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
-
-  inherited; //let the ancestor move the TTreeViewItems too
+  Allow := AllowDragDrop;
+  if Allow then
+    TFmxObject(SourceItem.TagObject).Parent := TFmxObject(DestItem.TagObject); //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
 end;
 
 {$endregion}

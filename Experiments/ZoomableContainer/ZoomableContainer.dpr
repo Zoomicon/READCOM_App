@@ -1,6 +1,7 @@
 program ZoomableContainer;
 
 uses
+  System.SysUtils, //for FreeAndNil
   System.StartUpCopy,
   FMX.Forms,
   Zoomicon.Zooming.Models in '..\..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
@@ -24,8 +25,16 @@ begin
 
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
-  TZoomFrameForm.Create(MainForm).Visible := true;
-  //TZoomedLayoutForm.Create(MainForm).Visible := true; //TODO: NOT WORKING CORRECTLY
+
+  ZoomFrameForm := TZoomFrameForm.Create(MainForm);
+  ZoomFrameForm.Visible := true;
+
+  //ZoomedLayoutForm := TZoomedLayoutForm.Create(MainForm).Visible := true; //TODO: NOT WORKING CORRECTLY
+  //ZoomedLayoutForm.Visible := true;
 
   Application.Run;
+
+  FreeAndNil(ZoomFrameForm);
+  FreeAndNil(ZoomedLayoutForm);
+
 end.
