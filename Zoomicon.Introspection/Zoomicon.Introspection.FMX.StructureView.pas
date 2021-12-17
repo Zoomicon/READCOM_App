@@ -265,8 +265,16 @@ procedure TStructureView.TreeViewDragChange(SourceItem, DestItem: TTreeViewItem;
 begin
   Allow := AllowDragDrop;
   if Allow then
-    TFmxObject(SourceItem.TagObject).Parent := TFmxObject(DestItem.TagObject); //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
-end;
+  begin
+    var SourceObject := TFmxObject(SourceItem.TagObject);
+    var DestObject := TFmxObject(DestItem.TagObject);
+    if SourceObject.Parent = DestObject then //if dropped to the same parent
+      //TODO: see why we need to tell DestObject to repaint in that case to show the new order of its children (would expect it to be done automatically)
+      SourceObject.BringToFront //places last in the parent (corresponds to top in the Z-Order), as done for the TTreeViewItems by the TTreeView
+    else
+      SourceObject.Parent := DestObject; //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
+  end;
+end; //the TTreeViewItems themselves will be reordered by the TTreeView since AllowDragDrop maps to TreeView.AllowDrag
 
 {$endregion}
 
