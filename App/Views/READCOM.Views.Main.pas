@@ -317,6 +317,7 @@ begin
       ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
       ShowNames := false;
       ShowTypes := false;
+      AllowDragDrop := true; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
       OnSelection := StructureViewSelection;
     end;
   end;
