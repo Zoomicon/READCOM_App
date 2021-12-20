@@ -28,12 +28,17 @@ const
   DEFAULT_SHOW_TYPES = false;
   DEFAULT_SHOW_HINT_NAMES = true;
   DEFAULT_SHOW_HINT_TYPES = false;
-  DEFAULT_ALLOW_DRAGDROP = false; //acting as structure viewer, not editor by default
+  DEFAULT_DRAGDROP_REORDER = false; //acting as structure viewer, not editor by default
+  DEFAULT_DRAGDROP_REPARENT = false; //acting as structure viewer, not editor by default
+  DEFAULT_DRAGDROP_SELECTTARGET = true; //on drop, target is selected
 
 type
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
 
-  TSelectionEvent = procedure(Sender: TObject; Selection: TObject) of object;
+  TRestructuringOperation = (roReorderedChildren, roAddedChild, roRemovedChild);
+
+  TSelectionEvent = procedure(Sender: TObject; const Selection: TObject) of object;
+  TRestructuringEvent = procedure(Sender: TObject; const RestructuredChild: TObject; const RestructuredParent: TObject; const Operation: TRestructuringOperation) of object;
 
   {$REGION 'TStructureView' --------------------------------------------------------}
 
@@ -41,11 +46,11 @@ type
     TreeView: TTreeView;
     ImageList: TImageList;
     procedure TreeViewChange(Sender: TObject);
-    procedure TreeViewDragChange(SourceItem, DestItem: TTreeViewItem;
-      var Allow: Boolean);
+    procedure TreeViewDragChange(SourceItem, DestItem: TTreeViewItem; var Allow: Boolean);
 
   protected
     FGUIRoot: TControl;
+    {ShowXX}
     FShowOnlyClasses: TClassList;
     FShowOnlyNamed: Boolean;
     FShowOnlyVisible: Boolean;
@@ -53,8 +58,18 @@ type
     FShowTypes: Boolean;
     FShowHintNames: Boolean;
     FShowHintTypes: Boolean;
+    {DragDropXX}
+    FDragDropReorder: Boolean;
+    FDragDropReparent: Boolean;
+    FDragDropSelectTarget: Boolean;
+    {Events}
     FOnSelection: TSelectionEvent;
+    FOnRestructuring: TRestructuringEvent;
 
+    {GUIRoot}
+    procedure SetGUIRoot(const Value: TControl); virtual;
+    procedure LoadTreeView; virtual;
+    {ShowXX}
     procedure SetShowOnlyClasses(const Value: TClassList); virtual;
     procedure SetShowOnlyVisible(const Value: Boolean); virtual;
     procedure SetShowOnlyNamed(const Value: Boolean); virtual;
@@ -62,16 +77,16 @@ type
     procedure SetShowTypes(const Value: Boolean); virtual;
     procedure SetShowHintNames(const Value: Boolean); virtual;
     procedure SetShowHintTypes(const Value: Boolean); virtual;
-    function IsAllowDragDrop: Boolean; virtual;
-    procedure SetAllowDragDrop(const Value: Boolean); virtual;
-
-    procedure SetGUIRoot(const Value: TControl); virtual;
-    procedure LoadTreeView; virtual;
+    {DragDropXX}
+    procedure SetDragDropReorder(const Value: Boolean); virtual;
+    procedure SetDragDropReparent(const Value: Boolean); virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+  published
+    //Properties//
     property GUIRoot: TControl read FGUIRoot write SetGUIRoot;
     property ShowOnlyClasses: TClassList read FShowOnlyClasses write SetShowOnlyClasses; //default nil
     property ShowOnlyVisible: Boolean read FShowOnlyVisible write SetShowOnlyVisible default DEFAULT_SHOW_ONLY_VISIBLE;
@@ -80,10 +95,12 @@ type
     property ShowTypes: Boolean read FShowTypes write SetShowTypes default DEFAULT_SHOW_TYPES;
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
     property ShowHintTypes: Boolean read FShowHintTypes write SetShowHintTypes default DEFAULT_SHOW_HINT_TYPES;
-    property AllowDragDrop: Boolean read IsAllowDragDrop write SetAllowDragDrop default DEFAULT_ALLOW_DRAGDROP;
-
-  published
+    property DragDropReorder: Boolean read FDragDropReorder write SetDragDropReorder default DEFAULT_DRAGDROP_REORDER;
+    property DragDropReparent: Boolean read FDragDropReparent write SetDragDropReparent default DEFAULT_DRAGDROP_REPARENT;
+    property DragDropSelectTarget: Boolean read FDragDropSelectTarget write FDragDropSelectTarget default DEFAULT_DRAGDROP_SELECTTARGET;
+    //Events//
     property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
+    property OnRestructuring: TRestructuringEvent read FOnRestructuring write FOnRestructuring;
   end;
 
   {$ENDREGION ......................................................................}
@@ -102,6 +119,8 @@ implementation
 
 {$REGION 'TStructureView'}
 
+{$region 'Creation / Destruction '}
+
 constructor TStructureView.Create(AOwner: TComponent);
 begin
   inherited;
@@ -114,7 +133,8 @@ begin
   FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
   FShowHintTypes := DEFAULT_SHOW_HINT_TYPES;
 
-  SetAllowDragDrop(DEFAULT_ALLOW_DRAGDROP);
+  SetDragDropReorder(DEFAULT_DRAGDROP_REORDER);
+  SetDragDropReparent(DEFAULT_DRAGDROP_REPARENT);
 end;
 
 destructor TStructureView.Destroy;
@@ -127,27 +147,27 @@ begin
   inherited;
 end;
 
-{$region 'Properties'}
+{$endregion}
 
-{$region 'AllowDragDrop'}
+{$region 'Properties' ---------------------------------------------------}
 
-function TStructureView.IsAllowDragDrop: Boolean;
+{$region 'DragDropXX'}
+
+procedure TStructureView.SetDragDropReorder(const Value: Boolean);
 begin
-  result := TreeView.AllowDrag;
+  FDragDropReorder := Value;
+  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
 end;
 
-procedure TStructureView.SetAllowDragDrop(const Value: Boolean);
+procedure TStructureView.SetDragDropReparent(const Value: Boolean);
 begin
-  TreeView.AllowDrag := Value;
+  FDragDropReparent := Value;
+  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
 end;
 
 {$endregion}
 
-procedure TStructureView.SetGUIRoot(const Value: TControl);
-begin
-  FGUIRoot := Value;
-  LoadTreeView;
-end;
+{$region 'ShowXX'}
 
 procedure TStructureView.SetShowOnlyClasses(const Value: TClassList);
 begin
@@ -192,6 +212,14 @@ begin
 end;
 
 {$endregion}
+
+{$region 'GUIRoot'}
+
+procedure TStructureView.SetGUIRoot(const Value: TControl);
+begin
+  FGUIRoot := Value;
+  LoadTreeView;
+end;
 
 procedure TStructureView.LoadTreeView;
 
@@ -253,7 +281,11 @@ begin
   EndUpdate;
 end;
 
-{$region 'Events'}
+{$endregion}
+
+{$endregion .............................................................}
+
+{$region 'Events' -------------------------------------------------------}
 
 procedure TStructureView.TreeViewChange(Sender: TObject);
 begin
@@ -262,21 +294,57 @@ begin
 end;
 
 procedure TStructureView.TreeViewDragChange(SourceItem, DestItem: TTreeViewItem; var Allow: Boolean);
+
+  procedure Restructured(const AChild: TObject; AParent: TObject; const Operation: TRestructuringOperation);
+  begin
+    if AParent is TControl then
+      TControl(AParent).Repaint; //TODO: see why we need to tell to repaint in that case to show the new order of its children (would expect it to be done automatically)
+
+    if Assigned(FOnRestructuring) then
+      FOnRestructuring(Self, AChild, AParent, Operation);
+  end;
+
 begin
-  Allow := AllowDragDrop;
+  Allow := DragDropReorder or DragDropReparent;
   if Allow then
   begin
     var SourceObject := TFmxObject(SourceItem.TagObject);
     var DestObject := TFmxObject(DestItem.TagObject);
-    if SourceObject.Parent = DestObject then //if dropped to the same parent
-      //TODO: see why we need to tell DestObject to repaint in that case to show the new order of its children (would expect it to be done automatically)
-      SourceObject.BringToFront //places last in the parent (corresponds to top in the Z-Order), as done for the TTreeViewItems by the TTreeView
-    else
-      SourceObject.Parent := DestObject; //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
-  end;
-end; //the TTreeViewItems themselves will be reordered by the TTreeView since AllowDragDrop maps to TreeView.AllowDrag
+    var SourceObjectParent := SourceObject.Parent;
 
-{$endregion}
+    if SourceObjectParent = DestObject then //if dropped to the same parent
+    begin
+      Allow := DragDropReorder;
+      if Allow then
+      begin
+        SourceObject.BringToFront; //places last in the parent (corresponds to top in the Z-Order), as done for the TTreeViewItems by the TTreeView
+
+        Restructured(SourceObject, SourceObjectParent, roReorderedChildren);
+
+        if DragDropSelectTarget then
+          TreeView.Selected := DestItem;
+      end
+    end
+
+    else //if dropped onto other than its parent
+    begin
+      Allow := DragDropReparent;
+      if Allow then
+      begin
+        SourceObject.Parent := DestObject; //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
+
+        Restructured(SourceObject, SourceObjectParent, roRemovedChild);
+        Restructured(SourceObject, DestObject, roAddedChild);
+
+        if DragDropSelectTarget then
+          TreeView.Selected := DestItem;
+      end
+    end;
+
+  end;
+end; //the TTreeViewItems themselves will be reordered by the TTreeView since TreeView.AllowDrag maps to "DragDropReorder or DragDropReparent"
+
+{$endregion .............................................................}
 
 {$ENDREGION}
 
