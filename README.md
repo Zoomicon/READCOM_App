@@ -4,7 +4,8 @@ READ-COM Project's Multi-Platform Application
 Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
-Under development...
+Under development, see early releases here:
+https://github.com/Zoomicon/READCOM_App/releases
 
 
 ## HowTo: enable SVG previews for File Add/Open Dialogs on Windows
