@@ -4,7 +4,7 @@ READ-COM Project's Multi-Platform Application
 Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
-Under development, see early releases here:
+Under development, can try early releases here:
 https://github.com/Zoomicon/READCOM_App/releases
 
 
