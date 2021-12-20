@@ -20,14 +20,14 @@ object StoryHUD: TStoryHUD
   end
   object layoutButtons: TLayout
     Align = Client
-    Size.Width = 704.000000000000000000
+    Size.Width = 662.000000000000000000
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
     object layoutNavigation: TLayout
       Align = MostBottom
       Position.Y = 532.000000000000000000
-      Size.Width = 704.000000000000000000
+      Size.Width = 662.000000000000000000
       Size.Height = 40.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
@@ -37,7 +37,7 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 2
-        Position.X = 648.000000000000000000
+        Position.X = 606.000000000000000000
         Size.Width = 56.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -146,7 +146,7 @@ object StoryHUD: TStoryHUD
     end
     object layoutEdit: TFlowLayout
       Align = MostRight
-      Position.X = 654.000000000000000000
+      Position.X = 612.000000000000000000
       Size.Width = 50.000000000000000000
       Size.Height = 532.000000000000000000
       Size.PlatformDefault = False
@@ -169,19 +169,16 @@ object StoryHUD: TStoryHUD
   end
   object layoutContent: TLayout
     Align = Client
-    Size.Width = 704.000000000000000000
+    Size.Width = 662.000000000000000000
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 6
   end
   object MultiView: TMultiView
     TargetControl = layoutContent
-    DrawerOptions.Placement = Right
-    DrawerOptions.Mode = PushingDetailView
     Mode = Panel
-    SplitViewOptions.Placement = Right
     HitTest = False
-    Size.Width = 208.000000000000000000
+    Size.Width = 250.000000000000000000
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 3
@@ -233,6 +230,7 @@ object StoryHUD: TStoryHUD
     end
     object actionStructure: TAction
       Category = 'View'
+      AutoCheck = True
       Text = 'Structure'
       ImageIndex = 3
       OnExecute = actionStructureExecute

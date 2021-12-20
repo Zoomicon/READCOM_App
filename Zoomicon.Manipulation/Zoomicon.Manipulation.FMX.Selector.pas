@@ -155,7 +155,7 @@ begin
 
   if OnlyFromTop and (result.Count > 1) then
   begin
-    var TopOneSelected := result.Last;
+    var TopOneSelected := result.Last; //the last one in the Components list is the one on top in the Z-Order
     result.Clear; //clear the previously calculated result, avoid creating new list (would have to free previous one)
     result.Add(TopOneSelected); //return single result in a list
   end;

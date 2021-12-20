@@ -53,7 +53,8 @@ object MainForm: TMainForm
       end
     end
     inherited MultiView: TMultiView
-      Size.Width = 350.000000000000000000
+      NavigationPaneOptions.CollapsedWidth = 0.000000000000000000
+      Size.Width = 0.000000000000000000
       Size.Height = 616.000000000000000000
     end
     inherited ActionList: TActionList

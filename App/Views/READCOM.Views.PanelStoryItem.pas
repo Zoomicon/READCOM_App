@@ -35,6 +35,7 @@ begin
   inherited;
   BorderVisible := true;
   ActivationOrder := High(TTabOrder); //Integer.MaxValue //TODO: when we stop using tab order internally for this, won't need the TTabOrder limit
+  //ClipChildren := true;
 end;
 
 procedure TPanelStoryItem.SetEditMode(const Value: Boolean);

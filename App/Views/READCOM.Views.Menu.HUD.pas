@@ -49,11 +49,14 @@ type
     procedure actionStructureExecute(Sender: TObject);
 
   protected
+    FMultiViewOpenedWidth: Single;
+
     {EditMode}
     function GetEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
 
   public
+    constructor Create(AOwner: TComponent); override;
     property EditMode: Boolean read GetEditMode write SetEditMode;
   end;
 
@@ -62,6 +65,13 @@ implementation
     READCOM.Views.About; //for TAbout
 
 {$R *.fmx}
+
+constructor TStoryHUD.Create(AOwner: TComponent);
+begin
+  inherited;
+  FMultiViewOpenedWidth := MultiView.Width;
+  MultiView.Width := 0; //hide the side panel
+end;
 
 {$REGION 'Properties'}
 
@@ -94,8 +104,7 @@ end;
 
 procedure TStoryHUD.actionEditExecute(Sender: TObject);
 begin
-  var inEditMode := EditMode;
-  layoutEdit.Visible := inEditMode;
+  layoutEdit.Visible := EditMode;
 end;
 
 {$endregion}
@@ -104,7 +113,13 @@ end;
 
 procedure TStoryHUD.actionStructureExecute(Sender: TObject);
 begin
-  MultiView.ShowMaster;
+  if actionStructure.Checked then
+    MultiView.Width := FMultiViewOpenedWidth
+  else
+    begin
+    FMultiViewOpenedWidth := MultiView.Width;
+    MultiView.Width := 0;
+    end;
 end;
 
 {$endregion}

@@ -68,7 +68,7 @@ type
     procedure SetStoryMode(const Value: TStoryMode);
 
     { StructureView }
-    procedure StructureViewSelection(Sender: TObject; Selection: TObject);
+    procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
 
     procedure RootStoryItemViewResized(Sender: TObject);
 
@@ -76,6 +76,7 @@ type
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
   published
+    property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem stored false;
     property RootStoryItemView: TStoryItem read GetRootStoryItemView write SetRootStoryItemView stored false;
     property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem stored false;
@@ -252,7 +253,20 @@ end;
 procedure TMainForm.SetStoryMode(const Value: TStoryMode);
 begin
   FStoryMode := Value;
-  //TODO
+
+  if Assigned(ActiveStoryItem) then
+  begin
+    var view := ActiveStoryItem.View as TStoryItem;
+    if Assigned(view) then
+      view.EditMode := HUD.actionEdit.Checked; //TODO: should add an EditMode property to the Story?
+  end;
+
+  if Assigned(FStructureViewFrameInfo) then
+    with FStructureViewFrameInfo.Frame do
+    begin
+      DragDropReorder := HUD.actionEdit.Checked; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
+      DragDropReparent := HUD.actionEdit.Checked; //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
+    end;
 end;
 
 {$endregion}
@@ -317,7 +331,9 @@ begin
       ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
       ShowNames := false;
       ShowTypes := false;
-      AllowDragDrop := true; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
+      DragDropReorder := (StoryMode = EditMode); //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
+      DragDropReparent := (StoryMode = EditMode); //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
+      DragDropSelectTarget := true; //always select (make active / zoom to) the Target StoryItem after a drag-drop operation in the structure view
       OnSelection := StructureViewSelection;
     end;
   end;
@@ -343,12 +359,10 @@ procedure TMainForm.HUDactionEditExecute(Sender: TObject);
 begin
   HUD.actionEditExecute(Sender);
 
-  if Assigned(ActiveStoryItem) then
-  begin
-    var view := ActiveStoryItem.View as TStoryItem;
-    if Assigned(view) then
-      view.EditMode := HUD.actionEdit.Checked;
-  end;
+  if HUD.actionEdit.Checked then
+    StoryMode := EditMode
+  else
+    StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
 end;
 
 procedure TMainForm.HUDactionAddExecute(Sender: TObject);
@@ -391,12 +405,8 @@ end;
 
 {$endregion}
 
-procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
+procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
-  HUD.MultiView.HideMaster; //first close the structure drawer, then do ZoomTo so that any zooming animation will be visible
-
-  //ZoomFrame.ZoomTo(TControl(Selection)); //just zoom
-
   ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class
   //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
 end;
