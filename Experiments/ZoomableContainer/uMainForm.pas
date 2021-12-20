@@ -3,6 +3,10 @@ unit uMainForm;
 interface
 
 uses
+  Zoomicon.Zooming.Models,  //for IZoomable
+  Zoomicon.Introspection.FMX.StructureView, //for TStructureView
+  FrameStand, //for TFrameInfo;
+  SubjectStand,
   FMX.Controls,
   FMX.Forms,
   FMX.Layouts,
@@ -12,7 +16,7 @@ uses
   FMX.Types,
   System.Classes,
   System.Types,
-  Zoomicon.Zooming.Models, SubjectStand, FrameStand, FMX.MultiView; //for IZoomable
+  FMX.MultiView;
 
 const
   DEFAULT_ZOOM_CONTROLS_VISIBLE = true;
@@ -52,10 +56,11 @@ type
     procedure MultiViewStartShowing(Sender: TObject);
 
   protected
+    FStructureViewFrameInfo: TFrameInfo<TStructureView>;
     FStoredWheelDelta: extended;
     FOnZoomChanged: TZoomChangedEvent;
     procedure UpdateZoomFromTrackbars;
-    procedure StructureViewSelection(Sender: TObject; Selection: TObject);
+    procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
 
     {Proportional}
     function IsProportional: Boolean;
@@ -85,7 +90,6 @@ var
 
 implementation
   uses
-    Zoomicon.Introspection.FMX.StructureView, //for TStructureView
     Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers, //for TScaledLayout.ScalingFactor
     Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers, //for GetScrollBoxParent
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
@@ -305,7 +309,7 @@ begin
   //with ScrollBox.ViewportPosition do ShowMessageFmt('ViewPortPosition after: (%f, %f)', [x, y]);
 end;
 
-procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
+procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
   ZoomTo(TControl(Selection)); //TODO: see why while in deeper zooms the StructureView item structure (and bitmaps) don't show up properly
   MultiView.HideMaster;
@@ -316,14 +320,17 @@ begin
   with MultiViewFrameStand do
   begin
     CloseAllExcept(TStructureView);
-    var info:= MultiViewFrameStand.GetFrameInfo<TStructureView>;
-    with info.Frame do
+    if not Assigned(FStructureViewFrameInfo) then
     begin
-      GUIRoot := ScaledLayout;
-      ShowOnlyClasses := TClassList.Create([TScaledLayout, TButton]); //TStructureView's destructor will FreeAndNil that TClassList instance
-      OnSelection := StructureViewSelection;
+      FStructureViewFrameInfo := MultiViewFrameStand.GetFrameInfo<TStructureView>;
+      with FStructureViewFrameInfo.Frame do
+      begin
+        GUIRoot := ScaledLayout;
+        ShowOnlyClasses := TClassList.Create([TScaledLayout, TButton]); //TStructureView's destructor will FreeAndNil that TClassList instance
+        OnSelection := StructureViewSelection;
+      end;
     end;
-    info.Show;
+    FStructureViewFrameInfo.Show;
   end;
 end;
 

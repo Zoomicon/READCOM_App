@@ -22,7 +22,7 @@ type
     procedure btnShowChildrenClick(Sender: TObject);
     procedure MultiViewStartShowing(Sender: TObject);
   protected
-    procedure StructureViewSelection(Sender: TObject; Selection: TObject);
+    procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
   end;
 
 var
@@ -39,7 +39,7 @@ begin
     Control.Visible := true;
 end;
 
-procedure TMainForm.StructureViewSelection(Sender: TObject; Selection: TObject);
+procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
   ShowMessage(TControl(Selection).ClassName);
   MultiView.HideMaster;
