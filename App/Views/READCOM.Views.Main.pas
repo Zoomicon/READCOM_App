@@ -401,15 +401,18 @@ begin
   //TODO
 end;
 
-{$endregion}
-
-{$endregion}
-
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
+  if not (StoryMode = EditMode) then //in non-Edit mode
+    HUD.StructureViewVisible := false; //we want to hide the StructureView before zooming to the item selected
+
   ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class
   //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
 end;
+
+{$endregion}
+
+{$endregion}
 
 {$ENDREGION}
 

@@ -55,9 +55,14 @@ type
     function GetEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
 
+    {StructureViewVisible}
+    function IsStructureViewVisible: Boolean;
+    procedure SetStructureViewVisible(const Value: Boolean);
+
   public
     constructor Create(AOwner: TComponent); override;
-    property EditMode: Boolean read GetEditMode write SetEditMode;
+    property EditMode: Boolean read GetEditMode write SetEditMode default false;
+    property StructureViewVisible: Boolean read IsStructureViewVisible write SetStructureViewVisible default false;
   end;
 
 implementation
@@ -69,8 +74,11 @@ implementation
 constructor TStoryHUD.Create(AOwner: TComponent);
 begin
   inherited;
+
+  EditMode := false;
+
   FMultiViewOpenedWidth := MultiView.Width;
-  MultiView.Width := 0; //hide the side panel
+  StructureViewVisible := false; //hide the side panel
 end;
 
 {$REGION 'Properties'}
@@ -85,6 +93,28 @@ end;
 procedure TStoryHUD.SetEditMode(const Value: Boolean);
 begin
   actionEdit.Checked := Value; //see if it causes firing of event on change
+end;
+
+{$endregion}
+
+{$region 'StrucureViewVisible'}
+
+function TStoryHUD.IsStructureViewVisible: Boolean;
+begin
+  result := (MultiView.Width <> 0);
+end;
+
+procedure TStoryHUD.SetStructureViewVisible(const Value: Boolean);
+begin
+  if Value then
+    MultiView.Width := FMultiViewOpenedWidth
+  else
+    begin
+    FMultiViewOpenedWidth := MultiView.Width;
+    MultiView.Width := 0;
+    end;
+
+  actionStructure.Checked := Value;
 end;
 
 {$endregion}
@@ -113,13 +143,7 @@ end;
 
 procedure TStoryHUD.actionStructureExecute(Sender: TObject);
 begin
-  if actionStructure.Checked then
-    MultiView.Width := FMultiViewOpenedWidth
-  else
-    begin
-    FMultiViewOpenedWidth := MultiView.Width;
-    MultiView.Width := 0;
-    end;
+  SetStructureViewVisible(actionStructure.Checked);
 end;
 
 {$endregion}

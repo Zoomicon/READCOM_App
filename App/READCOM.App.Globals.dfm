@@ -1,7 +1,7 @@
 object Globals: TGlobals
-  Height = 251
-  Width = 486
-  PixelsPerInch = 120
+  Height = 201
+  Width = 389
+  PixelsPerInch = 96
   object DefaultStyleBook: TStyleBook
     UseStyleManager = True
     Styles = <
@@ -30297,20 +30297,20 @@ object Globals: TGlobals
           4E6F726D616C436F6C6F720708636C6157686974650C50726573736564436F6C
           6F720708636C615768697465000000}
       end>
-    Left = 192
-    Top = 72
+    Left = 154
+    Top = 58
   end
   object Lang: TLang
     Lang = 'el'
-    Left = 56
-    Top = 64
+    Left = 45
+    Top = 51
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'Edit'
         SVGText = 
@@ -30355,7 +30355,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'reverse'
         SVGText = 
@@ -30375,7 +30375,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'play'
         SVGText = 
@@ -30395,8 +30395,8 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Width = 24
-            Height = 30
+            Width = 19
+            Height = 24
           end>
         IconName = 'Diagram'
         SVGText = 
@@ -30412,7 +30412,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'TargetArrow'
         SVGText = 
@@ -30492,7 +30492,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'OpenFileFolder'
         SVGText = 
@@ -30528,7 +30528,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'Save'
         SVGText = 
@@ -30724,7 +30724,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'PaperA4'
         SVGText = 
@@ -30746,7 +30746,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 30
+            Size = 24
           end>
         IconName = 'Home'
         SVGText = 
@@ -30776,40 +30776,40 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Edit'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'reverse'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'play'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Diagram'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'TargetArrow'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
@@ -30824,16 +30824,16 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'OpenFileFolder'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Save'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
@@ -30872,23 +30872,23 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'PaperA4'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Home'
-            SourceRect.Right = 30.000000000000000000
-            SourceRect.Bottom = 30.000000000000000000
+            SourceRect.Right = 24.000000000000000000
+            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item
         Layers = <>
       end>
     Size = 64
-    Left = 328
-    Top = 72
+    Left = 262
+    Top = 58
   end
 end
