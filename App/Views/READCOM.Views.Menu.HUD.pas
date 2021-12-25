@@ -109,10 +109,7 @@ begin
   if Value then
     MultiView.Width := FMultiViewOpenedWidth
   else
-    begin
-    FMultiViewOpenedWidth := MultiView.Width;
     MultiView.Width := 0;
-    end;
 
   actionStructure.Checked := Value;
 end;
@@ -134,7 +131,10 @@ end;
 
 procedure TStoryHUD.actionEditExecute(Sender: TObject);
 begin
-  layoutEdit.Visible := EditMode;
+  layoutEdit.Visible := EditMode; //show Edit-related buttons
+
+  if not EditMode then
+    StructureViewVisible := false; //hide StructureView when existing EditMode
 end;
 
 {$endregion}

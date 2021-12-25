@@ -447,7 +447,12 @@ begin
   if (Value = IsActive) then exit; //Important
 
   if (Value) then //make active
-    FActiveStoryItem := Self //note: don't call Active := false on any previously ActiveStoryItem, this is a singleton pattern and want to raise a single event
+    begin
+    if Assigned(FActiveStoryItem) then
+      FActiveStoryItem.Active := false; //deactivate the previously active StoryItem
+
+    FActiveStoryItem := Self
+    end
   else //make inactive
     FActiveStoryItem := nil;
 
@@ -456,9 +461,11 @@ end;
 
 class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
 begin
+  if (Value = FActiveStoryItem) then exit;
+
   if Assigned(Value) then //not checking if ActivationOrder <> -1, since an out-of-activation-order StoryItem may be activated directly via a target
     Value.Active := true //this will also deactivate the ActiveStoryItem if any
-  else if Assigned(FActiveStoryItem) then //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem if any
+  else {if Assigned(FActiveStoryItem) then} //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem (no need to check if it is Assigned [not nil], since the "Value = FActiveStoryItem" check above would have exited)
     FActiveStoryItem.Active := false;
 end;
 
