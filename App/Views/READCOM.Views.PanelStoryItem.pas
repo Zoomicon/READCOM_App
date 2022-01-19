@@ -34,7 +34,7 @@ constructor TPanelStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
   BorderVisible := true;
-  ActivationOrder := High(TTabOrder); //Integer.MaxValue //TODO: when we stop using tab order internally for this, won't need the TTabOrder limit
+  StoryPoint := true;
   //ClipChildren := true;
 end;
 

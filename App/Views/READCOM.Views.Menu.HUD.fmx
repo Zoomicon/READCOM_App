@@ -31,7 +31,7 @@ object StoryHUD: TStoryHUD
       Size.Height = 40.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      object BtnNext: TSpeedButton
+      object btnNext: TSpeedButton
         Action = actionNext
         Align = MostRight
         Enabled = True
@@ -43,7 +43,7 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'drawertoolbutton'
       end
-      object BtnPrevious: TSpeedButton
+      object btnPrevious: TSpeedButton
         Action = actionPrevious
         Align = MostLeft
         Enabled = True
@@ -86,7 +86,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'drawertoolbutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnLoad: TSpeedButton
         Action = actionLoad
@@ -97,7 +97,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'priortoolbutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnSave: TSpeedButton
         Action = actionSave
@@ -108,7 +108,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'priortoolbutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object BtnEdit: TSpeedButton
         Action = actionEdit
@@ -119,9 +119,9 @@ object StoryHUD: TStoryHUD
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'priortoolbutton'
+        StyleLookup = 'actiontoolbutton'
       end
-      object BtnStructure: TSpeedButton
+      object btnStructure: TSpeedButton
         Action = actionStructure
         Enabled = True
         Images = Globals.SVGIconImageList
@@ -130,7 +130,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'drawertoolbutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnTargets: TSpeedButton
         Action = actionTargets
@@ -141,7 +141,29 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'drawertoolbutton'
+        StyleLookup = 'actiontoolbutton'
+      end
+      object btnHelp: TSpeedButton
+        Action = actionHelp
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 16
+        Position.Y = 280.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
+      object btnAbout: TSpeedButton
+        Action = actionAbout
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 15
+        Position.Y = 320.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
       end
     end
     object layoutEdit: TFlowLayout
@@ -154,10 +176,10 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
-      object BtnAdd: TSpeedButton
+      object btnAdd: TSpeedButton
         Action = actionAdd
         Anchors = [akTop, akRight]
-        Enabled = True
+        Enabled = False
         Images = Globals.SVGIconImageList
         ImageIndex = -1
         Size.Width = 41.000000000000000000
@@ -185,42 +207,45 @@ object StoryHUD: TStoryHUD
   end
   object ActionList: TActionList
     Images = Globals.SVGIconImageList
-    Left = 312
-    Top = 40
+    Left = 328
+    Top = 32
     object actionHome: TAction
       Category = 'Navigation'
-      Text = 'actionHome'
+      Text = 'Home'
       ImageIndex = 13
       ImageIndex = 13
     end
     object actionPrevious: TAction
       Category = 'Navigation'
-      Text = 'actionPrevious'
+      Text = 'Previous'
       ImageIndex = 1
       ImageIndex = 1
     end
     object actionNext: TAction
       Category = 'Navigation'
-      Text = 'actionNext'
+      Text = 'Next'
       ImageIndex = 2
       ImageIndex = 2
     end
     object actionEdit: TAction
       Category = 'Edit'
       AutoCheck = True
-      Text = 'actionEdit'
+      Text = 'Edit'
       ImageIndex = 0
       OnExecute = actionEditExecute
       ImageIndex = 0
     end
     object actionAdd: TAction
       Category = 'Edit'
-      Text = 'actionAdd'
+      Text = 'Add'
+      Enabled = False
     end
     object actionAbout: TAction
       Category = 'Help'
-      Text = 'actionAbout'
+      Text = 'About'
+      ImageIndex = 15
       OnExecute = actionAboutExecute
+      ImageIndex = 15
     end
     object actionMenu: TAction
       Category = 'View'
@@ -261,6 +286,13 @@ object StoryHUD: TStoryHUD
       ImageIndex = 7
       ImageIndex = 7
     end
+    object actionHelp: TAction
+      Category = 'Help'
+      Text = 'Help'
+      ImageIndex = 16
+      OnExecute = actionHelpExecute
+      ImageIndex = 16
+    end
   end
   object MultiViewFrameStand: TFrameStand
     AnimationShow = 'OnShow*'
@@ -270,7 +302,7 @@ object StoryHUD: TStoryHUD
     DefaultStyleName = 'framestand'
     DefaultStandName = 'framestand'
     DefaultParent = MultiView
-    Left = 416
-    Top = 40
+    Left = 96
+    Top = 32
   end
 end

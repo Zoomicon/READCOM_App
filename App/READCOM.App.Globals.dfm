@@ -1,7 +1,7 @@
 object Globals: TGlobals
-  Height = 201
-  Width = 389
-  PixelsPerInch = 96
+  Height = 251
+  Width = 486
+  PixelsPerInch = 120
   object DefaultStyleBook: TStyleBook
     UseStyleManager = True
     Styles = <
@@ -30297,20 +30297,20 @@ object Globals: TGlobals
           4E6F726D616C436F6C6F720708636C6157686974650C50726573736564436F6C
           6F720708636C615768697465000000}
       end>
-    Left = 154
-    Top = 58
+    Left = 193
+    Top = 73
   end
   object Lang: TLang
     Lang = 'el'
-    Left = 45
-    Top = 51
+    Left = 56
+    Top = 64
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'Edit'
         SVGText = 
@@ -30355,7 +30355,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'reverse'
         SVGText = 
@@ -30375,7 +30375,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 30
           end>
         IconName = 'play'
         SVGText = 
@@ -30395,8 +30395,8 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Width = 19
-            Height = 24
+            Width = 24
+            Height = 30
           end>
         IconName = 'Diagram'
         SVGText = 
@@ -30412,7 +30412,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'TargetArrow'
         SVGText = 
@@ -30466,7 +30466,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 16
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -30492,7 +30492,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'OpenFileFolder'
         SVGText = 
@@ -30528,7 +30528,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'Save'
         SVGText = 
@@ -30561,7 +30561,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 16
           end>
         IconName = 'Delete'
         SVGText = 
@@ -30596,7 +30596,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 16
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -30625,7 +30625,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 16
           end>
         IconName = 'Plus'
         SVGText = 
@@ -30665,7 +30665,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 16
           end>
         IconName = 'Camera'
         SVGText = 
@@ -30724,7 +30724,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 30
           end>
         IconName = 'PaperA4'
         SVGText = 
@@ -30746,7 +30746,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 30
           end>
         IconName = 'Home'
         SVGText = 
@@ -30770,125 +30770,228 @@ object Globals: TGlobals
           '="2" points="41.8149,59.9327 41.8149,41.6273 30.2251,41.6273 30.' +
           '2251,59.9327"/>'#10'  </g>'#10'</svg>'#10
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 16
+          end>
+        IconName = 'Signpost'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <rect x="31.0713" y="10.4815" width' +
+          '="7.9472" height="55.1819" fill="#6a462f"/>'#10'    <polygon fill="#' +
+          'a57939" points="31.071 18.66 31.071 10.481 39.018 10.481 39.018 ' +
+          '16.558 31.071 18.66"/>'#10'    <polygon fill="#a57939" points="42.60' +
+          '5 14.992 58.181 14.992 62.873 21.172 58.181 27.421 42.605 27.421' +
+          ' 42.605 14.992"/>'#10'    <polygon fill="#6a462f" points="27.425 27.' +
+          '091 11.848 27.091 7.157 33.271 11.848 39.521 27.425 39.521 27.42' +
+          '5 27.091"/>'#10'    <polygon fill="#6a462f" points="42.605 23.216 60' +
+          '.975 18.672 62.873 21.172 58.181 27.421 42.605 27.421 42.605 23.' +
+          '216"/>'#10'    <polygon fill="#a57939" points="7.157 33.271 27.425 2' +
+          '7.091 11.848 27.091 7.157 33.271"/>'#10'  </g>'#10'  <g id="line">'#10'    <' +
+          'polyline fill="none" stroke="#000" stroke-linecap="round" stroke' +
+          '-linejoin="round" stroke-width="2" points="18.23 27.091 11.848 2' +
+          '7.091 7.157 33.271 11.848 39.521 27.425 39.521 27.425 33.982"/>'#10 +
+          '    <polyline fill="none" stroke="#000" stroke-linecap="round" s' +
+          'troke-linejoin="round" stroke-width="2" points="46.711 14.992 58' +
+          '.181 14.992 62.873 21.172 58.181 27.421 42.605 27.421 42.605 23.' +
+          '216"/>'#10'    <polyline fill="none" stroke="#000" stroke-linecap="r' +
+          'ound" stroke-linejoin="round" stroke-width="2" points="31.071 65' +
+          '.663 31.071 10.481 39.018 10.481 39.018 65.663"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'Info'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="#d0cfce" stroke="none" ' +
+          'stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" ' +
+          'd="M59.0349,60H12.9651 C12.4343,60,12,59.5657,12,59.0349V12.9651' +
+          'C12,12.4343,12.4343,12,12.9651,12h46.0698C59.5657,12,60,12.4343,' +
+          '60,12.9651v46.0698 C60,59.5657,59.5657,60,59.0349,60z"/>'#10'  </g>'#10 +
+          '  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-shadow"/>'#10'  <g i' +
+          'd="line">'#10'    <path fill="none" stroke="#000000" stroke-linejoin' +
+          '="round" stroke-miterlimit="10" stroke-width="2" d="M59.0349,60H' +
+          '12.9651 C12.4343,60,12,59.5657,12,59.0349V12.9651C12,12.4343,12.' +
+          '4343,12,12.9651,12h46.0698C59.5657,12,60,12.4343,60,12.9651v46.0' +
+          '698 C60,59.5657,59.5657,60,59.0349,60z"/>'#10'    <line x1="36.5" x2' +
+          '="36.5" y1="31.5" y2="46.5" fill="none" stroke="#000000" stroke-' +
+          'linecap="round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <c' +
+          'ircle cx="36.5" cy="26" r="1.5" fill="#000000" stroke="none"/>'#10' ' +
+          ' </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 30
+          end>
+        IconName = 'SOS'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <path fill="#D22F27" stroke-miterli' +
+          'mit="10" stroke-width="2" d="M59.0349,60H12.9651 C12.4343,60,12,' +
+          '59.5657,12,59.0349V12.9651C12,12.4343,12.4343,12,12.9651,12h46.0' +
+          '698C59.5657,12,60,12.4343,60,12.9651v46.0698 C60,59.5657,59.5657' +
+          ',60,59.0349,60z"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g' +
+          ' id="skin-shadow"/>'#10'  <g id="line">'#10'    <path fill="none" stroke' +
+          '="#000" stroke-miterlimit="10" stroke-width="2" d="M59.0349,60H1' +
+          '2.9651 C12.4343,60,12,59.5657,12,59.0349V12.9651C12,12.4343,12.4' +
+          '343,12,12.9651,12h46.0698C59.5657,12,60,12.4343,60,12.9651v46.06' +
+          '98 C60,59.5657,59.5657,60,59.0349,60z"/>'#10'    <path fill="none" s' +
+          'troke="#000" stroke-linecap="round" stroke-linejoin="round" stro' +
+          'ke-miterlimit="10" stroke-width="3.004" d="m36 42.01v0c-2.37 0-4' +
+          '.291-1.921-4.291-4.291v-3.433c0-2.37 1.921-4.291 4.291-4.291v0c2' +
+          '.37 0 4.291 1.921 4.291 4.291v3.433c0 2.37-1.921 4.291-4.291 4.2' +
+          '91z"/>'#10'    <path fill="none" stroke="#000" stroke-linecap="round' +
+          '" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3' +
+          '.004" d="m26.21 32.39c-0.3516-1.367-1.871-2.396-3.692-2.396v0c-2' +
+          '.082 0-3.769 1.344-3.769 3.001s1.687 3.001 3.769 3.001l-0.0766 0' +
+          '.01111c2.082 0 3.769 1.344 3.769 3.001 0 1.657-1.687 3.001-3.769' +
+          ' 3.001v0c-1.821 0-3.341-1.029-3.692-2.396"/>'#10'    <path fill="non' +
+          'e" stroke="#000" stroke-linecap="round" stroke-linejoin="round" ' +
+          'stroke-miterlimit="10" stroke-width="3.004" d="m53.25 32.39c-0.3' +
+          '516-1.367-1.871-2.396-3.692-2.396v0c-2.082 0-3.769 1.344-3.769 3' +
+          '.001s1.687 3.001 3.769 3.001l-0.0766 0.01111c2.082 0 3.769 1.344' +
+          ' 3.769 3.001 0 1.657-1.687 3.001-3.769 3.001v0c-1.821 0-3.341-1.' +
+          '029-3.692-2.396"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
         Layers = <
           item
             Name = 'Edit'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'reverse'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'play'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Diagram'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'TargetArrow'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Anchor'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'OpenFileFolder'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Save'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Delete'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Plus'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Camera'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'PaperA4'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Home'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Signpost'
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Info'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'SOS'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
         Layers = <>
       end>
     Size = 64
-    Left = 262
-    Top = 58
+    Left = 328
+    Top = 73
   end
 end

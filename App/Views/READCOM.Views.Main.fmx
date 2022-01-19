@@ -12,6 +12,7 @@ object MainForm: TMainForm
   ShowFullScreenIcon = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
   inline HUD: TStoryHUD
@@ -28,7 +29,7 @@ object MainForm: TMainForm
       inherited layoutNavigation: TLayout
         Position.Y = 576.000000000000000000
         Size.Width = 876.000000000000000000
-        inherited BtnNext: TSpeedButton
+        inherited btnNext: TSpeedButton
           Position.X = 820.000000000000000000
         end
       end
@@ -77,6 +78,9 @@ object MainForm: TMainForm
       inherited actionAdd: TAction
         OnExecute = HUDactionAddExecute
       end
+      inherited actionAbout: TAction
+        ImageIndex = 15
+      end
       inherited actionStructure: TAction
         OnExecute = HUDactionStructureExecute
         ImageIndex = 3
@@ -97,10 +101,12 @@ object MainForm: TMainForm
         OnExecute = HUDactionSaveExecute
         ImageIndex = 7
       end
+      inherited actionHelp: TAction
+        ImageIndex = 16
+      end
     end
     inherited MultiViewFrameStand: TFrameStand
       Left = 432
-      Top = 32
     end
   end
 end

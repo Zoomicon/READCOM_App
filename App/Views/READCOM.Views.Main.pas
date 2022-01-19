@@ -37,6 +37,10 @@ type
     procedure HUDactionHomeExecute(Sender: TObject);
     procedure HUDactionPreviousExecute(Sender: TObject);
     procedure HUDactionNextExecute(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      var KeyChar: Char; Shift: TShiftState);
+  private
+    function GetStructureView: TStructureView;
 
   protected
     FStoryMode: TStoryMode;
@@ -55,13 +59,21 @@ type
     function GetRootStoryItem: IStoryItem;
     procedure SetRootStoryItem(const Value: IStoryItem);
 
-    { ActiveStoryItem }
-    function GetActiveStoryItem: IStoryItem;
-    procedure SetActiveStoryItem(const Value: IStoryItem);
+    { HomeStoryItem }
+    function GetHomeStoryItem: IStoryItem;
+    procedure SetHomeStoryItem(const Value: IStoryItem);
 
-    { Navigation }
-    procedure ActivatePrevious;
-    procedure ActivateNext;
+    {Navigation}
+
+      { ActiveStoryItem }
+      function GetActiveStoryItem: IStoryItem;
+      procedure SetActiveStoryItem(const Value: IStoryItem);
+
+      procedure ActivateRoot;
+      procedure ActivateParent;
+      procedure ActivateHome;
+      procedure ActivatePrevious;
+      procedure ActivateNext;
 
     { StoryMode }
     function GetStoryMode: TStoryMode;
@@ -72,6 +84,8 @@ type
 
     procedure RootStoryItemViewResized(Sender: TObject);
 
+    property StructureView: TStructureView read GetStructureView;
+
   public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
@@ -79,6 +93,7 @@ type
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem stored false;
     property RootStoryItemView: TStoryItem read GetRootStoryItemView write SetRootStoryItemView stored false;
+    property HomeStoryItem: IStoryItem read GetHomeStoryItem write SetHomeStoryItem stored false;
     property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem stored false;
   end;
 
@@ -116,6 +131,17 @@ begin
   HUD.MultiViewFrameStand.CloseAll;
 end;
 
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  case Key of
+    vkEscape:
+      if ssShift in Shift then //go up to root
+        ActivateRoot
+      else
+        ActivateParent; //go one level up
+  end;
+end;
+
 {$ENDREGION}
 
 {$region 'IStory'}
@@ -130,7 +156,11 @@ end;
 procedure TMainForm.SetRootStoryItem(const Value: IStoryItem);
 begin
   RootStoryItemView := Value.GetView as TStoryItem;
+
   Value.Active := true; //set as the Active StoryItem
+
+  if not Assigned(HomeStoryItem) then
+    Value.Home := true; //set as the Home StoryItem if there's no StoryItem set as such
 end;
 
 {$endregion}
@@ -182,7 +212,13 @@ begin
       Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
     end;
 
-    ActiveStoryItem := Value; //this will ZoomTo the RootStoryItemView //don't put in the with statement, will call it on the storyitem and won't ZoomTo //TODO: listen to TStoryItem class event for active story item changes instead?
+    if not Assigned(HomeStoryItem) then
+      HomeStoryItem := RootStoryItem; //TODO: maybe move this elsewhere?
+
+    (*
+    ActiveStoryItem := HomeStoryItem; //this will ZoomTo the HomeStoryItem.View //don't put in the with statement, will call it on the storyitem and won't ZoomTo //TODO: listen to TStoryItem class event for active story item changes instead?
+    *)
+    ActiveStoryItem := RootStoryItem; //TODO: ignoring setting the HomeStoryItem as active for now, since at app saved state loading it zooms wrongly (probbly need to have special case)
   end;
 end;
 
@@ -192,6 +228,22 @@ begin
 end;
 
 {$endregion}
+
+{$region 'HomeStoryItem'}
+
+function TMainForm.GetHomeStoryItem: IStoryItem;
+begin
+  result := TStoryItem.HomeStoryItem;
+end;
+
+procedure TMainForm.SetHomeStoryItem(const Value: IStoryItem);
+begin
+  TStoryItem.HomeStoryItem := Value;
+end;
+
+{$endregion}
+
+{$region 'Navigation'}
 
 {$region 'ActiveStoryItem'}
 
@@ -224,21 +276,45 @@ begin
     begin
     var StoryItem := TStoryItem(Value.View);
     StoryItem.EditMode := HUD.actionEdit.Checked; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
-    end;
+    //StructureView.SelectedObject := Value.View; //TODO: fix, causes some kind of disruption when doing (automatic) drag-drop (maybe schedule to do at end of drag-drop or to cancel if during drag-drop [if we can detect it] or somehow outside of current event handling)
+    end
+  else
+    StructureView.SelectedObject := nil;
 end;
 
 {$endregion}
 
-{$region 'Navigation'}
-
-procedure TMainForm.ActivateNext;
+procedure TMainForm.ActivateRoot;
 begin
-  //TODO// ActiveStoryItem.GotoNext; ZoomTo(ActiveStoryItem); //zoom to the new one
+  ActiveStoryItem := RootStoryItem;
+end;
+
+procedure TMainForm.ActivateParent;
+begin
+  var activeItem := ActiveStoryItem;
+  if Assigned(activeItem) then
+  begin
+    var parentItem := activeItem.ParentStoryItem;
+    if Assigned(parentItem) then //don't want to make RootStoryItem (aka the StoryItem without a parent StoryItem) inactive
+      ActiveStoryItem := parentItem;
+  end;
+end;
+
+procedure TMainForm.ActivateHome;
+begin
+  ActiveStoryItem := HomeStoryItem;
 end;
 
 procedure TMainForm.ActivatePrevious;
 begin
-  //TODO// ActiveStoryItem.GotoPrevious; ZoomTo(ActiveStoryItem); //zoom to the new one
+  if Assigned(ActiveStoryItem) then
+     ActiveStoryItem := ActiveStoryItem.PreviousStoryPoint;
+end;
+
+procedure TMainForm.ActivateNext;
+begin
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem := ActiveStoryItem.NextStoryPoint;
 end;
 
 {$endregion}
@@ -248,6 +324,26 @@ end;
 function TMainForm.GetStoryMode: TStoryMode;
 begin
   result := FStoryMode;
+end;
+
+function TMainForm.GetStructureView: TStructureView;
+begin
+  if not Assigned (FStructureViewFrameInfo) then
+  begin
+    FStructureViewFrameInfo := HUD.MultiViewFrameStand.GetFrameInfo<TStructureView>;
+    with FStructureViewFrameInfo.Frame do
+    begin
+      ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
+      ShowNames := false;
+      ShowTypes := false;
+      DragDropReorder := (StoryMode = EditMode); //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
+      DragDropReparent := (StoryMode = EditMode); //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
+      DragDropSelectTarget := true; //always select (make active / zoom to) the Target StoryItem after a drag-drop operation in the structure view
+      OnSelection := StructureViewSelection;
+    end;
+  end;
+
+  result := FStructureViewFrameInfo.Frame;
 end;
 
 procedure TMainForm.SetStoryMode(const Value: TStoryMode);
@@ -323,24 +419,8 @@ begin
 
   HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
 
-  if not Assigned (FStructureViewFrameInfo) then
-  begin
-    FStructureViewFrameInfo := HUD.MultiViewFrameStand.GetFrameInfo<TStructureView>;
-    with FStructureViewFrameInfo.Frame do
-    begin
-      ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
-      ShowNames := false;
-      ShowTypes := false;
-      DragDropReorder := (StoryMode = EditMode); //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
-      DragDropReparent := (StoryMode = EditMode); //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
-      DragDropSelectTarget := true; //always select (make active / zoom to) the Target StoryItem after a drag-drop operation in the structure view
-      OnSelection := StructureViewSelection;
-    end;
-  end;
-
-  FStructureViewFrameInfo.Frame.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
-
-  FStructureViewFrameInfo.Show;
+  StructureView.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
+  FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
 end;
 
 procedure TMainForm.HUDactionTargetsExecute(Sender: TObject);
@@ -388,17 +468,17 @@ end;
 
 procedure TMainForm.HUDactionHomeExecute(Sender: TObject);
 begin
-  ActiveStoryItem := RootStoryItem;
-end;
-
-procedure TMainForm.HUDactionNextExecute(Sender: TObject);
-begin
-  //TODO
+  ActivateHome;
 end;
 
 procedure TMainForm.HUDactionPreviousExecute(Sender: TObject);
 begin
-  //TODO
+  ActivatePrevious;
+end;
+
+procedure TMainForm.HUDactionNextExecute(Sender: TObject);
+begin
+  ActivateNext;
 end;
 
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
@@ -406,7 +486,7 @@ begin
   if not (StoryMode = EditMode) then //in non-Edit mode
     HUD.StructureViewVisible := false; //we want to hide the StructureView before zooming to the item selected
 
-  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class
+  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
   //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
 end;
 

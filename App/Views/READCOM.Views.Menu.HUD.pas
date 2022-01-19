@@ -8,15 +8,16 @@ uses
   FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
   FMX.Layouts, System.Actions, FMX.ActnList,
   FMX.MultiView, SubjectStand, FrameStand,
+  READCOM.Views.About, //for TAboutFrame
   READCOM.App.Globals;
 
 type
   TStoryHUD = class(TFrame)
-    BtnAdd: TSpeedButton;
-    BtnPrevious: TSpeedButton;
+    btnAdd: TSpeedButton;
+    btnPrevious: TSpeedButton;
     BtnEdit: TSpeedButton;
     BtnMenu: TSpeedButton;
-    BtnNext: TSpeedButton;
+    btnNext: TSpeedButton;
     layoutNavigation: TLayout;
     ActionList: TActionList;
     actionPrevious: TAction;
@@ -27,7 +28,7 @@ type
     actionMenu: TAction;
     layoutButtons: TLayout;
     MultiView: TMultiView;
-    BtnStructure: TSpeedButton;
+    btnStructure: TSpeedButton;
     actionStructure: TAction;
     MultiViewFrameStand: TFrameStand;
     layoutContent: TLayout;
@@ -43,12 +44,17 @@ type
     btnNew: TSpeedButton;
     actionHome: TAction;
     btnHome: TSpeedButton;
+    actionHelp: TAction;
+    btnHelp: TSpeedButton;
+    btnAbout: TSpeedButton;
     procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionStructureExecute(Sender: TObject);
+    procedure actionHelpExecute(Sender: TObject);
 
   protected
+    FAboutFrame: TAboutFrame;
     FMultiViewOpenedWidth: Single;
 
     {EditMode}
@@ -67,7 +73,7 @@ type
 
 implementation
   uses
-    READCOM.Views.About; //for TAbout
+    u_UrlOpen; //for url_Open_In_Browser
 
 {$R *.fmx}
 
@@ -150,16 +156,21 @@ end;
 
 {$region 'Help actions'}
 
+procedure TStoryHUD.actionHelpExecute(Sender: TObject);
+begin
+  url_Open_In_Browser(URL_HELP);
+end;
+
 procedure TStoryHUD.actionAboutExecute(Sender: TObject);
 begin
-  var popup := TPopup.Create(Self);
-  with popup do
+  if not Assigned(FAboutFrame) then
   begin
-    Placement := TPlacement.Center;
-    PlacementTarget := Self;
-    AddObject(TAboutFrame.Create(Self)); //TODO: see that this doesn't get stored and how to release on popup close
+    FAboutFrame := TAboutFrame.Create(Self);
+    FAboutFrame.Align := TAlignLayout.Center;
   end;
-  popup.Visible := true;
+
+  FAboutFrame.Parent := Self;
+  FAboutFrame.Visible := true;
 end;
 
 {$endregion}

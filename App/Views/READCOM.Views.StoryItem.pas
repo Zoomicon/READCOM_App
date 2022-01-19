@@ -27,6 +27,7 @@ type
 
   protected
     //FID: TGUID;
+    FStoryPoint: Boolean;
     FHidden: Boolean;
     FUrlAction: String;
     FOptions: IStoryItemOptions;
@@ -40,6 +41,9 @@ type
     class var
       FActiveStoryItem: IStoryItem;
       FOnActiveStoryItemChanged: TNotifyEvent;
+
+    class var
+      FHomeStoryItem: IStoryItem;
 
   //--- Methods ---
 
@@ -67,9 +71,6 @@ type
     function GetBorderVisible: Boolean;
     procedure SetBorderVisible(const Value: Boolean);
 
-    { ActiveStoryItem }
-    class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
-
     { View }
     function GetView: TControl;
 
@@ -84,13 +85,33 @@ type
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList; inline;
 
-    { ActivationOrder }
-    function GetActivationOrder: Integer;
-    procedure SetActivationOrder(const Value: Integer); //-1 for not taking part in activation chain
+    { ActiveStoryItem }
+    class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
 
     { Active }
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
+
+    { HomeStoryItem }
+    class procedure SetHomeStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
+
+    { Home }
+    function IsHome: Boolean;
+    procedure SetHome(const Value: Boolean);
+
+    { StoryPoint }
+    function IsStoryPoint: Boolean;
+    procedure SetStoryPoint(const Value: Boolean);
+
+    { Previous/Next StoryPoint }
+    function GetPreviousStoryPoint: IStoryItem;
+    function GetNextStoryPoint: IStoryItem;
+    //
+    function GetAncestorStoryPoint: IStoryItem;
+    function GetFirstChildStoryPoint: IStoryItem;
+    function GetLastChildStoryPoint: IStoryItem;
+    function GetPreviousSiblingStoryPoint: IStoryItem;
+    function GetNextSiblingStoryPoint: IStoryItem;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -120,6 +141,8 @@ type
     procedure PlayRandomAudioStoryItem;
 
     { IStoreable }
+    procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
+
     function GetAddFilesFilter: String; virtual;
     procedure Add(const Filepath: String); overload; virtual;
     procedure Add(const Filepaths: array of string); overload; virtual;
@@ -158,14 +181,19 @@ type
     class property ActiveStoryItem: IStoryItem read FActiveStoryItem write SetActiveStoryItem;
     class property OnActiveStoryItemChanged: TNotifyEvent read FOnActiveStoryItemChanged write FOnActiveStoryItemChanged;
 
+    class property HomeStoryItem: IStoryItem read FHomeStoryItem write SetHomeStoryItem;
+
   published
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
-    property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation order)
     property Active: Boolean read IsActive write SetActive default false;
+    property Home: Boolean read IsHome write SetHome default false;
+    property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default false;
+    property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
+    property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
     property Hidden: Boolean read IsHidden write SetHidden default false;
-    property Anchored: Boolean read IsAnchored write SetAnchored default false;
+    property Anchored: Boolean read IsAnchored write SetAnchored default true;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible default false;
   end;
@@ -174,7 +202,8 @@ type
 
 implementation
   uses
-    u_UrlOpen,
+    {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
+    u_UrlOpen, //for url_Open_In_Browser
     System.IOUtils, //for TPath
     Zoomicon.Generics.Collections,
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
@@ -187,6 +216,9 @@ implementation
 class destructor TStoryItem.Destroy;
 begin
   ActiveStoryItem := nil;
+  FOnActiveStoryItemChanged := nil; //probably not needed, doesn't hurt to do though
+
+  HomeStoryItem := nil;
 end;
 
 procedure TStoryItem.Init;
@@ -233,6 +265,8 @@ begin
   InitDropTarget;
   InitGlyph;
   InitBorder;
+
+  Anchored := true;
 end;
 
 constructor TStoryItem.Create(AOwner: TComponent);
@@ -249,7 +283,8 @@ end;
 destructor TStoryItem.Destroy;
 begin
   Target := nil;
-  Active := false; //making sure an IStoryItem reference isn't held by the class var FActiveStoryItem
+  Active := false; //making sure an IStoryItem reference to this object isn't held by the class var FActiveStoryItem
+  Home := false; //making sure an IStoryItem reference to this object isn't held by the class var FHomeStoryItem
 
   if Assigned(FOptions) then
     begin
@@ -381,7 +416,7 @@ end;
 
 function TStoryItem.GetParentStoryItem: IStoryItem;
 begin
-  result := Parent As IStoryItem;
+  Supports(Parent, IStoryItem, result); //don't just do "Parent as IStoryItem", will fail if Parent doesn't support the interface, want nil result in that case
 end;
 
 procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
@@ -415,24 +450,6 @@ end;
 
 {$endregion}
 
-{$region 'ActivationOrder'}
-
-function TStoryItem.GetActivationOrder: Integer;
-begin
-  if TabStop then
-    result := TabOrder
-  else
-    result := -1;
-end;
-
-procedure TStoryITem.SetActivationOrder(const Value: Integer);
-begin
-  if Value < 0 then
-    TabStop := false
-  else
-    TabOrder := Value;
-end;
-
 {$endregion}
 
 {$region 'Active'}
@@ -463,7 +480,7 @@ class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
 begin
   if (Value = FActiveStoryItem) then exit;
 
-  if Assigned(Value) then //not checking if ActivationOrder <> -1, since an out-of-activation-order StoryItem may be activated directly via a target
+  if Assigned(Value) then //not checking if StoryPoint, since a non-StoryPoint may be activated directly via a target if it belongs to other StoryPoint parent
     Value.Active := true //this will also deactivate the ActiveStoryItem if any
   else {if Assigned(FActiveStoryItem) then} //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem (no need to check if it is Assigned [not nil], since the "Value = FActiveStoryItem" check above would have exited)
     FActiveStoryItem.Active := false;
@@ -499,6 +516,191 @@ begin
   if Assigned(FStoryItems) then
     For var StoryItem in FStoryItems do
       StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+end;
+
+{$endregion}
+
+{$region 'Home'}
+
+function TStoryItem.IsHome: Boolean;
+begin
+  result := Assigned(FHomeStoryItem) and (FHomeStoryItem.View = Self);
+end;
+
+procedure TStoryItem.SetHome(const Value: Boolean);
+begin
+  if (Value = IsHome) then exit; //Important
+
+  if (Value) then //make Home
+    begin
+    if Assigned(FHomeStoryItem) then
+      FHomeStoryItem.Home := false; //deactivate the previously Home StoryItem
+
+    FHomeStoryItem := Self
+    end
+  else //make inHome
+    FHomeStoryItem := nil;
+
+  //HomeChanged; //don't need to issue notification if home storyitem changed //TODO: maybe have such and have StructureView somehow mark the HomeStoryItem thumb with an icon (maybe allow various such symbol annotations)
+end;
+
+class procedure TStoryItem.SetHomeStoryItem(const Value: IStoryItem);
+begin
+  if (Value = FHomeStoryItem) then exit;
+
+  if Assigned(Value) then //not checking if ActivationOrder <> -1, since an out-of-activation-order StoryItem may be activated directly via a target
+    Value.Home := true //this will also deactivate the HomeStoryItem if any
+  else {if Assigned(FHomeStoryItem) then} //if SetHomeStoryItem(nil) was called then deactivate HomeStoryItem (no need to check if it is Assigned [not nil], since the "Value = FHomeStoryItem" check above would have exited)
+    FHomeStoryItem.Home := false;
+end;
+
+{$endregion}
+
+{$region 'StoryPoint'}
+
+function TStoryItem.IsStoryPoint: Boolean;
+begin
+  result := FStoryPoint;
+end;
+
+procedure TStoryItem.SetStoryPoint(const Value: Boolean);
+begin
+  FStoryPoint := Value;
+end;
+
+{$endregion}
+
+{$region 'Previous/Next StoryPoint'}
+
+function TStoryItem.GetPreviousStoryPoint: IStoryItem;
+begin
+  var parentItem := ParentStoryItem;
+
+  //Check if RootStoryItem
+  if not Assigned(parentItem) then
+  begin
+    var lastChildStoryPoint := GetLastChildStoryPoint;
+    if Assigned(lastChildStoryPoint) then
+      exit(lastChildStoryPoint)
+    else
+      exit(nil); //none found
+  end;
+
+  //Check previous siblings
+  var previousSiblingStoryPoint := GetPreviousSiblingStoryPoint;
+  if Assigned(previousSiblingStoryPoint) then
+    exit(previousSiblingStoryPoint);
+
+  //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
+  var ancestorStoryPoint := GetAncestorStoryPoint;
+  if Assigned(ancestorStoryPoint) then
+    exit(ancestorStoryPoint);
+
+  //Loop in siblings (checking next siblings from the end)
+  result := parentItem.GetLastChildStoryPoint; //this may end up returning Self
+end;
+
+function TStoryItem.GetNextStoryPoint: IStoryItem;
+begin
+  var parentItem := ParentStoryItem;
+
+  //Check if RootStoryItem
+  if not Assigned(parentItem) then
+  begin
+    var firstChildStoryPoint := GetFirstChildStoryPoint;
+    if Assigned(firstChildStoryPoint) then
+      exit(firstChildStoryPoint)
+    else
+      exit(nil); //none found
+  end;
+
+  //Check next siblings
+  var nextSiblingStoryPoint := GetNextSiblingStoryPoint;
+  if Assigned(nextSiblingStoryPoint) then
+    exit(nextSiblingStoryPoint);
+
+  //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
+  var ancestorStoryPoint := GetAncestorStoryPoint;
+  if Assigned(ancestorStoryPoint) then
+    exit(ancestorStoryPoint);
+
+  //Loop in siblings (checking previous siblings from the start)
+  result := parentItem.GetFirstChildStoryPoint; //this may end up returning Self
+end;
+
+function TStoryItem.GetAncestorStoryPoint: IStoryItem;
+begin
+  var parentItem := ParentStoryItem;
+  if not Assigned(parentItem) then exit(nil);
+
+  if parentItem.StoryPoint then
+    exit(parentItem)
+  else
+    exit(parentItem.GetAncestorStoryPoint);
+end;
+
+function TStoryItem.GetFirstChildStoryPoint: IStoryItem;
+begin //TODO: use ListEx with a predicate below
+  var children := StoryItems;
+
+  for var i := 0 to children.Count-1 do //0-based array index
+  begin
+    var child := children.Items[i];
+    if child.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
+      exit(child);
+  end;
+
+  result := nil;
+end;
+
+function TStoryItem.GetLastChildStoryPoint: IStoryItem;
+begin //TODO: use ListEx with a predicate below (and add option there for Direction [see Components' Search/Find that has similar and if there's TDirection type])
+  var children := StoryItems;
+
+  for var i := children.Count-1 downto 0 do //0-based array index
+  begin
+    var child := children.Items[i];
+    if child.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
+      exit(child);
+  end;
+
+  result := nil;
+end;
+
+function TStoryItem.GetPreviousSiblingStoryPoint: IStoryItem;
+begin
+  var parentItem := ParentStoryItem;
+  if not Assigned(parentItem) then exit(nil);
+
+  var storyItemIndex := parentItem.StoryItems.IndexOf(Self);
+  var siblings := parentItem.StoryItems;
+
+  for var i := (storyItemIndex - 1) downto 0 do //0-based array index
+  begin
+    var sibling := siblings.Items[i];
+    if sibling.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
+      exit(sibling);
+  end;
+
+  result := nil;
+end;
+
+function TStoryItem.GetNextSiblingStoryPoint: IStoryItem;
+begin
+  var parentItem := ParentStoryItem;
+  if not Assigned(parentItem) then exit(nil);
+
+  var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem);
+  var siblings := parentItem.StoryItems;
+
+  for var i := (storyItemIndex + 1) to (siblings.Count - 1) do //0-based array index
+  begin
+    var sibling := siblings.Items[i];
+    if sibling.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
+      exit(sibling);
+  end;
+
+  result := nil;
 end;
 
 {$endregion}
@@ -651,7 +853,21 @@ end;
 
 {$region 'IStoreable'}
 
-function RemoveNonAllowedIdentifierChars(const s: String): String;
+type
+  THackReader = class(TReader); //used to access PropName protected property
+
+procedure TStoryItem.ReaderError(Reader: TReader; const Message: string; var Handled: Boolean);
+begin
+  with THackReader(Reader) do
+    begin
+    Handled := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
+    {$IFDEF DEBUG}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}
+    end;
+end;
+
+//
+
+function RemoveNonAllowedIdentifierChars(const s: String): String; //TODO: move to some utility library?
 begin
   var count := s.Length;
   var builder := TStringBuilder.Create(count);
@@ -741,8 +957,11 @@ procedure TStoryItem.LoadReadCom(const Stream: TStream);
 
 begin
   var reader := TStreamReader.Create(Stream);
-  LoadFromString(reader.ReadToEnd);
-  FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
+  try
+    LoadFromString(reader.ReadToEnd);
+  finally
+    FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
+  end;
 end;
 
 procedure TStoryItem.LoadReadComBin(const Stream: TStream);
@@ -756,7 +975,15 @@ procedure TStoryItem.LoadReadComBin(const Stream: TStream);
 
 begin
   RemoveStoryItems;
-  Stream.ReadComponent(Self);
+
+  //Stream.ReadComponent(Self); //Use following code instead //TODO: add helper method TStream.ReadComponent(Self, ErrorHandler)
+  var reader := TReader.Create(Stream, 4096);
+  reader.OnError := ReaderError; //the error handler can ignore specific not found properties
+  try
+    Reader.ReadRootComponent(Self); //if we would have passed nil it would return a new instance
+  finally
+    Reader.Free;
+  end;
 end;
 
 procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
@@ -800,15 +1027,18 @@ begin
       StrStream.Free;
     end;
   finally
-    BinStream.Free
+    BinStream.Free;
   end;
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);
 begin
   var writer := TStreamWriter.Create(Stream);
-  writer.Write(SaveToString);
-  FreeAndNil(writer); //the writer doesn't own the stream by default, so this won't close the stream
+  try
+    writer.Write(SaveToString);
+  finally
+    FreeAndNil(writer); //the writer doesn't own the stream by default, so this won't close the stream
+  end;
 end;
 
 procedure TStoryItem.SaveReadComBin(const Stream: TStream);

@@ -1,5 +1,5 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 344.000000000000000000
+  Size.Width = 484.000000000000000000
   Size.Height = 260.000000000000000000
   Size.PlatformDefault = False
   object AddDialog: TOpenDialog
@@ -13,9 +13,9 @@ object StoryItemOptions: TStoryItemOptions
     Top = 192
   end
   object panelUrlAction: TPanel
-    Align = MostTop
-    Position.Y = 50.000000000000000000
-    Size.Width = 344.000000000000000000
+    Align = Top
+    Position.Y = 60.000000000000000000
+    Size.Width = 484.000000000000000000
     Size.Height = 41.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 8
@@ -34,7 +34,7 @@ object StoryItemOptions: TStoryItemOptions
       Align = Client
       TabOrder = 4
       Margins.Left = 5.000000000000000000
-      Size.Width = 301.000000000000000000
+      Size.Width = 441.000000000000000000
       Size.Height = 41.000000000000000000
       Size.PlatformDefault = False
       OnChangeTracking = editUrlActionChangeTracking
@@ -43,24 +43,51 @@ object StoryItemOptions: TStoryItemOptions
   end
   object layoutButtons: TFlowLayout
     Align = MostTop
-    Size.Width = 344.000000000000000000
-    Size.Height = 50.000000000000000000
+    Size.Width = 484.000000000000000000
+    Size.Height = 60.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 13
     Justify = Left
     JustifyLastLine = Left
     FlowDirection = LeftToRight
-    object btnAnchor: TSpeedButton
-      Action = actionAnchor
+    object btnToggleHome: TSpeedButton
+      StaysPressed = True
       Align = Client
       Anchors = []
-      Enabled = True
+      Images = Globals.SVGIconImageList
+      ImageIndex = 13
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Toggle Home'
+      OnClick = actionToggleHomeExecute
+    end
+    object btnToggleStoryPoint: TSpeedButton
+      StaysPressed = True
+      Align = Client
+      Anchors = []
+      Images = Globals.SVGIconImageList
+      ImageIndex = 14
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Is StoryPoint'
+      OnClick = actionToggleStoryPointExecute
+    end
+    object btnToggleAnchored: TSpeedButton
+      StaysPressed = True
+      Align = Client
+      Anchors = []
       Images = Globals.SVGIconImageList
       ImageIndex = 5
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'escapetoolbutton'
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Is Anchored'
+      OnClick = actionToggleAnchoredExecute
     end
     object btnDelete: TSpeedButton
       Action = actionDelete
@@ -71,7 +98,7 @@ object StoryItemOptions: TStoryItemOptions
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'trashtoolbutton'
+      StyleLookup = 'actiontoolbutton'
     end
     object btnAdd: TSpeedButton
       Action = actionAdd
@@ -82,7 +109,7 @@ object StoryItemOptions: TStoryItemOptions
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'escapetoolbutton'
+      StyleLookup = 'actiontoolbutton'
     end
     object btnLoad: TSpeedButton
       Action = actionLoad
@@ -93,7 +120,7 @@ object StoryItemOptions: TStoryItemOptions
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'organizetoolbutton'
+      StyleLookup = 'actiontoolbutton'
     end
     object btnSave: TSpeedButton
       Action = actionSave
@@ -104,7 +131,7 @@ object StoryItemOptions: TStoryItemOptions
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'escapetoolbutton'
+      StyleLookup = 'actiontoolbutton'
     end
   end
   object OpenDialog: TOpenDialog
@@ -114,8 +141,8 @@ object StoryItemOptions: TStoryItemOptions
   end
   object ActionList: TActionList
     Images = Globals.SVGIconImageList
-    Left = 128
-    Top = 136
+    Left = 328
+    Top = 192
     object actionDelete: TAction
       Category = 'File'
       Text = 'Delete'
@@ -136,12 +163,6 @@ object StoryItemOptions: TStoryItemOptions
       ImageIndex = 7
       OnExecute = actionSaveExecute
       ImageIndex = 7
-    end
-    object actionAnchor: TAction
-      Text = 'Anchor'
-      ImageIndex = 5
-      OnExecute = actionAnchorExecute
-      ImageIndex = 5
     end
     object actionChangeUrlAction: TAction
       Text = 'Change URL Action'

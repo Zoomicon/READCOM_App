@@ -251,6 +251,56 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="u_UrlOpen.pas"/>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
+            <Form>MessageForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
+            <Form>FMXObjectDebuggerFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
+            <Form>ObjectDebuggerFMXForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
+        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
+        <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas">
+            <Form>StructureView</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
+            <Form>CustomManipulator</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas">
+            <Form>Manipulator</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
+            <Form>ZoomFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas"/>
+        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas"/>
+        <DCCReference Include="READCOM.App.Globals.pas">
+            <Form>Globals</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <DCCReference Include="READCOM.App.Models.pas"/>
         <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
             <Form>StoryItemOptions</Form>
@@ -280,10 +330,15 @@
             <Form>AudioStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.TextStoryItem.pas">
+            <Form>TextStoryItem</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Views\READCOM.Views.PanelStoryItem.pas">
             <Form>PanelStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.StoryItemFactory.pas"/>
         <DCCReference Include="Views\READCOM.Views.Menu.HUD.pas">
             <Form>StoryHUD</Form>
             <DesignClass>TFrame</DesignClass>
@@ -291,68 +346,10 @@
         <DCCReference Include="Views\READCOM.Views.Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
-        <DCCReference Include="READCOM.App.Globals.pas">
-            <Form>Globals</Form>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
         <DCCReference Include="Views\READCOM.Views.About.pas">
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="u_UrlOpen.pas"/>
-        <DCCReference Include="Views\READCOM.Views.TextStoryItem.pas">
-            <Form>TextStoryItem</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
-            <Form>MessageForm</Form>
-        </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
-            <Form>FMXObjectDebuggerFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
-            <Form>ObjectDebuggerFMXForm</Form>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas">
-            <Form>StructureView</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
-            <Form>CustomManipulator</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas">
-            <Form>Manipulator</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
-            <Form>ZoomFrame</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
-        <DCCReference Include="Views\READCOM.Views.StoryItemFactory.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas"/>
         <None Include="TODO.html"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -457,13 +454,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
                     <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
+                        <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Release" Class="Android_NotificationIcon36">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -475,9 +472,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
                     <Platform Name="Android">
-                        <RemoteName>ic_notification.png</RemoteName>
+                        <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

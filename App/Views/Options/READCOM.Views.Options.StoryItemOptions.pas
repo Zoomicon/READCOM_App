@@ -21,20 +21,21 @@ type
     actionDelete: TAction;
     actionLoad: TAction;
     actionSave: TAction;
-    actionAnchor: TAction;
     panelUrlAction: TPanel;
     glyphUrlAction: TGlyph;
     editUrlAction: TEdit;
     actionChangeUrlAction: TAction;
     actionAdd: TAction;
     layoutButtons: TFlowLayout;
-    btnAnchor: TSpeedButton;
+    btnToggleAnchored: TSpeedButton;
     btnDelete: TSpeedButton;
     btnAdd: TSpeedButton;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
     OpenDialog: TOpenDialog;
-    procedure actionAnchorExecute(Sender: TObject);
+    btnToggleStoryPoint: TSpeedButton;
+    btnToggleHome: TSpeedButton;
+    procedure actionToggleAnchoredExecute(Sender: TObject);
     procedure actionDeleteExecute(Sender: TObject);
     procedure actionLoadExecute(Sender: TObject);
     procedure actionSaveExecute(Sender: TObject);
@@ -43,6 +44,8 @@ type
     procedure editUrlActionChangeTracking(Sender: TObject);
     procedure editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure actionAddExecute(Sender: TObject);
+    procedure actionToggleStoryPointExecute(Sender: TObject);
+    procedure actionToggleHomeExecute(Sender: TObject);
 
   protected
     FStoryItem: IStoryItem;
@@ -122,7 +125,10 @@ begin
   with FStoryItem do
   begin
     editUrlAction.Text := GetUrlAction;
-    actionAnchor.Checked := IsAnchored;
+    //btnToggleHome.IsPressed := Home;
+    btnToggleHome.IsPressed := Home;
+    btnToggleStoryPoint.IsPressed := StoryPoint;
+    btnToggleAnchored.IsPressed := Anchored;
   end;
 end;
 
@@ -174,11 +180,22 @@ begin
   actionSaveExecute(actionSave);
 end;
 
-procedure TStoryItemOptions.actionAnchorExecute(Sender: TObject);
+procedure TStoryItemOptions.actionToggleHomeExecute(Sender: TObject);
 begin
-  actionAnchor.Checked := not actionAnchor.Checked;
-  StoryItem.SetAnchored(actionAnchor.Checked);
-  ShowPopup;
+  StoryItem.SetHome(btnToggleHome.IsPressed);
+  ShowPopup; //show popup again to make the toggle evident
+end;
+
+procedure TStoryItemOptions.actionToggleStoryPointExecute(Sender: TObject);
+begin
+  StoryItem.SetStoryPoint(btnToggleStoryPoint.IsPressed);
+  ShowPopup; //show popup again to make the toggle evident
+end;
+
+procedure TStoryItemOptions.actionToggleAnchoredExecute(Sender: TObject);
+begin
+  StoryItem.SetAnchored(btnToggleAnchored.IsPressed);
+  ShowPopup; //show popup again to make the toggle evident
 end;
 
 procedure TStoryItemOptions.actionDeleteExecute(Sender: TObject);
@@ -265,7 +282,10 @@ begin
   CheckCreatePopup;
 
   if Assigned(FPopup) then
+    begin
     FPopup.IsOpen := true;
+    StoryItem := StoryItem; //cause re-init of toggle buttons //Note: Have to do it after opening the popup else SpeedButtons that had StaysPressed=true and Pressed=true don't appear pressed till one of them is clicked
+    end;
 end;
 
 procedure TStoryItemOptions.HidePopup;

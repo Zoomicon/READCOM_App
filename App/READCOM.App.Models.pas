@@ -79,11 +79,18 @@ type
     function GetRootStoryItem: IStoryItem;
     procedure SetRootStoryItem(const Value: IStoryItem);
 
+    { HomeStoryItem }
+    function GetHomeStoryItem: IStoryItem;
+    procedure SetHomeStoryItem(const Value: IStoryItem);
+
     { ActiveStoryItem }
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
 
     { Navigation }
+    procedure ActivateHome;
+    procedure ActivateRoot;
+    procedure ActivateParent;
     procedure ActivatePrevious;
     procedure ActivateNext;
 
@@ -93,6 +100,7 @@ type
 
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem;
+    property HomeStoryItem: IStoryItem read GetHomeStoryItem write SetHomeStoryItem;
     property ActiveStoryItem: IStoryItem read GetActiveStoryItem write SetActiveStoryItem;
   end;
 
@@ -119,10 +127,6 @@ type
     { AudioStoryItems }
     function GetAudioStoryItems: TIAudioStoryItemList;
 
-    { ActivationOrder }
-    function GetActivationOrder: Integer;
-    procedure SetActivationOrder(const Value: Integer); //-1 for not taking part in activation chain
-
     { Active }
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
@@ -130,6 +134,24 @@ type
     { EditMode }
     function IsEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean);
+
+    { Home }
+    function IsHome: Boolean; //note: a Home StoryItem doesn't have to be StoryPoint, could be just the startup instructions that are shown once and not when looping through the StoryPoints
+    procedure SetHome(const Value: Boolean);
+
+    { StoryPoint }
+    function IsStoryPoint: boolean;
+    procedure SetStoryPoint(const Value: boolean);
+
+    { Previous/Next StoryPoint }
+    function GetPreviousStoryPoint: IStoryItem;
+    function GetNextStoryPoint: IStoryItem;
+    //
+    function GetAncestorStoryPoint: IStoryItem;
+    function GetFirstChildStoryPoint: IStoryItem;
+    function GetLastChildStoryPoint: IStoryItem;
+    function GetPreviousSiblingStoryPoint: IStoryItem;
+    function GetNextSiblingStoryPoint: IStoryItem;
 
     { Hidden }
     function IsHidden: Boolean;
@@ -155,10 +177,14 @@ type
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
-    property ActivationOrder: Integer read GetActivationOrder write SetActivationOrder; //default -1 (not taking part in activation chain)
     property Active: Boolean read IsActive write SetActive; //default false
     property EditMode: Boolean read IsEditMode write SetEditMode; //default false
+    property Home: Boolean read IsHome write SetHome; //default false
+    property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
+    property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
+    property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
     property Hidden: Boolean read IsHidden write SetHidden; //default false
+    property Anchored: Boolean read IsAnchored write SetAnchored; //default true
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
     property Options: IStoryItemOptions read GetOptions; //stored false
   end;

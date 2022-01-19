@@ -18,6 +18,9 @@ type
     lblVersionValue: TLabel;
     Panel3: TPanel;
     Memo1: TMemo;
+    rectBackground: TRectangle;
+    btnClose: TSpeedButton;
+    procedure btnCloseClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,5 +30,11 @@ type
 implementation
 
 {$R *.fmx}
+
+procedure TAboutFrame.btnCloseClick(Sender: TObject);
+begin
+  Parent := nil;
+  Visible := false;
+end;
 
 end.
