@@ -22,6 +22,8 @@ uses
   FMX.Types; //for RegisterFmxClasses
 
 const
+  {$region 'Defaults'}
+
   DEFAULT_SHOW_ONLY_VISIBLE = true;
   DEFAULT_SHOW_ONLY_NAMED = true;
   DEFAULT_SHOW_NAMES = false;
@@ -31,6 +33,8 @@ const
   DEFAULT_DRAGDROP_REORDER = false; //acting as structure viewer, not editor by default
   DEFAULT_DRAGDROP_REPARENT = false; //acting as structure viewer, not editor by default
   DEFAULT_DRAGDROP_SELECTTARGET = true; //on drop, target is selected
+
+  {$endregion}
 
 type
   //TClassList = TList<TClass>; //using old-style (non Generic) "TClassList" from System.Contnrs instead
@@ -80,6 +84,9 @@ type
     {DragDropXX}
     procedure SetDragDropReorder(const Value: Boolean); virtual;
     procedure SetDragDropReparent(const Value: Boolean); virtual;
+    {SelectedItem}
+    function GetSelectedObject: TObject; virtual;
+    procedure SetSelectedObject(const Value: TObject); virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -98,6 +105,7 @@ type
     property DragDropReorder: Boolean read FDragDropReorder write SetDragDropReorder default DEFAULT_DRAGDROP_REORDER;
     property DragDropReparent: Boolean read FDragDropReparent write SetDragDropReparent default DEFAULT_DRAGDROP_REPARENT;
     property DragDropSelectTarget: Boolean read FDragDropSelectTarget write FDragDropSelectTarget default DEFAULT_DRAGDROP_SELECTTARGET;
+    property SelectedObject: TObject read GetSelectedObject write SetSelectedObject; //default nil
     //Events//
     property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
     property OnRestructuring: TRestructuringEvent read FOnRestructuring write FOnRestructuring;
@@ -113,7 +121,8 @@ implementation
     System.Rtti, //for TValue
     FMX.Dialogs, //for ShowMessage
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
-    Zoomicon.Helpers.FMX.ImgList.ImageListHelpers; //for TImageListAddBitmapHelper
+    Zoomicon.Helpers.FMX.ImgList.ImageListHelpers, //for TImageListAddBitmapHelper
+    Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers; //for TTreeViewItemSearchHelper
 
 {$R *.fmx}
 
@@ -150,68 +159,6 @@ end;
 {$endregion}
 
 {$region 'Properties' ---------------------------------------------------}
-
-{$region 'DragDropXX'}
-
-procedure TStructureView.SetDragDropReorder(const Value: Boolean);
-begin
-  FDragDropReorder := Value;
-  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
-end;
-
-procedure TStructureView.SetDragDropReparent(const Value: Boolean);
-begin
-  FDragDropReparent := Value;
-  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
-end;
-
-{$endregion}
-
-{$region 'ShowXX'}
-
-procedure TStructureView.SetShowOnlyClasses(const Value: TClassList);
-begin
-  FShowOnlyClasses := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowOnlyVisible(const Value: Boolean);
-begin
-  FShowOnlyVisible := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowOnlyNamed(const Value: Boolean);
-begin
-  FShowOnlyNamed := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowNames(const Value: Boolean);
-begin
-  FShowNames := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowTypes(const Value: Boolean);
-begin
-  FShowTypes := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowHintNames(const Value: Boolean);
-begin
-  FShowHintNames := Value;
-  LoadTreeView;
-end;
-
-procedure TStructureView.SetShowHintTypes(const Value: Boolean);
-begin
-  FShowHintTypes := Value;
-  LoadTreeView;
-end;
-
-{$endregion}
 
 {$region 'GUIRoot'}
 
@@ -283,6 +230,89 @@ end;
 
 {$endregion}
 
+{$region 'ShowXX'}
+
+procedure TStructureView.SetShowOnlyClasses(const Value: TClassList);
+begin
+  FShowOnlyClasses := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowOnlyVisible(const Value: Boolean);
+begin
+  FShowOnlyVisible := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowOnlyNamed(const Value: Boolean);
+begin
+  FShowOnlyNamed := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowNames(const Value: Boolean);
+begin
+  FShowNames := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowTypes(const Value: Boolean);
+begin
+  FShowTypes := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowHintNames(const Value: Boolean);
+begin
+  FShowHintNames := Value;
+  LoadTreeView;
+end;
+
+procedure TStructureView.SetShowHintTypes(const Value: Boolean);
+begin
+  FShowHintTypes := Value;
+  LoadTreeView;
+end;
+
+{$endregion}
+
+{$region 'DragDropXX'}
+
+procedure TStructureView.SetDragDropReorder(const Value: Boolean);
+begin
+  FDragDropReorder := Value;
+  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
+end;
+
+procedure TStructureView.SetDragDropReparent(const Value: Boolean);
+begin
+  FDragDropReparent := Value;
+  TreeView.AllowDrag := FDragDropReorder or FDragDropReparent;
+end;
+
+{$endregion}
+
+{$region 'SelectedObject'}
+
+function TStructureView.GetSelectedObject: TObject;
+begin
+  var selectedItem := TreeView.Selected;
+  if Assigned(selectedItem) then
+    result := selectedItem.TagObject
+  else
+    result := nil;
+end;
+
+procedure TStructureView.SetSelectedObject(const Value: TObject);
+begin
+  if Assigned(Value) then
+    TreeView.Selected := TreeView.FindObject(Value)
+  else
+    TreeView.Selected := nil; //clear selection (instead of searching for "TagObject = nil" at the tree items
+end;
+
+{$endregion}
+
 {$endregion .............................................................}
 
 {$region 'Events' -------------------------------------------------------}
@@ -290,7 +320,11 @@ end;
 procedure TStructureView.TreeViewChange(Sender: TObject);
 begin
   if Assigned(FOnSelection) then
-    FOnSelection(Self, TreeView.Selected.TagObject);
+  begin
+    var selectedItem := TreeView.Selected;
+    if Assigned(selectedItem) then
+      FOnSelection(Self, selectedItem.TagObject);
+  end;
 end;
 
 procedure TStructureView.TreeViewDragChange(SourceItem, DestItem: TTreeViewItem; var Allow: Boolean);
