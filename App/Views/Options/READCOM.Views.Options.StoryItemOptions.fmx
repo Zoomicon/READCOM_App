@@ -33,6 +33,9 @@ object StoryItemOptions: TStoryItemOptions
       Touch.InteractiveGestures = [LongTap, DoubleTap]
       Align = Client
       TabOrder = 4
+      Hint = 
+        'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
+        ' Active StoryItem is clicked in non-Edit mode'
       Margins.Left = 5.000000000000000000
       Size.Width = 441.000000000000000000
       Size.Height = 41.000000000000000000
@@ -54,6 +57,9 @@ object StoryItemOptions: TStoryItemOptions
       StaysPressed = True
       Align = Client
       Anchors = []
+      Hint = 
+        'Toggle Home'#13#13'Sets/Unsets the Active StoryItem as the Home one, w' +
+        'hich is activated when the Story is loaded'
       Images = Globals.SVGIconImageList
       ImageIndex = 13
       Size.Width = 64.000000000000000000
@@ -67,6 +73,9 @@ object StoryItemOptions: TStoryItemOptions
       StaysPressed = True
       Align = Client
       Anchors = []
+      Hint = 
+        'Toggle StoryPoint'#13#13'Sets/unsets the Active StoryItem as a StoryPo' +
+        'int, taking part in normal flow of the Story (via Previous/Next)'
       Images = Globals.SVGIconImageList
       ImageIndex = 14
       Size.Width = 64.000000000000000000
@@ -80,6 +89,9 @@ object StoryItemOptions: TStoryItemOptions
       StaysPressed = True
       Align = Client
       Anchors = []
+      Hint = 
+        'Toggle Anchored'#13#13'Enables/Disables dragging of the Active StoryIt' +
+        'em in non-Edit mode'
       Images = Globals.SVGIconImageList
       ImageIndex = 5
       Size.Width = 64.000000000000000000
@@ -93,6 +105,7 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionDelete
       Align = Client
       Enabled = True
+      Hint = 'Delete'#13#13'Remove the Active StoryItem'
       Images = Globals.SVGIconImageList
       ImageIndex = 8
       Size.Width = 64.000000000000000000
@@ -104,6 +117,10 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionAdd
       Align = Client
       Enabled = True
+      Hint = 
+        'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
+        ' audio, text) or saved StoryItems (.readcom files), creating Sto' +
+        'ryItems as children of the Active StoryItem.'
       Images = Globals.SVGIconImageList
       ImageIndex = 10
       Size.Width = 64.000000000000000000
@@ -115,6 +132,9 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionLoad
       Align = Client
       Enabled = True
+      Hint = 
+        'Load StoryItem'#13#13'Replaces contents of Active StoryItem with saved' +
+        ' ones from .readcom file'
       Images = Globals.SVGIconImageList
       ImageIndex = 6
       Size.Width = 64.000000000000000000
@@ -126,6 +146,9 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionSave
       Align = Client
       Enabled = True
+      Hint = 
+        'Save StoryItem'#13#13'Saves contents of Active StoryItem to a .readcom' +
+        ' file'
       Images = Globals.SVGIconImageList
       ImageIndex = 7
       Size.Width = 64.000000000000000000

@@ -18,6 +18,13 @@ object StoryHUD: TStoryHUD
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
   end
+  object layoutContent: TLayout
+    Align = Client
+    Size.Width = 662.000000000000000000
+    Size.Height = 572.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 5
+  end
   object layoutButtons: TLayout
     Align = Client
     Size.Width = 662.000000000000000000
@@ -35,6 +42,7 @@ object StoryHUD: TStoryHUD
         Action = actionNext
         Align = MostRight
         Enabled = True
+        Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
         Images = Globals.SVGIconImageList
         ImageIndex = 2
         Position.X = 606.000000000000000000
@@ -47,6 +55,7 @@ object StoryHUD: TStoryHUD
         Action = actionPrevious
         Align = MostLeft
         Enabled = True
+        Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
         Images = Globals.SVGIconImageList
         ImageIndex = 1
         Size.Width = 41.000000000000000000
@@ -58,6 +67,7 @@ object StoryHUD: TStoryHUD
         Action = actionHome
         Align = Center
         Enabled = True
+        Hint = 'Home'#13#13'Activates Home StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 13
         Size.Width = 41.000000000000000000
@@ -80,6 +90,7 @@ object StoryHUD: TStoryHUD
       object btnNew: TSpeedButton
         Action = actionNew
         Enabled = True
+        Hint = 'New Story'#13#13'Clears all loaded story contents'
         Images = Globals.SVGIconImageList
         ImageIndex = 12
         Position.Y = 40.000000000000000000
@@ -91,6 +102,9 @@ object StoryHUD: TStoryHUD
       object btnLoad: TSpeedButton
         Action = actionLoad
         Enabled = True
+        Hint = 
+          'Load Story'#13#13'Clears current contents and loads a Story'#39's contents' +
+          ' from a .readcom file'
         Images = Globals.SVGIconImageList
         ImageIndex = 6
         Position.Y = 80.000000000000000000
@@ -102,6 +116,7 @@ object StoryHUD: TStoryHUD
       object btnSave: TSpeedButton
         Action = actionSave
         Enabled = True
+        Hint = 'Save Story'#13#13'Saves current Story contents to a .readcom file'
         Images = Globals.SVGIconImageList
         ImageIndex = 7
         Position.Y = 120.000000000000000000
@@ -113,6 +128,7 @@ object StoryHUD: TStoryHUD
       object BtnEdit: TSpeedButton
         Action = actionEdit
         Enabled = True
+        Hint = 'Toggle Edit mode'#13#13'Enables/Disables story editing functionality'
         Images = Globals.SVGIconImageList
         ImageIndex = 0
         Position.Y = 160.000000000000000000
@@ -124,6 +140,10 @@ object StoryHUD: TStoryHUD
       object btnStructure: TSpeedButton
         Action = actionStructure
         Enabled = True
+        Hint = 
+          'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
+          ' which allows to select active StoryItem and to rearrange StoryI' +
+          'tems when in Edit mode'
         Images = Globals.SVGIconImageList
         ImageIndex = 3
         Position.Y = 200.000000000000000000
@@ -135,6 +155,11 @@ object StoryHUD: TStoryHUD
       object btnTargets: TSpeedButton
         Action = actionTargets
         Enabled = True
+        Hint = 
+          'Toggles links to StoryItem Targets'#13#13'Shows/Hides links to StoryIt' +
+          'em Targets. Targets are used to define where non-Anchored StoryI' +
+          'tems are to be dragged to when inside the same parent StoryItem,' +
+          ' else define an ActiveStoryItem transition'
         Images = Globals.SVGIconImageList
         ImageIndex = 4
         Position.Y = 240.000000000000000000
@@ -146,6 +171,7 @@ object StoryHUD: TStoryHUD
       object btnHelp: TSpeedButton
         Action = actionHelp
         Enabled = True
+        Hint = 'Show Help'#13#13'Opens web browser to application'#39's wiki pages'
         Images = Globals.SVGIconImageList
         ImageIndex = 16
         Position.Y = 280.000000000000000000
@@ -157,6 +183,7 @@ object StoryHUD: TStoryHUD
       object btnAbout: TSpeedButton
         Action = actionAbout
         Enabled = True
+        Hint = 'About'#13#13'Shows application version and related information'
         Images = Globals.SVGIconImageList
         ImageIndex = 15
         Position.Y = 320.000000000000000000
@@ -179,22 +206,16 @@ object StoryHUD: TStoryHUD
       object btnAdd: TSpeedButton
         Action = actionAdd
         Anchors = [akTop, akRight]
-        Enabled = False
+        Enabled = True
         Images = Globals.SVGIconImageList
-        ImageIndex = -1
+        ImageIndex = 10
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'additembutton'
+        Visible = False
       end
     end
-  end
-  object layoutContent: TLayout
-    Align = Client
-    Size.Width = 662.000000000000000000
-    Size.Height = 572.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 6
   end
   object MultiView: TMultiView
     TargetControl = layoutContent
@@ -238,7 +259,9 @@ object StoryHUD: TStoryHUD
     object actionAdd: TAction
       Category = 'Edit'
       Text = 'Add'
-      Enabled = False
+      ImageIndex = 10
+      Visible = False
+      ImageIndex = 10
     end
     object actionAbout: TAction
       Category = 'Help'
@@ -271,19 +294,25 @@ object StoryHUD: TStoryHUD
     object actionNew: TAction
       Category = 'File'
       Text = 'New'
+      Hint = 
+        'New Story'#13#13'<b>Clears all loaded story contents</b>'#13#13'**test**'#13'*te' +
+        'st*'#13'_test_'
       ImageIndex = 12
+      ShortCut = 16462
       ImageIndex = 12
     end
     object actionLoad: TAction
       Category = 'File'
       Text = 'Load'
       ImageIndex = 6
+      ShortCut = 16460
       ImageIndex = 6
     end
     object actionSave: TAction
       Category = 'File'
       Text = 'Save'
       ImageIndex = 7
+      ShortCut = 16467
       ImageIndex = 7
     end
     object actionHelp: TAction
