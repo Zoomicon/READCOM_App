@@ -8,7 +8,7 @@ interface
 
   type
 
-    TCustomScrollBoxViewportHelper = class helper for TCustomScrollBox
+    TScrollBoxViewportHelper = class helper for TCustomScrollBox
     protected
       function GetViewportSize: TSizeF;
     public
@@ -21,9 +21,9 @@ interface
 
 implementation
 
-{$REGION 'TCustomScrollBoxViewportHelper'}
+{$REGION 'TScrollBoxViewportHelper'}
 
-function TCustomScrollBoxViewportHelper.GetViewportSize: TSizeF;
+function TScrollBoxViewportHelper.GetViewportSize: TSizeF;
 begin
   result := Size.Size; //TODO: adjust for scrollbar sizes
 end;

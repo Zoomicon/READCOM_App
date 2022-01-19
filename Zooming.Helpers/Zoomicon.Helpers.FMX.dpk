@@ -36,7 +36,8 @@ contains
   Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in 'Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
   Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in 'Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
   Zoomicon.Helpers.FMX.Controls.ControlHelpers in 'Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas',
-  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in 'Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas';
+  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in 'Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas',
+  Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers in 'Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas';
 
 {$DESCRIPTION 'Zoomicon Helpers for FMX'}
 
