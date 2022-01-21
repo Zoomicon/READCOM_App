@@ -1,0 +1,90 @@
+object Frame1: TFrame1
+  Size.Width = 632.000000000000000000
+  Size.Height = 352.000000000000000000
+  Size.PlatformDefault = False
+  object Rectangle1: TRectangle
+    Align = Contents
+    Size.Width = 632.000000000000000000
+    Size.Height = 352.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object SpeedButton1: TSpeedButton
+    StaysPressed = True
+    Images = SVGIconImageList1
+    ImageIndex = 0
+    Position.X = 80.000000000000000000
+    Position.Y = 128.000000000000000000
+    StyleLookup = 'actiontoolbutton'
+    Text = 'SpeedButton1'
+  end
+  object ActionList1: TActionList
+    Left = 256
+    Top = 112
+    object ActionEdit: TAction
+      AutoCheck = True
+      Text = 'ActionEdit'
+    end
+  end
+  object SVGIconImageList1: TSVGIconImageList
+    Source = <
+      item
+        MultiResBitmap = <
+          item
+            Size = 25
+          end>
+        IconName = 'Edit'
+        SVGText = 
+          '<svg id="emoji" viewBox="0 0 72 72" xmlns="http://www.w3.org/200' +
+          '0/svg">'#10'  <g id="color">'#10'    <polygon fill="#FCEA2B" stroke="#FC' +
+          'EA2B" stroke-linecap="round" stroke-linejoin="round" stroke-mite' +
+          'rlimit="10" stroke-width="1.8" points="35.25,12 46.375,23.25 46.' +
+          '375,62 13,62 13,12"/>'#10'    <polygon fill="#F1B31C" stroke="#F1B31' +
+          'C" stroke-linecap="round" stroke-linejoin="round" stroke-miterli' +
+          'mit="10" stroke-width="1.8" points="15.688,62 12.625,62 46.375,6' +
+          '2 46.375,36.625 20.9375,62"/>'#10'    <polygon fill="#FFFFFF" stroke' +
+          '="none" stroke-linecap="round" stroke-linejoin="round" stroke-mi' +
+          'terlimit="10" stroke-width="2" points="34,49 34,54 39,54 63,30 5' +
+          '8,25"/>'#10'  </g>'#10'  <g id="hair"/>'#10'  <g id="skin"/>'#10'  <g id="skin-s' +
+          'hadow"/>'#10'  <g id="line">'#10'    <polyline fill="none" stroke="#0000' +
+          '00" stroke-linecap="round" stroke-linejoin="round" stroke-miterl' +
+          'imit="10" stroke-width="2" points="46.375,30.9999 46.375,23.25 3' +
+          '5.125,23.25 35.125,12 12.625,12 12.625,62 46.375,62 46.375,52.16' +
+          '66"/>'#10'    <line x1="35.125" x2="46.375" y1="12" y2="23.25" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="4' +
+          '1" x2="18" y1="30" y2="30" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="24" y2="24" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="4' +
+          '1" x2="18" y1="36" y2="36" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="42" y2="42" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <line x1="2' +
+          '8" x2="18" y1="48" y2="48" fill="none" stroke="#000000" stroke-l' +
+          'inecap="round" stroke-linejoin="round" stroke-miterlimit="10" st' +
+          'roke-width="2"/>'#10'    <line x1="28" x2="18" y1="54" y2="54" fill=' +
+          '"none" stroke="#000000" stroke-linecap="round" stroke-linejoin="' +
+          'round" stroke-miterlimit="10" stroke-width="2"/>'#10'    <polygon fi' +
+          'll="none" stroke="#000000" stroke-linecap="round" stroke-linejoi' +
+          'n="round" stroke-miterlimit="10" stroke-width="2" points="34,49 ' +
+          '34,54 39,54 63,30 58,25"/>'#10'  </g>'#10'</svg>'#10
+        Opacity = 1.000000000000000000
+      end>
+    Destination = <
+      item
+        Layers = <
+          item
+            Name = 'Edit'
+            SourceRect.Right = 25.000000000000000000
+            SourceRect.Bottom = 25.000000000000000000
+          end>
+      end
+      item
+        Layers = <>
+      end>
+    Left = 348
+    Top = 112
+  end
+end

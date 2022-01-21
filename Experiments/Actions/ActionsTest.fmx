@@ -1,0 +1,20 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  inline Frame11: TFrame1
+    Size.Width = 529.000000000000000000
+    Size.Height = 273.000000000000000000
+    Size.PlatformDefault = False
+    inherited Rectangle1: TRectangle
+      Size.Width = 529.000000000000000000
+      Size.Height = 273.000000000000000000
+    end
+  end
+end
