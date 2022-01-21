@@ -12,10 +12,15 @@ uses
   READCOM.App.Globals;
 
 type
+
+  TEditModeChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+  TStructureVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+  TTargetsVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+
   TStoryHUD = class(TFrame)
     btnAdd: TSpeedButton;
     btnPrevious: TSpeedButton;
-    BtnEdit: TSpeedButton;
+    btnToggleEditMode: TSpeedButton;
     BtnMenu: TSpeedButton;
     btnNext: TSpeedButton;
     layoutNavigation: TLayout;
@@ -23,17 +28,14 @@ type
     actionPrevious: TAction;
     actionNext: TAction;
     actionAdd: TAction;
-    actionEdit: TAction;
     actionAbout: TAction;
     actionMenu: TAction;
     layoutButtons: TLayout;
     MultiView: TMultiView;
-    btnStructure: TSpeedButton;
-    actionStructure: TAction;
+    btnToggleStructureVisible: TSpeedButton;
     MultiViewFrameStand: TFrameStand;
     layoutContent: TLayout;
-    actionTargets: TAction;
-    btnTargets: TSpeedButton;
+    btnToggleTargetsVisible: TSpeedButton;
     layoutButtonsSide: TFlowLayout;
     layoutEdit: TFlowLayout;
     actionLoad: TAction;
@@ -47,28 +49,45 @@ type
     actionHelp: TAction;
     btnHelp: TSpeedButton;
     btnAbout: TSpeedButton;
-    procedure actionEditExecute(Sender: TObject);
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
-    procedure actionStructureExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);
+    procedure btnToggleStructureVisibleClick(Sender: TObject);
+    procedure btnToggleEditModeClick(Sender: TObject);
+    procedure btnToggleTargetsVisibleClick(Sender: TObject);
 
   protected
     FAboutFrame: TAboutFrame;
     FMultiViewOpenedWidth: Single;
 
+    FEditMode: Boolean;
+    FStructureVisible: Boolean;
+    FTargetsVisible: Boolean;
+
+    FEditModeChanged: TEditModeChangedEvent;
+    FStructureVisibleChanged: TStructureVisibleChangedEvent;
+    FTargetsVisibleChanged: TTargetsVisibleChangedEvent;
+
     {EditMode}
-    function GetEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean); virtual;
 
-    {StructureViewVisible}
-    function IsStructureViewVisible: Boolean;
-    procedure SetStructureViewVisible(const Value: Boolean);
+    {StructureVisible}
+    procedure SetStructureVisible(const Value: Boolean);
+
+    {TargetsVisible}
+    procedure SetTargetsVisible(const Value: Boolean);
 
   public
     constructor Create(AOwner: TComponent); override;
-    property EditMode: Boolean read GetEditMode write SetEditMode default false;
-    property StructureViewVisible: Boolean read IsStructureViewVisible write SetStructureViewVisible default false;
+
+  published
+    property EditMode: Boolean read FEditMode write SetEditMode default false;
+    property StructureVisible: Boolean read FStructureVisible write SetStructureVisible default false;
+    property TargetsVisible: Boolean read FTargetsVisible write SetTargetsVisible default false;
+
+    property OnEditModeChanged: TEditModeChangedEvent read FEditModeChanged write FEditModeChanged;
+    property OnStructureVisibleChanged: TStructureVisibleChangedEvent read FStructureVisibleChanged write FStructureVisibleChanged;
+    property OnTargetsVisibleChanged: TTargetsVisibleChangedEvent read FTargetsVisibleChanged write FTargetsVisibleChanged;
   end;
 
 implementation
@@ -81,43 +100,60 @@ constructor TStoryHUD.Create(AOwner: TComponent);
 begin
   inherited;
 
-  EditMode := false;
-
+  FEditMode := false;
   FMultiViewOpenedWidth := MultiView.Width;
-  StructureViewVisible := false; //hide the side panel
+  FTargetsVisible := false;
+
+  StructureVisible := false; //calling the "setter" to hide the side panel (which is open in design mode to define its width)
 end;
 
 {$REGION 'Properties'}
 
 {$region 'EditMode'}
 
-function TStoryHUD.GetEditMode: Boolean;
-begin
-  result := actionEdit.Checked;
-end;
-
 procedure TStoryHUD.SetEditMode(const Value: Boolean);
 begin
-  actionEdit.Checked := Value; //see if it causes firing of event on change
+  FEditMode := Value;
+  btnToggleEditMode.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+
+  layoutEdit.Visible := Value; //show Edit-related buttons
+
+  if not Value then
+    StructureVisible := false; //hide StructureView when existing EditMode
+
+  if Assigned(FEditModeChanged) then
+    FEditModeChanged(Self, Value);
 end;
 
 {$endregion}
 
 {$region 'StrucureViewVisible'}
 
-function TStoryHUD.IsStructureViewVisible: Boolean;
+procedure TStoryHUD.SetStructureVisible(const Value: Boolean);
 begin
-  result := (MultiView.Width <> 0);
-end;
+  FStructureVisible := Value;
+  btnToggleStructureVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-procedure TStoryHUD.SetStructureViewVisible(const Value: Boolean);
-begin
   if Value then
     MultiView.Width := FMultiViewOpenedWidth
   else
     MultiView.Width := 0;
 
-  actionStructure.Checked := Value;
+  if Assigned(FStructureVisibleChanged) then
+    FStructureVisibleChanged(Self, Value);
+end;
+
+{$endregion}
+
+{$region 'TargetsVisible'}
+
+procedure TStoryHUD.SetTargetsVisible(const Value: Boolean);
+begin
+  FTargetsVisible := Value;
+  btnToggleTargetsVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+
+  if Assigned(FTargetsVisibleChanged) then
+    FTargetsVisibleChanged(Self, Value);
 end;
 
 {$endregion}
@@ -131,25 +167,25 @@ begin
   layoutButtons.Visible := actionMenu.Checked;
 end;
 
-{$endregion}
-
 {$region 'Edit actions'}
 
-procedure TStoryHUD.actionEditExecute(Sender: TObject);
+procedure TStoryHUD.btnToggleEditModeClick(Sender: TObject);
 begin
-  layoutEdit.Visible := EditMode; //show Edit-related buttons
-
-  if not EditMode then
-    StructureViewVisible := false; //hide StructureView when existing EditMode
+  EditMode := not EditMode; //don't use "btnToggleEditMode.Pressed", returns inconsistent values
 end;
 
 {$endregion}
 
 {$region 'View actions'}
 
-procedure TStoryHUD.actionStructureExecute(Sender: TObject);
+procedure TStoryHUD.btnToggleStructureVisibleClick(Sender: TObject);
 begin
-  SetStructureViewVisible(actionStructure.Checked);
+  StructureVisible := not StructureVisible; //don't use "btnToggleStructureVisible.Pressed", returns inconsistent values
+end;
+
+procedure TStoryHUD.btnToggleTargetsVisibleClick(Sender: TObject);
+begin
+  TargetsVisible := not TargetsVisible; //don't use "btnToggleTargetsVisible.Pressed", returns inconsistent values
 end;
 
 {$endregion}

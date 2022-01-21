@@ -23,6 +23,17 @@ object MainForm: TMainForm
     Size.PlatformDefault = False
     ParentShowHint = False
     ShowHint = True
+    inherited layoutContent: TLayout
+      Size.Width = 876.000000000000000000
+      Size.Height = 616.000000000000000000
+      object ZoomFrame: TZoomFrame
+        Align = Client
+        Size.Width = 876.000000000000000000
+        Size.Height = 616.000000000000000000
+        Size.PlatformDefault = False
+        Proportional = True
+      end
+    end
     inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
@@ -40,17 +51,9 @@ object MainForm: TMainForm
         Position.X = 826.000000000000000000
         Size.Height = 576.000000000000000000
         TabOrder = 174
-      end
-    end
-    inherited layoutContent: TLayout
-      Size.Width = 876.000000000000000000
-      Size.Height = 616.000000000000000000
-      object ZoomFrame: TZoomFrame
-        Align = Client
-        Size.Width = 876.000000000000000000
-        Size.Height = 616.000000000000000000
-        Size.PlatformDefault = False
-        Proportional = True
+        inherited btnAdd: TSpeedButton
+          Visible = True
+        end
       end
     end
     inherited MultiView: TMultiView
@@ -71,23 +74,13 @@ object MainForm: TMainForm
         OnExecute = HUDactionNextExecute
         ImageIndex = 2
       end
-      inherited actionEdit: TAction
-        OnExecute = HUDactionEditExecute
-        ImageIndex = 0
-      end
       inherited actionAdd: TAction
+        Visible = True
         OnExecute = HUDactionAddExecute
+        ImageIndex = 10
       end
       inherited actionAbout: TAction
         ImageIndex = 15
-      end
-      inherited actionStructure: TAction
-        OnExecute = HUDactionStructureExecute
-        ImageIndex = 3
-      end
-      inherited actionTargets: TAction
-        OnExecute = HUDactionTargetsExecute
-        ImageIndex = 4
       end
       inherited actionNew: TAction
         OnExecute = HUDactionNewExecute

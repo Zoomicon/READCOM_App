@@ -27,10 +27,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
     procedure HUDactionAddExecute(Sender: TObject);
-    procedure HUDactionEditExecute(Sender: TObject);
-    procedure HUDactionStructureExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HUDactionTargetsExecute(Sender: TObject);
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
     procedure HUDactionNewExecute(Sender: TObject);
@@ -63,17 +60,17 @@ type
     function GetHomeStoryItem: IStoryItem;
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
-    {Navigation}
+    {NAVIGATION}
 
-      { ActiveStoryItem }
-      function GetActiveStoryItem: IStoryItem;
-      procedure SetActiveStoryItem(const Value: IStoryItem);
+    { ActiveStoryItem }
+    function GetActiveStoryItem: IStoryItem;
+    procedure SetActiveStoryItem(const Value: IStoryItem);
 
-      procedure ActivateRoot;
-      procedure ActivateParent;
-      procedure ActivateHome;
-      procedure ActivatePrevious;
-      procedure ActivateNext;
+    procedure ActivateRoot;
+    procedure ActivateParent;
+    procedure ActivateHome;
+    procedure ActivatePrevious;
+    procedure ActivateNext;
 
     { StoryMode }
     function GetStoryMode: TStoryMode;
@@ -82,9 +79,13 @@ type
     { StructureView }
     procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
 
+    property StructureView: TStructureView read GetStructureView stored false;
+
     procedure RootStoryItemViewResized(Sender: TObject);
 
-    property StructureView: TStructureView read GetStructureView;
+    procedure HUDEditModeChanged(Sender: TObject; const Value: Boolean);
+    procedure HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
+    procedure HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
 
   public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
@@ -116,9 +117,20 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
   procedure InitHUD;
   begin
-    HUD.BringToFront;
-    HUD.BtnMenu.BringToFront;
-    HUD.layoutButtons.BringToFront;
+    with HUD do
+    begin
+      BringToFront;
+      BtnMenu.BringToFront;
+      layoutButtons.BringToFront;
+
+      EditMode := false;
+      StructureVisible := false;
+      TargetsVisible := false;
+
+      OnEditModeChanged := HUDEditModeChanged;
+      OnStructureVisibleChanged := HUDStructureVisibleChanged;
+      OnTargetsVisibleChanged := HUDTargetsVisibleChanged;
+    end;
   end;
 
 begin
@@ -275,7 +287,7 @@ begin
   if Assigned(Value) then
     begin
     var StoryItem := TStoryItem(Value.View);
-    StoryItem.EditMode := HUD.actionEdit.Checked; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
+    StoryItem.EditMode := HUD.EditMode; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
     //StructureView.SelectedObject := Value.View; //TODO: fix, causes some kind of disruption when doing (automatic) drag-drop (maybe schedule to do at end of drag-drop or to cancel if during drag-drop [if we can detect it] or somehow outside of current event handling)
     end
   else
@@ -349,19 +361,20 @@ end;
 procedure TMainForm.SetStoryMode(const Value: TStoryMode);
 begin
   FStoryMode := Value;
+  var isEditMode := (Value = EditMode);
 
   if Assigned(ActiveStoryItem) then
   begin
     var view := ActiveStoryItem.View as TStoryItem;
     if Assigned(view) then
-      view.EditMode := HUD.actionEdit.Checked; //TODO: should add an EditMode property to the Story?
+      view.EditMode := isEditMode; //TODO: should add an EditMode property to the Story?
   end;
 
   if Assigned(FStructureViewFrameInfo) then
     with FStructureViewFrameInfo.Frame do
     begin
-      DragDropReorder := HUD.actionEdit.Checked; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
-      DragDropReparent := HUD.actionEdit.Checked; //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
+      DragDropReorder := isEditMode; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
+      DragDropReparent := isEditMode; //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
     end;
 end;
 
@@ -411,35 +424,11 @@ end;
 
 {$endregion}
 
-{$region 'View actions'}
-
-procedure TMainForm.HUDactionStructureExecute(Sender: TObject);
-begin
-  HUD.actionStructureExecute(Sender);
-
-  HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
-
-  StructureView.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
-  FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
-end;
-
-procedure TMainForm.HUDactionTargetsExecute(Sender: TObject);
-begin
-  //HUD.actionTargetsExecute(Sender);
-
-  if Assigned(ActiveStoryItem) then
-    ActiveStoryItem.TargetsVisible := HUD.actionTargets.Checked;
-end;
-
-{$endregion}
-
 {$region 'Edit actions'}
 
-procedure TMainForm.HUDactionEditExecute(Sender: TObject);
+procedure TMainForm.HUDEditModeChanged(Sender: TObject; const Value: Boolean);
 begin
-  HUD.actionEditExecute(Sender);
-
-  if HUD.actionEdit.Checked then
+  if Value then
     StoryMode := EditMode
   else
     StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
@@ -464,6 +453,28 @@ end;
 
 {$endregion}
 
+{$region 'View actions'}
+
+procedure TMainForm.HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
+begin
+  if Value then
+  begin
+    HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
+
+    StructureView.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
+    FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
+  end;
+end;
+
+procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
+begin
+  if HUD.TargetsVisible then
+    if Assigned(ActiveStoryItem) then
+      ActiveStoryItem.TargetsVisible := Value;
+end;
+
+{$endregion}
+
 {$region 'Navigation actions'}
 
 procedure TMainForm.HUDactionHomeExecute(Sender: TObject);
@@ -484,7 +495,7 @@ end;
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
   if not (StoryMode = EditMode) then //in non-Edit mode
-    HUD.StructureViewVisible := false; //we want to hide the StructureView before zooming to the item selected
+    HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
 
   ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
   //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
@@ -505,7 +516,7 @@ begin
   with newRootStoryItemView do
     begin
     Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    EditMode := HUD.actionEdit.Checked; //TODO: add EditMode property to IStory or use its originally intended mode one
+    EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
     end;
   RootStoryItemView := newRootStoryItemView;
 end;

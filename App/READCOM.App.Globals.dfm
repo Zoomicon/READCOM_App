@@ -30466,7 +30466,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'Anchor'
         SVGText = 
@@ -30561,7 +30561,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'Delete'
         SVGText = 
@@ -30596,7 +30596,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'GlobeWithMeridians'
         SVGText = 
@@ -30625,7 +30625,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'Plus'
         SVGText = 
@@ -30665,7 +30665,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'Camera'
         SVGText = 
@@ -30774,7 +30774,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 64
           end>
         IconName = 'Signpost'
         SVGText = 
@@ -30907,6 +30907,8 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Anchor'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
@@ -30929,24 +30931,32 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Delete'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'GlobeWithMeridians'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Plus'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Camera'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item
@@ -30969,6 +30979,8 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Signpost'
+            SourceRect.Right = 64.000000000000000000
+            SourceRect.Bottom = 64.000000000000000000
           end>
       end
       item

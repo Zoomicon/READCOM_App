@@ -40,6 +40,8 @@ type
     function GetSVGText: String;
     procedure SetSVGText(const Value: String);
 
+    procedure Resize; override;
+
   public
 
     {$region 'IStoreable'}
@@ -70,6 +72,13 @@ implementation
 {$R *.fmx}
 
 {$REGION 'TVectorImageStoryItem'}
+
+procedure TVectorImageStoryItem.Resize;
+begin
+  var tmp := SVGText;
+  SVGText := '';
+  SVGText := tmp; //recalculate bitmap from the SVG //TODO: not sure if the "tmp" step is needed, or if it recalculates the buffer at all (probably doesn't have the new size at this point?)
+end;
 
 {$region 'IStoreable'}
 
@@ -139,23 +148,30 @@ end;
 
 function TVectorImageStoryItem.GetSVGText: String;
 begin
-  result := (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText;
+  if Assigned(Glyph) then
+    result := (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText
+  else
+    result := '';
 end;
 
 procedure TVectorImageStoryItem.SetSVGText(const Value: String);
 begin //TODO: should restore default Glyph (keep it to some global/static var once?) if SVGText is set to ''
-  if FAutoSize then
-    Glyph.Align := TAlignLayout.None;
-  var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
-  bitmap.SVGText := Value;
-  if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
-    begin
-    //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
-    //SetSize(100,100);
-    Glyph.Align := TAlignLayout.Contents;
-    end;
+  if Assigned(Glyph) then
+  begin
+    if FAutoSize then
+      Glyph.Align := TAlignLayout.None;
 
-  FStoreSVG := true; //mark that we loaded custom SVG
+    var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
+    bitmap.SVGText := Value;
+    if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
+      begin
+      //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
+      //SetSize(100,100);
+      Glyph.Align := TAlignLayout.Contents;
+      end;
+
+    FStoreSVG := true; //mark that we loaded custom SVG
+  end;
 end;
 
 {$endregion}

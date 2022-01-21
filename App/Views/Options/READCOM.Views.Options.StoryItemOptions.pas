@@ -125,7 +125,6 @@ begin
   with FStoryItem do
   begin
     editUrlAction.Text := GetUrlAction;
-    //btnToggleHome.IsPressed := Home;
     btnToggleHome.IsPressed := Home;
     btnToggleStoryPoint.IsPressed := StoryPoint;
     btnToggleAnchored.IsPressed := Anchored;

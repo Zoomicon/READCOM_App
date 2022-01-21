@@ -125,9 +125,8 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
-      object BtnEdit: TSpeedButton
-        Action = actionEdit
-        Enabled = True
+      object btnToggleEditMode: TSpeedButton
+        StaysPressed = True
         Hint = 'Toggle Edit mode'#13#13'Enables/Disables story editing functionality'
         Images = Globals.SVGIconImageList
         ImageIndex = 0
@@ -136,10 +135,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        Text = 'Edit'
+        OnClick = btnToggleEditModeClick
       end
-      object btnStructure: TSpeedButton
-        Action = actionStructure
-        Enabled = True
+      object btnToggleStructureVisible: TSpeedButton
+        StaysPressed = True
         Hint = 
           'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
           ' which allows to select active StoryItem and to rearrange StoryI' +
@@ -151,10 +151,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        Text = 'Structure'
+        OnClick = btnToggleStructureVisibleClick
       end
-      object btnTargets: TSpeedButton
-        Action = actionTargets
-        Enabled = True
+      object btnToggleTargetsVisible: TSpeedButton
+        StaysPressed = True
         Hint = 
           'Toggles links to StoryItem Targets'#13#13'Shows/Hides links to StoryIt' +
           'em Targets. Targets are used to define where non-Anchored StoryI' +
@@ -167,6 +168,8 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        Text = 'Targets'
+        OnClick = btnToggleTargetsVisibleClick
       end
       object btnHelp: TSpeedButton
         Action = actionHelp
@@ -248,14 +251,6 @@ object StoryHUD: TStoryHUD
       ImageIndex = 2
       ImageIndex = 2
     end
-    object actionEdit: TAction
-      Category = 'Edit'
-      AutoCheck = True
-      Text = 'Edit'
-      ImageIndex = 0
-      OnExecute = actionEditExecute
-      ImageIndex = 0
-    end
     object actionAdd: TAction
       Category = 'Edit'
       Text = 'Add'
@@ -275,21 +270,6 @@ object StoryHUD: TStoryHUD
       AutoCheck = True
       Text = 'Menu'
       OnExecute = actionMenuExecute
-    end
-    object actionStructure: TAction
-      Category = 'View'
-      AutoCheck = True
-      Text = 'Structure'
-      ImageIndex = 3
-      OnExecute = actionStructureExecute
-      ImageIndex = 3
-    end
-    object actionTargets: TAction
-      Category = 'View'
-      AutoCheck = True
-      Text = 'Targets'
-      ImageIndex = 4
-      ImageIndex = 4
     end
     object actionNew: TAction
       Category = 'File'
