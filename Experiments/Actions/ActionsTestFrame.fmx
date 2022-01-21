@@ -7,6 +7,12 @@ object Frame1: TFrame1
     Size.Width = 632.000000000000000000
     Size.Height = 352.000000000000000000
     Size.PlatformDefault = False
+    object Label1: TLabel
+      Position.X = 8.000000000000000000
+      Position.Y = 8.000000000000000000
+      Text = 'ActionsTestFrame'
+      TabOrder = 0
+    end
   end
   object SpeedButton1: TSpeedButton
     StaysPressed = True

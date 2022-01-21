@@ -15,6 +15,7 @@ type
     ActionEdit: TAction;
     SVGIconImageList1: TSVGIconImageList;
     Rectangle1: TRectangle;
+    Label1: TLabel;
   private
     { Private declarations }
   public

@@ -11,6 +11,11 @@ uses
 type
   TForm2 = class(TForm)
     Frame11: TFrame1;
+    ActionList1: TActionList;
+    ActionEdit: TAction;
+    SpeedButton1: TSpeedButton;
+    SVGIconImageList1: TSVGIconImageList;
+    Label1: TLabel;
   private
     { Private declarations }
   public
