@@ -91,6 +91,7 @@ object AboutFrame: TAboutFrame
       ''
       'Icons:'
       'https://openmoji.org/')
+    ReadOnly = True
     Anchors = [akLeft, akTop, akRight, akBottom]
     Position.X = 8.000000000000000000
     Position.Y = 125.000000000000000000
