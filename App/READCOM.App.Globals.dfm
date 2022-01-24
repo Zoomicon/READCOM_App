@@ -30625,7 +30625,7 @@ object Globals: TGlobals
       item
         MultiResBitmap = <
           item
-            Size = 64
+            Size = 30
           end>
         IconName = 'Plus'
         SVGText = 
@@ -30947,8 +30947,8 @@ object Globals: TGlobals
         Layers = <
           item
             Name = 'Plus'
-            SourceRect.Right = 64.000000000000000000
-            SourceRect.Bottom = 64.000000000000000000
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
           end>
       end
       item
