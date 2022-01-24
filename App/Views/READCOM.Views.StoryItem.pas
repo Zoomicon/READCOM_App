@@ -141,6 +141,7 @@ type
     procedure PlayRandomAudioStoryItem;
 
     { IStoreable }
+    procedure ReadState(Reader: TReader); override;
     procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
 
     function GetAddFilesFilter: String; virtual;
@@ -853,6 +854,17 @@ end;
 
 {$region 'IStoreable'}
 
+procedure TStoryItem.ReadState(Reader: TReader);
+begin
+  var readerPreviousOnErrorHandler := Reader.OnError;
+  try
+    Reader.OnError := ReaderError; //install our error handler
+    inherited; //let the state loading continue
+  finally
+    Reader.OnError := readerPreviousOnErrorHandler; //restore previous error handler
+  end;
+end;
+
 type
   THackReader = class(TReader); //used to access PropName protected property
 
@@ -976,14 +988,7 @@ procedure TStoryItem.LoadReadComBin(const Stream: TStream);
 begin
   RemoveStoryItems;
 
-  //Stream.ReadComponent(Self); //Use following code instead //TODO: add helper method TStream.ReadComponent(Self, ErrorHandler)
-  var reader := TReader.Create(Stream, 4096);
-  reader.OnError := ReaderError; //the error handler can ignore specific not found properties
-  try
-    Reader.ReadRootComponent(Self); //if we would have passed nil it would return a new instance
-  finally
-    Reader.Free;
-  end;
+  Stream.ReadComponent(Self); //same function as following code if have overriden ReadState method at TStoryItem to attach the ReaderError temporarily to the Reader that is passed to it
 end;
 
 procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

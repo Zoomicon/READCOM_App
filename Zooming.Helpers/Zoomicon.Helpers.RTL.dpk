@@ -25,14 +25,14 @@ package Zoomicon.Helpers.RTL;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-
 {$IMPLICITBUILD ON}
 
 requires
   rtl;
 
 contains
-  Zoomicon.Helpers.RTL.ClassListHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
+  Zoomicon.Helpers.RTL.ClassListHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
+  Zoomicon.Helpers.RTL.StreamHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas';
 
 {$DESCRIPTION 'Zoomicon Helpers for RTL'}
 
