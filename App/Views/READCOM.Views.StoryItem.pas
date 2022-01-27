@@ -19,7 +19,7 @@ const
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
 
 type
-  TStoryItem = class(TCustomManipulator, IStoryItem, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
+  TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     Border: TRectangle;
     Glyph: TSVGIconImage;
 
@@ -57,6 +57,9 @@ type
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
     procedure DoRemoveObject(const AObject: TFmxObject); override;
+
+    { Name }
+    procedure SetName(const NewName: TComponentName); override;
 
     { DefaultSize }
     function GetDefaultSize: TSizeF; override;
@@ -130,35 +133,44 @@ type
     procedure SetTargetsVisible(const Value: Boolean);
 
     { Options }
-    function GetOptions: IStoryItemOptions; virtual; //TODO: make methods that are available via properties protected?
+    function GetOptions: IStoryItemOptions; virtual;
 
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); overload; override;
+    constructor Create(AOwner: TComponent; const AName: string); overload;
     destructor Destroy; override;
 
     procedure Paint; override;
 
     procedure PlayRandomAudioStoryItem;
 
+    { IClipboardEnabled }
+    procedure Copy;
+    procedure Paste;
+
     { IStoreable }
     procedure ReadState(Reader: TReader); override;
     procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
 
     function GetAddFilesFilter: String; virtual;
+    procedure Add(const StoryItem: IStoryItem); overload; virtual;
+    procedure AddFromString(const Data: String); virtual;
     procedure Add(const Filepath: String); overload; virtual;
     procedure Add(const Filepaths: array of string); overload; virtual;
 
     function GetLoadFilesFilter: String; virtual;
-    procedure LoadFromString(const Data: String); virtual;
+    function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Load(const Filepath: string); overload; virtual;
-    procedure LoadReadCom(const Stream: TStream); virtual;
-    procedure LoadReadComBin(const Stream: TStream); virtual;
+    //
+    function LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
+    function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
 
     function GetSaveFilesFilter: String; virtual;
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
+    //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
 
@@ -206,7 +218,10 @@ implementation
     {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
     u_UrlOpen, //for url_Open_In_Browser
     System.IOUtils, //for TPath
-    Zoomicon.Generics.Collections,
+    FMX.Platform, //for TPlatformServices
+    FMX.Clipboard, //for IFMXExtendedClipboardService
+    Zoomicon.Generics.Collections, //for TObjectListEx
+    Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
 
@@ -272,13 +287,23 @@ end;
 
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
-  inherited;
-
   FStoryItems := TIStoryItemList.Create;
   FAudioStoryItems := TIAudioStoryItemList.Create;
 
+  inherited; //must create FStoryItems first, since EditMode ancestor's property is overriden and tries to access StoryItems when the ancestor's constructor initializes it
+
   //FID := TGUID.NewGuid; //Generate new statistically unique ID
   Init;
+end;
+
+constructor TStoryItem.Create(AOwner: TComponent; const AName: string);
+begin
+  Create(nil); //this may initialize the component from a referenced resource that has a Default name (say a TFrame descendent's design) for the newly created component: to avoid conflict with other component instance with same name under the same owner, not specifying an onwer yet //don't use "inherited" here
+
+  SetName(FindSafeNewName(AName, AOwner)); //since there's no owner there will be no naming conflict at this point (unless there's an owned control with the same name)
+  AOwner.InsertComponent(Self); //set the owner after changing the (default) Name to the specified one
+
+  //assuming if inherited constructor or other method (say the "Name" setter) called inside this constructor raises an exception the object is destroyed automatically without having to use try/finally and calling a destructor via freeing the new instance
 end;
 
 destructor TStoryItem.Destroy;
@@ -379,6 +404,15 @@ begin
 end;
 
 {$REGION 'PROPERTIES' ------------}
+
+{$region 'Name'}
+
+procedure TStoryItem.SetName(const NewName: TComponentName);
+begin
+  inherited SetName(FindSafeNewName(NewName));
+end;
+
+{$endregion}
 
 {$region 'DefaultSize'}
 
@@ -502,7 +536,7 @@ end;
 
 procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
-  inherited;
+  inherited; //call ancestor implementation
 
   if Assigned(Border) then
     Border.Visible := Value;
@@ -514,9 +548,8 @@ begin
       SendToBack; //keep always under children (setting to Visible seems to BringToFront)
     end;
 
-  if Assigned(FStoryItems) then
-    For var StoryItem in FStoryItems do
-      StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+  For var StoryItem in FStoryItems do
+    StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
 end;
 
 {$endregion}
@@ -852,6 +885,24 @@ end;
 
 {$ENDREGION}
 
+{$region 'IClipboardEnabled'}
+
+procedure TStoryItem.Copy;
+begin
+ var svc: IFMXExtendedClipboardService;
+ if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
+   Svc.SetText(SaveToString);
+end;
+
+procedure TStoryItem.Paste;
+begin
+ var svc: IFMXExtendedClipboardService;
+ if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
+   AddFromString(Svc.GetText);
+end;
+
+{$endregion}
+
 {$region 'IStoreable'}
 
 procedure TStoryItem.ReadState(Reader: TReader);
@@ -917,6 +968,25 @@ begin
   FreeAndNil(listFilters);
 end;
 
+procedure TStoryItem.Add(const StoryItem: IStoryItem);
+begin
+  //Center the new item...
+  var StoryItemView := StoryItem.View;
+  Self.InsertComponent(StoryItemView); //make sure we set Self as owner //TODO: need to call a safe method to do this with rename (see constructor above and extract such method)
+  var ItemSize := StoryItemView.Size;
+  StoryItemView.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  StoryItemView.Align := TAlignLayout.Scale; //adjust when parent scales
+  StoryItemView.Parent := Self;
+  StoryItemView.BringToFront; //load as front-most
+end;
+
+procedure TStoryItem.AddFromString(const Data: string);
+var StoryItem: IStoryItem;
+begin
+  if Supports(LoadFromString(Data, true), IStoryItem, StoryItem) then
+    Add(StoryItem);
+end;
+
 procedure TStoryItem.Add(const Filepath: String);
 begin
   var FileExt := ExtractFileExt(Filepath);
@@ -927,12 +997,7 @@ begin
   var StoryItem := view as TStoryItem;
   StoryItem.Load(Filepath); //this should also set the Size of the control
 
-  //Center the new item...
-  var ItemSize := StoryItem.Size;
-  StoryItem.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
-  StoryItem.Align := TAlignLayout.Scale; //adjust when parent scales
-  StoryItem.Parent := Self;
-  StoryItem.BringToFront; //load as front-most
+  Add(StoryItem);
 end;
 
 procedure TStoryItem.Add(const Filepaths: array of String);
@@ -948,7 +1013,7 @@ begin
   result := FILTER_READCOM;
 end;
 
-procedure TStoryItem.LoadFromString(const Data: string);
+function TStoryItem.LoadFromString(const Data: string; const CreateNew: Boolean = false): TObject;
 begin
   var StrStream := TStringStream.Create(Data);
   try
@@ -956,7 +1021,7 @@ begin
     try
       ObjectTextToBinary(StrStream, BinStream);
       BinStream.Seek(0, soFromBeginning);
-      LoadReadComBin(BinStream);
+      result := LoadReadComBin(BinStream, CreateNew).View;
     finally
       BinStream.Free;
     end;
@@ -965,30 +1030,36 @@ begin
   end;
 end;
 
-procedure TStoryItem.LoadReadCom(const Stream: TStream);
-
+function TStoryItem.LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
 begin
   var reader := TStreamReader.Create(Stream);
   try
-    LoadFromString(reader.ReadToEnd);
+    result := TStoryItem(LoadFromString(reader.ReadToEnd, CreateNew)) as IStoryItem;
   finally
     FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
   end;
 end;
 
-procedure TStoryItem.LoadReadComBin(const Stream: TStream);
+function TStoryItem.LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
 
-  procedure RemoveStoryItems;
+  procedure RemoveStoryItems; //TODO: add to IStoryItem and implement at TStoryItem level?
   begin
     var StoryItemViews := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls);
     StoryItemViews.FreeAll; //this will end up having RemoveObject called for each StoryItem (which will also remove from StoryItems and AudioStoryItems [if it is such] lists)
     FreeAndNil(StoryItemViews);
   end;
 
+var Instance: TStoryItem;
 begin
-  RemoveStoryItems;
+  if CreateNew then
+    Instance := nil //create new StoryItem
+  else
+  begin
+    Instance := Self; //load state to this StoryItem
+    RemoveStoryItems; //remove existing children
+  end;
 
-  Stream.ReadComponent(Self); //same function as following code if have overriden ReadState method at TStoryItem to attach the ReaderError temporarily to the Reader that is passed to it
+  result := Stream.ReadComponent(Instance) as IStoryItem; //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties
 end;
 
 procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

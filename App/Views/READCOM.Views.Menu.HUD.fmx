@@ -216,7 +216,30 @@ object StoryHUD: TStoryHUD
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'additembutton'
-        Visible = False
+      end
+      object btnCopy: TSpeedButton
+        Action = actionCopy
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 17
+        Position.Y = 33.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
+      end
+      object btnPaste: TSpeedButton
+        Action = actionPaste
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 18
+        Position.Y = 66.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
       end
     end
   end
@@ -233,6 +256,18 @@ object StoryHUD: TStoryHUD
     Images = Globals.SVGIconImageList
     Left = 328
     Top = 32
+    object actionPaste: TAction
+      Category = 'Edit'
+      Text = 'Paste'
+      ImageIndex = 18
+      ImageIndex = 18
+    end
+    object actionCopy: TAction
+      Category = 'Edit'
+      Text = 'Copy'
+      ImageIndex = 17
+      ImageIndex = 17
+    end
     object actionHome: TAction
       Category = 'Navigation'
       Text = 'Home'
@@ -255,7 +290,6 @@ object StoryHUD: TStoryHUD
       Category = 'Edit'
       Text = 'Add'
       ImageIndex = 10
-      Visible = False
       ImageIndex = 10
     end
     object actionAbout: TAction

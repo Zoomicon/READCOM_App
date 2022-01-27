@@ -28,6 +28,8 @@ uses
   Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
   Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
   Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
+  Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
+  Zoomicon.Helpers.RTL.StreamHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
   Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
   Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas',
   Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas',

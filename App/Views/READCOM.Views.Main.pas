@@ -15,12 +15,13 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
-  FMX.Layouts, READCOM.Views.PanelStoryItem,
+  FMX.Layouts,
   READCOM.Views.AudioStoryItem,
   SubjectStand,
   READCOM.App.Globals;
 
 type
+
   TMainForm = class(TForm, IStory)
     HUD: TStoryHUD;
     ZoomFrame: TZoomFrame;
@@ -36,6 +37,8 @@ type
     procedure HUDactionNextExecute(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       var KeyChar: Char; Shift: TShiftState);
+    procedure HUDactionCopyExecute(Sender: TObject);
+    procedure HUDactionPasteExecute(Sender: TObject);
   private
     function GetStructureView: TStructureView;
 
@@ -107,7 +110,9 @@ implementation
     System.Contnrs, //for TClassList
     System.Math, //for Max
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
+    READCOM.Views.PanelStoryItem,
     READCOM.Views.VectorImageStoryItem; //TODO: remove
+
 
 {$R *.fmx}
 
@@ -272,8 +277,10 @@ procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
     begin
       TStoryItem(partialRoot).EditMode := false; //TODO: see StoryMode of IStoryItem instead
       TStoryItem(partialRoot).Enabled := true; //re-enable if previously disabled due to EditMode of its parent
+
+      //Do for item's children too if any
       for var StoryItem in partialRoot.StoryItems do
-        RecursiveClearEditMode(StoryItem); //do for item's children too if any
+        RecursiveClearEditMode(StoryItem);
     end;
   end;
 
@@ -438,17 +445,27 @@ procedure TMainForm.HUDactionAddExecute(Sender: TObject);
 begin
   //HUD.actionAddExecute(Sender);
 
-  //TODO: move to StoryItem (with parameter the class to create and/or file to load [see PanelStoryItem code where this came from])
-  var StoryItem := TPanelStoryItem.Create(Self);
-
-  StoryItem.Name := 'PanelStoryItem_' + IntToStr(Random(maxint)); //TODO: use a GUID
+  var StoryItem :=
+    //TPanelStoryItem.Create(Self, 'PanelStoryItem');
+    //TBitmapImageStoryItem.Create(Self, 'BitmapImageStoryItem');
+    TVectorImageStoryItem.Create(Self, 'VectorImageStoryItem'); //TODO: testing (should have separate actions for adding such defaults [for prototyping] for various StoryItem classes)
 
   //Center the new item...
   var ItemSize := StoryItem.Size;
   StoryItem.Position.Point := PointF(ActiveStoryItem.View.Size.Width/2 - ItemSize.Width/2, ActiveStoryItem.View.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
 
-  StoryItem.Parent := ActiveStoryItem.View; //TODO: should add to current StoryItem
+  StoryItem.Parent := ActiveStoryItem.View;
   StoryItem.BringToFront; //load as front-most
+end;
+
+procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
+begin
+  ActiveStoryItem.Copy;
+end;
+
+procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
+begin
+  ActiveStoryItem.Paste;
 end;
 
 {$endregion}

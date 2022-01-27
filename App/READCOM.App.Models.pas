@@ -27,7 +27,14 @@ const
   FILTER_READCOM = FILTER_READCOM_TITLE + '|' + FILTER_READCOM_EXTS;
 
 type
-  IStoreable = interface
+
+  IClipboardEnabled = interface
+    ['{FDD22AC7-873A-4127-B200-E99DB4F2DEBF}']
+    procedure Copy;
+    procedure Paste;
+  end;
+
+  IStoreable = interface(IClipboardEnabled)
     ['{A08F7880-FBE5-40C5-B695-FF0F3A18EF3E}']
     //--- Methods ---
 
@@ -40,17 +47,13 @@ type
     function GetLoadFilesFilter: String;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Load(const Filepath: string); overload;
-    procedure LoadFromString(const Data: String);
-    procedure LoadReadCom(const Stream: TStream);
-    procedure LoadReadComBin(const Stream: TStream);
+    function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 
     { Save }
     function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
     function SaveToString: string; overload;
-    procedure SaveReadCom(const Stream: TStream);
-    procedure SaveReadComBin(const Stream: TStream);
   end;
 
 {$endregion -------------------------------------------------------------------}
@@ -171,6 +174,13 @@ type
 
     { Options }
     function GetOptions: IStoryItemOptions;
+
+    { IStoreable extensions }
+    procedure Add(const StoryItem: IStoryItem); overload;
+    function LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
+    function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
+    procedure SaveReadCom(const Stream: TStream);
+    procedure SaveReadComBin(const Stream: TStream);
 
     //--- Properties ---
     property View: TControl read GetView;

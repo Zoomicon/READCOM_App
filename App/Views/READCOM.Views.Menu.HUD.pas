@@ -49,6 +49,10 @@ type
     actionHelp: TAction;
     btnHelp: TSpeedButton;
     btnAbout: TSpeedButton;
+    actionCopy: TAction;
+    actionPaste: TAction;
+    btnCopy: TSpeedButton;
+    btnPaste: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

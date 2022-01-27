@@ -51,9 +51,6 @@ object MainForm: TMainForm
         Position.X = 826.000000000000000000
         Size.Height = 576.000000000000000000
         TabOrder = 174
-        inherited btnAdd: TSpeedButton
-          Visible = True
-        end
       end
     end
     inherited MultiView: TMultiView
@@ -62,6 +59,14 @@ object MainForm: TMainForm
       Size.Height = 616.000000000000000000
     end
     inherited ActionList: TActionList
+      inherited actionPaste: TAction
+        OnExecute = HUDactionPasteExecute
+        ImageIndex = 18
+      end
+      inherited actionCopy: TAction
+        OnExecute = HUDactionCopyExecute
+        ImageIndex = 17
+      end
       inherited actionHome: TAction
         OnExecute = HUDactionHomeExecute
         ImageIndex = 13
@@ -75,7 +80,6 @@ object MainForm: TMainForm
         ImageIndex = 2
       end
       inherited actionAdd: TAction
-        Visible = True
         OnExecute = HUDactionAddExecute
         ImageIndex = 10
       end
