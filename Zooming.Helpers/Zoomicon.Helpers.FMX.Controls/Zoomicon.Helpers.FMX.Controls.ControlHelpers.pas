@@ -98,7 +98,7 @@ end;
 
 function TControlObjectAtHelper.ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; //based on TControl.ObjectAtPoint
 
-  function ShouldTestMouseHits: Boolean; //locally hiding the ShoutTestMouseHits method to override that behaviour below
+  function ShouldTestMouseHits: Boolean; //locally hiding the ShouldTestMouseHits method to override that behaviour below
   begin
     Result := Visible and (IncludeDisabled or AbsoluteEnabled or (csDesigning in ComponentState));
   end;

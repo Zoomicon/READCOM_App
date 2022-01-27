@@ -32,7 +32,8 @@ requires
 
 contains
   Zoomicon.Helpers.RTL.ClassListHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
-  Zoomicon.Helpers.RTL.StreamHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas';
+  Zoomicon.Helpers.RTL.StreamHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
+  Zoomicon.Helpers.RTL.ComponentHelpers in 'Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas';
 
 {$DESCRIPTION 'Zoomicon Helpers for RTL'}
 

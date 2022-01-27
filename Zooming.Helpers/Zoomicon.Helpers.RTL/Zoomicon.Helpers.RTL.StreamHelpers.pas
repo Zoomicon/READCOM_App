@@ -11,7 +11,7 @@ interface
 
 implementation
 
-{$REGION 'TStreamReadComponentErrorHandlerHelper'}
+{$REGION 'TStreamErrorHelper'}
 
 function TStreamErrorHelper.ReadComponent(const Instance: TComponent; const ReaderError: TReaderError): TComponent;
 begin //based on TStream.ReadComponent (of Delphi 11 RTL, as on 2022-01-24)
