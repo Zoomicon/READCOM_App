@@ -29,6 +29,8 @@ begin
       Inc(counter);
       theName := NewName + IntToStr(counter);
     end;
+
+  result := theName;
 end;
 
 {$ENDREGION}
