@@ -24,6 +24,8 @@ type
       constructor Create(AOwner: TComponent); override;
   end;
 
+  procedure Register;
+
 implementation
 
 {$R *.fmx}
@@ -43,5 +45,23 @@ begin
   inherited; //this may hide the Border
   BorderVisible := true; //always show Border
 end;
+
+procedure RegisterClasses;
+begin
+  RegisterFmxClasses([TPanelStoryItem]); //register for persistence
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TPanelStoryItem, TControl);
+  RegisterClasses;
+  RegisterComponents('Zoomicon', [TPanelStoryItem]);
+end;
+
+initialization
+  //TODO// StoryItemFactories.Add([EXT_READCOM], TPanelStoryItemFactory.Create);
+  //TODO// AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXT);
+
+  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

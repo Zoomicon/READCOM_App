@@ -903,7 +903,7 @@ end;
 
 {$endregion}
 
-{$region 'IStoreable'}
+ {$region 'IStoreable'}
 
 procedure TStoryItem.ReadState(Reader: TReader);
 begin

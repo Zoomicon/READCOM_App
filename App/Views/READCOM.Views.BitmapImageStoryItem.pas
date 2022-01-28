@@ -63,6 +63,8 @@ type
 
   {$ENDREGION ...................................................................}
 
+  procedure Register;
+
 implementation
   uses
     READCOM.Views.StoryItemFactory, //for StoryItemFactories, StoryItemAddFileFilter
