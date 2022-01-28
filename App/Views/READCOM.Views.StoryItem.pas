@@ -891,7 +891,15 @@ procedure TStoryItem.Copy;
 begin
  var svc: IFMXExtendedClipboardService;
  if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
-   Svc.SetText(SaveToString);
+ begin
+   var wasEditing := EditMode;
+   try
+     EditMode := false;
+     Svc.SetText(SaveToString);
+   finally
+     EditMode := wasEditing;
+   end;
+ end;
 end;
 
 procedure TStoryItem.Paste;

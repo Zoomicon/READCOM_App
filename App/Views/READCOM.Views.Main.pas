@@ -1,7 +1,5 @@
 unit READCOM.Views.Main;
 
-//TODO: fix issue where if Popup with Options is shown at least once, then save state puts options data in the stored file, failing to load them (since that class isn't declared [doesn't need to after all] with streaming system). MAYBE JUST DESTROY THE POPUP WHEN CLOSED and make sure all are closed before saving
-
 interface
 
 uses
