@@ -18,7 +18,7 @@ begin //based on TStream.ReadComponent (of Delphi 11 RTL, as on 2022-01-24)
   var reader := TReader.Create(Self, 4096);
   reader.OnError := ReaderError; //the error handler can ignore specific not found properties
   try
-    Reader.ReadRootComponent(Instance); //if we would have passed nil it would return a new instance
+    result := Reader.ReadRootComponent(Instance); //if we pass nil returns a new instance
   finally
     Reader.Free;
   end;
