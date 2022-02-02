@@ -241,6 +241,26 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'additembutton'
       end
+      object btnFlipHorizontally: TSpeedButton
+        Anchors = [akTop, akRight]
+        Images = Globals.SVGIconImageList
+        ImageIndex = 19
+        Position.Y = 99.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
+      end
+      object btnFlipVertically: TSpeedButton
+        Anchors = [akTop, akRight]
+        Images = Globals.SVGIconImageList
+        ImageIndex = 20
+        Position.Y = 132.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
+      end
     end
   end
   object MultiView: TMultiView
@@ -256,6 +276,18 @@ object StoryHUD: TStoryHUD
     Images = Globals.SVGIconImageList
     Left = 328
     Top = 32
+    object actionFlipVertically: TAction
+      Category = 'Edit'
+      Text = 'Paste'
+      ImageIndex = 20
+      ImageIndex = 20
+    end
+    object actionFlipHorizontally: TAction
+      Category = 'Edit'
+      Text = 'Paste'
+      ImageIndex = 19
+      ImageIndex = 19
+    end
     object actionPaste: TAction
       Category = 'Edit'
       Text = 'Paste'

@@ -33,10 +33,11 @@ type
     procedure HUDactionHomeExecute(Sender: TObject);
     procedure HUDactionPreviousExecute(Sender: TObject);
     procedure HUDactionNextExecute(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      var KeyChar: Char; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure HUDactionCopyExecute(Sender: TObject);
     procedure HUDactionPasteExecute(Sender: TObject);
+    procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
+    procedure HUDactionFlipVerticallyExecute(Sender: TObject);
   private
     function GetStructureView: TStructureView;
 
@@ -108,6 +109,7 @@ implementation
     System.Contnrs, //for TClassList
     System.Math, //for Max
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
+    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     READCOM.Views.PanelStoryItem,
     READCOM.Views.VectorImageStoryItem; //TODO: remove
 
@@ -464,6 +466,16 @@ end;
 procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
 begin
   ActiveStoryItem.Paste;
+end;
+
+procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
+begin
+  ActiveStoryItem.View.FlipHorizontally;
+end;
+
+procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
+begin
+  ActiveStoryItem.View.FlipVertically;
 end;
 
 {$endregion}

@@ -51,6 +51,12 @@ object MainForm: TMainForm
         Position.X = 826.000000000000000000
         Size.Height = 576.000000000000000000
         TabOrder = 174
+        inherited btnFlipHorizontally: TSpeedButton
+          Action = HUD.actionFlipHorizontally
+        end
+        inherited btnFlipVertically: TSpeedButton
+          Action = HUD.actionFlipVertically
+        end
       end
     end
     inherited MultiView: TMultiView
@@ -59,6 +65,14 @@ object MainForm: TMainForm
       Size.Height = 616.000000000000000000
     end
     inherited ActionList: TActionList
+      inherited actionFlipVertically: TAction
+        OnExecute = HUDactionFlipVerticallyExecute
+        ImageIndex = 20
+      end
+      inherited actionFlipHorizontally: TAction
+        OnExecute = HUDactionFlipHorizontallyExecute
+        ImageIndex = 19
+      end
       inherited actionPaste: TAction
         OnExecute = HUDactionPasteExecute
         ImageIndex = 18

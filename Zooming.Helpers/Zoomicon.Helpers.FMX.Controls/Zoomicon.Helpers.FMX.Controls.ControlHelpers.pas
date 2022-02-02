@@ -31,7 +31,12 @@ interface
       function ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl; inline;
     end;
 
-    TControlTagObjectHelper = class helper(TControlObjectAtHelper) for TControl
+    TControlFlipHelper = class helper(TControlObjectAtHelper) for TControl
+      procedure FlipHorizontally;
+      procedure FlipVertically;
+    end;
+
+    TControlTagObjectHelper = class helper(TControlFlipHelper) for TControl
     protected
       function GetTagObject: TObject;
       procedure SetTagObject(const Value: TObject);
@@ -142,6 +147,40 @@ end;
 function TControlObjectAtHelper.ObjectAtLocalPoint(const ALocalPoint: TPointF; const Recursive: Boolean = true; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true): IControl;
 begin
   result := ObjectAtPoint(LocalToScreen(ALocalPoint), Recursive, IncludeDisabled, IncludeSelf);
+end;
+
+{$endregion}
+
+{$region 'TControlFlipHelper'}
+
+procedure TControlFlipHelper.FlipHorizontally;
+begin
+  BeginUpdate;
+
+  //make sure after flipping we end up having the same bounds (scaling is done from top-left corner)
+  if (Scale.X > 0) then
+    Position.X := Position.X + Width
+  else
+    Position.X := Position.X - Width;
+
+  Scale.X := -Scale.X;
+
+  EndUpdate;
+end;
+
+procedure TControlFlipHelper.FlipVertically;
+begin
+  BeginUpdate;
+
+  //make sure after flipping we end up having the same bounds (scaling is done from top-left corner)
+  if (Scale.Y > 0) then
+    Position.Y := Position.Y + Height
+  else
+    Position.Y := Position.Y - Height;
+
+  Scale.Y := -Scale.Y;
+
+  EndUpdate;
 end;
 
 {$endregion}
