@@ -335,6 +335,7 @@ object StoryHUD: TStoryHUD
       Category = 'View'
       AutoCheck = True
       Text = 'Menu'
+      Checked = True
       OnExecute = actionMenuExecute
     end
     object actionNew: TAction
