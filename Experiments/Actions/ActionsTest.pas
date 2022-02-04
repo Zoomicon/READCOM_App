@@ -17,9 +17,9 @@ type
     SVGIconImageList1: TSVGIconImageList;
     Label1: TLabel;
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 var

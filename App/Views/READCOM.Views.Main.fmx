@@ -37,17 +37,17 @@ object MainForm: TMainForm
     inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
-      inherited layoutNavigation: TLayout
+      inherited layoutButtonsNavigation: TLayout
         Position.Y = 576.000000000000000000
         Size.Width = 876.000000000000000000
         inherited btnNext: TSpeedButton
           Position.X = 820.000000000000000000
         end
       end
-      inherited layoutButtonsSide: TFlowLayout
+      inherited layoutButtonsMain: TFlowLayout
         Size.Height = 576.000000000000000000
       end
-      inherited layoutEdit: TFlowLayout
+      inherited layoutButtonsEdit: TFlowLayout
         Position.X = 826.000000000000000000
         Size.Height = 576.000000000000000000
         TabOrder = 174

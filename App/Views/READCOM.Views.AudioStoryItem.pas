@@ -50,26 +50,26 @@ type
     FPlayedOnce: Boolean;
     FIsPlayOnce: Boolean;
 
-    { DefaultSize }
+    {DefaultSize}
     function GetDefaultSize: TSizeF; override;
 
-    { Muted }
+    {Muted}
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
 
-    { AutoPlaying }
+    {AutoPlaying}
     function IsAutoPlaying: Boolean;
     procedure SetAutoPlaying(const Value: Boolean);
 
-    { Looping }
+    {Looping}
     function IsLooping: Boolean;
     procedure SetLooping(const Value: Boolean);
 
-    { PlayOnce }
+    {PlayOnce}
     function IsPlayOnce: Boolean;
     procedure SetPlayOnce(const Value: Boolean);
 
-    { Audio }
+    {Audio}
     function GetAudio: TMediaPlayerEx;
     procedure SetAudio(const Value: TMediaPlayerEx);
 

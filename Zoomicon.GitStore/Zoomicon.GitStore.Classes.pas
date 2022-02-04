@@ -202,7 +202,7 @@ end;
 
 {$endregion}
 
-{ //NOT WORKING: Using other implementation below
+{//NOT WORKING: Using other implementation below
 function TGitStore.GetBaseFolderSHA: String;
 var Reader: TReader;
 begin
@@ -243,13 +243,13 @@ begin
       ReadTimeout := FTimeout;
       Client := RESTClient;
 
-      { with Params.AddItem do
+      {with Params.AddItem do
       begin
         Kind := TRESTRequestParameterKind.pkHTTPHEADER;
         Name := 'Accept';
         Value := 'application/vnd.github.VERSION.sha';
         Options := Options + [TRESTRequestParameterOption.poDoNotEncode];
-      end; }
+      end;}
       Params.AddHeader('Accept', 'application/vnd.github.VERSION.sha').Options := [TRESTRequestParameterOption.poDoNotEncode];
 
       Response := RESTResponse;

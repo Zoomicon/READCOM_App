@@ -58,55 +58,55 @@ type
     procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
     procedure DoRemoveObject(const AObject: TFmxObject); override;
 
-    { Name }
+    {Name}
     procedure SetName(const NewName: TComponentName); override;
 
-    { DefaultSize }
+    {DefaultSize}
     function GetDefaultSize: TSizeF; override;
 
-    { Parent }
+    {Parent}
     procedure SetParent(const Value: TFmxObject); override;
 
-    { EditMode }
+    {EditMode}
     procedure SetEditMode(const Value: Boolean); override;
 
-    { BorderVisible }
-    function GetBorderVisible: Boolean;
-    procedure SetBorderVisible(const Value: Boolean);
+    {BorderVisible}
+    function GetBorderVisible: Boolean; virtual;
+    procedure SetBorderVisible(const Value: Boolean); virtual;
 
-    { View }
+    {View}
     function GetView: TControl;
 
-    { ParentStoryItem }
+    {ParentStoryItem}
     function GetParentStoryItem: IStoryItem;
     procedure SetParentStoryItem(const Value: IStoryItem);
 
-    { StoryItems }
+    {StoryItems}
     function GetStoryItems: TIStoryItemList; inline;
     procedure SetStoryItems(const Value: TIStoryItemList);
 
-    { AudioStoryItems }
+    {AudioStoryItems}
     function GetAudioStoryItems: TIAudioStoryItemList; inline;
 
-    { ActiveStoryItem }
+    {ActiveStoryItem}
     class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
 
-    { Active }
-    function IsActive: Boolean;
-    procedure SetActive(const Value: Boolean);
+    {Active}
+    function IsActive: Boolean; virtual;
+    procedure SetActive(const Value: Boolean); virtual;
 
-    { HomeStoryItem }
+    {HomeStoryItem}
     class procedure SetHomeStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
 
-    { Home }
-    function IsHome: Boolean;
-    procedure SetHome(const Value: Boolean);
+    {Home}
+    function IsHome: Boolean; virtual;
+    procedure SetHome(const Value: Boolean); virtual;
 
-    { StoryPoint }
-    function IsStoryPoint: Boolean;
-    procedure SetStoryPoint(const Value: Boolean);
+    {StoryPoint}
+    function IsStoryPoint: Boolean; virtual;
+    procedure SetStoryPoint(const Value: Boolean); virtual;
 
-    { Previous/Next StoryPoint }
+    {Previous/Next StoryPoint}
     function GetPreviousStoryPoint: IStoryItem;
     function GetNextStoryPoint: IStoryItem;
     //
@@ -116,31 +116,31 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
-    { FlippedHorizontally }
+    {FlippedHorizontally}
     function IsFlippedHorizontally: Boolean; virtual;
     procedure SetFlippedHorizontally(const Value: Boolean); virtual;
 
-    { FlippedVertically }
+    {FlippedVertically}
     function IsFlippedVertically: Boolean; virtual;
     procedure SetFlippedVertically(const Value: Boolean); virtual;
 
-    { Hidden }
-    function IsHidden: Boolean;
-    procedure SetHidden(const Value: Boolean);
+    {Hidden}
+    function IsHidden: Boolean; virtual;
+    procedure SetHidden(const Value: Boolean); virtual;
 
-    { Anchored }
-    function IsAnchored: Boolean;
-    procedure SetAnchored(const Value: Boolean);
+    {Anchored}
+    function IsAnchored: Boolean; virtual;
+    procedure SetAnchored(const Value: Boolean); virtual;
 
-    { UrlAction }
-    function GetUrlAction: String;
-    procedure SetUrlAction(const Value: String);
+    {UrlAction}
+    function GetUrlAction: String; virtual;
+    procedure SetUrlAction(const Value: String); virtual;
 
-    { TargetsVisible }
-    function GetTargetsVisible: Boolean;
-    procedure SetTargetsVisible(const Value: Boolean);
+    {TargetsVisible}
+    function GetTargetsVisible: Boolean; virtual;
+    procedure SetTargetsVisible(const Value: Boolean); virtual;
 
-    { Options }
+    {Options}
     function GetOptions: IStoryItemOptions; virtual;
 
   public
@@ -152,11 +152,11 @@ type
 
     procedure PlayRandomAudioStoryItem;
 
-    { IClipboardEnabled }
+    {IClipboardEnabled}
     procedure Copy;
     procedure Paste;
 
-    { IStoreable }
+    {IStoreable}
     procedure ReadState(Reader: TReader); override;
     procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
 
@@ -997,7 +997,7 @@ begin
   end;
 end;
 
-{ Add }
+{Add}
 
 function TStoryItem.GetAddFilesFilter: String;
 begin
@@ -1056,7 +1056,7 @@ begin
     Add(filepath); //Adding all files one by one
 end;
 
-{ Load }
+{Load}
 
 function TStoryItem.GetLoadFilesFilter: String;
 begin
@@ -1130,7 +1130,7 @@ begin
   end;
 end;
 
-{ Save }
+{Save}
 
 function TStoryItem.GetSaveFilesFilter: String;
 begin

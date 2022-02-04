@@ -17,9 +17,9 @@ type
     Rectangle1: TRectangle;
     Label1: TLabel;
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 implementation

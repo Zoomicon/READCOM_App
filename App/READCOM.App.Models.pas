@@ -38,18 +38,18 @@ type
     ['{A08F7880-FBE5-40C5-B695-FF0F3A18EF3E}']
     //--- Methods ---
 
-    { Add }
+    {Add}
     function GetAddFilesFilter: String;
     procedure Add(const Filepath: String); overload;
     procedure Add(const Filepaths: array of string); overload;
 
-    { Load }
+    {Load}
     function GetLoadFilesFilter: String;
     procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Load(const Filepath: string); overload;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 
-    { Save }
+    {Save}
     function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
@@ -78,26 +78,26 @@ type
     ['{3A6CAD51-3787-4D18-9DA7-A07895BC4661}']
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
-    { RootStoryItem }
+    {RootStoryItem}
     function GetRootStoryItem: IStoryItem;
     procedure SetRootStoryItem(const Value: IStoryItem);
 
-    { HomeStoryItem }
+    {HomeStoryItem}
     function GetHomeStoryItem: IStoryItem;
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
-    { ActiveStoryItem }
+    {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
 
-    { Navigation }
+    {Navigation}
     procedure ActivateHome;
     procedure ActivateRoot;
     procedure ActivateParent;
     procedure ActivatePrevious;
     procedure ActivateNext;
 
-    { StoryMode }
+    {StoryMode}
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
@@ -116,37 +116,37 @@ type
     //--- Methods ---
     procedure PlayRandomAudioStoryItem;
 
-    { View }
+    {View}
     function GetView: TControl;
 
-    { ParentStoryItem }
+    {ParentStoryItem}
     function GetParentStoryItem: IStoryItem;
     procedure SetParentStoryItem(const Value: IStoryItem);
 
-    { StoryItems }
+    {StoryItems}
     function GetStoryItems: TIStoryItemList;
     procedure SetStoryItems(const Value: TIStoryItemList);
 
-    { AudioStoryItems }
+    {AudioStoryItems}
     function GetAudioStoryItems: TIAudioStoryItemList;
 
-    { Active }
+    {Active}
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
 
-    { EditMode }
+    {EditMode}
     function IsEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean);
 
-    { Home }
+    {Home}
     function IsHome: Boolean; //note: a Home StoryItem doesn't have to be StoryPoint, could be just the startup instructions that are shown once and not when looping through the StoryPoints
     procedure SetHome(const Value: Boolean);
 
-    { StoryPoint }
+    {StoryPoint}
     function IsStoryPoint: boolean;
     procedure SetStoryPoint(const Value: boolean);
 
-    { Previous/Next StoryPoint }
+    {Previous/Next StoryPoint}
     function GetPreviousStoryPoint: IStoryItem;
     function GetNextStoryPoint: IStoryItem;
     //
@@ -156,34 +156,34 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
-    { FlippedHorizontally }
+    {FlippedHorizontally}
     function IsFlippedHorizontally: Boolean;
     procedure SetFlippedHorizontally(const Value: Boolean);
 
-    { FlippedVertically }
+    {FlippedVertically}
     function IsFlippedVertically: Boolean;
     procedure SetFlippedVertically(const Value: Boolean);
 
-    { Hidden }
+    {Hidden}
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
 
-    { Anchored }
+    {Anchored}
     function IsAnchored: Boolean;
     procedure SetAnchored(const Value: Boolean);
 
-    { UrlAction }
+    {UrlAction}
     function GetUrlAction: String;
     procedure SetUrlAction(const Value: String);
 
-    { TargetsVisible }
+    {TargetsVisible}
     function GetTargetsVisible: Boolean;
     procedure SetTargetsVisible(const Value: Boolean);
 
-    { Options }
+    {Options}
     function GetOptions: IStoryItemOptions;
 
-    { IStoreable extensions }
+    {IStoreable extensions}
     procedure Add(const StoryItem: IStoryItem); overload;
     function LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
     function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
@@ -213,18 +213,18 @@ type
     ['{1AEC7512-1E1D-4720-9D74-9A5411A64377}']
 
     //--- Methods ---
-    { View }
+    {View}
     function GetView: TControl;
 
-    { StoryItem }
+    {StoryItem}
     function GetStoryItem: IStoryItem;
     procedure SetStoryItem(const Value: IStoryItem);
 
-    { Popup }
+    {Popup}
     procedure ShowPopup;
     procedure HidePopup;
 
-    { File }
+    {File}
     procedure ActAdd;
     procedure ActLoad;
     procedure ActSave;
@@ -237,7 +237,7 @@ type
   IBitmapImageStoryItemOptions = interface(IStoryItemOptions)
     ['{DA637418-9648-48C7-A0CB-7475CAFECBAE}']
 
-    { BitmapImageStoryItem }
+    {BitmapImageStoryItem}
     function GetBitmapImageStoryItem: IBitmapImageStoryItem;
     procedure SetBitmapImageStoryItem(const Value: IBitmapImageStoryItem);
 
@@ -254,7 +254,7 @@ type
     ['{26111D6E-A587-4AB5-8CC9-84269C2719DC}']
 
     //--- Methods ---
-    { Image }
+    {Image}
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
 
@@ -266,7 +266,7 @@ type
     ['{97C577C0-5391-4B1D-8EA9-119D35B91523}']
 
     //--- Methods ---
-    { Image }
+    {Image}
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
 
@@ -278,7 +278,7 @@ type
     ['{6A71E9E3-D0AC-452E-9DF9-6DFC25BFB2CD}']
 
     //--- Methods ---
-    { Image }
+    {Image}
     function GetSVGImage: TSVGIconImage;
     procedure SetSVGImage(const Value: TSVGIconImage);
 
@@ -293,23 +293,23 @@ type
     //--- Methods ---
     procedure Play;
 
-    { Muted }
+    {Muted}
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
 
-    { AutoPlaying }
+    {AutoPlaying}
     function IsAutoPlaying: Boolean;
     procedure SetAutoPlaying(const Value: Boolean);
 
-    { Looping }
+    {Looping}
     function IsLooping: Boolean;
     procedure SetLooping(const Value: Boolean);
 
-    { PlayOnce }
+    {PlayOnce}
     function IsPlayOnce: Boolean;
     procedure SetPlayOnce(const Value: Boolean);
 
-    { Audio }
+    {Audio}
     function GetAudio: TMediaPlayerEx;
     procedure SetAudio(const Value: TMediaPlayerEx);
 
@@ -324,23 +324,23 @@ type
     ['{A05D85F0-F7F6-4EA1-8D4F-0C6FF7BEA572}']
 
     //--- Methods ---
-    { Text }
+    {Text}
     function GetText: String;
     procedure SetText(const Value: String);
 
-    { Editable }
+    {Editable}
     function IsEditable: Boolean;
     procedure SetEditable(const Value: Boolean);
 
-    { InputPrompt }
+    {InputPrompt}
     function GetInputPrompt: String;
     procedure SetInputPrompt(const Value: String);
 
-    { Font }
+    {Font}
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
 
-    { Color }
+    {Color}
     function GetTextColor: TAlphaColor;
     procedure SetTextColor(const Value: TAlphaColor);
 

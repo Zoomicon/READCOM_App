@@ -22,9 +22,9 @@ type
     btnClose: TSpeedButton;
     procedure btnCloseClick(Sender: TObject);
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 implementation

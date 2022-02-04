@@ -56,7 +56,7 @@ implementation
     Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers, //for TScaledLayout.ScalingFactor
     Math; //for Sign
 
-{ TZoomedLayout }
+{TZoomedLayout}
 
 constructor TZoomedLayout.Create(AOwner: TComponent);
 

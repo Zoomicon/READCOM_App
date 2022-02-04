@@ -23,7 +23,7 @@ type
     btnToggleEditMode: TSpeedButton;
     BtnMenu: TSpeedButton;
     btnNext: TSpeedButton;
-    layoutNavigation: TLayout;
+    layoutButtonsNavigation: TLayout;
     ActionList: TActionList;
     actionPrevious: TAction;
     actionNext: TAction;
@@ -36,8 +36,8 @@ type
     MultiViewFrameStand: TFrameStand;
     layoutContent: TLayout;
     btnToggleTargetsVisible: TSpeedButton;
-    layoutButtonsSide: TFlowLayout;
-    layoutEdit: TFlowLayout;
+    layoutButtonsMain: TFlowLayout;
+    layoutButtonsEdit: TFlowLayout;
     actionLoad: TAction;
     actionSave: TAction;
     btnLoad: TSpeedButton;
@@ -122,7 +122,7 @@ begin
   FEditMode := Value;
   btnToggleEditMode.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-  layoutEdit.Visible := Value; //show Edit-related buttons
+  layoutButtonsEdit.Visible := Value; //show Edit-related buttons
 
   if not Value then
     StructureVisible := false; //hide StructureView when existing EditMode

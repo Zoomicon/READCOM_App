@@ -38,7 +38,7 @@ implementation
   uses
     System.SysUtils; //for ENotImplemented
 
-{ TGallery }
+{TGallery}
 
 constructor TGallery.Create(const Storage: IGitStore);
 begin
@@ -50,7 +50,7 @@ begin
   raise ENotImplemented.Create('Not implemented');
 end;
 
-{ TGalleryFolder }
+{TGalleryFolder}
 
 function TGalleryFolder.GetFiles: TList<IGalleryFile>;
 begin
@@ -62,7 +62,7 @@ begin
   raise ENotImplemented.Create('Not implemented');
 end;
 
-{ TGalleryFile }
+{TGalleryFile}
 
 procedure TGalleryFile.DownloadContent(const DownloadCompletedHandler: TDownloadCompletionEvent);
 begin

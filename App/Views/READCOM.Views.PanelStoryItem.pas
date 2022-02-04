@@ -30,7 +30,7 @@ implementation
 
 {$R *.fmx}
 
-{ TPanelStoryItem }
+{TPanelStoryItem}
 
 constructor TPanelStoryItem.Create(AOwner: TComponent);
 begin

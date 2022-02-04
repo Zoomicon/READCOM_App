@@ -29,27 +29,31 @@ type
   TTextStoryItem = class(TStoryItem, ITextStoryItem, IStoryItem, IStoreable)
     Memo: TMemo;
     procedure MemoApplyStyleLookup(Sender: TObject);
+    procedure MemoResize(Sender: TObject);
 
   //--- Methods ---
 
   protected
-    { Text }
+    {Active}
+    procedure SetActive(const Value: Boolean); override;
+
+    {Text}
     function GetText: String;
     procedure SetText(const Value: String);
 
-    { Editable }
+    {Editable}
     function IsEditable: Boolean;
     procedure SetEditable(const Value: Boolean);
 
-    { InputPrompt }
+    {InputPrompt}
     function GetInputPrompt: String;
     procedure SetInputPrompt(const Value: String);
 
-    { Font }
+    {Font}
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
 
-    { Color }
+    {Color}
     function GetTextColor: TAlphaColor;
     procedure SetTextColor(const Value: TAlphaColor);
 
@@ -103,6 +107,20 @@ begin
 end;
 
 {$REGION '--- PROPERTIES ---'}
+
+{$region 'Active'}
+
+procedure TTextStoryItem.SetActive(const Value: Boolean);
+begin
+  inherited;
+
+  if Value then
+    Memo.SetFocus
+  else
+    Memo.ResetFocus;
+end;
+
+{$endregion}
 
 {$region 'Text'}
 
@@ -210,6 +228,12 @@ begin
   var Obj := Memo.FindStyleResource('background');
   if Assigned(Obj) And (Obj is TActiveStyleObject) Then
      TActiveStyleObject(Obj).Source := Nil;
+end;
+
+procedure TTextStoryItem.MemoResize(Sender: TObject);
+begin
+  inherited;
+  Size := Memo.Size;
 end;
 
 {$endregion}

@@ -28,15 +28,15 @@ type
   protected
     FStoreSVG: Boolean;
 
-    { Image }
+    {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override; //allows only TSVGIconImage
 
-    { SVGImage }
+    {SVGImage}
     function GetSVGImage: TSVGIconImage;
     procedure SetSVGImage(const Value: TSVGIconImage);
 
-    { SVGText }
+    {SVGText}
     function GetSVGText: String;
     procedure SetSVGText(const Value: String);
 

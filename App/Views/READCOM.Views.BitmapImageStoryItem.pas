@@ -31,7 +31,7 @@ type
   //--- Methods ---
 
   protected
-    { Image }
+    {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
     procedure Loaded; override;

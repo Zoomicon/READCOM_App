@@ -56,7 +56,7 @@ end;
 
 {$endregion}
 
-{ TClickableFrame }
+{TClickableFrame}
 
 procedure TClickableFrame.cbHitTestChange(Sender: TObject);
 begin

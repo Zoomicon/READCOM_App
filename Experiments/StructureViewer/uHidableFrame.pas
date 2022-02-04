@@ -23,7 +23,7 @@ implementation
 
 {$R *.fmx}
 
-{ THidableFrame }
+{THidableFrame}
 
 procedure THidableFrame.cbVisibleChange(Sender: TObject);
 begin

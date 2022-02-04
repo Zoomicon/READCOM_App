@@ -69,7 +69,7 @@ implementation
 
 {$R *.fmx}
 
-{ TZoomFrame }
+{TZoomFrame}
 
 constructor TZoomFrame.Create(AOwner: TComponent);
 begin

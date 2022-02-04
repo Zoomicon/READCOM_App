@@ -16,9 +16,9 @@ type
     Layout: TLayout;
     procedure btnEnableChildrenClick(Sender: TObject);
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 var

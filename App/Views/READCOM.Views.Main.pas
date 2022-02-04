@@ -46,26 +46,26 @@ type
     FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
-    { SavedState}
+    {SavedState}
     procedure NewRootStoryItem;
     procedure LoadSavedStateOrNewRootStoryItem;
     function LoadSavedState: Boolean;
 
-    { RootStoryItemStoryView }
+    {RootStoryItemStoryView}
     function GetRootStoryItemView: TStoryItem;
     procedure SetRootStoryItemView(const Value: TStoryItem);
 
-    { RootStoryItem }
+    {RootStoryItem}
     function GetRootStoryItem: IStoryItem;
     procedure SetRootStoryItem(const Value: IStoryItem);
 
-    { HomeStoryItem }
+    {HomeStoryItem}
     function GetHomeStoryItem: IStoryItem;
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
     {NAVIGATION}
 
-    { ActiveStoryItem }
+    {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
 
@@ -75,11 +75,11 @@ type
     procedure ActivatePrevious;
     procedure ActivateNext;
 
-    { StoryMode }
+    {StoryMode}
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
-    { StructureView }
+    {StructureView}
     procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
 
     property StructureView: TStructureView read GetStructureView stored false;
@@ -211,12 +211,12 @@ begin
 
       var newSize := Size.Size;
 
-      {
+      (*
       var currentZoomerSize := ZoomFrame.Zoomer.Size.Size; //don't get size of zoomFrame itself
       var newZoomerSize := TSizeF.Create(Max(currentZoomerSize.cx, newSize.cx), Max(currentZoomerSize.cy, newSize.cy));
       ZoomFrame.Zoomer.Size.Size := newZoomerSize; //use the next line instead
       ZoomFrame.SetZoomerSize(newZoomerSize); //must use this since it sets other zoomer params too
-      }
+      *)
 
       BeginUpdate; //TODO: move this working code to TZoomFrame
       Parent := nil; //remove from parent first (needed if we're calling this code to adjust for RootStoryItem resize action)

@@ -7,15 +7,24 @@ inherited TextStoryItem: TTextStoryItem
   end
   object Memo: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    AutoHide = False
+    Caret.Color = claYellow
     DataDetectorTypes = []
+    DisableMouseWheel = True
+    KeyboardType = Alphabet
+    ShowScrollBars = False
+    ShowSizeGrip = True
     StyledSettings = []
     TextSettings.WordWrap = True
-    Align = Client
+    Align = Contents
+    Bounces = False
+    EnabledScroll = False
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 2
     OnApplyStyleLookup = MemoApplyStyleLookup
+    OnResize = MemoResize
     Viewport.Width = 832.000000000000000000
     Viewport.Height = 528.000000000000000000
   end

@@ -43,7 +43,7 @@ begin
   //Using GetKeyHash (does SHA-512) to generate a unique HEX chars string from given Key (which could contain illegal file chars, e.g. a URL)
 end;
 
-{ FileCache }
+{FileCache}
 
 function TFileCache.HasContent(const Key: String): Boolean;
 begin
@@ -73,7 +73,7 @@ begin
   end;
 end;
 
-{ TCompressedFileCache }
+{TCompressedFileCache}
 
 function TZCompressedFileCache.GetContent(const Key: String): TStream;
 begin

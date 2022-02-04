@@ -44,7 +44,7 @@ uses
   Androidapi.Helpers; //for TAndroidHelper, JStringToString
 {$ENDIF}
 
-{ TApplicationHelper }
+{TApplicationHelper}
 
 function TApplicationHelper.ExeName: String;
 begin

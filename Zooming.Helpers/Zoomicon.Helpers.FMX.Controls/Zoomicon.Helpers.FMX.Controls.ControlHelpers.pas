@@ -81,7 +81,7 @@ begin
   var typeObj:= context.GetType(Self.ClassInfo);
   var prop := typeObj.GetProperty('Scale');
   result := prop.GetValue(Self).AsType<TPosition>; //Scale property is Readable, no need to check first
-  }
+}
   result := (Self as IRotatedControl).GetScale; //TControl implements IRotatedControl so we can bypass the fact that the "Scale" property is not accessible
 end;
 
@@ -93,7 +93,7 @@ begin
   var prop := typeObj.GetProperty('Scale');
   var scale := prop.GetValue(Self).AsType<TPosition>; //Scale property is Readable, no need to check first
   scale.Assign(Value); //do not replace the Scale object via prop.SetValue (else we'll leak objects in memory), just assign value to it (that's what the "strict private" TControl.SetScale does)
-  }
+}
   (Self as IRotatedControl).SetScale(Value); //TControl implements IRotatedControl so we can bypass the fact that the "Scale" property is not accessible
 end;
 

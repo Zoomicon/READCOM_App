@@ -11,9 +11,9 @@ type
   TContentFrame = class(TFrame)
     rectBackground: TRectangle;
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 implementation

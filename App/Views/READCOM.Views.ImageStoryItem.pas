@@ -17,7 +17,7 @@ type
   TImageStoryItem = class abstract(TStoryItem, IImageStoryItem, IStoryItem, IStoreable)
   //--- Methods ---
   protected
-    { Image }
+    {Image}
     function GetImage: TImage; virtual; abstract;
     procedure SetImage(const Value: TImage); virtual; abstract;
 

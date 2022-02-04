@@ -14,10 +14,6 @@ type
     DefaultStyleBook: TStyleBook;
     Lang: TLang;
     SVGIconImageList: TSVGIconImageList;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var

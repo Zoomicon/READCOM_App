@@ -81,7 +81,7 @@ implementation
 
 {$R *.fmx}
 
-{ TStoryItemOptions }
+{TStoryItemOptions}
 
 destructor TStoryItemOptions.Destroy;
 begin

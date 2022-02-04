@@ -16,9 +16,9 @@ type
     ZoomedLayout1: TZoomedLayout;
     Button1: TButton;
   private
-    { Private declarations }
+    {Private declarations}
   public
-    { Public declarations }
+    {Public declarations}
   end;
 
 var
