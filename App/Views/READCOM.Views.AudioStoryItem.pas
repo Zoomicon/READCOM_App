@@ -47,6 +47,9 @@ type
     {$endregion}
 
   protected
+    FPlayedOnce: Boolean;
+    FIsPlayOnce: Boolean;
+
     { DefaultSize }
     function GetDefaultSize: TSizeF; override;
 
@@ -144,7 +147,11 @@ end;
 
 procedure TAudioStoryItem.Play;
 begin
-  MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
+  if (not FIsPlayOnce) or (not FPlayedOnce) then //equivalent to "if not (FIsPlayOnce and FPlayedOnce)"
+  begin
+    MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
+    FPlayedOnce := true;
+  end;
 end;
 
 procedure TAudioStoryItem.Pause;
@@ -217,12 +224,12 @@ end;
 
 function TAudioStoryItem.IsPlayOnce: Boolean;
 begin
-  //TODO
+  result := IsPlayOnce;
 end;
 
 procedure TAudioStoryItem.SetPlayOnce(const Value: Boolean);
 begin
-
+  PlayOnce := Value;
 end;
 
 {$endregion}

@@ -156,6 +156,14 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    { FlippedHorizontally }
+    function IsFlippedHorizontally: Boolean;
+    procedure SetFlippedHorizontally(const Value: Boolean);
+
+    { FlippedVertically }
+    function IsFlippedVertically: Boolean;
+    procedure SetFlippedVertically(const Value: Boolean);
+
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
@@ -184,7 +192,7 @@ type
 
     //--- Properties ---
     property View: TControl read GetView;
-    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //default nil //stored false
+    property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //stored false //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property Active: Boolean read IsActive write SetActive; //default false
@@ -193,6 +201,8 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
     property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
+    property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info
+    property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Anchored: Boolean read IsAnchored write SetAnchored; //default true
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false

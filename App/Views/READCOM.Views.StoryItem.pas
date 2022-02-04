@@ -116,6 +116,14 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    { FlippedHorizontally }
+    function IsFlippedHorizontally: Boolean; virtual;
+    procedure SetFlippedHorizontally(const Value: Boolean); virtual;
+
+    { FlippedVertically }
+    function IsFlippedVertically: Boolean; virtual;
+    procedure SetFlippedVertically(const Value: Boolean); virtual;
+
     { Hidden }
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
@@ -137,7 +145,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; const AName: string); overload;
+    constructor Create(AOwner: TComponent; const AName: string); overload; virtual; //TODO: see why still getting message "[dcc32 Warning] READCOM.Views.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
     destructor Destroy; override;
 
     procedure Paint; override;
@@ -205,6 +213,8 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default false;
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
     property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
+    property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default false; //Scale.X stores related info
+    property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden default false;
     property Anchored: Boolean read IsAnchored write SetAnchored default true;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
@@ -499,14 +509,18 @@ begin
   if (Value = IsActive) then exit; //Important
 
   if (Value) then //make active
-    begin
+  begin
     if Assigned(FActiveStoryItem) then
       FActiveStoryItem.Active := false; //deactivate the previously active StoryItem
 
     FActiveStoryItem := Self
-    end
+    //TODO: add code here to tell child storyItems to show their borders
+  end
   else //make inactive
+  begin
     FActiveStoryItem := nil;
+    //TODO: add code here to tell child storyItems to hide their borders
+  end;
 
   ActiveChanged;
 end;
@@ -735,6 +749,36 @@ begin
   end;
 
   result := nil;
+end;
+
+{$endregion}
+
+{$region 'FlippedHorizontally'}
+
+function TStoryItem.IsFlippedHorizontally: Boolean;
+begin
+  result := (Scale.X < 0);
+end;
+
+procedure TStoryItem.SetFlippedHorizontally(const Value: Boolean);
+begin
+  if Value xor IsFlippedHorizontally then
+    FlipHorizontally;
+end;
+
+{$endregion
+
+{$region 'FlippedVertically'}
+
+function TStoryItem.IsFlippedVertically: Boolean;
+begin
+  result := (Scale.Y < 0);
+end;
+
+procedure TStoryItem.SetFlippedVertically(const Value: Boolean);
+begin
+  if Value xor IsFlippedVertically then
+    FlipVertically;
 end;
 
 {$endregion}

@@ -470,12 +470,12 @@ end;
 
 procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
 begin
-  ActiveStoryItem.View.FlipHorizontally;
+  ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
 end;
 
 procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
 begin
-  ActiveStoryItem.View.FlipVertically;
+  ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
 end;
 
 {$endregion}
@@ -572,7 +572,7 @@ begin
           //NOP
         end;
         {$ENDIF}
-        RootStoryItemView := TheRootStoryItemView; //only set StoryView
+        RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
         result := true;
       except
         on E: Exception do

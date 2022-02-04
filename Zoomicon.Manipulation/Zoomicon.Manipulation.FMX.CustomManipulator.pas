@@ -5,6 +5,7 @@ interface
 uses
   Zoomicon.Manipulation.FMX.Selector, //for TLocationSelector, TAreaSelector
   System.Classes, //for TShiftState
+  System.Math, //for Min, EnsureInRange (inlined)
   System.Types,
   System.UITypes,
   FMX.Types,
@@ -124,7 +125,6 @@ uses
   Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper, TControlSubComponentHelper
   Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections, //for TListEx
-  System.Math, //for Min, EnsureInRange
   System.SysUtils; //for Supports
 
 {$R *.fmx}
@@ -261,7 +261,7 @@ begin
     var NewX := X + DX;
     var NewY := Y + DY;
 
-    if AutoSize then //TODO: maybe should allow controls to move out of bounds (at least partially) if we're set to not clip them
+    if AutoSize or (not ClipChildren) or (InRange(NewX, 0, Width - 1) and InRange(NewY, 0, Height - 1)) then //allowing controls to move out of bounds if we're set to not clip them or if they're partially clipped (don't want them to totally disappear)
       Point := PointF(NewX, NewY)
     else
       Point := PointF( EnsureRange(NewX, 0, Width - Control.Width), EnsureRange(NewY, 0, Height - Control.Height) );
@@ -751,16 +751,29 @@ begin
       var Control := TControl(LObj.GetObject);
       var zoom_center := Control.ScreenToLocal(ScreenMousePos); //use mouse cursor as center
 
-      var new_scale : single;
+      var new_scale : Single;
       if WheelDelta >= 0
         then new_scale := (1 + (WheelDelta / 120)/5)
         else new_scale := 1 / (1 - (WheelDelta / 120)/5);
 
-      BeginUpdate;
-      Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality?
+      BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
 
-      // correction for zoom center position
-      Control.Position.Point := PointF(Control.Position.X + zoom_center.x * (1-new_scale), Control.Position.Y + zoom_center.y * (1-new_scale));
+      (*
+      if (ssCtrl in Shift) then
+      begin
+        var old_scale := Control.Scale.X;
+        Control.Scale.X := new_scale;
+        Control.Scale.Y := new_scale;
+        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly
+      end
+      else
+      *)
+      begin
+        Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality?
+        //correction for zoom center position
+        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale);
+      end; //TODO: see why control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change (probably need to tell them to realign / parent size changed?)
+
       EndUpdate;
 
       Handled := true; //needed for parent containers to not scroll
