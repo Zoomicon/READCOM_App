@@ -34,6 +34,7 @@ type
     procedure HUDactionPreviousExecute(Sender: TObject);
     procedure HUDactionNextExecute(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure HUDactionDeleteExecute(Sender: TObject);
     procedure HUDactionCopyExecute(Sender: TObject);
     procedure HUDactionPasteExecute(Sender: TObject);
     procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
@@ -269,7 +270,7 @@ begin
   result := TStoryItem.ActiveStoryItem;
 end;
 
-procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
+procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem); //TODO: should use "ActiveStoryItemChanged" event instead to do this extra logic
 
   procedure RecursiveClearEditMode(const partialRoot: IStoryItem);
   begin
@@ -299,6 +300,8 @@ begin
     end
   else
     StructureView.SelectedObject := nil;
+
+  //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
 end;
 
 {$endregion}
@@ -456,6 +459,14 @@ begin
 
   StoryItem.Parent := ActiveStoryItem.View;
   StoryItem.BringToFront; //load as front-most
+end;
+
+procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
+begin
+  if (ActiveStoryItem.View <> RootStoryItem.View) then
+    FreeAndNil(ActiveStoryItem.View)
+  else
+    HUD.actionNew.Execute; //deleting the RootStoryItem via "New" action
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);

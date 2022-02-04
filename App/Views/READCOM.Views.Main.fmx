@@ -81,6 +81,10 @@ object MainForm: TMainForm
         OnExecute = HUDactionCopyExecute
         ImageIndex = 17
       end
+      inherited actionDelete: TAction
+        OnExecute = HUDactionDeleteExecute
+        ImageIndex = 8
+      end
       inherited actionHome: TAction
         OnExecute = HUDactionHomeExecute
         ImageIndex = 13

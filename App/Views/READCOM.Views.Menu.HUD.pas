@@ -53,6 +53,8 @@ type
     actionPaste: TAction;
     btnCopy: TSpeedButton;
     btnPaste: TSpeedButton;
+    actionDelete: TAction;
+    btnDelete: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

@@ -101,18 +101,6 @@ object StoryItemOptions: TStoryItemOptions
       Text = 'Is Anchored'
       OnClick = actionToggleAnchoredExecute
     end
-    object btnDelete: TSpeedButton
-      Action = actionDelete
-      Align = Client
-      Enabled = True
-      Hint = 'Delete'#13#13'Remove the Active StoryItem'
-      Images = Globals.SVGIconImageList
-      ImageIndex = 8
-      Size.Width = 64.000000000000000000
-      Size.Height = 57.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'actiontoolbutton'
-    end
     object btnAdd: TSpeedButton
       Action = actionAdd
       Align = Client
@@ -166,13 +154,6 @@ object StoryItemOptions: TStoryItemOptions
     Images = Globals.SVGIconImageList
     Left = 328
     Top = 192
-    object actionDelete: TAction
-      Category = 'File'
-      Text = 'Delete'
-      ImageIndex = 8
-      OnExecute = actionDeleteExecute
-      ImageIndex = 8
-    end
     object actionLoad: TAction
       Category = 'File'
       Text = 'Load'

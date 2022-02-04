@@ -18,7 +18,6 @@ type
     AddDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
     ActionList: TActionList;
-    actionDelete: TAction;
     actionLoad: TAction;
     actionSave: TAction;
     panelUrlAction: TPanel;
@@ -28,7 +27,6 @@ type
     actionAdd: TAction;
     layoutButtons: TFlowLayout;
     btnToggleAnchored: TSpeedButton;
-    btnDelete: TSpeedButton;
     btnAdd: TSpeedButton;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
@@ -36,7 +34,6 @@ type
     btnToggleStoryPoint: TSpeedButton;
     btnToggleHome: TSpeedButton;
     procedure actionToggleAnchoredExecute(Sender: TObject);
-    procedure actionDeleteExecute(Sender: TObject);
     procedure actionLoadExecute(Sender: TObject);
     procedure actionSaveExecute(Sender: TObject);
     procedure actionChangeUrlActionExecute(Sender: TObject);
@@ -59,10 +56,6 @@ type
     {View}
     function GetView: TControl;
 
-    {DeleteVisible}
-    function IsDeleteVisible: Boolean;
-    procedure SetDeleteVisible(const Value: Boolean);
-
   public
     destructor Destroy; override;
 
@@ -78,7 +71,6 @@ type
   published
     property View: TControl read GetView stored false;
     property StoryItem: IStoryItem read GetStoryItem write SetStoryItem stored false;
-    property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible stored false;
   end;
 
 implementation
@@ -148,18 +140,6 @@ end;
 
 {$endregion}
 
-{$region 'DeleteVisible'}
-
-function TStoryItemOptions.IsDeleteVisible: Boolean;
-begin
-  result := btnDelete.Visible;
-end;
-
-procedure TStoryItemOptions.SetDeleteVisible(const Value: Boolean);
-begin
-  btnDelete.Visible := Value;
-end;
-
 {$endregion}
 
 {$region 'Actions'}
@@ -195,11 +175,6 @@ procedure TStoryItemOptions.actionToggleAnchoredExecute(Sender: TObject);
 begin
   StoryItem.SetAnchored(btnToggleAnchored.IsPressed);
   ShowPopup; //show popup again to make the toggle evident
-end;
-
-procedure TStoryItemOptions.actionDeleteExecute(Sender: TObject);
-begin
-  FreeAndNil(GetStoryItem As TComponent);
 end;
 
 procedure TStoryItemOptions.actionAddExecute(Sender: TObject);

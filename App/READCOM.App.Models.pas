@@ -220,10 +220,6 @@ type
     function GetStoryItem: IStoryItem;
     procedure SetStoryItem(const Value: IStoryItem);
 
-    { DeleteVisible }
-    function IsDeleteVisible: Boolean;
-    procedure SetDeleteVisible(const Value: Boolean);
-
     { Popup }
     procedure ShowPopup;
     procedure HidePopup;
@@ -236,7 +232,6 @@ type
     //--- Properties ---
     property View: TControl read GetView; //stored false
     property StoryItem: IStoryItem read GetStoryItem write SetStoryItem; //stored false
-    property DeleteVisible: Boolean read IsDeleteVisible write SetDeleteVisible;
   end;
 
   IBitmapImageStoryItemOptions = interface(IStoryItemOptions)

@@ -392,9 +392,7 @@ end;
 
 procedure TStoryItem.SetParent(const Value: TFmxObject);
 begin
-  var IsNewParentIStoryItem := Supports(Value, IStoryItem);
-  Options.DeleteVisible := IsNewParentIStoryItem;
-  if IsNewParentIStoryItem then
+  if Supports(Value, IStoryItem) then
     SetParentStoryItem(Value as IStoryItem)
   else
     inherited; //needed to add the top StoryItem to some container

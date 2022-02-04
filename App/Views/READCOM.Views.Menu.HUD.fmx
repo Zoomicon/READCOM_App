@@ -93,7 +93,12 @@ object StoryHUD: TStoryHUD
         Hint = 'New Story'#13#13'Clears all loaded story contents'
         Images = Globals.SVGIconImageList
         ImageIndex = 12
-        Position.Y = 40.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 41.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -107,7 +112,12 @@ object StoryHUD: TStoryHUD
           ' from a .readcom file'
         Images = Globals.SVGIconImageList
         ImageIndex = 6
-        Position.Y = 80.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 83.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -119,7 +129,12 @@ object StoryHUD: TStoryHUD
         Hint = 'Save Story'#13#13'Saves current Story contents to a .readcom file'
         Images = Globals.SVGIconImageList
         ImageIndex = 7
-        Position.Y = 120.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 125.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -130,7 +145,12 @@ object StoryHUD: TStoryHUD
         Hint = 'Toggle Edit mode'#13#13'Enables/Disables story editing functionality'
         Images = Globals.SVGIconImageList
         ImageIndex = 0
-        Position.Y = 160.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 169.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -146,7 +166,12 @@ object StoryHUD: TStoryHUD
           'tems when in Edit mode'
         Images = Globals.SVGIconImageList
         ImageIndex = 3
-        Position.Y = 200.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 211.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -163,7 +188,12 @@ object StoryHUD: TStoryHUD
           ' else define an ActiveStoryItem transition'
         Images = Globals.SVGIconImageList
         ImageIndex = 4
-        Position.Y = 240.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 253.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -177,7 +207,12 @@ object StoryHUD: TStoryHUD
         Hint = 'Show Help'#13#13'Opens web browser to application'#39's wiki pages'
         Images = Globals.SVGIconImageList
         ImageIndex = 16
-        Position.Y = 280.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 297.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -189,7 +224,12 @@ object StoryHUD: TStoryHUD
         Hint = 'About'#13#13'Shows application version and related information'
         Images = Globals.SVGIconImageList
         ImageIndex = 15
-        Position.Y = 320.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 339.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -212,6 +252,29 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 10
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 1.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'additembutton'
+      end
+      object btnDelete: TSpeedButton
+        Action = actionDelete
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 8
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 38.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -223,7 +286,12 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 17
-        Position.Y = 33.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 75.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -235,7 +303,12 @@ object StoryHUD: TStoryHUD
         Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 18
-        Position.Y = 66.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 110.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -245,7 +318,12 @@ object StoryHUD: TStoryHUD
         Anchors = [akTop, akRight]
         Images = Globals.SVGIconImageList
         ImageIndex = 19
-        Position.Y = 99.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 147.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -255,7 +333,12 @@ object StoryHUD: TStoryHUD
         Anchors = [akTop, akRight]
         Images = Globals.SVGIconImageList
         ImageIndex = 20
-        Position.Y = 132.000000000000000000
+        Margins.Left = 1.000000000000000000
+        Margins.Top = 1.000000000000000000
+        Margins.Right = 1.000000000000000000
+        Margins.Bottom = 1.000000000000000000
+        Position.X = 1.000000000000000000
+        Position.Y = 182.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -299,6 +382,12 @@ object StoryHUD: TStoryHUD
       Text = 'Copy'
       ImageIndex = 17
       ImageIndex = 17
+    end
+    object actionDelete: TAction
+      Category = 'Edit'
+      Text = 'Delete'
+      ImageIndex = 8
+      ImageIndex = 8
     end
     object actionHome: TAction
       Category = 'Navigation'
