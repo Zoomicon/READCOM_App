@@ -238,6 +238,7 @@ object StoryHUD: TStoryHUD
     end
     object layoutButtonsEdit: TFlowLayout
       Align = MostRight
+      HitTest = False
       Position.X = 612.000000000000000000
       Size.Width = 50.000000000000000000
       Size.Height = 532.000000000000000000

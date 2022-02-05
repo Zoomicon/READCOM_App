@@ -239,62 +239,6 @@ implementation
 
 {$region 'Create / Init / Destroy'}
 
-class destructor TStoryItem.Destroy;
-begin
-  ActiveStoryItem := nil;
-  FOnActiveStoryItemChanged := nil; //probably not needed, doesn't hurt to do though
-
-  HomeStoryItem := nil;
-end;
-
-procedure TStoryItem.Init;
-
-  procedure InitGlyph;
-  begin
-    with Glyph do
-    begin
-      Stored := false; //don't store state, should use state from designed .FMX resource
-      SetSubComponent(true);
-      Align := TAlignLayout.Client;
-      SendToBack;
-      HitTest := false;
-    end;
-  end;
-
-  procedure InitBorder;
-  begin
-    with Border do
-    begin
-      Stored := false; //don't store state, should use state from designed .FMX resource
-      SetSubComponent(true);
-      Align := TAlignLayout.Client;
-      SendToBack;
-      HitTest := false;
-      Visible := EditMode; //show only in EditMode
-    end;
-  end;
-
-  procedure InitDropTarget;
-  begin
-    with DropTarget do
-    begin
-      Visible := EditMode;
-      FilterIndex := 1; //this is the default value
-      Filter := GetAddFilesFilter;
-      Align := TAlignLayout.Client;
-      HitTest := False; //TODO: done at ancestor anyway?
-      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order)
-    end;
-  end;
-
-begin
-  InitDropTarget;
-  InitGlyph;
-  InitBorder;
-
-  Anchored := true;
-end;
-
 constructor TStoryItem.Create(AOwner: TComponent);
 begin
   FStoryItems := TIStoryItemList.Create;
@@ -314,6 +258,67 @@ begin
   AOwner.InsertComponent(Self); //set the owner after changing the (default) Name to the specified one
 
   //assuming if inherited constructor or other method (say the "Name" setter) called inside this constructor raises an exception the object is destroyed automatically without having to use try/finally and calling a destructor via freeing the new instance
+end;
+
+procedure TStoryItem.Init;
+
+  procedure InitGlyph;
+  begin
+    with Glyph do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      Align := TAlignLayout.Contents;
+      SendToBack;
+      HitTest := false;
+    end;
+  end;
+
+  procedure InitBorder;
+  begin
+    with Border do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      Align := TAlignLayout.Contents;
+      SendToBack;
+      HitTest := false;
+      Visible := EditMode; //show only in EditMode
+    end;
+  end;
+
+  procedure InitDropTarget;
+  begin
+    with DropTarget do
+    begin
+      FilterIndex := 1; //this is the default value
+      Filter := GetAddFilesFilter;
+
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      Align := TAlignLayout.Contents;
+      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order)
+      HitTest := False; //TODO: done at ancestor anyway?
+      Visible := EditMode;
+
+      OnDropped := DropTargetDropped;
+    end;
+  end;
+
+begin
+  InitDropTarget;
+  InitGlyph;
+  InitBorder;
+
+  Anchored := true;
+end;
+
+class destructor TStoryItem.Destroy;
+begin
+  ActiveStoryItem := nil;
+  FOnActiveStoryItemChanged := nil; //probably not needed, doesn't hurt to do though
+
+  HomeStoryItem := nil;
 end;
 
 destructor TStoryItem.Destroy;
@@ -511,14 +516,10 @@ begin
     if Assigned(FActiveStoryItem) then
       FActiveStoryItem.Active := false; //deactivate the previously active StoryItem
 
-    FActiveStoryItem := Self
-    //TODO: add code here to tell child storyItems to show their borders
+    FActiveStoryItem := Self;
   end
   else //make inactive
-  begin
     FActiveStoryItem := nil;
-    //TODO: add code here to tell child storyItems to hide their borders
-  end;
 
   ActiveChanged;
 end;
@@ -559,6 +560,8 @@ begin
       Visible := Value;
       SendToBack; //keep always under children (setting to Visible seems to BringToFront)
     end;
+
+  //TODO: add code here to tell child storyItems to show/hide their borders?
 
   For var StoryItem in FStoryItems do
     StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode

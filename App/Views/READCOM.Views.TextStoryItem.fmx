@@ -13,7 +13,6 @@ inherited TextStoryItem: TTextStoryItem
     DisableMouseWheel = True
     KeyboardType = Alphabet
     ShowScrollBars = False
-    ShowSizeGrip = True
     StyledSettings = []
     TextSettings.WordWrap = True
     Align = Contents

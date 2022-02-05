@@ -141,6 +141,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
   InitHUD;
+  //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
   LoadSavedStateOrNewRootStoryItem;
 end;
 
@@ -152,11 +153,19 @@ end;
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
   case Key of
-    vkEscape:
+
+   vkEscape:
       if ssShift in Shift then //go up to root
         ActivateRoot
       else
         ActivateParent; //go one level up
+
+    vkPrior, vkLeft: //go to previous
+      ActivatePrevious;
+
+    vkNext, vkRight: //go to next
+      ActivateNext;
+
   end;
 end;
 
