@@ -721,7 +721,7 @@ begin
   var parentItem := ParentStoryItem;
   if not Assigned(parentItem) then exit(nil);
 
-  var storyItemIndex := parentItem.StoryItems.IndexOf(Self);
+  var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
   var siblings := parentItem.StoryItems;
 
   for var i := (storyItemIndex - 1) downto 0 do //0-based array index
@@ -739,7 +739,7 @@ begin
   var parentItem := ParentStoryItem;
   if not Assigned(parentItem) then exit(nil);
 
-  var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem);
+  var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
   var siblings := parentItem.StoryItems;
 
   for var i := (storyItemIndex + 1) to (siblings.Count - 1) do //0-based array index
