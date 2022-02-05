@@ -91,11 +91,11 @@ type
     procedure SetActiveStoryItem(const Value: IStoryItem);
 
     {Navigation}
-    procedure ActivateHome;
-    procedure ActivateRoot;
-    procedure ActivateParent;
-    procedure ActivatePrevious;
-    procedure ActivateNext;
+    procedure ActivateHomeStoryItem;
+    procedure ActivateRootStoryItem;
+    procedure ActivateParentStoryItem;
+    procedure ActivatePreviousStoryPoint;
+    procedure ActivateNextStoryPoint;
 
     {StoryMode}
     function GetStoryMode: TStoryMode;

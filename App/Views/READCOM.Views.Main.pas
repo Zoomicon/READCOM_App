@@ -69,11 +69,11 @@ type
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
 
-    procedure ActivateRoot;
-    procedure ActivateParent;
-    procedure ActivateHome;
-    procedure ActivatePrevious;
-    procedure ActivateNext;
+    procedure ActivateRootStoryItem;
+    procedure ActivateParentStoryItem;
+    procedure ActivateHomeStoryItem;
+    procedure ActivatePreviousStoryPoint;
+    procedure ActivateNextStoryPoint;
 
     {StoryMode}
     function GetStoryMode: TStoryMode;
@@ -155,16 +155,24 @@ begin
   case Key of
 
    vkEscape:
-      if ssShift in Shift then //go up to root
-        ActivateRoot
+      if ssShift in Shift then //go to RootStoryItem
+        ActivateRootStoryItem
       else
-        ActivateParent; //go one level up
+        ActivateParentStoryItem; //go to ParentStoryItem
 
-    vkPrior, vkLeft: //go to previous
-      ActivatePrevious;
+    vkPrior, vkLeft, vkUp: //go to PreviousStoryPoint
+      ActivatePreviousStoryPoint;
 
-    vkNext, vkRight: //go to next
-      ActivateNext;
+    vkNext, vkRight, vkDown: //go to NextStoryPoint
+      ActivateNextStoryPoint;
+
+    vkHome: //go to HomeStoryItem
+      ActivateHomeStoryItem;
+
+    (*
+    vkEnd:
+      ActivateEnd; //TODO: for cheaters, go to EndStoryPoint - HOWEVER MAY WANT TO HAVE MULTIPLE ENDSTORYPOINTS, THEIR NEXTSTORYPOINT WOULD ALWAYS BE HOMESTORYITEM [Home may not be a StoryPoint but End always is else it wouldn't be reachable]? (which is the EndStoryItem should we be able to set such?)
+    *)
 
   end;
 end;
@@ -182,12 +190,7 @@ end;
 
 procedure TMainForm.SetRootStoryItem(const Value: IStoryItem);
 begin
-  RootStoryItemView := Value.GetView as TStoryItem;
-
-  Value.Active := true; //set as the Active StoryItem
-
-  if not Assigned(HomeStoryItem) then
-    Value.Home := true; //set as the Home StoryItem if there's no StoryItem set as such
+  RootStoryItemView := Value.GetView as TStoryItem; //Important: don't keep any more logic here, keeping all in SetRootStoryItemView
 end;
 
 {$endregion}
@@ -240,12 +243,13 @@ begin
     end;
 
     if not Assigned(HomeStoryItem) then
-      HomeStoryItem := RootStoryItem; //TODO: maybe move this elsewhere?
+      HomeStoryItem := RootStoryItem; //set RootStoryItem as the HomeStoryItem if no such assigned
 
-    (*
-    ActiveStoryItem := HomeStoryItem; //this will ZoomTo the HomeStoryItem.View //don't put in the with statement, will call it on the storyitem and won't ZoomTo //TODO: listen to TStoryItem class event for active story item changes instead?
-    *)
-    ActiveStoryItem := RootStoryItem; //TODO: ignoring setting the HomeStoryItem as active for now, since at app saved state loading it zooms wrongly (probbly need to have special case)
+    if not Assigned(ActiveStoryItem) then
+      ActiveStoryItem := RootStoryItem; //set RootStoryItem as the ActiveStoryItem if no such is set (e.g. from loaded state). Note this will also try to ZoomTo it
+
+    //ZoomTo(ActiveStoryItem); //zoom to the previously active storyitem after loading //TODO: this doesn't seem to work correctly
+    //ActiveStoryItem := ActiveStoryItem; //re-apply ActiveStoryItem to zoom to it and do misc actions //MAYBE BETTER ALTERNATIVE TO JUST ZOOMTO, BUT STILL DOESN'T WORK OK
   end;
 end;
 
@@ -315,12 +319,12 @@ end;
 
 {$endregion}
 
-procedure TMainForm.ActivateRoot;
+procedure TMainForm.ActivateRootStoryItem;
 begin
   ActiveStoryItem := RootStoryItem;
 end;
 
-procedure TMainForm.ActivateParent;
+procedure TMainForm.ActivateParentStoryItem;
 begin
   var activeItem := ActiveStoryItem;
   if Assigned(activeItem) then
@@ -331,18 +335,18 @@ begin
   end;
 end;
 
-procedure TMainForm.ActivateHome;
+procedure TMainForm.ActivateHomeStoryItem;
 begin
   ActiveStoryItem := HomeStoryItem;
 end;
 
-procedure TMainForm.ActivatePrevious;
+procedure TMainForm.ActivatePreviousStoryPoint;
 begin
   if Assigned(ActiveStoryItem) then
      ActiveStoryItem := ActiveStoryItem.PreviousStoryPoint;
 end;
 
-procedure TMainForm.ActivateNext;
+procedure TMainForm.ActivateNextStoryPoint;
 begin
   if Assigned(ActiveStoryItem) then
     ActiveStoryItem := ActiveStoryItem.NextStoryPoint;
@@ -432,6 +436,8 @@ begin
   RootStoryItem.Options.ActLoad; //assuming this is blocking action
 
   RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
+
+  ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
 end;
 
 procedure TMainForm.HUDactionSaveExecute(Sender: TObject);
@@ -526,17 +532,17 @@ end;
 
 procedure TMainForm.HUDactionHomeExecute(Sender: TObject);
 begin
-  ActivateHome;
+  ActivateHomeStoryItem;
 end;
 
 procedure TMainForm.HUDactionPreviousExecute(Sender: TObject);
 begin
-  ActivatePrevious;
+  ActivatePreviousStoryPoint;
 end;
 
 procedure TMainForm.HUDactionNextExecute(Sender: TObject);
 begin
-  ActivateNext;
+  ActivateNextStoryPoint;
 end;
 
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);

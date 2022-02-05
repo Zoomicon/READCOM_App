@@ -22,6 +22,9 @@ type
 
     public
       constructor Create(AOwner: TComponent); override;
+
+    published
+      property StoryPoint default true; //since we set TPanelStoryItem as being StoryPoints by default (whereas ancestor TStoryItem wasn't StoryPoint by default) we need to reflect this here, else "StoryPoint=false" won't be stored and user's setting of a TPanelStoryItem to not be a StoryPoint won't be saved/remembered on load
   end;
 
   procedure Register;
