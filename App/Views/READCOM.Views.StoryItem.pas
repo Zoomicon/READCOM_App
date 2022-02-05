@@ -15,7 +15,7 @@ uses
   Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlFocusHelper.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
   Zoomicon.Puzzler.Classes; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
 
-const
+resourcestring
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
 
 type
