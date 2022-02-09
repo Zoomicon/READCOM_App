@@ -225,9 +225,9 @@ type
     procedure HidePopup;
 
     {File}
-    procedure ActAdd;
-    procedure ActLoad;
-    procedure ActSave;
+    function ActAdd: Boolean;
+    function ActLoad: Boolean;
+    function ActSave: Boolean;
 
     //--- Properties ---
     property View: TControl read GetView; //stored false

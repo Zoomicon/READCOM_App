@@ -433,11 +433,11 @@ procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
 begin
   //HUD.actionLoadExecute(Sender);
 
-  RootStoryItem.Options.ActLoad; //assuming this is blocking action
-
-  RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
-
-  ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+  if RootStoryItem.Options.ActLoad then //assuming this is blocking action
+    begin
+    RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
+    ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+    end;
 end;
 
 procedure TMainForm.HUDactionSaveExecute(Sender: TObject);

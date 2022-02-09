@@ -62,9 +62,9 @@ type
     procedure ShowPopup; //TODO: use PopupVisible boolean property instead
     procedure HidePopup;
 
-    procedure ActAdd;
-    procedure ActLoad;
-    procedure ActSave;
+    function ActAdd: Boolean;
+    function ActLoad: Boolean;
+    function ActSave: Boolean;
 
     property Popup: TPopup read FPopup write FPopup stored false;
 
@@ -144,20 +144,45 @@ end;
 
 {$region 'Actions'}
 
-procedure TStoryItemOptions.ActAdd;
+function TStoryItemOptions.ActAdd: Boolean;
 begin
-  actionAddExecute(actionAdd);
+  with AddDialog do
+  begin
+    DefaultExt := EXT_READCOM;
+    Filter := StoryItem.GetAddFilesFilter;
+    //Options := Options + [TOpenOption.ofAllowMultiSelect]; //Multi-selection
+    result := Execute; //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
+    if result then
+      StoryItem.Add(Files.ToStringArray);
+  end;
 end;
 
-procedure TStoryItemOptions.ActLoad;
+function TStoryItemOptions.ActLoad: Boolean;
 begin
-  actionLoadExecute(actionLoad);
+  with OpenDialog do
+  begin
+    DefaultExt := EXT_READCOM;
+    Filter := StoryItem.GetLoadFilesFilter;
+    //Options := Options - [TOpenOption.ofAllowMultiSelect]; //Single-selection
+    result := Execute; //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
+    if result then
+      StoryItem.Load(Filename); //TODO: seems to cause error (on MouseUp at Form) due to MouseCapture (probably from the popup) not having been released for some (child?) item that gets freed. Should try to get the Root (the form) and do SetCapture(nil) on it or similar, or try to get Capture to us here and release immediately (OR MAYBE THERE IS SOME OTHER ERROR AND WE SHOULD TRY TO REPLACE THE WHOLE ITEM VIA ITS PARENT INSTEAD OF LOADING CONTENT IN IT REMOVING ITS CHILDREN FIRST - THAT WAY WE'LL BE ABLE TO REPLACE AN ITEM WITH ANY OTHER ITEM)
+  end;
 end;
 
-procedure TStoryItemOptions.ActSave;
+function TStoryItemOptions.ActSave: Boolean;
 begin
-  actionSaveExecute(actionSave);
+  with SaveDialog do
+  begin
+    DefaultExt := EXT_READCOM;
+    Filter := StoryItem.GetSaveFilesFilter;
+    result := Execute; //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
+    if result then
+      StoryItem.Save(Filename);
+  end;
 end;
+
+///
 
 procedure TStoryItemOptions.actionToggleHomeExecute(Sender: TObject);
 begin
@@ -179,37 +204,17 @@ end;
 
 procedure TStoryItemOptions.actionAddExecute(Sender: TObject);
 begin
-  with AddDialog do
-  begin
-    DefaultExt := EXT_READCOM;
-    Filter := StoryItem.GetAddFilesFilter;
-    //Options := Options + [TOpenOption.ofAllowMultiSelect]; //Multi-selection
-    if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
-      StoryItem.Add(Files.ToStringArray);
-  end;
+  actAdd;
 end;
 
 procedure TStoryItemOptions.actionLoadExecute(Sender: TObject);
 begin
-  with OpenDialog do
-  begin
-    DefaultExt := EXT_READCOM;
-    Filter := StoryItem.GetLoadFilesFilter;
-    //Options := Options - [TOpenOption.ofAllowMultiSelect]; //Single-selection
-    if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
-      StoryItem.Load(Filename); //TODO: seems to cause error (on MouseUp at Form) due to MouseCapture (probably from the popup) not having been released for some (child?) item that gets freed. Should try to get the Root (the form) and do SetCapture(nil) on it or similar, or try to get Capture to us here and release immediately (OR MAYBE THERE IS SOME OTHER ERROR AND WE SHOULD TRY TO REPLACE THE WHOLE ITEM VIA ITS PARENT INSTEAD OF LOADING CONTENT IN IT REMOVING ITS CHILDREN FIRST - THAT WAY WE'LL BE ABLE TO REPLACE AN ITEM WITH ANY OTHER ITEM)
-  end;
+  actLoad;
 end;
 
 procedure TStoryItemOptions.actionSaveExecute(Sender: TObject);
 begin
-  with SaveDialog do
-  begin
-    DefaultExt := EXT_READCOM;
-    Filter := StoryItem.GetSaveFilesFilter;
-    if Execute then //TODO: see if supported on Android (https://stackoverflow.com/questions/69138504/why-does-fmx-topendialog-not-work-in-android)
-      StoryItem.Save(Filename);
-  end;
+  actSave;
 end;
 
 procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);

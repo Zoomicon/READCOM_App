@@ -563,7 +563,7 @@ begin
 
   //TODO: add code here to tell child storyItems to show/hide their borders?
 
-  For var StoryItem in FStoryItems do
+  for var StoryItem in FStoryItems do
     StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
 end;
 
