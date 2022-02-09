@@ -107,8 +107,12 @@ implementation
 constructor TAudioStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
+
+  FPlayedOnce := false;
+
   MediaPlayer.Stored := false; //don't store state, should use state from designed .FMX resource
   GlyphImage.Stored := false; //don't store state, should use state from designed .FMX resource
+
   Hidden := true;
 end;
 
@@ -224,12 +228,13 @@ end;
 
 function TAudioStoryItem.IsPlayOnce: Boolean;
 begin
-  result := IsPlayOnce;
+  result := FIsPlayOnce;
 end;
 
 procedure TAudioStoryItem.SetPlayOnce(const Value: Boolean);
 begin
-  PlayOnce := Value;
+  FIsPlayOnce := Value;
+  FPlayedOnce := false; //reset the FPlayedOnce gate field
 end;
 
 {$endregion}
