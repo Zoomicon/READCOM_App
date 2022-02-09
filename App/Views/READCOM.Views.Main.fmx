@@ -21,8 +21,6 @@ object MainForm: TMainForm
     Size.Width = 876.000000000000000000
     Size.Height = 616.000000000000000000
     Size.PlatformDefault = False
-    ParentShowHint = False
-    ShowHint = True
     inherited layoutContent: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
@@ -46,6 +44,11 @@ object MainForm: TMainForm
       end
       inherited layoutButtonsMain: TFlowLayout
         Size.Height = 576.000000000000000000
+        inherited btnLoad: TSpeedButton
+          Hint = 
+            'Load Story'#13#13'Clears current contents and loads a Story'#39's contents' +
+            ' from a .readcom file'
+        end
       end
       inherited layoutButtonsEdit: TFlowLayout
         Position.X = 826.000000000000000000

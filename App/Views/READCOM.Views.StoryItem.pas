@@ -186,11 +186,8 @@ type
 
   protected
     procedure ActiveChanged;
-
-    //procedure CanFocus(var ACanFocus: Boolean); override;
-    procedure KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState); override;
-    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
     procedure DropTargetDropped(const Filepaths: array of string); override;
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
     procedure Tap(const Point: TPointF); override;
 
   //--- Properties ---
@@ -301,8 +298,6 @@ procedure TStoryItem.Init;
       SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order) //always send to back after setting Visible
 
       HitTest := False; //TODO: done at ancestor anyway?
-
-      OnDropped := DropTargetDropped;
     end;
   end;
 
@@ -860,32 +855,6 @@ end;
 {$ENDREGION}
 
 {$REGION '--- EVENTS ---'}
-
-{$region 'Keyboard'}
-
-//TODO: fix to work with items that are to be focused only (depending on mode)
-procedure TStoryItem.KeyDown(var Key: Word; var KeyChar: WideChar; Shift: TShiftState);
-begin
-  inherited;
-
-  var CurControl := TControl(Screen.FocusControl);
-  case Key of
-    vkReturn:
-      SelectNext(CurControl);
-    vkTab:
-      SelectNext(CurControl, not (ssShift in Shift));
-  end;
-end;
-
-{
-procedure TStoryItem.CanFocus(var ACanFocus: Boolean);
-begin
-  inherited;
-  ShowMessage('Focused');
-end;
-}
-
-{$endregion}
 
 {$region 'Mouse'}
 

@@ -223,8 +223,11 @@ procedure TCustomManipulator.Loaded;
       SetSubComponent(true); //don't show in Designer for descendents
       HitTest := False; //TODO: check if needed for drag-drop
       Visible := EditMode;
+      Opacity := 0.4;
       SendToBack; //always do after setting Visible
       DropTarget.Align := TAlignLayout.Client;
+
+      Enabled := true;
       OnDragOver := DropTargetDragOver;
       OnDropped := DropTargetDropped;
     end;

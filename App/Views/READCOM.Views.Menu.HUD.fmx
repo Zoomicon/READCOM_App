@@ -251,6 +251,7 @@ object StoryHUD: TStoryHUD
         Action = actionAdd
         Anchors = [akTop, akRight]
         Enabled = True
+        Hint = 'Add Text'#13#13'Adds a TextStoryItem child into the edited StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 10
         Margins.Left = 3.000000000000000000
@@ -268,6 +269,7 @@ object StoryHUD: TStoryHUD
         Action = actionDelete
         Anchors = [akTop, akRight]
         Enabled = True
+        Hint = 'Delete'#13#13'Removes the edited StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 8
         Margins.Left = 3.000000000000000000
@@ -285,6 +287,7 @@ object StoryHUD: TStoryHUD
         Action = actionCopy
         Anchors = [akTop, akRight]
         Enabled = True
+        Hint = 'Copy'#13#13'Copies the edited StoryItem to the system clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 17
         Margins.Left = 3.000000000000000000
@@ -302,6 +305,9 @@ object StoryHUD: TStoryHUD
         Action = actionPaste
         Anchors = [akTop, akRight]
         Enabled = True
+        Hint = 
+          'Paste'#13#13'Pastes a StoryItem from the system clipboard into the edi' +
+          'ted StoryItem as a new child'
         Images = Globals.SVGIconImageList
         ImageIndex = 18
         Margins.Left = 3.000000000000000000
@@ -317,6 +323,7 @@ object StoryHUD: TStoryHUD
       end
       object btnFlipHorizontally: TSpeedButton
         Anchors = [akTop, akRight]
+        Hint = 'Flip Horizontally'#13#13'Mirrors the edited StoryItem horizontally'
         Images = Globals.SVGIconImageList
         ImageIndex = 19
         Margins.Left = 3.000000000000000000
@@ -332,6 +339,7 @@ object StoryHUD: TStoryHUD
       end
       object btnFlipVertically: TSpeedButton
         Anchors = [akTop, akRight]
+        Hint = 'Flip Vertically'#13#13'Mirrors the edited StoryItem vertically'
         Images = Globals.SVGIconImageList
         ImageIndex = 20
         Margins.Left = 3.000000000000000000
