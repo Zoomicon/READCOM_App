@@ -138,6 +138,10 @@ type
     function IsEditMode: Boolean;
     procedure SetEditMode(const Value: Boolean);
 
+    {BorderVisible}
+    function IsBorderVisible: Boolean;
+    procedure SetBorderVisible(const Value: Boolean);
+
     {Home}
     function IsHome: Boolean; //note: a Home StoryItem doesn't have to be StoryPoint, could be just the startup instructions that are shown once and not when looping through the StoryPoints
     procedure SetHome(const Value: Boolean);
@@ -196,7 +200,8 @@ type
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
     property Active: Boolean read IsActive write SetActive; //default false
-    property EditMode: Boolean read IsEditMode write SetEditMode; //default false
+    property EditMode: Boolean read IsEditMode write SetEditMode; //stored false //default false
+    property BorderVisible: Boolean read IsBorderVisible write SetBorderVisible; //stored false default false
     property Home: Boolean read IsHome write SetHome; //default false
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false

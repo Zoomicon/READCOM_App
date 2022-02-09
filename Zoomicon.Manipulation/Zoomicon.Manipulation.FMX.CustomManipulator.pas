@@ -46,6 +46,10 @@ type
     {AutoSize}
     procedure SetAutoSize(const Value: Boolean);
 
+    {DropTargetVisible}
+    function IsDropTargetVisible: Boolean; virtual;
+    procedure SetDropTargetVisible(const Value: Boolean); virtual;
+
     {EditMode}
     function IsEditMode: Boolean; virtual;
     procedure SetEditMode(const Value: Boolean); virtual;
@@ -111,6 +115,7 @@ type
     property AreaSelector: TAreaSelector read FAreaSelector stored false;
     property DropTarget: TDropTarget read FDropTarget stored false;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default DEFAULT_AUTOSIZE;
+    property DropTargetVisible: Boolean read IsDropTargetVisible write SetDropTargetVisible stored false default DEFAULT_EDITMODE;
     property EditMode: Boolean read IsEditMode write SetEditMode default DEFAULT_EDITMODE;
     property Proportional: Boolean read IsProportional write SetProportional default DEFAULT_PROPORTIONAL;
   end;
@@ -186,7 +191,7 @@ procedure TCustomManipulator.Loaded;
        Size.Size := TPointF.Zero;
        Visible := false;
        GripSize := SELECTION_GRIP_SIZE;
-       BringToFront;
+       BringToFront; //not really doing something since we've set Visible to false
        OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
        OnTrack := HandleAreaSelectorTrack;
        end;
@@ -217,8 +222,8 @@ procedure TCustomManipulator.Loaded;
       Stored := False; //don't store state
       SetSubComponent(true); //don't show in Designer for descendents
       HitTest := False; //TODO: check if needed for drag-drop
-      SendToBack;
       Visible := EditMode;
+      SendToBack; //always do after setting Visible
       DropTarget.Align := TAlignLayout.Client;
       OnDragOver := DropTargetDragOver;
       OnDropped := DropTargetDropped;
@@ -230,7 +235,7 @@ begin
   inherited;
   CreateAreaSelector;
   CreateLocationSelector; //must do after CreateAreaSelector
-  CreateDropTarget; //must do after CreateAreaSelector (to send below it)
+  CreateDropTarget; //must do after CreateAreaSelector (to send below that)
 end;
 
 {$region 'Manipulation'}
@@ -490,6 +495,24 @@ end;
 
 {$endregion}
 
+{$region 'DropTargetVisible'}
+
+function TCustomManipulator.IsDropTargetVisible: Boolean;
+begin
+  result := DropTarget.Visible;
+end;
+
+procedure TCustomManipulator.SetDropTargetVisible(const Value: Boolean);
+begin
+  with DropTarget do
+  begin
+    Visible := Value;
+    SendToBack; //always do when Visible changed
+  end;
+end;
+
+{$endregion}
+
 {$region 'EditMode'}
 
 function TCustomManipulator.IsEditMode: Boolean;
@@ -499,7 +522,7 @@ end;
 
 procedure TCustomManipulator.ApplyEditModeToChild(Control: TControl);
 begin
-  if not (Control is TAreaSelector) then //no need to use a Predicate<TControl> to select the non-TSelectors, since we can excluse the TSelectorArea here
+  if not Control.SubComponent then
     begin
     var NotEditing := not EditMode;
     Control.Enabled := NotEditing; //note this will show controls as semi-transparent
@@ -511,10 +534,13 @@ end;
 procedure TCustomManipulator.SetEditMode(const Value: Boolean);
 begin
   if Assigned(FAreaSelector) then
+    with FAreaSelector do
     begin
-    FAreaSelector.Visible := Value; //Show or Hide selection UI (this will also hide the move control point) //MUST DO FIRST (AreaSelector.Visible used to detect edit mode)
-    FAreaSelector.BringToFront; //always on top
+      Visible := Value; //Show or Hide selection UI (this will also hide the move control point) //MUST DO FIRST (AreaSelector.Visible used to detect edit mode)
+      BringToFront; //always on top (need to do after setting Visible)
     end;
+
+  DropTargetVisible := Value;
 
   TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
     Controls,

@@ -1,5 +1,4 @@
 inherited TextStoryItem: TTextStoryItem
-  Align = Contents
   inherited Glyph: TSVGIconImage
     MultiResBitmap = <
       item

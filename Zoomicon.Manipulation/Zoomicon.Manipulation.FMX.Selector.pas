@@ -81,6 +81,7 @@ implementation
   uses
     Zoomicon.Generics.Functors, //for TF
     Zoomicon.Generics.Collections, //for TListEx
+    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlSubComponentHelper
     FMX.Ani,
     FMX.Effects,
     FMX.Types, //for RegisterFmxClasses
@@ -149,6 +150,7 @@ begin
     function(AControl: TControl): Boolean
     begin
       result := (AControl <> Self) //not selecting ourselves
+                and (not AControl.SubComponent) //not selecting our subcomponents
                 and RectPicker(AControl.BoundsRect);
     end
   );

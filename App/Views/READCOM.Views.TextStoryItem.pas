@@ -22,6 +22,9 @@ const
   FILTER_TEXT_EXTS = '*' + EXT_TXT;
   FILTER_TEXT = FILTER_TEXT_TITLE + '|' + FILTER_TEXT_EXTS;
 
+resourcestring
+  DEFAULT_TEXT = '......' + sLineBreak + '......';
+
 type
 
   {$REGION 'TTextStoryItem' ----------------------------------------------------------}
@@ -34,8 +37,18 @@ type
   //--- Methods ---
 
   protected
+    FEditable: Boolean;
+
+    procedure UpdateMemoReadOnly;
+
+    {DefaultSize}
+    function GetDefaultSize: TSizeF; override;
+
     {Active}
     procedure SetActive(const Value: Boolean); override;
+
+    {EditMode}
+    procedure SetEditMode(const Value: Boolean); override;
 
     {Text}
     function GetText: String;
@@ -69,7 +82,7 @@ type
   //--- Properties ---
 
   published
-    property Text: String read GetText write SetText; //default ''
+    property Text: String read GetText write SetText;
     property Editable: Boolean read IsEditable write SetEditable; //default false
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
@@ -102,11 +115,26 @@ implementation
 constructor TTextStoryItem.Create(AOnwer: TComponent);
 begin
   inherited;
-  memo.SetSubComponent(true);
-  memo.Stored := false; //don't store state, should use state from designed .FMX resource
+
+  with Memo do
+  begin
+    SetSubComponent(true);
+    Stored := false; //don't store state, should use state from designed .FMX resource
+    ReadOnly := true; //since we have Editable property defaulting to false
+    Text := DEFAULT_TEXT;
+  end;
 end;
 
 {$REGION '--- PROPERTIES ---'}
+
+{$region 'DefaultSize'}
+
+function TTextStoryItem.GetDefaultSize: TSizeF;
+begin
+  Result := TSizeF.Create(50, 30);
+end;
+
+{$endregion}
 
 {$region 'Active'}
 
@@ -118,6 +146,16 @@ begin
     Memo.SetFocus
   else
     Memo.ResetFocus;
+end;
+
+{$endregion}
+
+{$region 'EditMode'}
+
+procedure TTextStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+  UpdateMemoReadOnly;
 end;
 
 {$endregion}
@@ -140,12 +178,13 @@ end;
 
 function TTextStoryItem.IsEditable: Boolean;
 begin
-  result := not Memo.ReadOnly;
+  result := FEditable;
 end;
 
 procedure TTextStoryItem.SetEditable(const Value: Boolean);
 begin
-  Memo.ReadOnly := not Value;
+  FEditable := Value;
+  UpdateMemoReadOnly;
 end;
 
 {$endregion}
@@ -192,6 +231,15 @@ end;
 
 {$endregion}
 
+{$region 'Helpers'}
+
+procedure TTextStoryItem.UpdateMemoReadOnly;
+begin
+  Memo.ReadOnly := not (IsEditable or IsEditMode);
+end;
+
+{$endregion}
+
 {$ENDREGION}
 
 {$region 'IStoreable'}
@@ -216,7 +264,7 @@ begin
 
   s.LoadFromStream(Stream);
   Text := s.DelimitedText;
-  Size.Size := TSizeF.Create(300, 200); //TODO: judge on text volume
+  Size.Size := TSizeF.Create(50, 30); //TODO: judge on text volume
 
   FreeAndNil(s);
 end;

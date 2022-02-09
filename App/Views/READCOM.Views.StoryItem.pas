@@ -71,7 +71,7 @@ type
     procedure SetEditMode(const Value: Boolean); override;
 
     {BorderVisible}
-    function GetBorderVisible: Boolean; virtual;
+    function IsBorderVisible: Boolean; virtual;
     procedure SetBorderVisible(const Value: Boolean); virtual;
 
     {View}
@@ -197,7 +197,7 @@ type
 
   public
     property Options: IStoryItemOptions read GetOptions stored false;
-    property BorderVisible: Boolean read GetBorderVisible write SetBorderVisible;
+    property BorderVisible: Boolean read IsBorderVisible write SetBorderVisible stored false default false;
 
     class property ActiveStoryItem: IStoryItem read FActiveStoryItem write SetActiveStoryItem;
     class property OnActiveStoryItemChanged: TNotifyEvent read FOnActiveStoryItemChanged write FOnActiveStoryItemChanged;
@@ -269,7 +269,7 @@ procedure TStoryItem.Init;
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      SendToBack;
+      SendToBack; //always send to back after setting Visible
       HitTest := false;
     end;
   end;
@@ -281,9 +281,9 @@ procedure TStoryItem.Init;
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      SendToBack;
-      HitTest := false;
       Visible := EditMode; //show only in EditMode
+      SendToBack; //always send to back after setting Visible
+      HitTest := false;
     end;
   end;
 
@@ -297,9 +297,10 @@ procedure TStoryItem.Init;
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order)
-      HitTest := False; //TODO: done at ancestor anyway?
       Visible := EditMode;
+      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order) //always send to back after setting Visible
+
+      HitTest := False; //TODO: done at ancestor anyway?
 
       OnDropped := DropTargetDropped;
     end;
@@ -438,7 +439,7 @@ end;
 
 {$region 'BorderVisible'}
 
-function TStoryItem.GetBorderVisible: Boolean;
+function TStoryItem.IsBorderVisible: Boolean;
 begin
   result := Border.Visible;
 end;
@@ -446,7 +447,11 @@ end;
 procedure TStoryItem.SetBorderVisible(const Value: Boolean);
 begin
   if Assigned(Border) then
-    Border.Visible := Value;
+    with Border do
+    begin
+      Visible := Value;
+      SendToBack; //always send to back after setting Visible
+    end;
 end;
 
 {$endregion}
@@ -551,20 +556,15 @@ procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited; //call ancestor implementation
 
-  if Assigned(Border) then
-    Border.Visible := Value;
-
-  if Assigned(DropTarget) then
-    with DropTarget do
-    begin
-      Visible := Value;
-      SendToBack; //keep always under children (setting to Visible seems to BringToFront)
-    end;
-
-  //TODO: add code here to tell child storyItems to show/hide their borders?
+  Glyph.SendToBack; //send the glyph even more below the DropTarget ("inherited SetEditMode" sent it to the back)
+  Border.SendToBack; //set the border even more below the DropTarget and the Glyph
 
   for var StoryItem in FStoryItems do
-    StoryItem.Hidden := StoryItem.Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+    with StoryItem do
+    begin
+      BorderVisible := Value;
+      Hidden := Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+    end;
 end;
 
 {$endregion}
@@ -1147,9 +1147,9 @@ begin
   try
     var StrStream := TStringStream.Create(s);
     try
-      SaveReadComBin(BinStream);
+      SaveReadComBin(BinStream); //need to save to binary first (to memory)... //TODO: save to temp file (esp. for memory constrained devices) instead?
       BinStream.Seek(0, soFromBeginning);
-      ObjectBinaryToText(BinStream, StrStream);
+      ObjectBinaryToText(BinStream, StrStream); //...then convert to text format
       StrStream.Seek(0, soFromBeginning);
       result:= StrStream.DataString;
     finally
@@ -1172,7 +1172,14 @@ end;
 
 procedure TStoryItem.SaveReadComBin(const Stream: TStream);
 begin
-  Stream.WriteComponent(Self);
+  var oldEditMode := EditMode;
+  EditMode := false; //need to clear this since it disabled children and don't want them to be saved with "Enabled=false"
+
+  try
+    Stream.WriteComponent(Self);
+  finally
+    EditMode := oldEditMode; //restore previous EditMode setting
+  end;
 end;
 
 procedure TStoryItem.Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

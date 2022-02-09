@@ -112,8 +112,7 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     READCOM.Views.PanelStoryItem,
-    READCOM.Views.VectorImageStoryItem; //TODO: remove
-
+    READCOM.Views.TextStoryItem; //TODO: remove
 
 {$R *.fmx}
 
@@ -390,7 +389,10 @@ begin
   begin
     var view := ActiveStoryItem.View as TStoryItem;
     if Assigned(view) then
+    begin
       view.EditMode := isEditMode; //TODO: should add an EditMode property to the Story?
+      ZoomTo(view); //TODO: should we always ZoomTo ActiveStoryItem when switching story mode? (e.g. entering or exiting EditMode? this is useful after having autoloaded saved state)
+    end;
   end;
 
   if Assigned(FStructureViewFrameInfo) then
@@ -463,16 +465,22 @@ procedure TMainForm.HUDactionAddExecute(Sender: TObject);
 begin
   //HUD.actionAddExecute(Sender);
 
+  var OwnerAndParent := ActiveStoryItem.View;
+
   var StoryItem :=
-    //TPanelStoryItem.Create(Self, 'PanelStoryItem');
-    //TBitmapImageStoryItem.Create(Self, 'BitmapImageStoryItem');
-    TVectorImageStoryItem.Create(Self, 'VectorImageStoryItem'); //TODO: testing (should have separate actions for adding such defaults [for prototyping] for various StoryItem classes)
+    //TPanelStoryItem.Create(OwnerAndParent, 'PanelStoryItem');
+    //TBitmapImageStoryItem.Create(OwnerAndParent, 'BitmapImageStoryItem');
+    //TVectorImageStoryItem.Create(OwnerAndParent, 'VectorImageStoryItem');
+    TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem');
+      //TODO: testing (should have separate actions for adding such defaults [for prototyping] for various StoryItem classes)
 
-  //Center the new item...
-  var ItemSize := StoryItem.Size;
-  StoryItem.Position.Point := PointF(ActiveStoryItem.View.Size.Width/2 - ItemSize.Width/2, ActiveStoryItem.View.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  StoryItem.Size.Size := StoryItem.DefaultSize; //TODO: its constructor should set that
+  StoryItem.Parent := OwnerAndParent;
 
-  StoryItem.Parent := ActiveStoryItem.View;
+  //Center the new item in its parent...
+  var ItemSize := StoryItem.Size.Size;
+  StoryItem.Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+
   StoryItem.BringToFront; //load as front-most
 end;
 

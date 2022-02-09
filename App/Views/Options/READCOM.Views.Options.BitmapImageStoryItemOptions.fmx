@@ -1,13 +1,13 @@
 inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
-  Size.Width = 444.000000000000000000
+  Size.Width = 492.000000000000000000
   inherited panelUrlAction: TPanel
-    Size.Width = 444.000000000000000000
+    Size.Width = 492.000000000000000000
     inherited editUrlAction: TEdit
-      Size.Width = 401.000000000000000000
+      Size.Width = 449.000000000000000000
     end
   end
   inherited layoutButtons: TFlowLayout
-    Size.Width = 444.000000000000000000
+    Size.Width = 492.000000000000000000
     object btnCamera: TSpeedButton
       Action = TakePhotoFromCameraAction
       Align = Client
@@ -17,21 +17,15 @@ inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'escapetoolbutton'
+      StyleLookup = 'actiontoolbutton'
     end
   end
   inherited ActionList: TActionList
-    inherited actionDelete: TAction
-      ImageIndex = 8
-    end
     inherited actionLoad: TAction
       ImageIndex = 6
     end
     inherited actionSave: TAction
       ImageIndex = 7
-    end
-    inherited actionAnchor: TAction
-      ImageIndex = 5
     end
     inherited actionChangeUrlAction: TAction
       ImageIndex = 9
