@@ -247,13 +247,13 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
-      object btnAdd: TSpeedButton
-        Action = actionAdd
+      object btnAddTextStoryItem: TSpeedButton
+        Action = actionAddTextStoryItem
         Anchors = [akTop, akRight]
         Enabled = True
         Hint = 'Add Text'#13#13'Adds a TextStoryItem child into the edited StoryItem'
         Images = Globals.SVGIconImageList
-        ImageIndex = 10
+        ImageIndex = 21
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -263,7 +263,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnDelete: TSpeedButton
         Action = actionDelete
@@ -281,7 +281,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnCopy: TSpeedButton
         Action = actionCopy
@@ -299,7 +299,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnPaste: TSpeedButton
         Action = actionPaste
@@ -319,7 +319,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnFlipHorizontally: TSpeedButton
         Anchors = [akTop, akRight]
@@ -335,7 +335,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
       object btnFlipVertically: TSpeedButton
         Anchors = [akTop, akRight]
@@ -351,7 +351,7 @@ object StoryHUD: TStoryHUD
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
-        StyleLookup = 'additembutton'
+        StyleLookup = 'actiontoolbutton'
       end
     end
   end
@@ -416,11 +416,11 @@ object StoryHUD: TStoryHUD
       ImageIndex = 2
       ImageIndex = 2
     end
-    object actionAdd: TAction
+    object actionAddTextStoryItem: TAction
       Category = 'Edit'
-      Text = 'Add'
-      ImageIndex = 10
-      ImageIndex = 10
+      Text = 'Add Text'
+      ImageIndex = 21
+      ImageIndex = 21
     end
     object actionAbout: TAction
       Category = 'Help'

@@ -18,7 +18,7 @@ type
   TTargetsVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
 
   TStoryHUD = class(TFrame)
-    btnAdd: TSpeedButton;
+    btnAddTextStoryItem: TSpeedButton;
     btnPrevious: TSpeedButton;
     btnToggleEditMode: TSpeedButton;
     BtnMenu: TSpeedButton;
@@ -27,7 +27,7 @@ type
     ActionList: TActionList;
     actionPrevious: TAction;
     actionNext: TAction;
-    actionAdd: TAction;
+    actionAddTextStoryItem: TAction;
     actionAbout: TAction;
     actionMenu: TAction;
     layoutButtons: TLayout;

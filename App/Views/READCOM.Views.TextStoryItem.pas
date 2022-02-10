@@ -118,8 +118,8 @@ begin
 
   with Memo do
   begin
-    SetSubComponent(true);
     Stored := false; //don't store state, should use state from designed .FMX resource
+    SetSubComponent(true);
     ReadOnly := true; //since we have Editable property defaulting to false
     Text := DEFAULT_TEXT;
   end;

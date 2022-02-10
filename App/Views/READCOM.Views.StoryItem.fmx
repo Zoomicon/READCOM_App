@@ -9,6 +9,7 @@ inherited StoryItem: TStoryItem
       end>
     Align = Contents
     DisableInterpolation = True
+    HitTest = False
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
@@ -16,6 +17,7 @@ inherited StoryItem: TStoryItem
   object Border: TRectangle
     Align = Contents
     Fill.Kind = None
+    HitTest = False
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False

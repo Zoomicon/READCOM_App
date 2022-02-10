@@ -26,6 +26,7 @@ inherited BitmapImageStoryItem: TBitmapImageStoryItem
       item
       end>
     Align = Contents
+    HitTest = False
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False

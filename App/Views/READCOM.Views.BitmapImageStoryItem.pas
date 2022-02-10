@@ -34,12 +34,15 @@ type
     {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
+    {Options}
+    function GetOptions: IStoryItemOptions; override;
+    {EditMode}
+    procedure SetEditMode(const Value: Boolean); override;
+
     procedure Loaded; override;
 
   public
     constructor Create(AOwner: TComponent); override;
-
-    function GetOptions: IStoryItemOptions; override; //TODO: make protected? (and in ancestor)
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
@@ -77,8 +80,14 @@ implementation
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
-  ImageControl.SetSubComponent(true);
-  ImageControl.Stored := false; //don't store state, should use state from designed .FMX resource
+
+  with ImageControl do
+  begin
+    Stored := false; //don't store state, should use state from designed .FMX resource
+    SetSubComponent(true);
+    SendToBack;
+    HitTest := false;
+  end;
 end;
 
 procedure TBitmapImageStoryItem.Loaded;
@@ -138,6 +147,16 @@ begin
     end;
 
   result := FOptions;
+end;
+
+{$endregion}
+
+{$region 'EditMode'}
+
+procedure TBitmapImageStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
 end;
 
 {$endregion}

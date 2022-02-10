@@ -297,7 +297,7 @@ procedure TStoryItem.Init;
       Visible := EditMode;
       SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order) //always send to back after setting Visible
 
-      HitTest := False; //TODO: done at ancestor anyway?
+      HitTest := false; //TODO: done at ancestor anyway?
     end;
   end;
 
