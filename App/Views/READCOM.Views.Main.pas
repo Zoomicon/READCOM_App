@@ -559,7 +559,7 @@ begin
     HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
 
   ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
-  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are Activateable / have some ActivationOrder (maybe rename to FlowOrder and/or add different prescribed flows)
+  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are StoryPoints (and only show those)
 end;
 
 {$endregion}

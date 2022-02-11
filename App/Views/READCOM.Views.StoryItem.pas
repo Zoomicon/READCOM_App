@@ -592,7 +592,7 @@ class procedure TStoryItem.SetHomeStoryItem(const Value: IStoryItem);
 begin
   if (Value = FHomeStoryItem) then exit;
 
-  if Assigned(Value) then //not checking if ActivationOrder <> -1, since an out-of-activation-order StoryItem may be activated directly via a target
+  if Assigned(Value) then //note the Home (starting) StoryItem is not necesserily a StoryPoint //TODO: decide on this
     Value.Home := true //this will also deactivate the HomeStoryItem if any
   else {if Assigned(FHomeStoryItem) then} //if SetHomeStoryItem(nil) was called then deactivate HomeStoryItem (no need to check if it is Assigned [not nil], since the "Value = FHomeStoryItem" check above would have exited)
     FHomeStoryItem.Home := false;
