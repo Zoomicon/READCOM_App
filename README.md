@@ -17,6 +17,8 @@ Alternatively try this one which uses the same SVG library as the READ-COM App (
 ## Requirements: Source-code Dependencies:
 * need to install latest [TFrameStand package](https://getitnow.embarcadero.com/?q=tframestand) via "Tools/GetIt Package Manager" in Delphi IDE to build the project
 
+![image](https://user-images.githubusercontent.com/3461504/153725195-3f952633-dbfa-4da1-a3d6-ca280608c6e8.png)
+
 ![image](https://user-images.githubusercontent.com/3461504/152587444-315f557f-55d9-453a-94f1-042d7b76e010.png)
 
 Older screenshots:
