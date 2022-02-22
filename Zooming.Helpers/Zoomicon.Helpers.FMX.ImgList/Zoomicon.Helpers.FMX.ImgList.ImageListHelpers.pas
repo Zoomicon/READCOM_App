@@ -44,8 +44,12 @@ begin
 
   var vDest := Destination.Add;
   var vLayer := vDest.Layers.Add;
-  vLayer.SourceRect.Rect := TRectF.Create(TPoint.Zero, vSource.MultiResBitmap.Width, vSource.MultiResBitmap.Height);
-  vLayer.Name := vSource.Name;
+  with vLayer do
+  begin
+    SourceRect.Rect := TRectF.Create(TPoint.Zero, vSource.MultiResBitmap.Width, vSource.MultiResBitmap.Height);
+    Name := vSource.Name;
+  end;
+
   Result := vDest.Index;
 end;
 

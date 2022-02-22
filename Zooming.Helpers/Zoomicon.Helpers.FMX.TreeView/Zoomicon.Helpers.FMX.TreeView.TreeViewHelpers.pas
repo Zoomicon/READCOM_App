@@ -24,9 +24,9 @@ function TTreeViewSearchHelper.FindObject(const Value: TObject): TTreeViewItem;
 begin
   for var i := 0 to (Count - 1) do //Items is a 0-indexed array
   begin
-    var foundItem := Items[i].FindObject(Items[i]); //note: that FindObject does depth-first search
+    var foundItem := Items[i].FindObject(Value); //note: that FindObject does depth-first search
     if Assigned(foundItem) then
-      exit(foundItem);
+      exit(foundItem); //found
   end;
 
   result := nil; //not found

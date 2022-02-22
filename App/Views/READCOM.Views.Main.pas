@@ -81,8 +81,8 @@ type
 
     {StructureView}
     procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
-
     property StructureView: TStructureView read GetStructureView stored false;
+    procedure UpdateStructureView;
 
     procedure RootStoryItemViewResized(Sender: TObject);
 
@@ -250,6 +250,8 @@ begin
     //ZoomTo(ActiveStoryItem); //zoom to the previously active storyitem after loading //TODO: this doesn't seem to work correctly
     //ActiveStoryItem := ActiveStoryItem; //re-apply ActiveStoryItem to zoom to it and do misc actions //MAYBE BETTER ALTERNATIVE TO JUST ZOOMTO, BUT STILL DOESN'T WORK OK
   end;
+
+  UpdateStructureView;
 end;
 
 procedure TMainForm.RootStoryItemViewResized(Sender: TObject); //TODO: this doesn't seem to get called (needed for AutoSize of RootStoryItemView to work)
@@ -308,7 +310,7 @@ begin
     begin
     var StoryItem := TStoryItem(Value.View);
     StoryItem.EditMode := HUD.EditMode; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
-    //StructureView.SelectedObject := Value.View; //TODO: fix, causes some kind of disruption when doing (automatic) drag-drop (maybe schedule to do at end of drag-drop or to cancel if during drag-drop [if we can detect it] or somehow outside of current event handling)
+    StructureView.SelectedObject := Value.View;
     end
   else
     StructureView.SelectedObject := nil;
@@ -522,9 +524,14 @@ begin
   begin
     HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
 
-    StructureView.GUIRoot := RootStoryItemView; //in case the RootStoryItem has changed
+    UpdateStructureView; //in case the RootStoryItem has changed
     FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
   end;
+end;
+
+procedure TMainForm.UpdateStructureView;
+begin
+  StructureView.GUIRoot := RootStoryItemView;
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);

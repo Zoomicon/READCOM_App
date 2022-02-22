@@ -46,7 +46,7 @@ type
 
   {$REGION 'TStructureView' --------------------------------------------------------}
 
-  TStructureView = class(TFrame)
+  TStructureView = class(TFrame, IFreeNotification)
     TreeView: TTreeView;
     ImageList: TImageList;
     procedure TreeViewChange(Sender: TObject);
@@ -87,6 +87,9 @@ type
     {SelectedItem}
     function GetSelectedObject: TObject; virtual;
     procedure SetSelectedObject(const Value: TObject); virtual;
+
+    {Notifications}
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override; //no need to override the method "FreeNotification", TComponent and TFmxObject implement IFreeNotification, the latter calling Notification with Operation=opRemove
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -213,26 +216,39 @@ procedure TStructureView.LoadTreeView;
     var TreeItem := TTreeViewItem.Create(Parent);
     with TreeItem do
     begin
-      BeginUpdate;
-      Parent := TheParent;
-
+      //Keep a reference to TheControl at the TreeViewItem
       TagObject := TheControl;
 
-      var ControlToBitmap := TheControl.MakeScreenshot; //this seems to leak memory
+      //Listen for freeing of TheControl to remove from the tree
+      TheControl.AddFreeNotify(Self);
+
+      //Graphics-related code:
+
+      BeginUpdate;
+
+      //Nest the TreeStoryItem as needed
+      Parent := TheParent;
+
+      //Add screenshot of TheControl to ImageList
+      var ControlToBitmap := TheControl.MakeScreenshot;
       var imgIndex := ImageList.Add(ControlToBitmap); //this will copy from the bitmap
       FreeAndNil(ControlToBitmap); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
 
+      //Set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
       ImageIndex := imgIndex;
       var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
       StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
 
+      //Titles//
       if FShowNames then Text := TheControl.Name;
       if FShowTypes then Text := Text + ': ' + TheControl.ClassName;
 
+      //Hints//
       if FShowHintNames then Hint := TheControl.Name;
       if FShowHintTypes then Hint := Hint + ': ' + TheControl.ClassName;
-      ShowHint := true;
+      ShowHint := true; //always show hint if such has been set (as a result of FShowHintNames or FShowHintTypes)
 
+      //Load items recursively (depth-first)//
       for var ChildControl in TheControl.Controls do
         LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
 
@@ -242,8 +258,10 @@ procedure TStructureView.LoadTreeView;
 
 begin
   BeginUpdate;
+
   TreeView.Clear;
-  ImageList.ClearCache;
+
+  ImageList.ClearCache; //TODO: does this remove all contents from the ImageList?
   ImageList.Dormant := true;
 
   if Assigned(FGUIRoot) then
@@ -348,6 +366,28 @@ end;
 {$endregion .............................................................}
 
 {$region 'Events' -------------------------------------------------------}
+
+procedure TStructureView.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited;
+
+  case Operation of
+
+    opInsert:
+    begin
+      //TODO: opInsert seems only to be sent to components that are being inserted, to add external listerners those components must support it themselves
+    end;
+
+    opRemove:
+    begin
+      if (csDestroying in ComponentState) then exit; //must check if the component is getting destroyed, else TreeView will fail in FindObject when it tries to read any of its properties (even TreeView.ComponentState fails)
+      var treeViewItem := TreeView.FindObject(AComponent);
+      if Assigned(treeViewItem) then
+        treeViewItem.Parent := nil; //TODO: does this Free the TreeViewItem too? (immediately and not when the TreeView is destroyed)
+    end;
+
+  end;
+end;
 
 procedure TStructureView.TreeViewChange(Sender: TObject);
 begin
