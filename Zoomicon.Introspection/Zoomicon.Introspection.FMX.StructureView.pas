@@ -131,19 +131,51 @@ implementation
 {$region 'Creation / Destruction '}
 
 constructor TStructureView.Create(AOwner: TComponent);
+
+  procedure InitImageList;
+  begin
+    with ImageList do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+    end;
+  end;
+
+  procedure InitTreeView;
+  begin
+    with TreeView do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+    end;
+  end;
+
+  procedure InitDragDrop; //Note: Delphi 11 doesn't allow us to use "inline" here (can't access "Self")
+  begin
+    SetDragDropReorder(DEFAULT_DRAGDROP_REORDER);
+    SetDragDropReparent(DEFAULT_DRAGDROP_REPARENT);
+  end;
+
+  procedure InitProperties;
+  begin
+    FShowOnlyClasses := nil;
+    FShowOnlyVisible := DEFAULT_SHOW_ONLY_VISIBLE;
+    FShowOnlyNamed := DEFAULT_SHOW_ONLY_NAMED;
+    FShowNames := DEFAULT_SHOW_NAMES;
+    FShowTypes := DEFAULT_SHOW_TYPES;
+    FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
+    FShowHintTypes := DEFAULT_SHOW_HINT_TYPES;
+  end;
+
 begin
   inherited;
 
-  FShowOnlyClasses := nil;
-  FShowOnlyVisible := DEFAULT_SHOW_ONLY_VISIBLE;
-  FShowOnlyNamed := DEFAULT_SHOW_ONLY_NAMED;
-  FShowNames := DEFAULT_SHOW_NAMES;
-  FShowTypes := DEFAULT_SHOW_TYPES;
-  FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
-  FShowHintTypes := DEFAULT_SHOW_HINT_TYPES;
+  InitImageList;
+  InitTreeView;
 
-  SetDragDropReorder(DEFAULT_DRAGDROP_REORDER);
-  SetDragDropReparent(DEFAULT_DRAGDROP_REPARENT);
+  InitDragDrop;
+
+  InitProperties;
 end;
 
 destructor TStructureView.Destroy;
