@@ -98,7 +98,7 @@ object MainForm: TMainForm
         ImageIndex = 2
       end
       inherited actionAddTextStoryItem: TAction
-        OnExecute = HUDactionAddExecute
+        OnExecute = HUDactionAddTextStoryItemExecute
         ImageIndex = 21
       end
       inherited actionAbout: TAction

@@ -69,6 +69,7 @@ type
 
     {EditMode}
     procedure SetEditMode(const Value: Boolean); override;
+    procedure ApplyParentEditMode(const StoryItem: IStoryItem); virtual;
 
     {BorderVisible}
     function IsBorderVisible: Boolean; virtual;
@@ -342,7 +343,10 @@ procedure TStoryItem.DoAddObject(const AObject: TFmxObject);
   begin
     var StoryItem: IStoryItem;
     if Supports(AObject, IStoryItem, StoryItem) then
+    begin
       FStoryItems.Add(StoryItem);
+      ApplyParentEditMode(StoryItem);
+    end;
   end;
 
   procedure AddToAudioStoryItems;
@@ -364,6 +368,10 @@ begin
 
   FreeAndNil(FStoryItems); //TODO: this will fail if while looping on StoryItems we insert some new StoryItem (BUT THAT IS AN EDGE CASE, NOT DOING)
   FStoryItems := TObjectListEx<TControl>.GetAllInterface<IStoryItem>(Controls); //need to recalculate the list, since the "Index" of objects is different from the one of StoryItems (the TStoryItem contains other FmxObjects too in its UI design)
+
+  var StoryItem: IStoryItem;
+  if Supports(AObject, IStoryItem, StoryItem) then
+    ApplyParentEditMode(StoryItem);
 
   FreeAndNil(FAudioStoryItems); //TODO: this will fail if while looping on StoryItems we insert some new AudioStoryItem (BUT THAT IS AN EDGE CASE, NOT DOING)
   FAudioStoryItems := TObjectListEx<TControl>.GetAllInterface<IAudioStoryItem>(Controls); //need to recalculate the list, since the "Index" of objects is different from the one of AudioStoryItems (the TStoryItem contains other FmxObjects too in its UI design)
@@ -555,11 +563,17 @@ begin
   Border.SendToBack; //set the border even more below the DropTarget and the Glyph
 
   for var StoryItem in FStoryItems do
-    with StoryItem do
-    begin
-      BorderVisible := Value;
-      Hidden := Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
-    end;
+    ApplyParentEditMode(StoryItem);
+end;
+
+procedure TStoryItem.ApplyParentEditMode(const StoryItem: IStoryItem);
+begin
+  var ParentEditMode := EditMode;
+  with StoryItem do
+  begin
+    BorderVisible := ParentEditMode;
+    Hidden := Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+  end;
 end;
 
 {$endregion}

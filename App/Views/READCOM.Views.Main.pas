@@ -25,7 +25,6 @@ type
     ZoomFrame: TZoomFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
-    procedure HUDactionAddExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
@@ -39,6 +38,7 @@ type
     procedure HUDactionPasteExecute(Sender: TObject);
     procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
     procedure HUDactionFlipVerticallyExecute(Sender: TObject);
+    procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
   private
     function GetStructureView: TStructureView;
 
@@ -463,9 +463,9 @@ begin
     StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
 end;
 
-procedure TMainForm.HUDactionAddExecute(Sender: TObject);
+procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
 begin
-  //HUD.actionAddExecute(Sender);
+  //HUD.actionAddTextStoryItemExecute(Sender);
 
   var OwnerAndParent := ActiveStoryItem.View;
 
@@ -476,12 +476,24 @@ begin
     TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem');
       //TODO: testing (should have separate actions for adding such defaults [for prototyping] for various StoryItem classes)
 
-  StoryItem.Size.Size := StoryItem.DefaultSize; //TODO: its constructor should set that
-  StoryItem.Parent := OwnerAndParent;
+  with StoryItem do
+  begin
+    Parent := OwnerAndParent;
 
-  //Center the new item in its parent...
-  var ItemSize := StoryItem.Size.Size;
-  StoryItem.Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+    var TheAreaSelector := TStoryItem(OwnerAndParent).AreaSelector; //WARNING: Delphi 11 seems to resolve identifiers against the "with" first and THEN the local variables that were defined inside the with block. Don't name this AreaSelector since StoryItem has such property and accessing the Visible property below will get the wrong result...
+    if TheAreaSelector.Visible and (TheAreaSelector.Width <> 0) and (TheAreaSelector.Height <> 0) then //...even worse the IDE introspection during debugging shows the object one was expecting (the one from the local variable), but the one from with would be used instead (checking the wrong "Visible" property value)
+    begin
+      Size.Size := TheAreaSelector.Size.Size;
+      Position.Point := TheAreaSelector.Position.Point; //TODO: assuming the AreaSelector has the same parent, if not (say using a global area selector in the future) should have some way for the AreaSelector to give map the coordinates to the wanted parent
+    end
+    else
+    begin
+      var ItemSize := StoryItem.DefaultSize;
+      Size.Size := ItemSize; //TODO: StoryItem constructor should have set its DefaultSize
+      //Center the new item in its parent...
+      Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+    end;
+  end;
 
   StoryItem.BringToFront; //load as front-most
 end;
