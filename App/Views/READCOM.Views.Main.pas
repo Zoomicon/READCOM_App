@@ -469,15 +469,11 @@ begin
 
   var OwnerAndParent := ActiveStoryItem.View;
 
-  var StoryItem :=
-    //TPanelStoryItem.Create(OwnerAndParent, 'PanelStoryItem');
-    //TBitmapImageStoryItem.Create(OwnerAndParent, 'BitmapImageStoryItem');
-    //TVectorImageStoryItem.Create(OwnerAndParent, 'VectorImageStoryItem');
-    TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem');
-      //TODO: testing (should have separate actions for adding such defaults [for prototyping] for various StoryItem classes)
+  var StoryItem := TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem'); //TODO: should have separate actions for adding such default items (for prototyping) for various StoryItem classes
 
   with StoryItem do
   begin
+    Align := TAlignLayout.Scale; //IMPORTANT: adjust when parent resizes
     Parent := OwnerAndParent;
 
     var TheAreaSelector := TStoryItem(OwnerAndParent).AreaSelector; //WARNING: Delphi 11 seems to resolve identifiers against the "with" first and THEN the local variables that were defined inside the with block. Don't name this AreaSelector since StoryItem has such property and accessing the Visible property below will get the wrong result...

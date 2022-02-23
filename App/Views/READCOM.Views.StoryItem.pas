@@ -1011,7 +1011,7 @@ begin
   Self.InsertComponent(StoryItemView); //make sure we set Self as owner //TODO: need to call a safe method to do this with rename (see constructor above and extract such method)
   var ItemSize := StoryItemView.Size;
   StoryItemView.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
-  StoryItemView.Align := TAlignLayout.Scale; //adjust when parent scales
+  StoryItemView.Align := TAlignLayout.Scale; //IMPORTANT: adjust when parent resizes
   StoryItemView.Parent := Self;
   StoryItemView.BringToFront; //load as front-most
 end;

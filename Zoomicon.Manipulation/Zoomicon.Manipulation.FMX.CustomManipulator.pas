@@ -802,11 +802,13 @@ procedure TCustomManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer;
 begin
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if (ssShift in Shift) then
+  (*
+  if (ssXX in Shift) then
   begin
     //TODO: should tell any ScrollBox parent to pan horizontally
     exit;
   end;
+  *)
 
   if EditMode and (ssAlt in Shift) then
   begin
@@ -827,16 +829,14 @@ begin
 
       BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
 
-      (*
-      if (ssCtrl in Shift) then
+      if (ssShift in Shift) then
       begin
         var old_scale := Control.Scale.X;
         Control.Scale.X := new_scale;
         Control.Scale.Y := new_scale;
-        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly
+        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly (?)
       end
       else
-      *)
       begin
         Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality?
         //correction for zoom center position
