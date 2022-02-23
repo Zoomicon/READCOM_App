@@ -467,6 +467,8 @@ procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
 begin
   //HUD.actionAddTextStoryItemExecute(Sender);
 
+  if not Assigned(ActiveStoryItem) then exit;
+
   var OwnerAndParent := ActiveStoryItem.View;
 
   var StoryItem := TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem'); //TODO: should have separate actions for adding such default items (for prototyping) for various StoryItem classes
@@ -496,7 +498,7 @@ end;
 
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
-  if (ActiveStoryItem.View <> RootStoryItem.View) then
+  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
     FreeAndNil(ActiveStoryItem.View)
   else
     HUD.actionNew.Execute; //deleting the RootStoryItem via "New" action
@@ -504,22 +506,26 @@ end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
 begin
-  ActiveStoryItem.Copy;
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.Copy;
 end;
 
 procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
 begin
-  ActiveStoryItem.Paste;
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.Paste;
 end;
 
 procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
 begin
-  ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
 end;
 
 procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
 begin
-  ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
 end;
 
 {$endregion}

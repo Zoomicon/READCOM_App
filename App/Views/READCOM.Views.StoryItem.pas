@@ -9,6 +9,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation,
+  FMX.Clipboard, //for IFMXExtendedClipboardService
   READCOM.App.Models, //for IStoryItem
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
@@ -57,6 +58,10 @@ type
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
     procedure DoRemoveObject(const AObject: TFmxObject); override;
+
+    {Clipboard}
+    procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
+    procedure PasteText(const Value: String); virtual;
 
     {Name}
     procedure SetName(const NewName: TComponentName); override;
@@ -154,8 +159,8 @@ type
     procedure PlayRandomAudioStoryItem;
 
     {IClipboardEnabled}
-    procedure Copy;
-    procedure Paste;
+    procedure Copy; virtual;
+    procedure Paste; overload; virtual;
 
     {IStoreable}
     procedure ReadState(Reader: TReader); override;
@@ -227,7 +232,6 @@ implementation
     u_UrlOpen, //for url_Open_In_Browser
     System.IOUtils, //for TPath
     FMX.Platform, //for TPlatformServices
-    FMX.Clipboard, //for IFMXExtendedClipboardService
     Zoomicon.Generics.Collections, //for TObjectListEx
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
@@ -934,7 +938,19 @@ procedure TStoryItem.Paste;
 begin
  var svc: IFMXExtendedClipboardService;
  if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
-   AddFromString(Svc.GetText);
+   Paste(svc);
+end;
+
+procedure TStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);
+begin
+  if Clipboard.HasText then
+    PasteText(Clipboard.GetText);
+end;
+
+procedure TStoryItem.PasteText(const Value: String);
+begin
+  if Value.StartsWith('object') then //ignore if not Delphi serialization format (its text-based form)
+    AddFromString(Value); //add a new child StoryItem
 end;
 
 {$endregion}

@@ -6,12 +6,15 @@ unit READCOM.Views.BitmapImageStoryItem;
 interface
 
 uses
-  READCOM.App.Models, //for IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable
-  READCOM.Views.ImageStoryItem, //for TImageStoryItem
-  FMX.Objects, //for TImage
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Objects, //for TImage
+  FMX.Clipboard, //for IFMXExtendedClipboardService
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.ExtCtrls, FMX.Layouts, FMX.SVGIconImage;
+  FMX.ExtCtrls, FMX.Layouts,
+  FMX.Surfaces, //for TBitmapSurface
+  FMX.SVGIconImage, //for TSVGIconImage
+  READCOM.App.Models, //for IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable
+  READCOM.Views.ImageStoryItem; //for TImageStoryItem
 
 const
   EXT_PNG = '.png';
@@ -31,6 +34,10 @@ type
   //--- Methods ---
 
   protected
+    {Clipboard}
+    procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
+    procedure PasteImage(const BitmapSurface: TBitmapSurface); virtual;
+
     {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
@@ -77,6 +84,8 @@ implementation
 
 {$REGION 'TBitmapImageStoryItem'}
 
+{$region 'Lifetime management'}
+
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
@@ -95,6 +104,32 @@ begin
   inherited;
   Glyph.Visible := not Assigned(ImageControl.Bitmap.Image); //hide default Glyph if we have a bitmap image
 end;
+
+{$endregion}
+
+{$region 'Clipboard'}
+
+procedure TBitmapImageStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);
+begin
+  if Clipboard.HasImage then
+  begin
+    var BitmapSurface := Clipboard.GetImage;
+    try
+      PasteImage(BitmapSurface);
+    finally
+      FreeAndNil(BitmapSurface); //must release the TBitmapSurface to not have memory leak
+    end;
+  end
+  else
+    inherited; //fallback to ancestor implementation
+end;
+
+procedure TBitmapImageStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
+begin
+  ImageControl.Bitmap.Assign(BitmapSurface);
+end;
+
+{$endregion}
 
 {$region 'IStorable'}
 

@@ -41,6 +41,9 @@ type
 
     procedure UpdateMemoReadOnly;
 
+    {Clipboard}
+    procedure PasteText(const Value: String); override;
+
     {DefaultSize}
     function GetDefaultSize: TSizeF; override;
 
@@ -112,6 +115,8 @@ implementation
 
 {$REGION 'TTextStoryItem'}
 
+{$region 'Lifetime management'}
+
 constructor TTextStoryItem.Create(AOnwer: TComponent);
 begin
   inherited;
@@ -124,6 +129,20 @@ begin
     Text := DEFAULT_TEXT;
   end;
 end;
+
+{$endregion}
+
+{$region 'Clipboard'}
+
+procedure TTextStoryItem.PasteText(const Value: String);
+begin
+  if Value.StartsWith('object') then //if Delphi serialization format (its text-based form) then let TStoryItem handle it
+    inherited
+  else
+    Text := Value; //else replace current text
+end;
+
+{$endregion}
 
 {$REGION '--- PROPERTIES ---'}
 
