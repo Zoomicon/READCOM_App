@@ -28,6 +28,9 @@ type
   TCustomManipulator = class(TFrame)
   protected
     FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick in the future, remove this
+    FLastAreaSelectorBounds: TRectF;
+    FAreaSelectorChanging: Boolean;
+    FAreaSelectorChanging_SelectedControls: TControlList;
 
     {Gestures}
     FLastPosition: TPointF;
@@ -62,7 +65,8 @@ type
     {AreaSelector}
     procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
-    procedure HandleAreaSelectorTrack(Sender: TObject);
+    procedure HandleAreaSelectorTrack(Sender: TObject); //called while user resizes the area selector
+    procedure HandleAreaSelectorChange(Sender: TObject); //called when user finishes resizing the area selector
 
     {Gestures}
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
@@ -99,10 +103,10 @@ type
     procedure MoveSelected(const DX, DY: Single);
 
     {Resize}
-    procedure ResizeControl(const Control: TControl; const DW, DH: Single; const SkipAutoSize: Boolean = false); overload; inline;
-    procedure ResizeControls(const Controls: TControlList; const DW, DH: Single); overload;
-    procedure ResizeControls(const DW, DH: Single); overload;
-    procedure ResizeSelected(const DW, DH: Single);
+    procedure ResizeControl(const Control: TControl; const SDW, SDH: Single; const SkipAutoSize: Boolean = false); overload; inline; //SDH, SDW are scaled deltas
+    procedure ResizeControls(const Controls: TControlList; const SDW, SDH: Single); overload;
+    procedure ResizeControls(const SDW, SDH: Single); overload;
+    procedure ResizeSelected(const SDW, SDH: Single);
 
     {Rotate}
     procedure SetControlAngle(const Control: TControl; const Angle: Single); overload; inline;
@@ -175,6 +179,7 @@ end;
 destructor TCustomManipulator.Destroy;
 begin
   ReleaseCapture; //make sure we always release Mouse Capture
+  FreeAndNil(FAreaSelectorChanging_SelectedControls);
   inherited;
 end;
 
@@ -187,13 +192,20 @@ procedure TCustomManipulator.Loaded;
        begin
        Stored := False; //don't store state
        SetSubComponent(true); //don't show in Designer for descendents
-       ParentBounds := true;
-       Size.Size := TPointF.Zero;
+
+       ParentBounds := false; //CAN move outside of parent area
+
        Visible := false;
-       GripSize := SELECTION_GRIP_SIZE;
+       Size.Size := TPointF.Zero;
+       FLastAreaSelectorBounds := BoundsRect;
+
+       GripSize := SELECTION_GRIP_SIZE; //TODO: should have some way to respond to AbsoluteScale change and adjust the Grip and the Border line respectively so that they don't show too big/fat
        BringToFront; //not really doing something since we've set Visible to false
+
        OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
-       OnTrack := HandleAreaSelectorTrack;
+
+       OnTrack := HandleAreaSelectorTrack; //not using this since we have an extra point at the center for moving the contents of the selection (in contrast to just repositioning the selection)
+       OnChange := HandleAreaSelectorChange; //this is called AFTER resize, but not when done explicitly
        end;
      FAreaSelector.Parent := Self;
   end;
@@ -205,11 +217,15 @@ procedure TCustomManipulator.Loaded;
       begin
       Stored := False; //don't store state
       SetSubComponent(true); //don't show in Designer for descendents
-      ParentBounds := false; //can move outside of parent area
+
+      ParentBounds := false; //CAN move outside of parent area
+
       GripSize := SELECTION_GRIP_SIZE;
       Align := TAlignLayout.Center;
+
       OnParentMoving := HandleAreaSelectorMoving;
       OnParentMoved := HandleAreaSelectorMoved;
+
       Parent := FAreaSelector;
       end;
   end;
@@ -317,7 +333,7 @@ end;
 
 {$region 'Resize'}
 
-procedure TCustomManipulator.ResizeControl(const Control: TControl; const DW, DH: Single; const SkipAutoSize: Boolean = false);
+procedure TCustomManipulator.ResizeControl(const Control: TControl; const SDW, SDH: Single; const SkipAutoSize: Boolean = false);
 begin
   if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
 
@@ -325,6 +341,8 @@ begin
 
   with Control.Size do
   begin
+    var DW := SDW * Width; //SDW: scaled delta width
+    var DH := SDH * Height; //SDH: scaled delta height
     var NewWidth := Width + DW;
     var NewHeight := Height + DH;
 
@@ -332,25 +350,26 @@ begin
       Size := TSizeF.Create(NewWidth, NewHeight)
     //else
       //Size := ...EnsureRange...
-  end;
+    ;
 
-  Control.Position.Point := Control.Position.Point - PointF(DW/2, DH/2); //resize from center
+    Control.Position.Point := Control.Position.Point - PointF(DW/2, DH/2); //resize from center
+  end;
 
   if not SkipAutoSize then
     DoAutoSize;
   EndUpdate;
 end;
 
-procedure TCustomManipulator.ResizeControls(const Controls: TControlList; const DW, DH: Single);
+procedure TCustomManipulator.ResizeControls(const Controls: TControlList; const SDW, SDH: Single);
 begin
-  if (DW <> 0) or (DH <> 0) then
+  if (SDW <> 0) or (SDH <> 0) then
     begin
     BeginUpdate;
 
     TListEx<TControl>.ForEach(Controls,
       procedure (Control: TControl)
       begin
-        ResizeControl(Control, DW, DH, true); //skip autosizing separately for each control
+        ResizeControl(Control, SDW, SDH, true); //skip autosizing separately for each control
       end
     );
 
@@ -359,17 +378,17 @@ begin
     end;
 end;
 
-procedure TCustomManipulator.ResizeControls(const DW, DH: Single);
+procedure TCustomManipulator.ResizeControls(const SDW, SDH: Single);
 begin
-  ResizeControls(Controls, DW, DH);
+  ResizeControls(Controls, SDW, SDH);
 end;
 
-procedure TCustomManipulator.ResizeSelected(const DW, DH: Single);
+procedure TCustomManipulator.ResizeSelected(const SDW, SDH: Single);
 begin
-  if (DW <> 0) or (DH <> 0) then
+  if (SDW <> 0) or (SDH <> 0) then
     begin
     var TheSelected := AreaSelector.Selected;
-    ResizeControls(TheSelected, DW, DH);
+    ResizeControls(TheSelected, SDW, SDH);
     FreeAndNil(TheSelected);
     end;
 end;
@@ -604,13 +623,27 @@ begin
   EndUpdate;
 end;
 
-var lastAreaSelectorSize: TSizeF;
-
 procedure TCustomManipulator.HandleAreaSelectorTrack(Sender: TObject);
 begin
-  var dSize := AreaSelector.Size.Size - lastAreaSelectorSize;
-  ResizeSelected(dSize.Width, dSize.Height);
-  lastAreaSelectorSize := AreaSelector.Size.Size;
+  if not FAreaSelectorChanging then //just started resizing the AreaSelector, keep which controls were selected at that moment
+  begin
+
+    //TODO: unstable, commented out - only resize objects using ALT+mousewheel
+    //FAreaSelectorChanging_SelectedControls := AreaSelector.Selected; //note: must FreeAndNil at destructor (in case that gets called before user releases the mouse button while resizing AreaSelector) and at "HandleAreaSelectorChange"
+
+    FLastAreaSelectorBounds := AreaSelector.BoundsRect; //don't do at HandleAreaSelectorChange, that does't seem to be called the first time when user drags and releases mouse from (0,0) area size to define the area selection
+    FAreaSelectorChanging := true;
+  end;
+
+  var dSize := AreaSelector.BoundsRect.Size - FLastAreaSelectorBounds.Size;
+  if Assigned(FAreaSelectorChanging_SelectedControls) then
+    ResizeControls(FAreaSelectorChanging_SelectedControls, dSize.Width/FLastAreaSelectorBounds.Width, dSize.Height/FLastAreaSelectorBounds.Height); //don't use ResizeSelected, that will select other controls while resizing //scaling down the deltas by the respective initial width/height so that we scale up again when resizing each individual control by its current width/height inside its parent
+end;
+
+procedure TCustomManipulator.HandleAreaSelectorChange(Sender: TObject);
+begin
+  FAreaSelectorChanging := false;
+  FreeAndNil(FAreaSelectorChanging_SelectedControls);
 end;
 
 {$endregion}
@@ -703,8 +736,12 @@ begin
     Capture; //start mouse events capturing
     var p := PointF(X,Y);
     FDragStartLocation := p;
-    AreaSelector.Position.Point := p;
-    AreaSelector.Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
+    with AreaSelector do
+    begin
+      Position.Point := p;
+      Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
+      FLastAreaSelectorBounds := BoundsRect;
+    end;
     EndUpdate;
     end;
 end;
@@ -774,10 +811,13 @@ begin
   if EditMode and (ssAlt in Shift) then
   begin
     var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos, false, true, false); //only checking the immediate children
+    var LObj := ObjectAtPoint(ScreenMousePos, false, true, false, false); //only checking the immediate children which are not subcomponents
     if Assigned(LObj) then
     begin
       var Control := TControl(LObj.GetObject);
+
+      if Control.SubComponent then exit; //redundant safety check: ignore any subcomponents like the DropTarget (or others added by descendents) in case the parameter we passed to ObjectAtPoint failed somehow
+
       var zoom_center := Control.ScreenToLocal(ScreenMousePos); //use mouse cursor as center
 
       var new_scale : Single;
