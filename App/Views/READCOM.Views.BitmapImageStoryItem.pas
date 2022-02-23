@@ -36,7 +36,7 @@ type
   protected
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
-    procedure PasteImage(const BitmapSurface: TBitmapSurface); virtual;
+    procedure PasteImage(const BitmapSurface: TBitmapSurface); override;
 
     {Image}
     function GetImage: TImage; override;

@@ -9,6 +9,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation,
+  FMX.Surfaces, //for TBitmapSurface
   FMX.Clipboard, //for IFMXExtendedClipboardService
   READCOM.App.Models, //for IStoryItem
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
@@ -62,6 +63,7 @@ type
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
     procedure PasteText(const Value: String); virtual;
+    procedure PasteImage(const BitmapSurface: TBitmapSurface); virtual;
 
     {Name}
     procedure SetName(const NewName: TComponentName); override;
@@ -936,9 +938,9 @@ end;
 
 procedure TStoryItem.Paste;
 begin
- var svc: IFMXExtendedClipboardService;
- if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
-   Paste(svc);
+ var Clipboard: IFMXExtendedClipboardService;
+ if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Clipboard) then
+   Paste(Clipboard);
 end;
 
 procedure TStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);
@@ -952,6 +954,11 @@ begin
   if Value.StartsWith('object') then //ignore if not Delphi serialization format (its text-based form)
     AddFromString(Value); //add a new child StoryItem
 end;
+
+procedure TStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
+begin
+  //TODO: should check for JPG factory (see "Add(const Filename: String)" code), add a new BitmapImageStoryItem using that, then call PasteImage into it
+end; //TODO: maybe not have descendents override this behaviour and always paste child content instead of replacing control's image content
 
 {$endregion}
 
