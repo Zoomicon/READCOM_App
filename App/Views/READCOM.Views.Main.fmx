@@ -13,6 +13,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
+  OnResize = FormResize
   OnSaveState = FormSaveState
   DesignerMasterStyle = 0
   inline HUD: TStoryHUD
@@ -57,6 +58,13 @@ object MainForm: TMainForm
         inherited btnFlipVertically: TSpeedButton
           Action = HUD.actionFlipVertically
         end
+      end
+      object StoryTimer: TTimer
+        Enabled = False
+        Interval = 100
+        OnTimer = StoryTimerTimer
+        Left = 86
+        Top = 24
       end
     end
     inherited MultiView: TMultiView

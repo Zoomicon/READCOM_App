@@ -27,10 +27,11 @@ type
 
   TCustomManipulator = class(TFrame)
   protected
-    FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick in the future, remove this
+    FDragging: Boolean;
+    FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick (seems to be empty at MouseUp too btw) in the future, remove this
     FLastAreaSelectorBounds: TRectF;
     FAreaSelectorChanging: Boolean;
-    FAreaSelectorChanging_SelectedControls: TControlList;
+    FAreaSelector_SelectedControls: TControlList;
 
     {Gestures}
     FLastPosition: TPointF;
@@ -45,6 +46,9 @@ type
     procedure ApplyEditModeToChild(Control: TControl);
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoAutoSize;
+
+    {AreaSelector}
+    procedure SetAreaSelector(const Value: TAreaSelector);
 
     {AutoSize}
     procedure SetAutoSize(const Value: Boolean);
@@ -106,7 +110,11 @@ type
     procedure ResizeControl(const Control: TControl; const SDW, SDH: Single; const SkipAutoSize: Boolean = false); overload; inline; //SDH, SDW are scaled deltas
     procedure ResizeControls(const Controls: TControlList; const SDW, SDH: Single); overload;
     procedure ResizeControls(const SDW, SDH: Single); overload;
-    procedure ResizeSelected(const SDW, SDH: Single);
+    procedure ResizeSelected(const SDW, SDH: Single); overload;
+    procedure ResizeControl(const Control: TControl; const TheBounds: TRectF; const SkipAutoSize: Boolean = false); overload; inline;
+    procedure ResizeControls(const Controls: TControlList; const TheBounds: TRectF); overload;
+    procedure ResizeControls(const TheBounds: TRectF); overload;
+    procedure ResizeSelected(const TheBounds: TRectF); overload;
 
     {Rotate}
     procedure SetControlAngle(const Control: TControl; const Angle: Single); overload; inline;
@@ -116,7 +124,7 @@ type
     procedure RotateSelected(const DAngle: Single);
     {$endregion}
 
-    property AreaSelector: TAreaSelector read FAreaSelector stored false;
+    property AreaSelector: TAreaSelector read FAreaSelector write SetAreaSelector stored false;
     property DropTarget: TDropTarget read FDropTarget stored false;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default DEFAULT_AUTOSIZE;
     property DropTargetVisible: Boolean read IsDropTargetVisible write SetDropTargetVisible stored false default DEFAULT_EDITMODE;
@@ -179,7 +187,7 @@ end;
 destructor TCustomManipulator.Destroy;
 begin
   ReleaseCapture; //make sure we always release Mouse Capture
-  FreeAndNil(FAreaSelectorChanging_SelectedControls);
+  FreeAndNil(FAreaSelector_SelectedControls);
   inherited;
 end;
 
@@ -187,27 +195,8 @@ procedure TCustomManipulator.Loaded;
 
   procedure CreateAreaSelector;
   begin
-     FAreaSelector := TAreaSelector.Create(Self);
-     With FAreaSelector do
-       begin
-       Stored := False; //don't store state
-       SetSubComponent(true); //don't show in Designer for descendents
-
-       ParentBounds := false; //CAN move outside of parent area
-
-       Visible := false;
-       Size.Size := TPointF.Zero;
-       FLastAreaSelectorBounds := BoundsRect;
-
-       GripSize := SELECTION_GRIP_SIZE; //TODO: should have some way to respond to AbsoluteScale change and adjust the Grip and the Border line respectively so that they don't show too big/fat
-       BringToFront; //not really doing something since we've set Visible to false
-
-       OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
-
-       OnTrack := HandleAreaSelectorTrack; //not using this since we have an extra point at the center for moving the contents of the selection (in contrast to just repositioning the selection)
-       OnChange := HandleAreaSelectorChange; //this is called AFTER resize, but not when done explicitly
-       end;
-     FAreaSelector.Parent := Self;
+     SetAreaSelector(TAreaSelector.Create(Self)); //must set ourselves as the owner, note we don't assign manually to "FAreaSelector"
+     FAreaSelector.Parent := Self; //Note: must not set parent in "SetAreaSelector" for externally provided AreaSelector, setting it for internally created ones only at the constructor
   end;
 
   procedure CreateLocationSelector;
@@ -253,7 +242,7 @@ procedure TCustomManipulator.Loaded;
 begin
   inherited;
   CreateAreaSelector;
-  CreateLocationSelector; //must do after CreateAreaSelector
+  //CreateLocationSelector; //must do after CreateAreaSelector //NOT USED ANYMORE
   CreateDropTarget; //must do after CreateAreaSelector (to send below that)
 end;
 
@@ -333,6 +322,8 @@ end;
 
 {$region 'Resize'}
 
+{$region 'Resize with ScaledDeltas'}
+
 procedure TCustomManipulator.ResizeControl(const Control: TControl; const SDW, SDH: Single; const SkipAutoSize: Boolean = false);
 begin
   if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
@@ -357,13 +348,14 @@ begin
 
   if not SkipAutoSize then
     DoAutoSize;
+
   EndUpdate;
 end;
 
 procedure TCustomManipulator.ResizeControls(const Controls: TControlList; const SDW, SDH: Single);
 begin
   if (SDW <> 0) or (SDH <> 0) then
-    begin
+  begin
     BeginUpdate;
 
     TListEx<TControl>.ForEach(Controls,
@@ -375,7 +367,7 @@ begin
 
     DoAutoSize;
     EndUpdate;
-    end;
+  end;
 end;
 
 procedure TCustomManipulator.ResizeControls(const SDW, SDH: Single);
@@ -386,12 +378,66 @@ end;
 procedure TCustomManipulator.ResizeSelected(const SDW, SDH: Single);
 begin
   if (SDW <> 0) or (SDH <> 0) then
-    begin
+  begin
     var TheSelected := AreaSelector.Selected;
     ResizeControls(TheSelected, SDW, SDH);
     FreeAndNil(TheSelected);
-    end;
+  end;
 end;
+
+{$endregion}
+
+{$region 'Resize with Bounds'}
+
+procedure TCustomManipulator.ResizeControl(const Control: TControl; const TheBounds: TRectF; const SkipAutoSize: Boolean = false);
+begin
+  if Control.SubComponent then exit; //ignore any subcomponents like the DropTarget (or others added by descendents)
+
+  BeginUpdate;
+
+  with Control do
+  begin
+    //if AutoSize then //TODO: should we clamp Width/Height for child to always be inside parent?
+      BoundsRect := TheBounds
+    //else
+      //Size.Size := ...EnsureRange...
+    ;
+  end;
+
+  if not SkipAutoSize then
+    DoAutoSize;
+
+  EndUpdate;
+end;
+
+procedure TCustomManipulator.ResizeControls(const Controls: TControlList; const TheBounds: TRectF);
+begin
+  BeginUpdate;
+
+  TListEx<TControl>.ForEach(Controls,
+    procedure (Control: TControl)
+    begin
+      ResizeControl(Control, TheBounds, true); //skip autosizing separately for each control
+    end
+  );
+
+  DoAutoSize;
+  EndUpdate;
+end;
+
+procedure TCustomManipulator.ResizeControls(const TheBounds: TRectF);
+begin
+  ResizeControls(Controls, TheBounds);
+end;
+
+procedure TCustomManipulator.ResizeSelected(const TheBounds: TRectF);
+begin
+  var TheSelected := AreaSelector.Selected;
+  ResizeControls(TheSelected, TheBounds);
+  FreeAndNil(TheSelected);
+end;
+
+{$endregion}
 
 {$endregion}
 
@@ -468,6 +514,43 @@ begin
 end;
 
 {$REGION 'PROPERTIES'}
+
+{$region 'AreaSelector'}
+
+procedure TCustomManipulator.SetAreaSelector(const Value: TAreaSelector);
+begin
+  if Assigned(FAreaSelector) and (FAreaSelector.Owner = Self) then //don't free any externally provided AreaSelector that we didn't create
+  begin
+    FAreaSelector.Parent := nil; //unparent first, else it fails below
+    FreeAndNil(FAreaSelector);
+  end;
+  FreeAndNil(FAreaSelector_SelectedControls);
+  FAreaSelectorChanging := false;
+
+  //Note: must not set parent for externally provided AreaSelector, setting it for internally created ones only at the constructor
+
+  With Value do
+  begin
+    Stored := False; //don't store state
+    SetSubComponent(true); //don't show in Designer for descendents
+
+    ParentBounds := false; //CAN move outside of parent area
+
+    Visible := false;
+    Size.Size := TPointF.Zero;
+    FLastAreaSelectorBounds := BoundsRect;
+
+    GripSize := SELECTION_GRIP_SIZE; //TODO: should have some way to respond to AbsoluteScale change and adjust the Grip and the Border line respectively so that they don't show too big/fat
+    BringToFront; //not really doing something since we've set Visible to false
+
+    OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
+
+    OnTrack := HandleAreaSelectorTrack; //not using this since we have an extra point at the center for moving the contents of the selection (in contrast to just repositioning the selection)
+    OnChange := HandleAreaSelectorChange; //this is called AFTER resize, but not when done explicitly
+  end;
+
+  FAreaSelector := Value;
+end;
 
 {$region 'AutoSize'}
 
@@ -597,7 +680,7 @@ procedure TCustomManipulator.HandleAreaSelectorMoving(Sender: TObject; const DX,
 begin
   BeginUpdate;
   //Move all controls selected by the AreaSelector (that has just been moved)
-  MoveSelected(DX, DY); //this will also call DoAutoSize
+  //MoveSelected(DX, DY); //this will also call DoAutoSize //NOT USED ANYMORE, using "HandleAreaSelectorTrack" instead
   Canceled := false;
   //after this, TSelectionPoint.HandleChangeTracking will move the SelectionArea, then fire OnParentMoved event (which is assigned to HandleAreaSelectorMoved of the manipulator)
 end;
@@ -627,23 +710,43 @@ procedure TCustomManipulator.HandleAreaSelectorTrack(Sender: TObject);
 begin
   if not FAreaSelectorChanging then //just started resizing the AreaSelector, keep which controls were selected at that moment
   begin
+    FreeAndNil(FAreaSelector_SelectedControls); //must do
+    FAreaSelector_SelectedControls := AreaSelector.Selected; //note: must FreeAndNil at destructor (in case that gets called before user releases the mouse button while resizing AreaSelector) and at "HandleAreaSelectorChange"
 
-    //TODO: unstable, commented out - only resize objects using ALT+mousewheel
-    //FAreaSelectorChanging_SelectedControls := AreaSelector.Selected; //note: must FreeAndNil at destructor (in case that gets called before user releases the mouse button while resizing AreaSelector) and at "HandleAreaSelectorChange"
+    FLastAreaSelectorBounds := AreaSelector.BoundsRect; //don't do at HandleAreaSelectorChange, that does't seem to be called the first time when user drags and releases mouse from (0,0) area size to define the area selection //TODO: if using external AreaSelector should do coordinate conversion (it should provide property to set what control it's using as base and it should provide mapped bounds for that as special property)
+    FLastPosition := FLastAreaSelectorBounds.Location; //we're reusing this field, also used in gestures
 
-    FLastAreaSelectorBounds := AreaSelector.BoundsRect; //don't do at HandleAreaSelectorChange, that does't seem to be called the first time when user drags and releases mouse from (0,0) area size to define the area selection
     FAreaSelectorChanging := true;
   end;
 
-  var dSize := AreaSelector.BoundsRect.Size - FLastAreaSelectorBounds.Size;
-  if Assigned(FAreaSelectorChanging_SelectedControls) then
-    ResizeControls(FAreaSelectorChanging_SelectedControls, dSize.Width/FLastAreaSelectorBounds.Width, dSize.Height/FLastAreaSelectorBounds.Height); //don't use ResizeSelected, that will select other controls while resizing //scaling down the deltas by the respective initial width/height so that we scale up again when resizing each individual control by its current width/height inside its parent
+  if Assigned(FAreaSelector_SelectedControls) then
+  begin
+    var SelectedArea := AreaSelector.BoundsRect; //TODO: if using external AreaSelector should do coordinate conversion (it should provide property to set what control it's using as base and it should provide mapped bounds for that as special property)
+
+    //Not using ResizeSelected, that will select other controls while resizing
+
+    if SelectedArea.Size <> FLastAreaSelectorBounds.Size then //don't manually subtract and compare Width and Height to 0, TSizeF.NotEquals class operator function ends up using "SameValue" function from System.Types internally that has some error tolerance
+    begin
+      //var dSize := SelectedArea.Size - FLastAreaSelectorBounds.Size;
+      //ResizeControls(FAreaSelector_SelectedControls, dSize.Width/FLastAreaSelectorBounds.Width, dSize.Height/FLastAreaSelectorBounds.Height); //scaling down the deltas by the respective initial width/height so that we scale up again when resizing each individual control by its current width/height inside its parent
+      ResizeControls(FAreaSelector_SelectedControls, SelectedArea); //resizing (distorting) to the new SelectedArea bounds, this is more stable and straightforward to implement
+    end
+    else
+    begin
+      var NewPosition := SelectedArea.Location;
+      var Offset := NewPosition - FLastPosition;
+      FLastPosition := NewPosition;
+      MoveControls(FAreaSelector_SelectedControls, Offset.X, Offset.Y);
+    end;
+
+    //Repaint; //make sure we get the resizing done and clear any paint artifacts //TODO: see if we need to repaint the Scene root instead
+  end;
 end;
 
 procedure TCustomManipulator.HandleAreaSelectorChange(Sender: TObject);
 begin
   FAreaSelectorChanging := false;
-  FreeAndNil(FAreaSelectorChanging_SelectedControls);
+  FreeAndNil(FAreaSelector_SelectedControls);
 end;
 
 {$endregion}
@@ -669,7 +772,7 @@ end;
 
 procedure TCustomManipulator.HandlePan(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false); //only checking the immediate children
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false, false); //only checking the immediate children (ignoring SubComponents)
   if Assigned(LObj) then
   begin
     if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
@@ -685,14 +788,14 @@ end;
 
 procedure TCustomManipulator.HandleRotate(eventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false); //only checking the immediate children
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false, false); //only checking the immediate children (ignoring SubComponents)
   if Assigned(LObj) and (LObj.GetObject is TControl) then
     SetControlAngle(TControl(LObj.GetObject), RadToDeg(-EventInfo.Angle));
 end;
 
 procedure TCustomManipulator.HandleZoom(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false); //only checking the immediate children
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false, false); //only checking the immediate children (ignoring SubComponents)
   if (not (TInteractiveGestureFlag.gfBegin in EventInfo.Flags)) and
      (LObj.GetObject is TControl) then
   begin
@@ -706,7 +809,7 @@ end;
 
 procedure TCustomManipulator.HandlePressAndTap(EventInfo: TGestureEventInfo);
 begin
-  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false); //only checking the immediate children
+  var LObj := ObjectAtLocalPoint(EventInfo.Location, false, true, false, false); //only checking the immediate children (ignoring SubComponents)
   //TODO: delete object?
 end;
 
@@ -720,27 +823,27 @@ begin
 
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-    if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
-      begin
-      var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false); //only checking the immediate children
-      if Assigned(LObj) and (LObj.GetObject is TControl) then
-        BringToFrontElseSendToBack(TControl(LObj.GetObject));
-      exit;
-      end;
+  if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
+    begin
+    var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
+    if Assigned(LObj) and (LObj.GetObject is TControl) then
+      BringToFrontElseSendToBack(TControl(LObj.GetObject));
+    exit;
+    end;
 
-  if not EditMode then exit;
+  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
 
   if (ssLeft in Shift) then
     begin
     BeginUpdate;
     Capture; //start mouse events capturing
-    var p := PointF(X,Y);
+    var p := PointF(X, Y);
     FDragStartLocation := p;
     with AreaSelector do
     begin
       Position.Point := p;
       Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
-      FLastAreaSelectorBounds := BoundsRect;
+      FAreaSelectorChanging := false;
     end;
     EndUpdate;
     end;
@@ -750,11 +853,11 @@ procedure TCustomManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
   inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp) and for event handlers to be fired (e.g. at ancestors)
 
-  if not EditMode then exit;
+  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
 
   if (ssLeft in Shift) then
   begin
-    //FDragging := true;
+    FDragging := true;
     with AreaSelector do
     begin
       var LX: Single := FDragStartLocation.X; //Delphi 11 compiler issue, gives below at call to Order function error "E2033 Types of actual and formal var parameters must be identical if we skip ": Single", even though it is of type Single
@@ -770,13 +873,14 @@ end;
 
 procedure TCustomManipulator.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
+  Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if not EditMode then exit;
+  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
 
   if (ssLeft in Shift) then
     begin
-    //fDragging := false;
+    FDragging := false;
     ReleaseCapture; //stop mouse events capturing
     end;
 end;
@@ -784,17 +888,25 @@ end;
 procedure TCustomManipulator.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
-
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if not EditMode then exit;
+  if FDragging then exit; //make sure a MouseClick doesn't occur if we've moved the mouse
 
+  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
+
+  //TODO: if we allow using an external AreaSelector, should use ObjectAtLocalPoint of whatever object is assigned to it to "work on" (instead of doing selections on the Root manipulator if there's an hierarchy of them)
   if (ssLeft in Shift) then
-  begin
-    var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false); //only checking the immediate children
+  begin //TODO: the ObjectAtLocalPoint and the check for the GetObject type etc. and the casting to TControl are repeated code, make a function
+    var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
     if Assigned(LObj) and (LObj.GetObject is TControl) then
       with AreaSelector do
-        BoundsRect := TControl(LObj.GetObject).BoundsRect;
+      begin
+        var rect := TControl(Parent).AbsoluteToLocal(TControl(LObj.GetObject).AbsoluteRect); //TODO: doesn't solve the case of children with negative scales
+        var d := SELECTION_GRIP_SIZE/1.3;
+        rect.Inflate(d, d, d, d); //Inflating by SELECTION_GRIP_SIZE * 1.5 to avoid strange issue where dragging from the part of the knob that is over the object does selection update
+        BoundsRect := rect;
+        FAreaSelectorChanging := false;
+      end;
   end;
 end;
 

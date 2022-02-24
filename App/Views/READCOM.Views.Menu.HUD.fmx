@@ -201,6 +201,26 @@ object StoryHUD: TStoryHUD
         Text = 'Targets'
         OnClick = btnToggleTargetsVisibleClick
       end
+      object btnToggleUseStoryTimer: TSpeedButton
+        StaysPressed = True
+        Hint = 
+          'Toggles Story Timer mode'#13#13'Starts/stops automated Next StoryPoint' +
+          ' navigation'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 22
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 6.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 325.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+        Text = 'Story Timer'
+        OnClick = btnToggleUseStoryTimerClick
+      end
       object btnHelp: TSpeedButton
         Action = actionHelp
         Enabled = True
@@ -212,7 +232,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 325.000000000000000000
+        Position.Y = 374.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -229,7 +249,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 371.000000000000000000
+        Position.Y = 420.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False

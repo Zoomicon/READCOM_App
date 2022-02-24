@@ -150,7 +150,7 @@ begin
     function(AControl: TControl): Boolean
     begin
       result := (AControl <> Self) //not selecting ourselves
-                and (not AControl.SubComponent) //not selecting our subcomponents
+                and (not AControl.SubComponent) //not selecting subcomponents //TODO: maybe add property for that, defaulting to true
                 and RectPicker(AControl.BoundsRect);
     end
   );

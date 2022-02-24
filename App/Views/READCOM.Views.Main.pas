@@ -23,6 +23,7 @@ type
   TMainForm = class(TForm, IStory)
     HUD: TStoryHUD;
     ZoomFrame: TZoomFrame;
+    StoryTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -39,10 +40,13 @@ type
     procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
     procedure HUDactionFlipVerticallyExecute(Sender: TObject);
     procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure StoryTimerTimer(Sender: TObject);
   private
     function GetStructureView: TStructureView;
 
   protected
+    FTimerStarted: Boolean;
     FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
@@ -89,6 +93,7 @@ type
     procedure HUDEditModeChanged(Sender: TObject; const Value: Boolean);
     procedure HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
     procedure HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
+    procedure HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
 
   public
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
@@ -135,10 +140,12 @@ procedure TMainForm.FormCreate(Sender: TObject);
       OnEditModeChanged := HUDEditModeChanged;
       OnStructureVisibleChanged := HUDStructureVisibleChanged;
       OnTargetsVisibleChanged := HUDTargetsVisibleChanged;
+      OnUseStoryTimerChanged := HUDUseStoryTimerChanged;
     end;
   end;
 
 begin
+  FTimerStarted := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
   LoadSavedStateOrNewRootStoryItem;
@@ -174,6 +181,11 @@ begin
     *)
 
   end;
+end;
+
+procedure TMainForm.FormResize(Sender: TObject);
+begin
+  ActiveStoryItem := ActiveStoryItem; //keep the ActiveStoryItem in view
 end;
 
 {$ENDREGION}
@@ -290,32 +302,39 @@ procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem); //TODO: should 
   begin
     if Assigned(partialRoot) then
     begin
-      TStoryItem(partialRoot).EditMode := false; //TODO: see StoryMode of IStoryItem instead
-      TStoryItem(partialRoot).Enabled := true; //re-enable if previously disabled due to EditMode of its parent
+      var StoryItem := TStoryItem(partialRoot.View);
+      StoryItem.EditMode := false; //TODO: see StoryMode of IStoryItem instead
+      StoryItem.Enabled := true; //restore any items that had been left disabled accidentally
+      //StoryItem.Enabled := (StoryMode <> EditMode) and (StoryItem <> RootStoryItemView); //TODO: test
 
       //Do for item's children too if any
-      for var StoryItem in partialRoot.StoryItems do
-        RecursiveClearEditMode(StoryItem);
+      for var ChildStoryItem in partialRoot.StoryItems do
+        RecursiveClearEditMode(ChildStoryItem);
     end;
   end;
 
 begin
-  TStoryItem.ActiveStoryItem := Value;
-  ZoomTo(Value);
-
   RecursiveClearEditMode(RootStoryItemView); //Clear EditMode from all items recursively
 
   //Set any current editmode to the newly active item
   if Assigned(Value) then
-    begin
+  begin
     var StoryItem := TStoryItem(Value.View);
-    StoryItem.EditMode := HUD.EditMode; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
-    StructureView.SelectedObject := Value.View;
-    end
+    with StoryItem do
+    begin
+      EditMode := HUD.EditMode; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
+      //AreaSelector := RootStoryItemView.AreaSelector; //re-use RootStoryItem's AreaSelector (so that we don't get drawing artifacts when resizing area selector and is always on top of everything when extending outside of ActiveStoryItem's bounds - since that can have children that are not inside its area, like a speech bubble for a character) //TODO: not working correctly
+    end;
+    //Change StructureView selection
+    StructureView.SelectedObject := StoryItem;
+  end
   else
     StructureView.SelectedObject := nil;
 
   //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
+
+  TStoryItem.ActiveStoryItem := Value;
+  ZoomTo(Value);
 end;
 
 {$endregion}
@@ -422,6 +441,26 @@ end;
 {$endregion}
 
 {$REGION 'Events'}
+
+{$region 'Timer'}
+
+procedure TMainForm.StoryTimerTimer(Sender: TObject); //TODO: should show some timer animation at top-right when the story timer is enabled (AnimatedStoryMode)
+begin
+  //special case used at app startup
+  if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
+  begin
+    ActiveStoryItem := ActiveStoryItem; //re-apply ActiveStoryItem (needed upon app first loading to ZoomTo ActiveStoryItem from loaded saved state
+    StoryTimer.Enabled := false;
+    exit;
+  end;
+
+  ActivateNextStoryPoint;
+
+  if ActiveStoryItem.Home then
+    HUD.UseStoryTimer := false; //TODO: should instead define EndStoryPoint(s) and stop the timer once the end is reached
+end;
+
+{$endregion}
 
 {$region 'Actions'}
 
@@ -555,6 +594,16 @@ begin
       ActiveStoryItem.TargetsVisible := Value;
 end;
 
+procedure TMainForm.HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
+begin
+  with StoryTimer do
+  begin
+    Enabled := HUD.UseStoryTimer;
+    Interval := 8000; //proceed ever 8sec (TODO: should be easily adjustable)
+  end;
+  FTimerStarted := true;
+end;
+
 {$endregion}
 
 {$region 'Navigation actions'}
@@ -639,6 +688,12 @@ begin
           end;
       end;
     end;
+  end;
+
+  with StoryTimer do
+  begin
+    Interval := 100;
+    Enabled := true; //used to re-apply ActiveStoryItem so that we can zoom to it after the form has fully sized (FormShow event doesn't do this properly)
   end;
 end;
 

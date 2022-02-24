@@ -16,6 +16,7 @@ type
   TEditModeChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
   TStructureVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
   TTargetsVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+  TUseStoryTimerChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
 
   TStoryHUD = class(TFrame)
     btnAddTextStoryItem: TSpeedButton;
@@ -55,12 +56,14 @@ type
     btnPaste: TSpeedButton;
     actionDelete: TAction;
     btnDelete: TSpeedButton;
+    btnToggleUseStoryTimer: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);
     procedure btnToggleStructureVisibleClick(Sender: TObject);
     procedure btnToggleEditModeClick(Sender: TObject);
     procedure btnToggleTargetsVisibleClick(Sender: TObject);
+    procedure btnToggleUseStoryTimerClick(Sender: TObject);
 
   protected
     FAboutFrame: TAboutFrame;
@@ -69,19 +72,21 @@ type
     FEditMode: Boolean;
     FStructureVisible: Boolean;
     FTargetsVisible: Boolean;
+    FUseStoryTimer: Boolean;
 
     FEditModeChanged: TEditModeChangedEvent;
     FStructureVisibleChanged: TStructureVisibleChangedEvent;
     FTargetsVisibleChanged: TTargetsVisibleChangedEvent;
+    FUseStoryTimerChanged: TUseStoryTimerChangedEvent;
 
     {EditMode}
     procedure SetEditMode(const Value: Boolean); virtual;
-
     {StructureVisible}
     procedure SetStructureVisible(const Value: Boolean);
-
     {TargetsVisible}
     procedure SetTargetsVisible(const Value: Boolean);
+    {UseStoryTimer}
+    procedure SetUseStoryTimer(const Value: Boolean);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -90,10 +95,12 @@ type
     property EditMode: Boolean read FEditMode write SetEditMode default false;
     property StructureVisible: Boolean read FStructureVisible write SetStructureVisible default false;
     property TargetsVisible: Boolean read FTargetsVisible write SetTargetsVisible default false;
+    property UseStoryTimer: Boolean read FUseStoryTimer write SetUseStoryTimer default false;
 
     property OnEditModeChanged: TEditModeChangedEvent read FEditModeChanged write FEditModeChanged;
     property OnStructureVisibleChanged: TStructureVisibleChangedEvent read FStructureVisibleChanged write FStructureVisibleChanged;
     property OnTargetsVisibleChanged: TTargetsVisibleChangedEvent read FTargetsVisibleChanged write FTargetsVisibleChanged;
+    property OnUseStoryTimerChanged: TUseStoryTimerChangedEvent read FUseStoryTimerChanged write FUseStoryTimerChanged;
   end;
 
 implementation
@@ -164,6 +171,19 @@ end;
 
 {$endregion}
 
+{$region 'UseStoryTimer'}
+
+procedure TStoryHUD.SetUseStoryTimer(const Value: Boolean);
+begin
+  FUseStoryTimer := Value;
+  btnToggleUseStoryTimer.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+
+  if Assigned(FUseStoryTimerChanged) then
+    FUseStoryTimerChanged(Self, Value);
+end;
+
+{$endregion}
+
 {$ENDREGION}
 
 {$REGION 'Actions'}
@@ -192,6 +212,11 @@ end;
 procedure TStoryHUD.btnToggleTargetsVisibleClick(Sender: TObject);
 begin
   TargetsVisible := not TargetsVisible; //don't use "btnToggleTargetsVisible.Pressed", returns inconsistent values
+end;
+
+procedure TStoryHUD.btnToggleUseStoryTimerClick(Sender: TObject);
+begin
+  UseStoryTimer := not UseStoryTimer; //don't use "btnToggleUseStoryTimer.Pressed", returns inconsistent values
 end;
 
 {$endregion}
