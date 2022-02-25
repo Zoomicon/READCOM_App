@@ -19,7 +19,6 @@ type
   TUseStoryTimerChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
 
   TStoryHUD = class(TFrame)
-    btnAddTextStoryItem: TSpeedButton;
     btnPrevious: TSpeedButton;
     btnToggleEditMode: TSpeedButton;
     BtnMenu: TSpeedButton;
@@ -52,11 +51,16 @@ type
     btnAbout: TSpeedButton;
     actionCopy: TAction;
     actionPaste: TAction;
-    btnCopy: TSpeedButton;
-    btnPaste: TSpeedButton;
     actionDelete: TAction;
-    btnDelete: TSpeedButton;
     btnToggleUseStoryTimer: TSpeedButton;
+    actionAddBitmapImageStoryItem: TAction;
+    btnAddTextStoryItem: TSpeedButton;
+    btnCopy: TSpeedButton;
+    btnDelete: TSpeedButton;
+    btnFlipHorizontally: TSpeedButton;
+    btnFlipVertically: TSpeedButton;
+    btnPaste: TSpeedButton;
+    btnAddBitmapImageStoryItem: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

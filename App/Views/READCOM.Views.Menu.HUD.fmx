@@ -267,13 +267,15 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
-      object btnAddTextStoryItem: TSpeedButton
-        Action = actionAddTextStoryItem
+      object btnAddBitmapImageStoryItem: TSpeedButton
+        Action = actionAddBitmapImageStoryItem
         Anchors = [akTop, akRight]
         Enabled = True
-        Hint = 'Add Text'#13#13'Adds a TextStoryItem child into the edited StoryItem'
+        Hint = 
+          'Add Bitmap Image'#13#13'Adds a BitmapImageStoryItem placeholder into t' +
+          'he edited StoryItem'
         Images = Globals.SVGIconImageList
-        ImageIndex = 21
+        ImageIndex = 23
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -285,11 +287,31 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
+      object btnAddTextStoryItem: TSpeedButton
+        Action = actionAddTextStoryItem
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Hint = 
+          'Add Text'#13#13'Adds a TextStoryItem placeholder into the edited Story' +
+          'Item'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 21
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 6.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 45.000000000000000000
+        Size.Width = 41.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
       object btnDelete: TSpeedButton
         Action = actionDelete
         Anchors = [akTop, akRight]
         Enabled = True
-        Hint = 'Delete'#13#13'Removes the edited StoryItem'
+        Hint = 'Delete'#13#13'Delete the edited StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 8
         Margins.Left = 3.000000000000000000
@@ -297,7 +319,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 45.000000000000000000
+        Position.Y = 87.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -307,7 +329,7 @@ object StoryHUD: TStoryHUD
         Action = actionCopy
         Anchors = [akTop, akRight]
         Enabled = True
-        Hint = 'Copy'#13#13'Copies the edited StoryItem to the system clipboard'
+        Hint = 'Copy'#13#13'Copy the edited StoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 17
         Margins.Left = 3.000000000000000000
@@ -315,7 +337,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 84.000000000000000000
+        Position.Y = 126.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -326,8 +348,8 @@ object StoryHUD: TStoryHUD
         Anchors = [akTop, akRight]
         Enabled = True
         Hint = 
-          'Paste'#13#13'Pastes a StoryItem from the system clipboard into the edi' +
-          'ted StoryItem as a new child'
+          'Paste'#13#13'Paste content from the Clipboard into the edited StoryIte' +
+          'm'
         Images = Globals.SVGIconImageList
         ImageIndex = 18
         Margins.Left = 3.000000000000000000
@@ -335,7 +357,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 123.000000000000000000
+        Position.Y = 165.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -351,7 +373,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 165.000000000000000000
+        Position.Y = 207.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -359,7 +381,7 @@ object StoryHUD: TStoryHUD
       end
       object btnFlipVertically: TSpeedButton
         Anchors = [akTop, akRight]
-        Hint = 'Flip Vertically'#13#13'Mirrors the edited StoryItem vertically'
+        Hint = 'Flip Vertically'#13#13'Flips the edited StoryItem vertically'
         Images = Globals.SVGIconImageList
         ImageIndex = 20
         Margins.Left = 3.000000000000000000
@@ -367,7 +389,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 204.000000000000000000
+        Position.Y = 246.000000000000000000
         Size.Width = 41.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -486,6 +508,12 @@ object StoryHUD: TStoryHUD
       ImageIndex = 16
       OnExecute = actionHelpExecute
       ImageIndex = 16
+    end
+    object actionAddBitmapImageStoryItem: TAction
+      Category = 'Edit'
+      Text = 'Add BitmapImageStoryItem'
+      ImageIndex = 23
+      ImageIndex = 23
     end
   end
   object MultiViewFrameStand: TFrameStand

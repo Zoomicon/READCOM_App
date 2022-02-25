@@ -16,7 +16,7 @@ uses
   FMX.Layouts,
   READCOM.Views.AudioStoryItem,
   SubjectStand,
-  READCOM.App.Globals;
+  READCOM.App.Globals, System.Actions, FMX.ActnList;
 
 type
 
@@ -25,25 +25,28 @@ type
     ZoomFrame: TZoomFrame;
     StoryTimer: TTimer;
     procedure FormCreate(Sender: TObject);
-    procedure FormSaveState(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+
+    procedure FormSaveState(Sender: TObject);
+
+    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
     procedure HUDactionNewExecute(Sender: TObject);
     procedure HUDactionHomeExecute(Sender: TObject);
     procedure HUDactionPreviousExecute(Sender: TObject);
     procedure HUDactionNextExecute(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
+    procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
     procedure HUDactionDeleteExecute(Sender: TObject);
     procedure HUDactionCopyExecute(Sender: TObject);
     procedure HUDactionPasteExecute(Sender: TObject);
     procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
     procedure HUDactionFlipVerticallyExecute(Sender: TObject);
-    procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
+
     procedure FormResize(Sender: TObject);
     procedure StoryTimerTimer(Sender: TObject);
-  private
-    function GetStructureView: TStructureView;
 
   protected
     FTimerStarted: Boolean;
@@ -84,8 +87,8 @@ type
     procedure SetStoryMode(const Value: TStoryMode);
 
     {StructureView}
+    function GetStructureView: TStructureView;
     procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
-    property StructureView: TStructureView read GetStructureView stored false;
     procedure UpdateStructureView;
 
     procedure RootStoryItemViewResized(Sender: TObject);
@@ -95,7 +98,10 @@ type
     procedure HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
     procedure HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
 
+    procedure AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
+
   public
+    property StructureView: TStructureView read GetStructureView stored false;
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
 
   published
@@ -117,7 +123,8 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     READCOM.Views.PanelStoryItem,
-    READCOM.Views.TextStoryItem; //TODO: remove
+    READCOM.Views.BitmapImageStoryItem,
+    READCOM.Views.TextStoryItem;
 
 {$R *.fmx}
 
@@ -502,15 +509,25 @@ begin
     StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
 end;
 
+procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
+begin
+  //HUD.actionAddBitmapImageStoryItemExecute(Sender);
+  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem');
+end;
+
 procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
 begin
   //HUD.actionAddTextStoryItemExecute(Sender);
+  AddChildStoryItem(TTextStoryItem, 'TextStoryItem');
+end;
 
+procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
+begin
   if not Assigned(ActiveStoryItem) then exit;
 
   var OwnerAndParent := ActiveStoryItem.View;
 
-  var StoryItem := TTextStoryItem.Create(OwnerAndParent, 'TextStoryItem'); //TODO: should have separate actions for adding such default items (for prototyping) for various StoryItem classes
+  var StoryItem := TheStoryItemClass.Create(OwnerAndParent, TheName); //TODO: should have separate actions for adding such default items (for prototyping) for various StoryItem classes
 
   with StoryItem do
   begin

@@ -37,7 +37,6 @@ type
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
     procedure PasteImage(const BitmapSurface: TBitmapSurface); override;
-
     {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
@@ -47,6 +46,7 @@ type
     procedure SetEditMode(const Value: Boolean); override;
 
     procedure Loaded; override;
+    procedure UpdateGlyphVisibility;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -97,12 +97,19 @@ begin
     SendToBack;
     HitTest := false;
   end;
+
+  Glyph.Visible := true;
+end;
+
+procedure TBitmapImageStoryItem.UpdateGlyphVisibility;
+begin
+  Glyph.Visible := not Assigned(ImageControl.Bitmap.Image); //hide default Glyph if we have a bitmap image
 end;
 
 procedure TBitmapImageStoryItem.Loaded;
 begin
   inherited;
-  Glyph.Visible := not Assigned(ImageControl.Bitmap.Image); //hide default Glyph if we have a bitmap image
+  UpdateGlyphVisibility;
 end;
 
 {$endregion}
@@ -127,6 +134,10 @@ end;
 procedure TBitmapImageStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
 begin
   ImageControl.Bitmap.Assign(BitmapSurface);
+  UpdateGlyphVisibility;
+
+  if FAutoSize then
+    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
 end;
 
 {$endregion}
@@ -149,6 +160,8 @@ end;
 procedure TBitmapImageStoryItem.LoadBitmap(const Stream: TStream);
 begin
   ImageControl.Bitmap.LoadFromStream(Stream); //TODO: does it detect PNG and JPEG automatically?
+  UpdateGlyphVisibility;
+
   if FAutoSize then
     SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
 end;
@@ -167,6 +180,10 @@ end;
 procedure TBitmapImageStoryItem.SetImage(const Value: TImage);
 begin
   ImageControl.Bitmap.Assign(Value.Bitmap); //can't assign TImage directly
+  UpdateGlyphVisibility;
+
+  if FAutoSize then
+    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
 end;
 
 {$endregion}
