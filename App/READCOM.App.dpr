@@ -3,6 +3,7 @@ program READCOM.App;
 uses
   SysUtils,
   System.StartUpCopy,
+  FMX.Types, //for GlobalUseXX
   FMX.Forms,
   CodeSiteLogging,
   u_UrlOpen in 'u_UrlOpen.pas',
@@ -81,6 +82,9 @@ uses
 {$ENDIF}
 
 begin
+  //GlobalUseDX10 := False; //must do before Application.Initialize //use DX9 instead of DX10 //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
+  //GlobalUseDX := False; //must do before Application.Initialize //use GDI, no h/w acceleration //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
+
   {$IFDEF DEBUG}
   EnableCodeSite;
   ReportMemoryLeaksOnShutdown := True;
