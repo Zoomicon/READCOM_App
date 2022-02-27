@@ -34,19 +34,25 @@ type
   //--- Methods ---
 
   protected
+    procedure Loaded; override;
+    procedure UpdateGlyphVisibility;
+
+    {Z-Order}
+    function GetBackIndex: Integer; override;
+
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
     procedure PasteImage(const BitmapSurface: TBitmapSurface); override;
+
     {Image}
     function GetImage: TImage; override;
     procedure SetImage(const Value: TImage); override;
+
     {Options}
     function GetOptions: IStoryItemOptions; override;
+
     {EditMode}
     procedure SetEditMode(const Value: Boolean); override;
-
-    procedure Loaded; override;
-    procedure UpdateGlyphVisibility;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -87,17 +93,30 @@ implementation
 {$region 'Lifetime management'}
 
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
+
+  procedure SetImageControlZorder;
+  begin
+    BeginUpdate;
+    RemoveObject(ImageControl);
+    InsertObject(GetBackIndex - 1, ImageControl);
+    EndUpdate;
+  end;
+
+  procedure InitImageControl;
+  begin
+    with ImageControl do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      SetImageControlZorder;
+      HitTest := false;
+    end;
+  end;
+
 begin
   inherited;
 
-  with ImageControl do
-  begin
-    Stored := false; //don't store state, should use state from designed .FMX resource
-    SetSubComponent(true);
-    SendToBack;
-    HitTest := false;
-  end;
-
+  InitImageControl;
   Glyph.Visible := true;
 end;
 
@@ -110,6 +129,15 @@ procedure TBitmapImageStoryItem.Loaded;
 begin
   inherited;
   UpdateGlyphVisibility;
+end;
+
+{$endregion}
+
+{$region 'Z-order'}
+
+function TBitmapImageStoryItem.GetBackIndex: Integer;
+begin
+  result := (inherited GetBackIndex) + 1; //reserve two more places at the bottom for ImageControl
 end;
 
 {$endregion}

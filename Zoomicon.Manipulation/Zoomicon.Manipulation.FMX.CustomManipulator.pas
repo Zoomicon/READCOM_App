@@ -27,6 +27,7 @@ type
 
   TCustomManipulator = class(TFrame)
   protected
+    FEditMode: Boolean;
     FDragging: Boolean;
     FMouseShift: TShiftState; //TODO: if Delphi fixes the Shift parameter to not be empty at MouseClick (seems to be empty at MouseUp too btw) in the future, remove this
     FLastAreaSelectorBounds: TRectF;
@@ -46,6 +47,9 @@ type
     procedure ApplyEditModeToChild(Control: TControl);
     procedure DoAddObject(const AObject: TFmxObject); override;
     procedure DoAutoSize;
+
+    {Z-order}
+    function GetBackIndex: Integer; override;
 
     {AreaSelector}
     procedure SetAreaSelector(const Value: TAreaSelector);
@@ -71,6 +75,7 @@ type
     procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
     procedure HandleAreaSelectorTrack(Sender: TObject); //called while user resizes the area selector
     procedure HandleAreaSelectorChange(Sender: TObject); //called when user finishes resizing the area selector
+    procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 
     {Gestures}
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
@@ -99,6 +104,8 @@ type
     {$region 'Manipulation'}
     {Z-order}
     procedure BringToFrontElseSendToBack(const Control: TControl); overload; inline;
+    procedure BringToFrontElseSendToBack(const Controls: TControlList); overload;
+    procedure BringToFrontElseSendToBackSelected;
 
     {Move}
     procedure MoveControl(const Control: TControl; const DX, DY: Single; const SkipAutoSize: Boolean = false); overload; inline;
@@ -229,7 +236,7 @@ procedure TCustomManipulator.Loaded;
       HitTest := False; //TODO: check if needed for drag-drop
       Visible := EditMode;
       Opacity := 0.4;
-      SendToBack; //always do after setting Visible
+      //not doing SendToBack, assuming it's created first, since we reserve one place for it at the bottom with GetBackIndex
       DropTarget.Align := TAlignLayout.Client;
 
       Enabled := true;
@@ -241,14 +248,19 @@ procedure TCustomManipulator.Loaded;
 
 begin
   inherited;
+  CreateDropTarget;
   CreateAreaSelector;
   //CreateLocationSelector; //must do after CreateAreaSelector //NOT USED ANYMORE
-  CreateDropTarget; //must do after CreateAreaSelector (to send below that)
 end;
 
 {$region 'Manipulation'}
 
 {$region 'Z-order'}
+
+function TCustomManipulator.GetBackIndex: Integer;
+begin
+  result := (inherited GetBackIndex) + 1; //reserve one place at the bottom for DropTarget
+end;
 
 procedure TCustomManipulator.BringToFrontElseSendToBack(const Control: TControl);
 begin
@@ -257,6 +269,27 @@ begin
       Control.BringToFront
     else
       Control.SendToBack;
+end;
+
+procedure TCustomManipulator.BringToFrontElseSendToBack(const Controls: TControlList);
+begin //TODO: why does it create some TObject here when you step with the debugger?
+  BeginUpdate;
+
+  TListEx<TControl>.ForEach(Controls,
+    procedure (Control: TControl)
+    begin
+      BringToFrontElseSendToBack(Control);
+    end
+  );
+
+  EndUpdate;
+end;
+
+procedure TCustomManipulator.BringToFrontElseSendToBackSelected;
+begin
+  var TheSelected := AreaSelector.Selected;
+  BringToFrontElseSendToBack(TheSelected);
+  FreeAndNil(TheSelected);
 end;
 
 {$endregion}
@@ -536,17 +569,18 @@ begin
 
     ParentBounds := false; //CAN move outside of parent area
 
-    Visible := false;
+    Visible := FEditMode;
     Size.Size := TPointF.Zero;
     FLastAreaSelectorBounds := BoundsRect;
 
     GripSize := SELECTION_GRIP_SIZE; //TODO: should have some way to respond to AbsoluteScale change and adjust the Grip and the Border line respectively so that they don't show too big/fat
-    BringToFront; //not really doing something since we've set Visible to false
+    BringToFront;
 
     OnlyFromTop := true; //TODO: add some keyboard modifier to area selector's MouseDown override or something for SHIFT key to override this temporarily (FOnlyFromTopOverride internal flag)
 
     OnTrack := HandleAreaSelectorTrack; //not using this since we have an extra point at the center for moving the contents of the selection (in contrast to just repositioning the selection)
     OnChange := HandleAreaSelectorChange; //this is called AFTER resize, but not when done explicitly
+    OnMouseDown := HandleAreaSelectorMouseDown; //to detect double-click
   end;
 
   FAreaSelector := Value;
@@ -612,18 +646,13 @@ begin
   with DropTarget do
   begin
     Visible := Value;
-    SendToBack; //always do when Visible changed
+    //SendToBack; //always do when Visible changed
   end;
 end;
 
 {$endregion}
 
 {$region 'EditMode'}
-
-function TCustomManipulator.IsEditMode: Boolean;
-begin
-  result := Assigned(AreaSelector) and AreaSelector.Visible;
-end;
 
 procedure TCustomManipulator.ApplyEditModeToChild(Control: TControl);
 begin
@@ -636,12 +665,19 @@ begin
     end;
 end;
 
+function TCustomManipulator.IsEditMode: Boolean;
+begin
+  result := FEditMode;
+end;
+
 procedure TCustomManipulator.SetEditMode(const Value: Boolean);
 begin
+  FEditMode := Value; //must do before calling ApplyEditModeToChild
+
   if Assigned(FAreaSelector) then
     with FAreaSelector do
     begin
-      Visible := Value; //Show or Hide selection UI (this will also hide the move control point) //MUST DO FIRST (AreaSelector.Visible used to detect edit mode)
+      Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
       BringToFront; //always on top (need to do after setting Visible)
     end;
 
@@ -749,6 +785,12 @@ begin
   FreeAndNil(FAreaSelector_SelectedControls);
 end;
 
+procedure TCustomManipulator.HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
+    BringToFrontElseSendToBackSelected;
+end;
+
 {$endregion}
 
 {$region 'Gestures'}
@@ -823,28 +865,25 @@ begin
 
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
-    begin
-    var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
-    if Assigned(LObj) and (LObj.GetObject is TControl) then
-      BringToFrontElseSendToBack(TControl(LObj.GetObject));
-    exit;
-    end;
-
-  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
 
   if (ssLeft in Shift) then
     begin
     BeginUpdate;
+
     Capture; //start mouse events capturing
+
     var p := PointF(X, Y);
     FDragStartLocation := p;
+
     with AreaSelector do
     begin
+      Visible := false;
       Position.Point := p;
       Size.Size := TSizeF.Create(0 ,0); //there's no TSizeF.Zero (like TPointF.Zero)
       FAreaSelectorChanging := false;
     end;
+
     EndUpdate;
     end;
 end;
@@ -853,11 +892,12 @@ procedure TCustomManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
   inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp) and for event handlers to be fired (e.g. at ancestors)
 
-  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
 
   if (ssLeft in Shift) then
   begin
     FDragging := true;
+
     with AreaSelector do
     begin
       var LX: Single := FDragStartLocation.X; //Delphi 11 compiler issue, gives below at call to Order function error "E2033 Types of actual and formal var parameters must be identical if we skip ": Single", even though it is of type Single
@@ -867,6 +907,8 @@ begin
       Order(LY, Y);
 
       BoundsRect := RectF(LX, LY, X, Y);
+      Visible := true;
+      BringToFront; //need to do this when visibility changes
     end;
   end;
 end;
@@ -876,7 +918,7 @@ begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
 
   if (ssLeft in Shift) then
     begin
@@ -892,7 +934,7 @@ begin
 
   if FDragging then exit; //make sure a MouseClick doesn't occur if we've moved the mouse
 
-  if (AreaSelector.Parent <> Self) and (not EditMode) and (Parent is TCustomManipulator) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
 
   //TODO: if we allow using an external AreaSelector, should use ObjectAtLocalPoint of whatever object is assigned to it to "work on" (instead of doing selections on the Root manipulator if there's an hierarchy of them)
   if (ssLeft in Shift) then
@@ -906,6 +948,8 @@ begin
         rect.Inflate(d, d, d, d); //Inflating by SELECTION_GRIP_SIZE * 1.5 to avoid strange issue where dragging from the part of the knob that is over the object does selection update
         BoundsRect := rect;
         FAreaSelectorChanging := false;
+        Visible := true;
+        BringToFront; //need to do this when visibility changes
       end;
   end;
 end;
@@ -943,9 +987,9 @@ begin
 
       if (ssShift in Shift) then
       begin
-        var old_scale := Control.Scale.X;
         Control.Scale.X := new_scale;
         Control.Scale.Y := new_scale;
+        //correction for zoom center position
         Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly (?)
       end
       else

@@ -251,6 +251,8 @@ end;
 
 {$ENDREGION ...................................................................}
 
+{$REGION 'Registration' -------------------------------------------------------}
+
 procedure RegisterClasses;
 begin
   RegisterFmxClasses([TLocationSelector, TAreaSelector]); //register for persistence (in case they're used standalone)
@@ -263,6 +265,8 @@ begin
   RegisterClasses;
   RegisterComponents('Zoomicon', [TLocationSelector, TAreaSelector]);
 end;
+
+{$ENDREGION ...................................................................}
 
 initialization
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

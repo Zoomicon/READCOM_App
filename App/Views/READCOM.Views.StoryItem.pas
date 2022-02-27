@@ -60,6 +60,11 @@ type
     procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
     procedure DoRemoveObject(const AObject: TFmxObject); override;
 
+    {Z-Order}
+    function GetBackIndex: Integer; override;
+    procedure SetGlyphZorder;
+    procedure SetBorderZorder;
+
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
     procedure PasteText(const Value: String); virtual;
@@ -273,7 +278,7 @@ procedure TStoryItem.Init;
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      SendToBack; //always send to back after setting Visible
+      SetGlyphZorder;
       HitTest := false;
     end;
   end;
@@ -286,7 +291,7 @@ procedure TStoryItem.Init;
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
       Visible := EditMode; //show only in EditMode
-      SendToBack; //always send to back after setting Visible
+      SetBorderZorder;
       HitTest := false;
     end;
   end;
@@ -302,7 +307,7 @@ procedure TStoryItem.Init;
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
       Visible := EditMode;
-      SendToBack; //TODO: ??? or done at ancestor anyway? (note order of Inits below will play part in resulting order) //always send to back after setting Visible
+      //Z-order should have been locked via GetBackIndex at ancestor
 
       HitTest := false; //TODO: done at ancestor anyway?
     end;
@@ -426,6 +431,37 @@ begin
     RandomAudioStoryItem.Play;
 end;
 
+{$region 'Z-order'}
+
+function TStoryItem.GetBackIndex: Integer;
+begin
+  result := (inherited GetBackIndex) + 2; //reserve two more places at the bottom for Glyph and Border
+end;
+
+procedure TStoryItem.SetBorderZorder;
+begin
+  (*
+  BeginUpdate;
+  RemoveObject(Border);
+  InsertObject(GetBackIndex - 2, Border);
+  EndUpdate;
+  *)
+  Border.SendToBack;
+end;
+
+procedure TStoryItem.SetGlyphZorder;
+begin
+  (*
+  BeginUpdate;
+  RemoveObject(Glyph);
+  InsertObject(GetBackIndex - 1, Glyph);
+  EndUpdate;
+  *)
+  Glyph.SendToBack;
+end;
+
+{$endregion}
+
 {$REGION 'PROPERTIES' ------------}
 
 {$region 'Name'}
@@ -459,7 +495,7 @@ begin
     with Border do
     begin
       Visible := Value;
-      SendToBack; //always send to back after setting Visible
+      SetBorderZorder;
     end;
 end;
 
@@ -565,8 +601,8 @@ procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited; //call ancestor implementation
 
-  Glyph.SendToBack; //send the glyph even more below the DropTarget ("inherited SetEditMode" sent it to the back)
-  Border.SendToBack; //set the border even more below the DropTarget and the Glyph
+  SetGlyphZorder; //send the glyph even more below the DropTarget ("inherited SetEditMode" sent it to the back)
+  SetBorderZorder; //set the border even more below the DropTarget and the Glyph
 
   for var StoryItem in FStoryItems do
     ApplyParentEditMode(StoryItem);
