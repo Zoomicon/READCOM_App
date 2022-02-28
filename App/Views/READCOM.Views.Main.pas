@@ -593,9 +593,9 @@ procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
   if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
     begin
-    var previousStoryPoint := ActiveStoryItem.PreviousStoryPoint;
-    FreeAndNil(ActiveStoryItem.View);
-    ActiveStoryItem := previousStoryPoint;
+    var StoryItem := ActiveStoryItem.View;
+    ActivateParentStoryItem; //make ParentStoryItem active before deleting the previously ActiveStoryItem
+    FreeAndNil(StoryItem);
     end
   else
     HUD.actionNew.Execute; //deleting the RootStoryItem via "New" action
