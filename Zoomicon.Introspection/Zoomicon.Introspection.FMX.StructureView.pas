@@ -21,6 +21,9 @@ uses
   FMX.TreeView,
   FMX.Types; //for RegisterFmxClasses
 
+type
+  TTreeFilterMode = (tfFlatten, tfPrune);
+
 const
   {$region 'Defaults'}
 
@@ -30,6 +33,7 @@ const
   DEFAULT_SHOW_TYPES = false;
   DEFAULT_SHOW_HINT_NAMES = true;
   DEFAULT_SHOW_HINT_TYPES = false;
+  DEFAULT_FILTER_MODE = tfPrune;
   DEFAULT_DRAGDROP_REORDER = false; //acting as structure viewer, not editor by default
   DEFAULT_DRAGDROP_REPARENT = false; //acting as structure viewer, not editor by default
   DEFAULT_DRAGDROP_SELECTTARGET = true; //on drop, target is selected
@@ -43,6 +47,7 @@ type
 
   TSelectionEvent = procedure(Sender: TObject; const Selection: TObject) of object;
   TRestructuringEvent = procedure(Sender: TObject; const RestructuredChild: TObject; const RestructuredParent: TObject; const Operation: TRestructuringOperation) of object;
+  TShowFilterEvent = procedure(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean) of object;
 
   {$REGION 'TStructureView' --------------------------------------------------------}
 
@@ -62,6 +67,7 @@ type
     FShowTypes: Boolean;
     FShowHintNames: Boolean;
     FShowHintTypes: Boolean;
+    FFilterMode: TTreeFilterMode;
     {DragDropXX}
     FDragDropReorder: Boolean;
     FDragDropReparent: Boolean;
@@ -69,6 +75,7 @@ type
     {Events}
     FOnSelection: TSelectionEvent;
     FOnRestructuring: TRestructuringEvent;
+    FOnShowFilter: TShowFilterEvent;
 
     {GUIRoot}
     procedure SetGUIRoot(const Value: TControl); virtual;
@@ -98,6 +105,7 @@ type
   published
     //Properties//
     property GUIRoot: TControl read FGUIRoot write SetGUIRoot;
+
     property ShowOnlyClasses: TClassList read FShowOnlyClasses write SetShowOnlyClasses; //default nil
     property ShowOnlyVisible: Boolean read FShowOnlyVisible write SetShowOnlyVisible default DEFAULT_SHOW_ONLY_VISIBLE;
     property ShowOnlyNamed: Boolean read FShowOnlyNamed write SetShowOnlyNamed default DEFAULT_SHOW_ONLY_NAMED;
@@ -105,11 +113,16 @@ type
     property ShowTypes: Boolean read FShowTypes write SetShowTypes default DEFAULT_SHOW_TYPES;
     property ShowHintNames: Boolean read FShowHintNames write SetShowHintNames default DEFAULT_SHOW_HINT_NAMES;
     property ShowHintTypes: Boolean read FShowHintTypes write SetShowHintTypes default DEFAULT_SHOW_HINT_TYPES;
+    property FilterMode: TTreeFilterMode read FFilterMode write FFilterMode default DEFAULT_FILTER_MODE;
+
     property DragDropReorder: Boolean read FDragDropReorder write SetDragDropReorder default DEFAULT_DRAGDROP_REORDER;
     property DragDropReparent: Boolean read FDragDropReparent write SetDragDropReparent default DEFAULT_DRAGDROP_REPARENT;
     property DragDropSelectTarget: Boolean read FDragDropSelectTarget write FDragDropSelectTarget default DEFAULT_DRAGDROP_SELECTTARGET;
+
     property SelectedObject: TObject read GetSelectedObject write SetSelectedObject; //default nil
+
     //Events//
+    property OnShowFilter: TShowFilterEvent read FOnShowFilter write FOnShowFilter;
     property OnSelection: TSelectionEvent read FOnSelection write FOnSelection;
     property OnRestructuring: TRestructuringEvent read FOnRestructuring write FOnRestructuring;
   end;
@@ -159,7 +172,7 @@ constructor TStructureView.Create(AOwner: TComponent);
     SetDragDropReparent(DEFAULT_DRAGDROP_REPARENT);
   end;
 
-  procedure InitProperties;
+  procedure InitFilters;
   begin
     FShowOnlyClasses := nil;
     FShowOnlyVisible := DEFAULT_SHOW_ONLY_VISIBLE;
@@ -168,6 +181,7 @@ constructor TStructureView.Create(AOwner: TComponent);
     FShowTypes := DEFAULT_SHOW_TYPES;
     FShowHintNames := DEFAULT_SHOW_HINT_NAMES;
     FShowHintTypes := DEFAULT_SHOW_HINT_TYPES;
+    FFilterMode := DEFAULT_FILTER_MODE;
   end;
 
 begin
@@ -177,8 +191,7 @@ begin
   InitTreeView;
 
   InitDragDrop;
-
-  InitProperties;
+  InitFilters;
 end;
 
 destructor TStructureView.Destroy;
@@ -207,13 +220,35 @@ procedure TStructureView.LoadTreeView;
 
   procedure LoadTreeItemChild(const TheControl: TControl; const TheParent: TFmxObject; const IconHeight: Single);
   begin
-    if not Assigned(TheControl) or
-       (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
-       (FShowOnlyVisible and (not TheControl.Visible)) or
-       (FShowOnlyNamed and (TheControl.Name = '')) //ignore style-related controls (unnamed), including their children
-      then exit;
+    if not Assigned(TheControl) then exit;
 
-    var TreeItem := TTreeViewItem.Create(Parent);
+    var FilterOut :=
+      (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
+      (FShowOnlyVisible and (not TheControl.Visible)) or
+      (FShowOnlyNamed and (TheControl.Name = '')); //helps ignore style-related controls (unnamed), including their children
+
+    if (not FilterOut) and Assigned(FOnShowFilter) then //do custom filtering if TheControl is not filtered out already
+    begin
+      var ShowControl := true;
+      FOnShowFilter(Self, TheControl, ShowControl);
+      FilterOut := not ShowControl;
+    end;
+
+    if FilterOut then
+    begin
+      if (FFilterMode = tfFlatten) then
+      begin
+        BeginUpdate;
+        //Load items recursively (depth-first)//
+        for var ChildControl in TheControl.Controls do
+          LoadTreeItemChild(ChildControl, TheParent, IconHeight); //skip the item but add its children to the parent (Flatten subtree)
+        EndUpdate;
+      end;
+
+      exit; //for (FilterMode = tfPrune) we just need to skip this subtree
+    end;
+
+    var TreeItem := TTreeViewItem.Create(TheParent); //use Parent tree node as the Owner too
     with TreeItem do
     begin
       //Keep a reference to TheControl at the TreeViewItem

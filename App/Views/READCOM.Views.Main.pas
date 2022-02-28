@@ -88,6 +88,7 @@ type
 
     {StructureView}
     function GetStructureView: TStructureView;
+    procedure StructureViewShowFilter(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean);
     procedure StructureViewSelection(Sender: TObject; const Selection: TObject);
     procedure UpdateStructureView;
 
@@ -398,10 +399,18 @@ begin
       ShowOnlyClasses := TClassList.Create([TStoryItem]); //TStructureView's destructor will FreeAndNil that TClassList instance
       ShowNames := false;
       ShowTypes := false;
+
+      if (StoryMode <> EditMode) then //if non-Edit mode
+        FilterMode := tfFlatten
+      else
+        FilterMode := tfPrune;
+
       DragDropReorder := (StoryMode = EditMode); //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
       DragDropReparent := (StoryMode = EditMode); //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
       DragDropSelectTarget := true; //always select (make active / zoom to) the Target StoryItem after a drag-drop operation in the structure view
+
       OnSelection := StructureViewSelection;
+      OnShowFilter := StructureViewShowFilter;
     end;
   end;
 
@@ -412,6 +421,11 @@ procedure TMainForm.SetStoryMode(const Value: TStoryMode);
 begin
   FStoryMode := Value;
   var isEditMode := (Value = EditMode);
+
+  if isEditMode then
+    StructureView.FilterMode := tfFlatten
+  else
+    StructureView.FilterMode := tfPrune;
 
   if Assigned(ActiveStoryItem) then
   begin
@@ -428,7 +442,11 @@ begin
     begin
       DragDropReorder := isEditMode; //allow moving items in the structure view to change parent or add to same parent again to change their Z-order
       DragDropReparent := isEditMode; //allow reparenting //TODO: should do after listening to some event so that the control is scaled/repositioned to show in their parent (note that maybe we should also have parent story items clip their children, esp if their panels)
+      UpdateStructureView; //must refresh StructureView contents since we change the FilterMode based on isEditMode
     end;
+
+  if (not isEditMode) and Assigned(ActiveStoryItem) and (not ActiveStoryItem.StoryPoint) then
+    ActiveStoryItem := ActiveStoryItem.PreviousStoryPoint;
 end;
 
 {$endregion}
@@ -448,6 +466,25 @@ end;
 {$endregion}
 
 {$REGION 'Events'}
+
+{$region 'StructureView'}
+
+procedure TMainForm.StructureViewShowFilter(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean);
+begin
+  if (StoryMode <> EditMode) and (TheObject is TStoryItem) then //in non-Edit mode
+    ShowObject := TStoryItem(TheObject).StoryPoint; //only show StoryPoints (assuming StructureView's FilterMode=tfFlatten since we're not in Edit mode - this is important to be set
+end;
+
+procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
+begin
+  if not (StoryMode = EditMode) then //in non-Edit mode
+    HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
+
+  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
+  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are StoryPoints (and only show those)
+end;
+
+{$endregion}
 
 {$region 'Timer'}
 
@@ -542,7 +579,7 @@ begin
     end
     else
     begin
-      var ItemSize := StoryItem.DefaultSize;
+      var ItemSize := DefaultSize;
       Size.Size := ItemSize; //TODO: StoryItem constructor should have set its DefaultSize
       //Center the new item in its parent...
       Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
@@ -555,7 +592,11 @@ end;
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
   if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
-    FreeAndNil(ActiveStoryItem.View)
+    begin
+    var previousStoryPoint := ActiveStoryItem.PreviousStoryPoint;
+    FreeAndNil(ActiveStoryItem.View);
+    ActiveStoryItem := previousStoryPoint;
+    end
   else
     HUD.actionNew.Execute; //deleting the RootStoryItem via "New" action
 end;
@@ -594,7 +635,16 @@ begin
   begin
     HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
 
+    if (StoryMode <> EditMode) then //if non-Edit mode
+      StructureView.FilterMode := tfFlatten
+    else
+      StructureView.FilterMode := tfPrune;
+
     UpdateStructureView; //in case the RootStoryItem has changed
+
+    //if Assigned(ActiveStoryItem) then
+      //StructureView.SelectedObject := ActiveStoryItem.View; //doesn't seem to work correctly (keeps StructureView pane closed)
+
     FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
   end;
 end;
@@ -638,15 +688,6 @@ end;
 procedure TMainForm.HUDactionNextExecute(Sender: TObject);
 begin
   ActivateNextStoryPoint;
-end;
-
-procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
-begin
-  if not (StoryMode = EditMode) then //in non-Edit mode
-    HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
-
-  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
-  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are StoryPoints (and only show those)
 end;
 
 {$endregion}

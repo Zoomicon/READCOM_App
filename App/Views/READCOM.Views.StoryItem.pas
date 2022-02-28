@@ -672,19 +672,18 @@ end;
 
 {$region 'Previous/Next StoryPoint'}
 
-function TStoryItem.GetPreviousStoryPoint: IStoryItem;
+function TStoryItem.GetPreviousStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
 begin
   var parentItem := ParentStoryItem;
 
-  //Check if RootStoryItem
+  //Check children
+  var lastChildStoryPoint := GetLastChildStoryPoint; //TODO: should have option to do it recursively (with param to not go upwards) so that we can find grandchildren
+  if Assigned(lastChildStoryPoint) then
+    exit(lastChildStoryPoint);
+
+  //Check if RootStoryItem with no StoryItem (grand)children
   if not Assigned(parentItem) then
-  begin
-    var lastChildStoryPoint := GetLastChildStoryPoint;
-    if Assigned(lastChildStoryPoint) then
-      exit(lastChildStoryPoint)
-    else
-      exit(nil); //none found
-  end;
+    exit(nil); //none found
 
   //Check previous siblings
   var previousSiblingStoryPoint := GetPreviousSiblingStoryPoint;
@@ -700,19 +699,18 @@ begin
   result := parentItem.GetLastChildStoryPoint; //this may end up returning Self
 end;
 
-function TStoryItem.GetNextStoryPoint: IStoryItem;
+function TStoryItem.GetNextStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
 begin
   var parentItem := ParentStoryItem;
 
-  //Check if RootStoryItem
+  //Check children
+  var firstChildStoryPoint := GetFirstChildStoryPoint; //TODO: should have option to do it recursively (with param to not go upwards) so that we can find grandchildren
+  if Assigned(firstChildStoryPoint) then
+    exit(firstChildStoryPoint);
+
+  //If RootStoryItem with no StoryItem (grand)children
   if not Assigned(parentItem) then
-  begin
-    var firstChildStoryPoint := GetFirstChildStoryPoint;
-    if Assigned(firstChildStoryPoint) then
-      exit(firstChildStoryPoint)
-    else
-      exit(nil); //none found
-  end;
+    exit(nil); //none found
 
   //Check next siblings
   var nextSiblingStoryPoint := GetNextSiblingStoryPoint;
@@ -722,7 +720,7 @@ begin
   //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
   var ancestorStoryPoint := GetAncestorStoryPoint;
   if Assigned(ancestorStoryPoint) then
-    exit(ancestorStoryPoint);
+    exit(ancestorStoryPoint); //TODO: this won't work since if we go up then Next will bring us back inside
 
   //Loop in siblings (checking previous siblings from the start)
   result := parentItem.GetFirstChildStoryPoint; //this may end up returning Self
@@ -1068,8 +1066,23 @@ begin
   //Center the new item...
   var StoryItemView := StoryItem.View;
   Self.InsertComponent(StoryItemView); //make sure we set Self as owner //TODO: need to call a safe method to do this with rename (see constructor above and extract such method)
-  var ItemSize := StoryItemView.Size;
-  StoryItemView.Position.Point := PointF(Size.Width/2 - ItemSize.Width/2, Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+
+  var OwnerAndParent := Self;
+  var TheAreaSelector := AreaSelector; //need our AreaSelector, not the StoryItem's
+  with StoryItemView do
+  if TheAreaSelector.Visible and (TheAreaSelector.Width <> 0) and (TheAreaSelector.Height <> 0) then
+  begin
+    Size.Size := TheAreaSelector.Size.Size;
+    Position.Point := TheAreaSelector.Position.Point; //TODO: assuming the AreaSelector has the same parent, if not (say using a global area selector in the future) should have some way for the AreaSelector to give map the coordinates to the wanted parent
+  end
+  else
+  begin
+    var ItemSize := DefaultSize;
+    Size.Size := ItemSize; //TODO: StoryItem constructor should have set its DefaultSize
+    //Center the new item in its parent...
+    Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
+  end;
+
   StoryItemView.Align := TAlignLayout.Scale; //IMPORTANT: adjust when parent resizes
   StoryItemView.Parent := Self;
   StoryItemView.BringToFront; //load as front-most
