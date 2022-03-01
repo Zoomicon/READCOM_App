@@ -235,7 +235,9 @@ type
 
 implementation
   uses
-    {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
+    {$IFDEF DEBUG}
+    {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
+    {$ENDIF}
     u_UrlOpen, //for url_Open_In_Browser
     System.IOUtils, //for TPath
     FMX.Platform, //for TPlatformServices
@@ -1017,7 +1019,7 @@ begin
   with THackReader(Reader) do
     begin
     Handled := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
-    {$IFDEF DEBUG}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}
+    {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}{$ENDIF}
     end;
 end;
 

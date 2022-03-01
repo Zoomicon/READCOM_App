@@ -7,7 +7,7 @@ uses
   Zoomicon.Puzzler.Classes in '..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   Zoomicon.Generics.Collections in '..\..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas';
+  Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas';
 
 {$R *.res}
 

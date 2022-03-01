@@ -118,7 +118,9 @@ var
 
 implementation
   uses
-    {$IFDEF DEBUG}CodeSiteLogging,{$ENDIF}
+    {$IFDEF DEBUG}
+    {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
+    {$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
@@ -727,20 +729,20 @@ begin
       var TheRootStoryItemView := TPanelStoryItem.Create(Self);
       try
         TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}
+        {$IFDEF DEBUG}{$IFDEF WINDOWS}
         try
           CodeSite.Send(TheRootStoryItemView.SaveToString);
         finally
           //NOP
         end;
-        {$ENDIF}
+        {$ENDIF}{$ENDIF}
         RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
         result := true;
       except
         on E: Exception do
           begin
           Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-          {$IFDEF DEBUG}CodeSite.SendException(E);{$ENDIF}
+          {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
           end;
@@ -757,7 +759,7 @@ end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);
 begin
-  {$IFDEF DEBUG}CodeSite.EnterMethod('SaveState');{$ENDIF}
+  {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.EnterMethod('SaveState');{$ENDIF}{$ENDIF}
   //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
@@ -766,22 +768,22 @@ begin
     with SaveState do
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}
+        {$IFDEF DEBUG}{$IFDEF WINDOWS}
         try
           CodeSite.Send(TheRootStoryItemView.SaveToString);
         finally
           //NOP
         end;
-        {$ENDIF}
+        {$ENDIF}{$ENDIF}
       except
         On E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
-          {$IFDEF DEBUG}CodeSite.SendException(E);{$ENDIF}
+          {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           end;
     end;
-  {$IFDEF DEBUG}CodeSite.ExitMethod('SaveState');{$ENDIF}
+  {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
 end;
 
 {$endregion}

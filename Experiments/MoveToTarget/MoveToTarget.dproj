@@ -253,7 +253,7 @@
         <DCCReference Include="..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
         <DCCReference Include="..\..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
         <DCCReference Include="..\..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
-        <DCCReference Include="..\..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
+        <DCCReference Include="..\..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

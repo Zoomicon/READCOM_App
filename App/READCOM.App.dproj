@@ -262,13 +262,22 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
             <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
+            <Form>ZoomFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas">
             <Form>StructureView</Form>
             <DesignClass>TFrame</DesignClass>
@@ -282,23 +291,13 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
-            <Form>ZoomFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
-        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas"/>
-        <DCCReference Include="..\Zooming.Helpers\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
+        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
+        <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas"/>
+        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
             <Form>Globals</Form>
             <DesignClass>TDataModule</DesignClass>
@@ -352,6 +351,7 @@
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
         <None Include="TODO.html"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -382,6 +382,188 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Configuration="Debug" Class="Android_SplashImage640">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\strings.xml" Configuration="Debug" Class="Android_Strings">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\colors.xml" Configuration="Debug" Class="Android_Colors">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\READCOM_App.classes" Configuration="Debug" Class="AndroidClasses">
+                    <Platform Name="Android">
+                        <Operation>64</Operation>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\splash_image_def.xml" Configuration="Debug" Class="AndroidSplashImageDef">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\styles.xml" Configuration="Release" Class="AndroidSplashStyles">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Debug" Class="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Debug" Class="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Debug" Class="AndroidGDBServer">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Release" Class="Android_LauncherIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Release" Class="AndroidGDBServer">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\READCOM.App.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>READCOM_App.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Release" Class="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Release" Class="Android_LauncherIcon144">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\strings.xml" Configuration="Release" Class="Android_Strings">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Configuration="Release" Class="Android_LauncherIcon192">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\styles-v21.xml" Configuration="Release" Class="AndroidSplashStylesV21">
+                    <Platform Name="Android">
+                        <RemoteName>styles.xml</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\libREADCOM.App.so" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Android">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Debug" Class="Android_LauncherIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Debug" Class="Android_LauncherIcon144">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Release" Class="Android_LauncherIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Release" Class="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Debug" Class="Android_LauncherIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Configuration="Debug" Class="Android_LauncherIcon192">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\AndroidManifest.xml" Configuration="Debug" Class="ProjectAndroidManifest">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Debug" Class="Android_SplashImage960">
+                    <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Debug" Class="Android_NotificationIcon72">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
+                    <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Debug\styles.xml" Configuration="Debug" Class="AndroidSplashStyles">
+                    <Platform Name="Android">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\READCOM.App.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>READCOM_App.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Android\Release\libREADCOM.App.so" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Android">
                         <RemoteName>libREADCOM_App.so</RemoteName>
@@ -400,6 +582,24 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Android\Debug\styles-v21.xml" Configuration="Debug" Class="AndroidSplashStylesV21">
+                    <Platform Name="Android">
+                        <RemoteName>styles.xml</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Configuration="Debug" Class="Android_NotificationIcon48">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="TODO.html" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Android">
+                        <RemoteDir>.\assets\internal\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Android\Release\AndroidManifest.xml" Configuration="Release" Class="ProjectAndroidManifest">
                     <Platform Name="Android">
                         <Overwrite>true</Overwrite>
@@ -411,13 +611,14 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
-                    <Platform Name="OSX32">
+                <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile">
+                    <Platform Name="Android">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Android\Release\styles.xml" Configuration="Release" Class="AndroidSplashStyles">
-                    <Platform Name="Android">
+                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
+                    <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -427,20 +628,21 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Configuration="Release" Class="Android_SplashImage426">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Configuration="Release" Class="Android_NotificationIcon24">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Release" Class="AndroidGDBServer">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Configuration="Release" Class="Android_SplashImage426">
                     <Platform Name="Android">
+                        <RemoteName>splash_image.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
+                    <Platform Name="Android">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -450,7 +652,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Configuration="Release" Class="Android_SplashImage470">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Configuration="Debug" Class="Android_LauncherIcon36">
+                    <Platform Name="Android">
+                        <RemoteName>ic_launcher.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Configuration="Debug" Class="Android_SplashImage426">
                     <Platform Name="Android">
                         <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -462,67 +670,20 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Configuration="Release" Class="Android_NotificationIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Configuration="Debug" Class="Android_NotificationIcon24">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\READCOM.App.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>READCOM_App.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Configuration="Release" Class="Android_LauncherIcon72">
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Configuration="Debug" Class="Android_NotificationIcon36">
                     <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Configuration="Release" Class="Android_LauncherIcon48">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
+                        <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\strings.xml" Configuration="Release" Class="Android_Strings">
-                    <Platform Name="Android">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Configuration="Release" Class="Android_LauncherIcon144">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\styles-v21.xml" Configuration="Release" Class="AndroidSplashStylesV21">
-                    <Platform Name="Android">
-                        <RemoteName>styles.xml</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Configuration="Release" Class="Android_LauncherIcon192">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Configuration="Release" Class="Android_LauncherIcon96">
-                    <Platform Name="Android">
-                        <RemoteName>ic_launcher.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Configuration="Release" Class="Android_SplashImage960">
-                    <Platform Name="Android">
-                        <RemoteName>splash_image.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -542,18 +703,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
-                    <Platform Name="iOSSimulator">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Win64\Debug\READCOM.App.exe" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win64">
-                        <RemoteName>READCOM_App.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Configuration="Release" Class="Android_NotificationIcon96">
+                    <Platform Name="Android">
+                        <RemoteName>ic_notification.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Configuration="Debug" Class="Android_NotificationIcon96">
                     <Platform Name="Android">
                         <RemoteName>ic_notification.png</RemoteName>
                         <Overwrite>true</Overwrite>

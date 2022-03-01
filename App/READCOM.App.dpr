@@ -3,13 +3,33 @@ program READCOM.App;
 uses
   SysUtils,
   System.StartUpCopy,
-  FMX.Types, //for GlobalUseXX
+  FMX.Types,
   FMX.Forms,
-  CodeSiteLogging,
+
+  {$IFDEF DEBUG}
+  {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF} //TODO: see why CodeSiteLogging isn't available when doing e.g. Android32 build
+  {$ENDIF}
   u_UrlOpen in 'u_UrlOpen.pas',
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
+  Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
+  Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas',
+  Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
+  Zoomicon.Helpers.RTL.StreamHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
+  Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas',
+  Zoomicon.Helpers.FMX.Forms.ApplicationHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas',
+  Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
+  Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
+  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas',
+  Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas',
+  Zoomicon.Zooming.FMX in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas',
+  Zoomicon.Zooming.FMX.ZoomFrame in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame},
+  Zoomicon.Zooming.Models in '..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
+  Zoomicon.Introspection.FMX.StructureView in '..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame},
+  Zoomicon.Manipulation.FMX.CustomManipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
+  Zoomicon.Manipulation.FMX.Manipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas' {Manipulator: TFrame},
+  Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
   Zoomicon.Media.FMX in '..\Zoomicon.Media\Zoomicon.Media.FMX.pas',
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
   Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
@@ -17,24 +37,6 @@ uses
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
-  Zoomicon.Introspection.FMX.StructureView in '..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame},
-  Zoomicon.Manipulation.FMX.CustomManipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
-  Zoomicon.Manipulation.FMX.Manipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas' {Manipulator: TFrame},
-  Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
-  Zoomicon.Zooming.FMX in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas',
-  Zoomicon.Zooming.FMX.ZoomFrame in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame},
-  Zoomicon.Zooming.Models in '..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas',
-  Zoomicon.Helpers.FMX.Forms.ApplicationHelper in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas',
-  Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
-  Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
-  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
-  Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
-  Zoomicon.Helpers.RTL.StreamHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
-  Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
-  Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas',
-  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas',
-  Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers in '..\Zooming.Helpers\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
@@ -49,11 +51,12 @@ uses
   READCOM.Views.StoryItemFactory in 'Views\READCOM.Views.StoryItemFactory.pas',
   READCOM.Views.Menu.HUD in 'Views\READCOM.Views.Menu.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
-  READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame};
+  READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
+  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
 
 {$R *.res}
 
-{$IFDEF DEBUG}
+{$IFDEF DEBUG}{$IFDEF WINDOWS}
 
   procedure EnableCodeSite;
   begin
@@ -79,14 +82,14 @@ uses
     end;
   end;
 
-{$ENDIF}
+{$ENDIF}{$ENDIF}
 
 begin
   //GlobalUseDX10 := False; //must do before Application.Initialize //use DX9 instead of DX10 //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
   //GlobalUseDX := False; //must do before Application.Initialize //use GDI, no h/w acceleration //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
 
   {$IFDEF DEBUG}
-  EnableCodeSite;
+  {$IFDEF WINDOWS}EnableCodeSite;{$ENDIF}
   ReportMemoryLeaksOnShutdown := True;
   {$ELSE}
   CodeSite.Enabled := False;

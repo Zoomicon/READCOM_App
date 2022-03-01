@@ -41,7 +41,8 @@ implementation
 {$IFDEF ANDROID}
 uses
   System.SysUtils, //TODO: is this needed?
-  Androidapi.Helpers; //for TAndroidHelper, JStringToString
+  Androidapi.Helpers, //for TAndroidHelper, JStringToString
+  Androidapi.Jni.JavaTypes; //to avoid "H2443 Inline function 'JStringToString' has not been expanded"
 {$ENDIF}
 
 {TApplicationHelper}
