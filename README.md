@@ -7,6 +7,8 @@ https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 Under development, can try early releases here:
 https://github.com/Zoomicon/READCOM_App/releases
 
+Walk-through video:
+https://www.youtube.com/watch?v=0vXp5jUf8cU
 
 ## HowTo: enable SVG previews for File Add/Open Dialogs on Windows
 
