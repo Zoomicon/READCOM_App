@@ -137,7 +137,7 @@ end;
 
 function TBitmapImageStoryItem.GetBackIndex: Integer;
 begin
-  result := (inherited GetBackIndex) + 1; //reserve two more places at the bottom for ImageControl
+  result := inherited + 1; //reserve two more places at the bottom for ImageControl
 end;
 
 {$endregion}
@@ -174,7 +174,7 @@ end;
 
 function TBitmapImageStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_BITMAP_IMAGE;
+  result := FILTER_BITMAP_IMAGE + '|' + inherited;
 end;
 
 procedure TBitmapImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

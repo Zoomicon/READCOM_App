@@ -120,7 +120,7 @@ end;
 
 function TAudioStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_AUDIO;
+  result := FILTER_AUDIO + '|' + inherited;
 end;
 
 procedure TAudioStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

@@ -265,7 +265,7 @@ end;
 
 function TTextStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_TEXT;
+  result := FILTER_TEXT + '|' + inherited;
 end;
 
 procedure TTextStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

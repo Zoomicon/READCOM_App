@@ -84,7 +84,7 @@ end;
 
 function TVectorImageStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_VECTOR_IMAGE;
+  result := FILTER_VECTOR_IMAGE + '|' + inherited;
 end;
 
 procedure TVectorImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);

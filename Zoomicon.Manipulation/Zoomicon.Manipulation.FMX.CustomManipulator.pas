@@ -259,7 +259,7 @@ end;
 
 function TCustomManipulator.GetBackIndex: Integer;
 begin
-  result := (inherited GetBackIndex) + 1; //reserve one place at the bottom for DropTarget
+  result := inherited + 1; //reserve one place at the bottom for DropTarget
 end;
 
 procedure TCustomManipulator.BringToFrontElseSendToBack(const Control: TControl);
@@ -932,7 +932,7 @@ begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if FDragging then exit; //make sure a MouseClick doesn't occur if we've moved the mouse
+  //if FDragging then exit; //make sure a MouseClick doesn't occur if we've moved the mouse //TODO: was supposed to fix an area drag that had bottom-right onto some object (that results in thinking that object was clicked and selecting it instead by changing selection area bounds to wrap it), but cause click-to-select to not work anymore (seems MouseMove is always called, setting fDragging to true)
 
   if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
 

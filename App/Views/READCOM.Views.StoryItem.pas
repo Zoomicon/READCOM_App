@@ -437,7 +437,7 @@ end;
 
 function TStoryItem.GetBackIndex: Integer;
 begin
-  result := (inherited GetBackIndex) + 2; //reserve two more places at the bottom for Glyph and Border
+  result := inherited + 2; //reserve two more places at the bottom for Glyph and Border
 end;
 
 procedure TStoryItem.SetBorderZorder;
