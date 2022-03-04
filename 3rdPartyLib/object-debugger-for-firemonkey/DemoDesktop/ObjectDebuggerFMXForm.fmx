@@ -35,6 +35,7 @@ object ObjectDebuggerFMXForm: TObjectDebuggerFMXForm
           312s
           483s)
         inherited TabItemProperties: TTabItem
+          Size.Width = 74.000000000000000000
           ExplicitSize.cx = 50.000000000000000000
           ExplicitSize.cy = 26.000000000000000000
           inherited sgProp: TStringGrid
@@ -51,6 +52,7 @@ object ObjectDebuggerFMXForm: TObjectDebuggerFMXForm
           end
         end
         inherited TabItemEvents: TTabItem
+          Size.Width = 54.000000000000000000
           ExplicitSize.cx = 50.000000000000000000
           ExplicitSize.cy = 26.000000000000000000
           inherited sgEvt: TStringGrid
@@ -67,6 +69,7 @@ object ObjectDebuggerFMXForm: TObjectDebuggerFMXForm
           end
         end
         inherited TabItemData: TTabItem
+          Size.Width = 45.000000000000000000
           ExplicitSize.cx = 50.000000000000000000
           ExplicitSize.cy = 26.000000000000000000
           inherited sgData: TStringGrid

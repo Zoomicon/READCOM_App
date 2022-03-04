@@ -5,16 +5,20 @@ uses
   System.StartUpCopy,
   FMX.Types,
   FMX.Forms,
-
   {$IFDEF DEBUG}
-  {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF} //TODO: see why CodeSiteLogging isn't available when doing e.g. Android32 build
-  {$ENDIF}
-  u_UrlOpen in 'u_UrlOpen.pas',
+  {$IFDEF WINDOWS}
+  CodeSiteLogging,
+  {$ENDIF }
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
+  {$ENDIF }
+  u_UrlOpen in 'u_UrlOpen.pas',
   Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
   Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas',
+  Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
+  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
+  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
   Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
   Zoomicon.Helpers.RTL.StreamHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
   Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas',
@@ -32,11 +36,9 @@ uses
   Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
   Zoomicon.Media.FMX in '..\Zoomicon.Media\Zoomicon.Media.FMX.pas',
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
-  Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
-  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
+  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
-  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   READCOM.App.Models in 'READCOM.App.Models.pas',
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
@@ -52,70 +54,10 @@ uses
   READCOM.Views.Menu.HUD in 'Views\READCOM.Views.Menu.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
-  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas';
+  READCOM.App.Main in 'READCOM.App.Main.pas';
 
 {$R *.res}
 
-{$IFDEF DEBUG}{$IFDEF WINDOWS}
-
-  procedure EnableCodeSite;
-  begin
-    CodeSite.Enabled := CodeSite.Installed;
-    if CodeSite.Enabled then
-    begin
-      if CodeSite.Enabled then
-      begin
-        var Destination := TCodeSiteDestination.Create(Application);
-        with Destination do
-          begin
-          with LogFile do
-            begin
-            Active := True;
-            FileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.csl');
-            FilePath := '$(MyDocs)\My CodeSite Files\Logs\';
-            end;
-          Viewer.Active := True; // also show Live Viewer
-          end;
-        CodeSite.Destination := Destination;
-        CodeSite.Clear
-      end;
-    end;
-  end;
-
-{$ENDIF}{$ENDIF}
-
 begin
-  //GlobalUseDX10 := False; //must do before Application.Initialize //use DX9 instead of DX10 //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
-  //GlobalUseDX := False; //must do before Application.Initialize //use GDI, no h/w acceleration //TODO: remove, compatibility testing (should have some flags in app's settings, see if there's some Delphi lib to have such persistent options for changing/keeping compatibility settings)
-
-  {$IFDEF DEBUG}
-  {$IFDEF WINDOWS}EnableCodeSite;{$ENDIF}
-  ReportMemoryLeaksOnShutdown := True;
-  {$ELSE}
-  CodeSite.Enabled := False;
-  {$ENDIF}
-
-  Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
-
-  //ApplicationHandleException := //...
-  //ApplicationShowException := //...
-
-  Application.Initialize;
-
-  Application.CreateForm(TGlobals, Globals);
-  Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TMessageForm, MessageForm);
-  {$IFDEF DEBUG}
-  //Application.CreateForm(TMessageForm, MessageForm);
-  //Application.CreateForm(TObjectDebuggerFMXForm, ObjectDebuggerFMXForm1);
-  //ObjectDebuggerFMXForm1.Show;
-  {$ENDIF}
-
-  try
-    Application.Run;
-  finally
-    {$IFDEF DEBUG}
-    //FreeAndNil(ObjectDebuggerFMXForm1); //the object debugger anyway seems to be leaking objects (if different objects are selected)
-    {$ENDIF}
-  end;
+  Main;
 end.

@@ -29,6 +29,7 @@ type
 
     procedure FormSaveState(Sender: TObject);
 
+    {Keyboard}
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
     procedure HUDactionLoadExecute(Sender: TObject);
@@ -120,6 +121,7 @@ implementation
   uses
     {$IFDEF DEBUG}
     {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
+    ObjectDebuggerFMXForm,
     {$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
@@ -164,33 +166,6 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   HUD.MultiViewFrameStand.CloseAll;
-end;
-
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
-begin
-  case Key of
-
-   vkEscape:
-      if ssShift in Shift then //go to RootStoryItem
-        ActivateRootStoryItem
-      else
-        ActivateParentStoryItem; //go to ParentStoryItem
-
-    vkPrior, vkLeft, vkUp: //go to PreviousStoryPoint
-      ActivatePreviousStoryPoint;
-
-    vkNext, vkRight, vkDown: //go to NextStoryPoint
-      ActivateNextStoryPoint;
-
-    vkHome: //go to HomeStoryItem
-      ActivateHomeStoryItem;
-
-    (*
-    vkEnd:
-      ActivateEnd; //TODO: for cheaters, go to EndStoryPoint - HOWEVER MAY WANT TO HAVE MULTIPLE ENDSTORYPOINTS, THEIR NEXTSTORYPOINT WOULD ALWAYS BE HOMESTORYITEM [Home may not be a StoryPoint but End always is else it wouldn't be reachable]? (which is the EndStoryItem should we be able to set such?)
-    *)
-
-  end;
 end;
 
 procedure TMainForm.FormResize(Sender: TObject);
@@ -693,6 +668,42 @@ begin
 end;
 
 {$endregion}
+
+{$endregion}
+
+{$region 'Keyboard'}
+
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  case Key of
+
+   vkEscape:
+      if ssShift in Shift then //go to RootStoryItem
+        ActivateRootStoryItem
+      else
+        ActivateParentStoryItem; //go to ParentStoryItem
+
+    vkPrior, vkLeft, vkUp: //go to PreviousStoryPoint
+      ActivatePreviousStoryPoint;
+
+    vkNext, vkRight, vkDown: //go to NextStoryPoint
+      ActivateNextStoryPoint;
+
+    vkHome: //go to HomeStoryItem
+      ActivateHomeStoryItem;
+
+    (*
+    vkEnd:
+      ActivateEnd; //TODO: for cheaters, go to EndStoryPoint - HOWEVER MAY WANT TO HAVE MULTIPLE ENDSTORYPOINTS, THEIR NEXTSTORYPOINT WOULD ALWAYS BE HOMESTORYITEM [Home may not be a StoryPoint but End always is else it wouldn't be reachable]? (which is the EndStoryItem should we be able to set such?)
+    *)
+
+    {$IFDEF DEBUG}
+    vkF11:
+      with ObjectDebuggerFMXForm1 do
+        Visible := not Visible; //toggle Object inspector visibility
+    {$ENDIF}
+  end;
+end;
 
 {$endregion}
 

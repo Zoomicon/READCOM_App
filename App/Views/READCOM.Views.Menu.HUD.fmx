@@ -1,6 +1,5 @@
 object StoryHUD: TStoryHUD
   Align = Client
-  HitTest = False
   Size.Width = 912.000000000000000000
   Size.Height = 572.000000000000000000
   Size.PlatformDefault = False
@@ -20,6 +19,7 @@ object StoryHUD: TStoryHUD
   end
   object layoutContent: TLayout
     Align = Client
+    HitTest = True
     Size.Width = 662.000000000000000000
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
