@@ -1,5 +1,7 @@
 program READCOM.App;
 
+{$R *.dres}
+
 uses
   SysUtils,
   System.StartUpCopy,

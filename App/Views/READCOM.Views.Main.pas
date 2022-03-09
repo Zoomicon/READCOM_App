@@ -56,8 +56,9 @@ type
 
     {SavedState}
     procedure NewRootStoryItem;
-    procedure LoadSavedStateOrNewRootStoryItem;
+    procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
     function LoadSavedState: Boolean;
+    function LoadDefaultDocument: Boolean;
 
     {RootStoryItemStoryView}
     function GetRootStoryItemView: TStoryItem;
@@ -160,7 +161,7 @@ begin
   FTimerStarted := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
-  LoadSavedStateOrNewRootStoryItem;
+  LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -490,6 +491,7 @@ end;
 procedure TMainForm.HUDactionNewExecute(Sender: TObject);
 begin
   //if ConfirmClose then //TODO (should show some image asking?)
+  if (not LoadDefaultDocument) then
     NewRootStoryItem;
 end;
 
@@ -575,7 +577,7 @@ begin
     FreeAndNil(StoryItem);
     end
   else
-    HUD.actionNew.Execute; //deleting the RootStoryItem via "New" action
+    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
@@ -723,9 +725,9 @@ begin
   RootStoryItemView := newRootStoryItemView;
 end;
 
-procedure TMainForm.LoadSavedStateOrNewRootStoryItem;
+procedure TMainForm.LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
 begin
-  if (not LoadSavedState) then //Note: if it keeps on failing at load comment out this line for one run //TODO: shouldn't need to do that
+  if (not LoadSavedState) and (not LoadDefaultDocument) then //Note: if it keeps on failing at load comment out this line for one run //TODO: shouldn't need to do that
     NewRootStoryItem;
 end;
 
@@ -765,6 +767,43 @@ begin
   begin
     Interval := 100;
     Enabled := true; //used to re-apply ActiveStoryItem so that we can zoom to it after the form has fully sized (FormShow event doesn't do this properly)
+  end;
+end;
+
+function TMainForm.LoadDefaultDocument: Boolean;
+begin
+  try
+    result := false;
+    var Stream := TResourceStream.Create(HInstance, 'DefaultDocument', RT_RCDATA);
+    try
+      if Stream.Size > 0 then
+      begin
+        var TheRootStoryItemView := TPanelStoryItem.Create(Self);
+        try
+          TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
+          {$IFDEF DEBUG}{$IFDEF WINDOWS}
+          try
+            CodeSite.Send(TheRootStoryItemView.SaveToString);
+          finally
+            //NOP
+          end;
+          {$ENDIF}{$ENDIF}
+          RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
+          result := true;
+        except
+          on E: Exception do
+            begin
+            {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+            ShowException(E, @TMainForm.FormCreate);
+            FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
+            end;
+        end;
+      end;
+    finally
+      Stream.Free;
+    end;
+  except
+    //NOP
   end;
 end;
 
