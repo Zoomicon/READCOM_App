@@ -16,7 +16,8 @@ uses
   FMX.Layouts,
   READCOM.Views.AudioStoryItem,
   SubjectStand,
-  READCOM.App.Globals, System.Actions, FMX.ActnList;
+  READCOM.App.Globals, //for SVGIconImageList
+  System.Actions, FMX.ActnList;
 
 type
 

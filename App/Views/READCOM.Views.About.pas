@@ -6,20 +6,21 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
-  FMX.Objects, FMX.SVGIconImage;
+  FMX.Objects, FMX.SVGIconImage, FMX.ImgList,
+  READCOM.App.Globals; //for SVGIconImageList
 
 type
   TAboutFrame = class(TFrame)
-    svgLogo: TSVGIconImage;
-    Panel1: TPanel;
+    PanelTitleVersion: TPanel;
     lblTitle: TLabel;
-    Panel2: TPanel;
+    PanelVersion: TPanel;
     lblVersion: TLabel;
     lblVersionValue: TLabel;
-    Panel3: TPanel;
-    Memo1: TMemo;
+    PanelVersionPadding: TPanel;
+    MemoInfo: TMemo;
     rectBackground: TRectangle;
     btnClose: TSpeedButton;
+    GlyphLogo: TGlyph;
     procedure btnCloseClick(Sender: TObject);
   private
     {Private declarations}

@@ -7,19 +7,18 @@ object AboutFrame: TAboutFrame
     Size.Width = 408.000000000000000000
     Size.Height = 376.000000000000000000
     Size.PlatformDefault = False
+    object GlyphLogo: TGlyph
+      Align = Scale
+      Position.X = 8.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 109.000000000000000000
+      Size.Height = 109.000000000000000000
+      Size.PlatformDefault = False
+      ImageIndex = 24
+      Images = Globals.SVGIconImageList
+    end
   end
-  object svgLogo: TSVGIconImage
-    MultiResBitmap = <
-      item
-      end>
-    DisableInterpolation = True
-    Position.X = 8.000000000000000000
-    Position.Y = 8.000000000000000000
-    Size.Width = 109.000000000000000000
-    Size.Height = 109.000000000000000000
-    Size.PlatformDefault = False
-  end
-  object Panel1: TPanel
+  object PanelTitleVersion: TPanel
     Anchors = [akLeft, akTop, akRight]
     Position.X = 125.000000000000000000
     Position.Y = 8.000000000000000000
@@ -39,7 +38,7 @@ object AboutFrame: TAboutFrame
       Text = 'READ-COM App'
       TabOrder = 1
     end
-    object Panel2: TPanel
+    object PanelVersion: TPanel
       Align = Horizontal
       Position.Y = 49.000000000000000000
       Size.Width = 275.000000000000000000
@@ -60,12 +59,13 @@ object AboutFrame: TAboutFrame
         Size.Width = 122.000000000000000000
         Size.Height = 24.000000000000000000
         Size.PlatformDefault = False
-        Text = '0.0.6'
+        Text = '0.0.19'
         TabOrder = 2
       end
-      object Panel3: TPanel
+      object PanelVersionPadding: TPanel
         Align = MostLeft
         Anchors = [akLeft, akTop, akRight, akBottom]
+        Opacity = 0.000000000000000000
         Size.Width = 96.000000000000000000
         Size.Height = 24.000000000000000000
         Size.PlatformDefault = False
@@ -73,7 +73,7 @@ object AboutFrame: TAboutFrame
       end
     end
   end
-  object Memo1: TMemo
+  object MemoInfo: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
     DataDetectorTypes = []
     Lines.Strings = (
@@ -104,10 +104,10 @@ object AboutFrame: TAboutFrame
   end
   object btnClose: TSpeedButton
     Anchors = [akTop, akRight]
-    Position.X = 376.000000000000000000
-    Position.Y = 8.000000000000000000
+    Position.X = 378.000000000000000000
+    Position.Y = 9.000000000000000000
     Size.Width = 24.000000000000000000
-    Size.Height = 22.000000000000000000
+    Size.Height = 24.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'stoptoolbutton'
     Text = 'stoptoolbutton'
