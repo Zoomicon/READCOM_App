@@ -78,8 +78,8 @@ type
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
-    procedure LoadTXT(const Stream: TStream); virtual;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
+    function LoadTXT(const Stream: TStream): TObject; virtual;
     {$endregion}
 
   //--- Properties ---
@@ -268,15 +268,15 @@ begin
   result := FILTER_TEXT + '|' + inherited;
 end;
 
-procedure TTextStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+function TTextStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
 begin
   if (ContentFormat = EXT_TXT) then //load EXT_TXT
-    LoadTXT(Stream)
+    result := LoadTXT(Stream)
   else
-    inherited; //load EXT_TXT
+    result := inherited; //load EXT_TXT
 end;
 
-procedure TTextStoryItem.LoadTXT(const Stream: TStream);
+function TTextStoryItem.LoadTXT(const Stream: TStream): TObject;
 begin
   //Text := ReadAllText(Stream);
   var s := TStringList.Create(#0, #13);
@@ -286,6 +286,8 @@ begin
   Size.Size := TSizeF.Create(50, 30); //TODO: judge on text volume
 
   FreeAndNil(s);
+
+  result := Self;
 end;
 
 procedure TTextStoryItem.MemoApplyStyleLookup(Sender: TObject);

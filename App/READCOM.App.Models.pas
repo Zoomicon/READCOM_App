@@ -45,8 +45,8 @@ type
 
     {Load}
     function GetLoadFilesFilter: String;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
-    procedure Load(const Filepath: string); overload;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload;
+    function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 
     {Save}

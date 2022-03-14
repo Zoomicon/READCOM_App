@@ -181,8 +181,8 @@ type
 
     function GetLoadFilesFilter: String; virtual;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
-    procedure Load(const Filepath: string); overload; virtual;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
+    function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload; virtual;
     //
     function LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
     function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
@@ -1101,11 +1101,17 @@ procedure TStoryItem.Add(const Filepath: String);
 begin
   var FileExt := ExtractFileExt(Filepath);
 
-  var view := StoryItemFactories.Get(FileExt).New(Self).View; //TODO: for .READCOM should have special case with a nil object and use Stream.ReadComponent(nil) since we don't know beforehand what exact TStoryItem class the .readcom file contains (unless it allows to load descendents too)
-  view.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
+  var StoryItemFactory := StoryItemFactories.Get(FileExt);
 
-  var StoryItem := view as TStoryItem;
-  StoryItem.Load(Filepath); //this should also set the Size of the control
+  var StoryItem: TStoryItem;
+  if Assigned(StoryItemFactory) then
+  begin
+    StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
+    StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
+    StoryItem.Load(Filepath); //this should also set the Size of the control
+  end
+  else
+    StoryItem := Load(Filepath, true) as TStoryItem;
 
   Add(StoryItem);
 end;
@@ -1172,19 +1178,19 @@ begin
   result := Stream.ReadComponent(Instance) as IStoryItem; //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties
 end;
 
-procedure TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+function TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
 begin
   if ContentFormat = EXT_READCOM then
-    LoadReadCom(Stream)
+    result := LoadReadCom(Stream, CreateNew).View
   else
     raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
 end;
 
-procedure TStoryItem.Load(const Filepath: String);
+function TStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
 begin
   var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
   try
-    Load(InputFileStream, ExtractFileExt(Filepath));
+    result := Load(InputFileStream, ExtractFileExt(Filepath), CreateNew);
   finally
     FreeAndNil(InputFileStream);
   end;
@@ -1260,6 +1266,7 @@ end;
 {$endregion}
 
 initialization
+  StoryItemFactories.Add([EXT_READCOM], nil); //special case, class information is in the serialization stream
   AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXTS); //should make sure this is used first
 
 end.

@@ -62,8 +62,7 @@ begin
 end;
 
 initialization
-  //TODO// StoryItemFactories.Add([EXT_READCOM], TPanelStoryItemFactory.Create);
-  //TODO// AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXT);
+  //not registering any special file filter and handler here, coverted by generic (de)serialization support of StoryItem ancestor class
 
   RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

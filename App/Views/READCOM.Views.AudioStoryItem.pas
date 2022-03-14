@@ -35,9 +35,9 @@ type
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
-    procedure Load(const Filepath: String); overload; override;
-    procedure LoadMP3(const Stream: TStream); virtual;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
+    function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload; override;
+    function LoadMP3(const Stream: TStream): TObject; virtual;
     {$endregion}
 
     {$region 'IPlayable'}
@@ -123,26 +123,31 @@ begin
   result := FILTER_AUDIO + '|' + inherited;
 end;
 
-procedure TAudioStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+function TAudioStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
 begin
   if (ContentFormat = EXT_MP3) then //load EXT_MP3
-    LoadMP3(Stream)
+    result := LoadMP3(Stream)
   else
-    inherited; //load EXT_READCOM
+    result := inherited; //load EXT_READCOM
 end;
 
-procedure TAudioStoryItem.Load(const Filepath: String);
+function TAudioStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
 begin
   var FileExt := ExtractFileExt(Filepath);
   if (FileExt = EXT_MP3) then
-    MediaPlayer.Filename := Filepath
+  begin
+    MediaPlayer.Filename := Filepath;
+    result := Self;
+  end
   else
-    raise EFeatureNotSupported.CreateFmt('AudioStoryItem: loading %s files not supported', [FileExt]);
+    result := inherited; //load EXT_READCOM
 end;
 
-procedure TAudioStoryItem.LoadMP3(const Stream: TStream);
+function TAudioStoryItem.LoadMP3(const Stream: TStream): TObject; //TODO: do we need to have this to persist audio in .readcom files?
 begin
-  raise EFeatureNotSupported.Create('AudioStoryItem: loading from Stream not supported');
+  raise EFeatureNotSupported.Create('AudioStoryItem: loading from Stream not supported'); //TODO (save to temp file first? [need to delete at close?])
+
+  result := Self;
 end;
 
 {$endregion}

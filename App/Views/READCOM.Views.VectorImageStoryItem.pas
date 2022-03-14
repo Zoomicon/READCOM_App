@@ -46,8 +46,8 @@ type
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
-    procedure LoadSVG(const Stream: TStream); virtual;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
+    function LoadSVG(const Stream: TStream): TObject; virtual;
     {$endregion}
 
   //--- Properties ---
@@ -87,15 +87,15 @@ begin
   result := FILTER_VECTOR_IMAGE + '|' + inherited;
 end;
 
-procedure TVectorImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+function TVectorImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
 begin
   if (ContentFormat = EXT_SVG) then //load EXT_SVG
-    LoadSVG(Stream)
+    result := LoadSVG(Stream)
   else
-    inherited; //load EXT_READCOM
+    result := inherited; //load EXT_READCOM
 end;
 
-procedure TVectorImageStoryItem.LoadSVG(const Stream: TStream);
+function TVectorImageStoryItem.LoadSVG(const Stream: TStream): TObject;
 begin
   if FAutoSize then
     Glyph.Align := TAlignLayout.None;
@@ -110,6 +110,8 @@ begin
     SetSize(100,100); //TODO: fix this
     Glyph.Align := TAlignLayout.Contents;
     end;
+
+  result := Self;
 end;
 
 {$endregion}

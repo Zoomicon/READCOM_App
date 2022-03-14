@@ -446,42 +446,41 @@ procedure TStructureView.TreeViewDragChange(SourceItem, DestItem: TTreeViewItem;
   end;
 
 begin
-  Allow := DragDropReorder or DragDropReparent;
-  if Allow then
+  Allow := (DragDropReorder or DragDropReparent)
+           and Assigned(DestItem); //checking we didn't drop onto the empty area of the TTreeView //TODO: could have a default false boolean property to allow switching GUIRoot when we do this action (and reparent the current GUIRoot under the dropped item), but should have event to notify client code about this GUIRoot change
+  if not Allow then exit;
+
+  var SourceObject := TFmxObject(SourceItem.TagObject);
+  var DestObject := TFmxObject(DestItem.TagObject);
+  var SourceObjectParent := SourceObject.Parent;
+
+  if SourceObjectParent = DestObject then //if dropped to the same parent
   begin
-    var SourceObject := TFmxObject(SourceItem.TagObject);
-    var DestObject := TFmxObject(DestItem.TagObject);
-    var SourceObjectParent := SourceObject.Parent;
-
-    if SourceObjectParent = DestObject then //if dropped to the same parent
+    Allow := DragDropReorder;
+    if Allow then
     begin
-      Allow := DragDropReorder;
-      if Allow then
-      begin
-        SourceObject.BringToFront; //places last in the parent (corresponds to top in the Z-Order), as done for the TTreeViewItems by the TTreeView
+      SourceObject.BringToFront; //places last in the parent (corresponds to top in the Z-Order), as done for the TTreeViewItems by the TTreeView
 
-        Restructured(SourceObject, SourceObjectParent, roReorderedChildren);
+      Restructured(SourceObject, SourceObjectParent, roReorderedChildren);
 
-        if DragDropSelectTarget then
-          TreeView.Selected := DestItem;
-      end
+      if DragDropSelectTarget then
+        TreeView.Selected := DestItem;
     end
+  end
 
-    else //if dropped onto other than its parent
+  else //if dropped onto other than its parent
+  begin
+    Allow := DragDropReparent;
+    if Allow then
     begin
-      Allow := DragDropReparent;
-      if Allow then
-      begin
-        SourceObject.Parent := DestObject; //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
+      SourceObject.Parent := DestObject; //move the FmxObjects the TTreeViewItems point to //assuming TagObject contains a TFmxObject
 
-        Restructured(SourceObject, SourceObjectParent, roRemovedChild);
-        Restructured(SourceObject, DestObject, roAddedChild);
+      Restructured(SourceObject, SourceObjectParent, roRemovedChild);
+      Restructured(SourceObject, DestObject, roAddedChild);
 
-        if DragDropSelectTarget then
-          TreeView.Selected := DestItem;
-      end
-    end;
-
+      if DragDropSelectTarget then
+        TreeView.Selected := DestItem;
+    end
   end;
 end; //the TTreeViewItems themselves will be reordered by the TTreeView since TreeView.AllowDrag maps to "DragDropReorder or DragDropReparent"
 

@@ -14,7 +14,6 @@ uses
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts,
-  READCOM.Views.AudioStoryItem,
   SubjectStand,
   READCOM.App.Globals, //for SVGIconImageList
   System.Actions, FMX.ActnList;
@@ -107,6 +106,7 @@ type
   public
     property StructureView: TStructureView read GetStructureView stored false;
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+    procedure DeleteActiveStoryItem;
 
   published
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
@@ -129,8 +129,11 @@ implementation
     System.Math, //for Max
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
-    READCOM.Views.PanelStoryItem,
+    READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
+    READCOM.Views.AudioStoryItem,
+    READCOM.Views.ImageStoryItem,
     READCOM.Views.BitmapImageStoryItem,
+    READCOM.Views.VectorImageStoryItem,
     READCOM.Views.TextStoryItem;
 
 {$R *.fmx}
@@ -301,6 +304,8 @@ procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem); //TODO: should 
   end;
 
 begin
+  //TODO: in non-EditMode should activate closest parentStoryPoint instead
+
   RecursiveClearEditMode(RootStoryItemView); //Clear EditMode from all items recursively
 
   //Set any current editmode to the newly active item
@@ -540,7 +545,7 @@ end;
 
 procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 begin
-  if not Assigned(ActiveStoryItem) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
 
   var OwnerAndParent := ActiveStoryItem.View;
 
@@ -569,8 +574,10 @@ begin
   StoryItem.BringToFront; //load as front-most
 end;
 
-procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
+procedure TMainForm.DeleteActiveStoryItem;
 begin
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
   if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
     begin
     var StoryItem := ActiveStoryItem.View;
@@ -579,6 +586,11 @@ begin
     end
   else
     NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
+end;
+
+procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
+begin
+  DeleteActiveStoryItem;
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
@@ -680,20 +692,25 @@ procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Cha
 begin
   case Key of
 
-   vkEscape:
+    vkEscape:
       if ssShift in Shift then //go to RootStoryItem
         ActivateRootStoryItem
       else
         ActivateParentStoryItem; //go to ParentStoryItem
 
-    vkPrior, vkLeft, vkUp: //go to PreviousStoryPoint
+    vkPrior, vkLeft, vkUp:     //go to PreviousStoryPoint
       ActivatePreviousStoryPoint;
 
-    vkNext, vkRight, vkDown: //go to NextStoryPoint
+    vkNext, vkRight, vkDown:   //go to NextStoryPoint
       ActivateNextStoryPoint;
 
     vkHome: //go to HomeStoryItem
       ActivateHomeStoryItem;
+
+    (* //Unsafed, not used - if user is trying to type in TextStoryItem they might remove it altogether by mistake (wrong focus)
+    vkDelete:
+      DeleteActiveStoryItem;
+    *)
 
     (*
     vkEnd:
@@ -773,8 +790,8 @@ end;
 
 function TMainForm.LoadDefaultDocument: Boolean;
 begin
+  result := false; //don't place inside the try, else you get warning that result might be undefined
   try
-    result := false;
     var Stream := TResourceStream.Create(HInstance, 'DefaultDocument', RT_RCDATA);
     try
       if Stream.Size > 0 then

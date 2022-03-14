@@ -59,8 +59,8 @@ type
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
-    procedure Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; override;
-    procedure LoadBitmap(const Stream: TStream); virtual;
+    function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
+    function LoadBitmap(const Stream: TStream): TObject; virtual;
     {$endregion}
 
   //--- Properties ---
@@ -177,21 +177,23 @@ begin
   result := FILTER_BITMAP_IMAGE + '|' + inherited;
 end;
 
-procedure TBitmapImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM);
+function TBitmapImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
 begin
   if (ContentFormat = EXT_PNG) or (ContentFormat = EXT_JPG) or (ContentFormat = EXT_JPEG) then //load EXT_PNG, EXT_JPG, EXT_JPEG
-    LoadBitmap(Stream)
+    result := LoadBitmap(Stream)
   else
-    inherited; //load EXT_READCOM
+    result := inherited; //load EXT_READCOM
 end;
 
-procedure TBitmapImageStoryItem.LoadBitmap(const Stream: TStream);
+function TBitmapImageStoryItem.LoadBitmap(const Stream: TStream): TObject;
 begin
   ImageControl.Bitmap.LoadFromStream(Stream); //TODO: does it detect PNG and JPEG automatically?
   UpdateGlyphVisibility;
 
   if FAutoSize then
     SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
+
+  result := Self;
 end;
 
 {$endregion}
