@@ -7,6 +7,14 @@ interface
 
 type
 
+  IDiscoverable = interface
+    ['{599621AB-BE92-43A5-A193-49FA42D7E053}']
+    function IsDiscovered: Boolean;
+    procedure SetDiscovered(const Value: Boolean);
+
+    property NotDiscovered: Boolean read IsDiscovered write SetDiscovered; //default false
+  end;
+
   IShuffler = interface
     ['{CEB6CC35-6FCA-4C8C-8F4F-CD2CA832A130}']
     procedure ShuffleItems;
