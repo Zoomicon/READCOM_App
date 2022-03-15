@@ -13,7 +13,7 @@ interface
 {$REGION 'Shuffler'}
 
 type
-  TControlShufflerHelper = class helper(TControlFocusHelper{, IShuffler}) for TControl
+  TControlShufflerHelper = class helper(TControlFocusHelper{, IShuffler}) for TControl //MUST DESCEND FROM THE LAST HELPER DEFINED AT "CONTROLHELPERS" CLASS
     //procedure IShuffler.ShuffleItems = ShufflePositions;
     procedure ShuffleItems;
     procedure ShufflePositions;

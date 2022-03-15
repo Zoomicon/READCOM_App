@@ -14,7 +14,7 @@ implementation
 uses
  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
 {$IF Defined(IOS)}
-macapi.helpers, iOSapi.Foundation, FMX.Helpers.iOS;
+ macapi.helpers, iOSapi.Foundation, FMX.Helpers.iOS;
 {$ELSEIF Defined(ANDROID)}
  Androidapi.Jni.App, //to avoid "H2443 Inline function 'TAndroidHelper.GetJActivity' has not been expanded"
  Androidapi.Jni.NET, //to avoid "H2443 Inline function 'StrToJURI' has not been expanded"
