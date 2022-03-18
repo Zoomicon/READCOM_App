@@ -17,9 +17,9 @@ To have SVG preview at Add/Open file dialogs (if Preview pane is enabled at Wind
 Alternatively try this one which uses the same SVG library as the READ-COM App (however it sometimes freezes Windows Explorer): https://github.com/EtheaDev/SVGShellExtensions/releases
 
 ## Requirements: Source-code Dependencies:
-need to install via "Tools/GetIt Package Manager" in Delphi IDE to build the project the latest versions of:
-* [TFrameStand package](https://getitnow.embarcadero.com/?q=tframestand) 
-* [SVGIconImageList package](https://getitnow.embarcadero.com/SVGIconImageList-3.0-Olympus)
+need to install via "Tools/GetIt Package Manager" in Delphi IDE to build the project the (appropriate for your Delphi version) package:
+* [TFrameStand](https://getitnow.embarcadero.com/?q=tframestand) 
+* [SVGIconImageList](https://getitnow.embarcadero.com/?q=SVGIconImageList)
 
 ## Testing
 
