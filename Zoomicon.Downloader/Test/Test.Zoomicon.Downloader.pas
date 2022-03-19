@@ -75,6 +75,7 @@ begin
     TFile.Delete(TheSaveFilepath); //remove download file if existing so that we can check if it was created later
 
   var FileDownloader := TFileDownloader.Create(TheContentURI, TheSaveFilepath, TheContentCache, true); //AutoStart
+  //FileDownloader.OnlyFallbackCache := true; //would use this if we only wanted to fallback to cache in case of download errors / offline case
   FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
 end;
 

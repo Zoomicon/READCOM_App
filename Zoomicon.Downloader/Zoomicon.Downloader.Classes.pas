@@ -32,6 +32,7 @@ interface
     TDownloader = class(TComponent, IDownloader)
       protected
         FContentCache: IContentCache;
+        FOnlyFallbackCache: Boolean;
         FDownloaderThread: TDownloaderThread;
         FDownloaderThreadTerminationEvent: TEvent; //for other threads synchronization with downloader thread
 
@@ -69,6 +70,7 @@ interface
 
       published
         property ContentCache: IContentCache read FContentCache write FContentCache;
+        property OnlyFallbackCache: Boolean read FOnlyFallbackCache write FOnlyFallbackCache default false;
         property DownloaderThreadTerminationEvent: TEvent read FDownloaderThreadTerminationEvent;
         property Resumable: Boolean read FResumable write FResumable;
         property Paused: Boolean read FPaused write SetPaused;
@@ -214,20 +216,28 @@ begin
     result := TWaitResult.wrAbandoned;
 end;
 
-function TDownloader.Execute: integer; //returns HTTP status code //called by TDownloaderThread
-begin
-  //If requested URI is cached, return its data from there...
-  if Assigned(FContentCache) then
-    begin
+function TDownloader.Execute: Integer; //returns HTTP status code //called by TDownloaderThread
+
+  function FetchFromCache: Integer;
+  begin
     var CachedData := FContentCache.GetContent(FContentURIstr);
     if Assigned(CachedData) then
-      begin
+    begin
       FData.CopyFrom(CachedData); //copy from CachedData to output stream
       FreeAndNil(CachedData); //free CachedData handle
       result := STATUS_OK;
-      exit;
-      end;
-    end;
+    end
+    else
+      result := STATUS_NOT_FOUND;
+  end;
+
+begin
+  //If requested URI is cached, return its data from there...
+  if Assigned(FContentCache) and (not FOnlyFallbackCache) then
+  begin
+    result := FetchFromCache;
+    if (result = STATUS_OK) then exit;
+  end;
 
   //Download...
   result := Download(FStartPosition, FEndPosition);
@@ -247,9 +257,15 @@ begin
     Sleep(SleepTimeMS); //sleep a bit, being polite to other threads
   end;
 
-  //If data was downloaded succesfully, can cache downloaded data with URI as key...
-  if Assigned(FContentCache) and (result = STATUS_OK) then
-    FContentCache.PutContent(FContentURIstr, FData); //copies from start of stream
+  if (result <> STATUS_OK) then
+  begin
+    if (FetchFromCache = STATUS_OK) then
+      exit(STATUS_OK) //only interested in STATUS_OK from fallback cache, not overriding failure result of downloader on fallback cache miss
+  end
+  else
+    //If data was downloaded succesfully, can cache downloaded data with URI as key...
+    if Assigned(FContentCache) then
+      FContentCache.PutContent(FContentURIstr, FData); //copies from start of stream
 end;
 
 function TDownloader.GetContentURI: TURI;

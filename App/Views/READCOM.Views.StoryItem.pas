@@ -922,8 +922,13 @@ begin
 
   if not EditMode then
     begin
-    if (FUrlAction <> '') then
-      url_Open_In_Browser(FUrlAction);
+    if (FUrlAction <> '') then //TODO: should pass the Open URL action to the MainForm and that should do the following logic
+      if FUrlAction.EndsWith(EXT_READCOM) then
+      begin
+        //TODO: use downloader with caching to fetch .readcom URL and then tell the app to open it (replace current document) - that way we can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run
+      end
+      else
+        url_Open_In_Browser(FUrlAction);
     end
   else
     if (ssRight in Shift) then

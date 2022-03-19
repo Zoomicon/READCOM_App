@@ -31,6 +31,8 @@ implementation
     System.IOUtils, //for TPath, TDirectory
     System.ZLib; //for TZCompressionStream, TZDecompressionStream
 
+{$region 'FileCache'}
+
 function TFileCache.GetKeyHash(const Key: String): String;
 begin
   result := THashSHA2.GetHashString(Key, THashSHA2.TSHA2Version.SHA512).ToUpper; //See https://en.wikipedia.org/wiki/SHA-2
@@ -42,8 +44,6 @@ begin
   //Using UnitName in the path too since it also contains READCOM in it (in some platforms there's no per-app cache folder)
   //Using GetKeyHash (does SHA-512) to generate a unique HEX chars string from given Key (which could contain illegal file chars, e.g. a URL)
 end;
-
-{FileCache}
 
 function TFileCache.HasContent(const Key: String): Boolean;
 begin
@@ -73,7 +73,9 @@ begin
   end;
 end;
 
-{TCompressedFileCache}
+{$endregion}
+
+{$region 'TCompressedFileCache'}
 
 function TZCompressedFileCache.GetContent(const Key: String): TStream;
 begin
@@ -93,6 +95,8 @@ begin
     FreeAndNil(ZCompressedContent);
   end;
 end;
+
+{$endregion}
 
 end.
 

@@ -9,6 +9,7 @@ interface
 
   const
     STATUS_OK = 200; //HTTP OK (https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    STATUS_NOT_FOUND = 404; //HTTP NOT FOUND (https://en.wikipedia.org/wiki/HTTP_404)
 
   type
     TDownloadProgressEvent = procedure(const Sender: TObject; const TotalElapsedTime: Cardinal; const Speed: Integer; const TotalReadCount: Int64; const TotalContentLength: Int64; var Abort: Boolean) of object;
