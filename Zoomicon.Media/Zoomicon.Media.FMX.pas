@@ -91,8 +91,8 @@ type
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property Looping: Boolean read IsLooping write SetLooping;
-    property FileName: string read GetFilename write SetFilename;
-    property Stream: TStream read GetStream write SetStream stored false;
+    property FileName: string read GetFilename write SetFilename; //TODO: ignore the filename when there's a persisted data stream
+    property Stream: TStream read GetStream write SetStream stored false; //TODO: persist the data stream: https://www.informit.com/articles/article.aspx?p=28278&seqNum=5
     {Events}
     property OnPlay: TOnPlay read FOnPlay write FOnPlay;
     property OnPause: TOnPause read FOnPause write FOnPause;

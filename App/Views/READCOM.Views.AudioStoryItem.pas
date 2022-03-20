@@ -80,8 +80,7 @@ type
     property Muted: Boolean read IsMuted write SetMuted stored false; //shouldn't store this so that interacting with the story won't store it disabled
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayerEx read GetAudio write SetAudio stored false;
-    //TODO: persist the audio data
+    property Audio: TMediaPlayerEx read GetAudio write SetAudio stored false; //TODO: make the MediaPlayerEx a subcomponent and persist its content together with the AudioStoryItem's so that audio data are also persisted)
   end;
 
   {$ENDREGION .......................................................................}
@@ -145,8 +144,7 @@ end;
 
 function TAudioStoryItem.LoadMP3(const Stream: TStream): TObject; //TODO: do we need to have this to persist audio in .readcom files?
 begin
-  raise EFeatureNotSupported.Create('AudioStoryItem: loading from Stream not supported'); //TODO (save to temp file first? [need to delete at close?])
-
+  MediaPlayer.Stream := Stream;
   result := Self;
 end;
 

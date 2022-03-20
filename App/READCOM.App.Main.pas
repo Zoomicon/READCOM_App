@@ -52,7 +52,7 @@ begin
   {$IFDEF WINDOWS}EnableCodeSite;{$ENDIF}
   ReportMemoryLeaksOnShutdown := True;
   {$ELSE}
-  CodeSite.Enabled := False;
+  //CodeSite.Enabled := False; //we've removed CodeSite with compiler defines in production version so we can't use that here
   {$ENDIF}
 
   Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
