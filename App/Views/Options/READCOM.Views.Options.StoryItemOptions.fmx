@@ -120,9 +120,7 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionLoad
       Align = Client
       Enabled = True
-      Hint = 
-        'Load StoryItem'#13#13'Replaces contents of Active StoryItem with saved' +
-        ' ones from .readcom file'
+      Hint = 'Load StoryItem'#13#13'Replaces content of Active StoryItem'
       Images = Globals.SVGIconImageList
       ImageIndex = 6
       Size.Width = 64.000000000000000000
@@ -134,9 +132,7 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionSave
       Align = Client
       Enabled = True
-      Hint = 
-        'Save StoryItem'#13#13'Saves contents of Active StoryItem to a .readcom' +
-        ' file'
+      Hint = 'Save StoryItem'#13#13'Saves content of Active StoryItem'
       Images = Globals.SVGIconImageList
       ImageIndex = 7
       Size.Width = 64.000000000000000000

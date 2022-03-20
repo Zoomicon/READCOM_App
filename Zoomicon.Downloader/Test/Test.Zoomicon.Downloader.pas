@@ -32,17 +32,16 @@ interface
         procedure DoTestSingleDownload(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
         procedure DoTestMultipleDownloads(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
 
-    procedure TestWrongUrlDownload;
-
       public
         procedure SetUp; override;
         procedure TearDown; override;
 
-      published
+      published //need to pubish Test cases for them to be used
         procedure TestSingleDownload;
         procedure TestMultipleDownloadWithoutCache;
         procedure TestMultipleDownload;
         procedure TestSingleDownloadWithoutCache;
+        procedure TestWrongUrlDownload;
     end;
 
 implementation
@@ -140,7 +139,12 @@ end;
 
 procedure TestTFileDownloader.TestWrongUrlDownload;
 begin
-  DoTestSingleDownload(DOWNLOAD_URI_WRONG, SAVE_FILENAME_WRONGURI, FContentCache, false);
+  try
+    DoTestSingleDownload(DOWNLOAD_URI_WRONG, SAVE_FILENAME_WRONGURI, FContentCache, false);
+  except
+    on e: ENetUriException do
+      ShowException(e, ExceptAddr);
+  end;
 end;
 
 initialization
