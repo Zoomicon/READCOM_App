@@ -931,7 +931,14 @@ begin
         url_Open_In_Browser(FUrlAction);
     end
   else
-    if (ssRight in Shift) then
+
+    if (ssCtrl in Shift) then
+    begin
+      var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
+      if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
+        ActiveStoryItem := TStoryItem(LObj.GetObject);
+    end
+    else if (ssRight in Shift) then
       Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
 end;
 

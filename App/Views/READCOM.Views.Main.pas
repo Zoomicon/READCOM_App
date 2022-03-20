@@ -101,6 +101,8 @@ type
     procedure HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
     procedure HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
 
+    procedure HandleActiveStoryItemChanged(Sender: TObject);
+
     procedure AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 
   public
@@ -158,6 +160,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
       OnStructureVisibleChanged := HUDStructureVisibleChanged;
       OnTargetsVisibleChanged := HUDTargetsVisibleChanged;
       OnUseStoryTimerChanged := HUDUseStoryTimerChanged;
+
+      TStoryItem.OnActiveStoryItemChanged := HandleActiveStoryItemChanged;
     end;
   end;
 
@@ -175,7 +179,7 @@ end;
 
 procedure TMainForm.FormResize(Sender: TObject);
 begin
-  ActiveStoryItem := ActiveStoryItem; //keep the ActiveStoryItem in view
+  ZoomTo(ActiveStoryItem); //keep the ActiveStoryItem in view
 end;
 
 {$ENDREGION}
@@ -286,7 +290,12 @@ begin
   result := TStoryItem.ActiveStoryItem;
 end;
 
-procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem); //TODO: should use "ActiveStoryItemChanged" event instead to do this extra logic
+procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
+begin
+  TStoryItem.ActiveStoryItem := Value;
+end;
+
+procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
 
   procedure RecursiveClearEditMode(const partialRoot: IStoryItem);
   begin
@@ -308,6 +317,8 @@ begin
 
   RecursiveClearEditMode(RootStoryItemView); //Clear EditMode from all items recursively
 
+  var Value := ActiveStoryItem;
+
   //Set any current editmode to the newly active item
   if Assigned(Value) then
   begin
@@ -325,7 +336,6 @@ begin
 
   //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
 
-  TStoryItem.ActiveStoryItem := Value;
   ZoomTo(Value);
 end;
 
@@ -406,11 +416,6 @@ begin
   FStoryMode := Value;
   var isEditMode := (Value = EditMode);
 
-  if isEditMode then
-    StructureView.FilterMode := tfFlatten
-  else
-    StructureView.FilterMode := tfPrune;
-
   if Assigned(ActiveStoryItem) then
   begin
     var view := ActiveStoryItem.View as TStoryItem;
@@ -477,7 +482,7 @@ begin
   //special case used at app startup
   if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
   begin
-    ActiveStoryItem := ActiveStoryItem; //re-apply ActiveStoryItem (needed upon app first loading to ZoomTo ActiveStoryItem from loaded saved state
+    ZoomTo(ActiveStoryItem); //needed upon app first loading to ZoomTo ActiveStoryItem from loaded saved state
     StoryTimer.Enabled := false;
     exit;
   end;
@@ -634,16 +639,23 @@ begin
 
     UpdateStructureView; //in case the RootStoryItem has changed
 
-    //if Assigned(ActiveStoryItem) then
-      //StructureView.SelectedObject := ActiveStoryItem.View; //doesn't seem to work correctly (keeps StructureView pane closed)
-
     FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
   end;
 end;
 
 procedure TMainForm.UpdateStructureView;
 begin
+  if (StoryMode <> EditMode) then
+    StructureView.FilterMode := tfFlatten
+  else
+    StructureView.FilterMode := tfPrune;
+
   StructureView.GUIRoot := RootStoryItemView;
+
+  if Assigned(ActiveStoryItem)
+     and (StoryMode = EditMode) //TODO: temp extra check, since StructureView wasn't opening up in non-Edit mode for unknown reason, remove extra check when fixed
+  then
+    StructureView.SelectedObject := ActiveStoryItem.View;
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
