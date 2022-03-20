@@ -8,6 +8,7 @@ object AboutFrame: TAboutFrame
     Size.Height = 376.000000000000000000
     Size.PlatformDefault = False
     object GlyphLogo: TGlyph
+      OnTap = GlyphLogoTap
       Align = Scale
       Position.X = 8.000000000000000000
       Position.Y = 8.000000000000000000
@@ -35,7 +36,7 @@ object AboutFrame: TAboutFrame
       Size.PlatformDefault = False
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.HorzAlign = Center
-      Text = 'READ-COM App'
+      Text = 'READ-COM: Reading Communities'
       TabOrder = 1
     end
     object PanelVersion: TPanel
@@ -59,7 +60,7 @@ object AboutFrame: TAboutFrame
         Size.Width = 122.000000000000000000
         Size.Height = 24.000000000000000000
         Size.PlatformDefault = False
-        Text = '0.0.19'
+        Text = '0.0.0'
         TabOrder = 2
       end
       object PanelVersionPadding: TPanel
@@ -104,8 +105,8 @@ object AboutFrame: TAboutFrame
   end
   object btnClose: TSpeedButton
     Anchors = [akTop, akRight]
-    Position.X = 378.000000000000000000
-    Position.Y = 9.000000000000000000
+    Position.X = 374.000000000000000000
+    Position.Y = 8.000000000000000000
     Size.Width = 24.000000000000000000
     Size.Height = 24.000000000000000000
     Size.PlatformDefault = False

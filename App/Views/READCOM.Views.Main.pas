@@ -7,6 +7,7 @@ uses
   Zoomicon.Generics.Collections, //for TObjectListEx
   Zoomicon.Introspection.FMX.StructureView, //for TStructureView
   Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
+  READCOM.App.Globals, //for SVGIconImageList
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
@@ -15,7 +16,6 @@ uses
   FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Layouts,
   SubjectStand,
-  READCOM.App.Globals, //for SVGIconImageList
   System.Actions, FMX.ActnList;
 
 type
@@ -166,6 +166,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  Caption := STR_APP_TITLE;
+
   FTimerStarted := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)

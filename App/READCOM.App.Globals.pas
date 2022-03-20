@@ -6,8 +6,11 @@ uses
   System.SysUtils, System.Classes, FMX.Types, FMX.Controls,
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList;
 
-const
+resourcestring
   URL_HELP = 'https://github.com/Zoomicon/READCOM_App/wiki';
+  URL_READCOM = 'https://www.read-com-eu.uma.es';
+  STR_APP_TITLE = 'READ-COM: Reading Communities';
+  STR_APP_VERSION = '0.1.0';
 
 type
   TGlobals = class(TDataModule)

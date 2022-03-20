@@ -3,11 +3,11 @@ unit READCOM.Views.About;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
+  READCOM.App.Globals, //for SVGIconImageList
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
-  FMX.Objects, FMX.SVGIconImage, FMX.ImgList,
-  READCOM.App.Globals; //for SVGIconImageList
+  FMX.Objects, FMX.SVGIconImage, FMX.ImgList;
 
 type
   TAboutFrame = class(TFrame)
@@ -22,20 +22,46 @@ type
     btnClose: TSpeedButton;
     GlyphLogo: TGlyph;
     procedure btnCloseClick(Sender: TObject);
+    procedure GlyphLogoTap(Sender: TObject; const Point: TPointF);
   private
     {Private declarations}
   public
     {Public declarations}
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
+  uses
+    u_UrlOpen; //for "url_Open_In_Browser"
 
 {$R *.fmx}
+
+{$region 'Initialization'}
+
+constructor TAboutFrame.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  lblTitle.Text := STR_APP_TITLE;
+  lblVersionValue.Text := STR_APP_VERSION;
+  GlyphLogo.Cursor := crHandPoint;
+end;
+
+{$endregion}
+
+{$region 'Events'}
+
+procedure TAboutFrame.GlyphLogoTap(Sender: TObject; const Point: TPointF); //TODO: use some custom TGlyph descendent that surfaces MouseClick event and Cursor properties instead so that we can handle Click event too
+begin
+  url_Open_In_Browser(URL_READCOM);
+end;
 
 procedure TAboutFrame.btnCloseClick(Sender: TObject);
 begin
   Parent := nil;
   Visible := false;
 end;
+
+{$endregion}
 
 end.
