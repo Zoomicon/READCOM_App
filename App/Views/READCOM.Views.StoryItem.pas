@@ -238,7 +238,7 @@ implementation
     {$IFDEF DEBUG}
     {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
     {$ENDIF}
-    u_UrlOpen, //for url_Open_In_Browser
+    READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     System.IOUtils, //for TPath
     FMX.Platform, //for TPlatformServices
     Zoomicon.Generics.Collections, //for TObjectListEx
@@ -926,9 +926,12 @@ begin
       if FUrlAction.EndsWith(EXT_READCOM) then
       begin
         //TODO: use downloader with caching to fetch .readcom URL and then tell the app to open it (replace current document) - that way we can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run
+        var memStream := DownloadFileWithFallbackCache(FUrlAction);
+
+        FreeAndNil(memStream);
       end
       else
-        url_Open_In_Browser(FUrlAction);
+        OpenURLinBrowser(FUrlAction);
     end
   else
 

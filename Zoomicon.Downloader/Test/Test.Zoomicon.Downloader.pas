@@ -56,7 +56,7 @@ implementation
 
 procedure TestTFileDownloader.SetUp;
 begin
-  FContentCache := TFileCache.Create() As IContentCache;
+  FContentCache := TFileCache.Create As IContentCache;
 end;
 
 procedure TestTFileDownloader.TearDown;
@@ -73,9 +73,10 @@ begin
   if FileExists(TheSaveFilepath) then
     TFile.Delete(TheSaveFilepath); //remove download file if existing so that we can check if it was created later
 
-  var FileDownloader := TFileDownloader.Create(TheContentURI, TheSaveFilepath, TheContentCache, true); //AutoStart
+  var FileDownloader := TFileDownloader.Create(nil, TheContentURI, TheSaveFilepath, TheContentCache, true); //AutoStart
   //FileDownloader.OnlyFallbackCache := true; //would use this if we only wanted to fallback to cache in case of download errors / offline case
   FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
+  FreeAndNil(FileDownloader); //cleanup resources
 end;
 
 procedure TestTFileDownloader.DoTestSingleDownload(const URIstr: String; const SaveFilename: String; const cache: IContentCache; const ExpectedFileExists: Boolean = true);
@@ -143,7 +144,7 @@ begin
     DoTestSingleDownload(DOWNLOAD_URI_WRONG, SAVE_FILENAME_WRONGURI, FContentCache, false);
   except
     on e: ENetUriException do
-      ShowException(e, ExceptAddr);
+      {ShowException(e, ExceptAddr)}; //silently catching exception for wrong url
   end;
 end;
 

@@ -285,19 +285,19 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TZoomedLayout]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TZoomedLayout]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TZoomedLayout, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TZoomedLayout]);
 end;
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

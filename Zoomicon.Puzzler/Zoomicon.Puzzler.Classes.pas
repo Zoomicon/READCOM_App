@@ -348,20 +348,20 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TArrow, TLink]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TArrow, TLink]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TArrow, TControl);
   GroupDescendentsWith(TLink, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TArrow, TLink]);
 end;
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

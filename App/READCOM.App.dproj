@@ -288,7 +288,6 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
             <Form>MessageForm</Form>
         </DCCReference>
-        <DCCReference Include="u_UrlOpen.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas"/>
@@ -321,6 +320,10 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
+        <DCCReference Include="..\Zoomicon.Cache\Zoomicon.Cache.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Cache\Zoomicon.Cache.Models.pas"/>
+        <DCCReference Include="..\Zoomicon.Downloader\Zoomicon.Downloader.Classes.pas"/>
+        <DCCReference Include="..\Zoomicon.Downloader\Zoomicon.Downloader.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
@@ -331,6 +334,7 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Models.pas"/>
+        <DCCReference Include="READCOM.App.URLs.pas"/>
         <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
             <Form>StoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
@@ -380,7 +384,6 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Main.pas"/>
-        <None Include="TODO.html"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -733,6 +736,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Default.readcom" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="TODO.html" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Android">
                         <RemoteDir>.\assets\internal\</RemoteDir>
@@ -746,6 +755,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="Win32\Debug\READCOM.App.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>READCOM_App.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Release\READCOM.App.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>READCOM_App.exe</RemoteName>
                         <Overwrite>true</Overwrite>

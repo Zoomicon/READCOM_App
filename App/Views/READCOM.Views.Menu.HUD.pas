@@ -109,7 +109,7 @@ type
 
 implementation
   uses
-    u_UrlOpen; //for url_Open_In_Browser
+    READCOM.App.URLs; //for url_Open_In_Browser
 
 {$R *.fmx}
 
@@ -229,7 +229,7 @@ end;
 
 procedure TStoryHUD.actionHelpExecute(Sender: TObject);
 begin
-  url_Open_In_Browser(URL_HELP);
+  OpenURLinBrowser(URL_HELP);
 end;
 
 procedure TStoryHUD.actionAboutExecute(Sender: TObject);

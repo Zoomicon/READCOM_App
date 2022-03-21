@@ -285,15 +285,15 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TAudioStoryItem]); //register for persistence
+  RegisterFmxClasses([TAudioStoryItem]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TAudioStoryItem, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TAudioStoryItem]);
 end;
 
@@ -301,7 +301,7 @@ initialization
   StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_AUDIO_TITLE, FILTER_AUDIO_EXTS);
 
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
 

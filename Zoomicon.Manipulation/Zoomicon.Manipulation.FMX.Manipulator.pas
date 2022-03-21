@@ -30,19 +30,19 @@ implementation
 
 {$R *.fmx}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TManipulator]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TManipulator]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TManipulator, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TManipulator]);
 end;
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

@@ -191,15 +191,15 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TVectorImageStoryItem]); //register for persistence
+  RegisterFmxClasses([TVectorImageStoryItem]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TVectorImageStoryItem, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TVectorImageStoryItem]);
 end;
 
@@ -207,6 +207,6 @@ initialization
   StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_VECTOR_IMAGE_TITLE, FILTER_VECTOR_IMAGE_EXTS);
 
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

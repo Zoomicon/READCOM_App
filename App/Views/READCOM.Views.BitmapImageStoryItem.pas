@@ -256,15 +256,15 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TBitmapImageStoryItem]); //register for persistence
+  RegisterFmxClasses([TBitmapImageStoryItem]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TBitmapImageStoryItem, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TBitmapImageStoryItem]);
 end;
 
@@ -272,6 +272,6 @@ initialization
   StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_BITMAP_IMAGE_TITLE, FILTER_BITMAP_IMAGE_EXTS);
 
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

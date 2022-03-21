@@ -318,15 +318,15 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TTextStoryItem]); //register for persistence
+  RegisterFmxClasses([TTextStoryItem]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TTextStoryItem, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TTextStoryItem]);
 end;
 
@@ -334,6 +334,6 @@ initialization
   StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create);
   AddStoryItemFileFilter(FILTER_TEXT_TITLE, FILTER_TEXT_EXTS);
 
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

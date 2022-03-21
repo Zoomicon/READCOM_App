@@ -318,19 +318,19 @@ end;
 
 {$endregion}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TZoomFrame]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TZoomFrame]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TZoomFrame, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TZoomFrame]);
 end;
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

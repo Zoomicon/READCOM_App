@@ -59,7 +59,7 @@ interface
         function Execute: integer; virtual; //returns HTTP status code //called by TDownloaderThread
 
       public
-        constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); reintroduce;
+        constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         procedure Initialize(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 
         procedure Start; virtual;
@@ -97,7 +97,7 @@ interface
         function Execute: integer; override; //returns HTTP status code //called by TDownloaderThread
 
       public
-        constructor Create(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
+        constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         destructor Destroy; override;
 
         procedure Initialize(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
@@ -106,6 +106,8 @@ interface
       published
         property Filepath: String read FFilepath write FFilepath;
     end;
+
+  procedure Register;
 
 implementation
 uses
@@ -295,10 +297,10 @@ begin
     if FEndPosition = 0 then
       StatusCode := HttpClient.Get(FContentURIstr, FData).StatusCode
     else
-      begin
+    begin
       FData.Seek(StartPosition, TSeekOrigin.soBeginning);
       StatusCode := HttpClient.GetRange(FContentURIstr, StartPosition, EndPosition, FData).StatusCode; //synchronous-blocking call (executes ReceiveHandler callback periodically)
-      end;
+    end;
 
     if Assigned(FOnDownloadTerminated) then
       FOnDownloadTerminated(Self, StatusCode);
@@ -332,7 +334,7 @@ begin
 
   //First send download progress...
   if Assigned(FOnDownloadProgress) then
-    begin
+  begin
     var DownloadSpeed: Integer;
     if SessionTime = 0 then
       DownloadSpeed := 0
@@ -340,35 +342,36 @@ begin
       DownloadSpeed := (ReadCount * 1000) div SessionTime; //doing *1000 since ElapsedTime is in msec
 
     FOnDownloadProgress(Self, FTotalElapsedTime, DownloadSpeed, FTotalReadCount, FTotalContentLength, Abort);
-    end;
+  end;
 
   //...then abort any further downloading if needed
   if FDownloaderThread.CheckTerminated or FPaused then
-    begin
+  begin
     FLastSessionElapsedTime := FTotalElapsedTime;
     FLastSessionReadCount := FTotalReadCount;
     Abort := true;
-    end;
+  end;
 end;
 
 {$endregion}
 
 {$region 'TFileDownloader'}
 
-constructor TFileDownloader.Create(const TheContentURI: TURI; const TheFilePath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+constructor TFileDownloader.Create(AOwner: TComponent; const TheContentURI: TURI; const TheFilePath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
+  inherited Create(AOwner);
   Initialize(TheContentURI, TheFilePath, TheContentCache, AutoStart, TheStartPosition, TheEndPosition);
 end;
 
 destructor TFileDownloader.Destroy;
 begin
   if Assigned(FDownloaderThread) then
-    begin
-    FreeAndNil(FDownloaderThread);
-
+  begin
     if FDownloaderThread.ReturnValue <> STATUS_OK then //If failed to download, delete partially downloaded file //TODO: maybe only do it when non-resumable?
       TFile.Delete(Filepath); //Note: must first do FreeAndNil to release handle to file, then delete it
-    end;
+
+    FreeAndNil(FDownloaderThread);
+  end;
 
   FreeAndNil(FData); //when it's a TFileDownloader we weren't given a data stream, we created it, so have to free it
 
@@ -403,4 +406,21 @@ end;
 
 {$endregion}
 
+procedure RegisterSerializationClasses;
+begin
+  RegisterClasses([TDownloader, TFileDownloader]);
+end;
+
+procedure Register;
+begin
+  GroupDescendentsWith(TDownloader, TComponent);
+  GroupDescendentsWith(TFileDownloader, TComponent);
+  RegisterSerializationClasses;
+  RegisterComponents('Zoomicon', [TDownloader, TFileDownloader]);
+end;
+
+initialization
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+
 end.
+

@@ -201,7 +201,8 @@ begin
   //FreeAndNil(TreeView); //should be done automatically when "inherited" is called
   //FreeAndNil(Images); //should be done automatically when "inherited" is called
   FreeAndNil(ShowOnlyClasses); //freeing any TClassList that had been allocated and assigned to the "ShowOnlyClasses" property to avoid external code having to do it (obviously that TClassList shouldn't be assigned elsewhere)
-  inherited;
+
+  inherited; //do last
 end;
 
 {$endregion}
@@ -490,21 +491,21 @@ end; //the TTreeViewItems themselves will be reordered by the TTreeView since Tr
 
 {$region 'Registration'}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TStructureView]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TStructureView]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TStructureView, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TStructureView]);
 end;
 
 {$endregion}
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

@@ -386,19 +386,19 @@ end;
 
 {$ENDREGION}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TMediaPlayerEx]); //register for persistence
+  RegisterFmxClasses([TMediaPlayerEx]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TMediaPlayerEx, TComponent);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TMediaPlayerEx]);
 end;
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.

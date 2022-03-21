@@ -64,7 +64,7 @@ end;
 destructor TRegistry<TKey, TValue>.Destroy;
 begin
   FreeAndNil(FDictionary);
-  inherited;
+  inherited; //do last
 end;
 
 {$endregion}

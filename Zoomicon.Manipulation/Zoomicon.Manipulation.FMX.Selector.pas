@@ -253,23 +253,23 @@ end;
 
 {$REGION 'Registration' -------------------------------------------------------}
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TLocationSelector, TAreaSelector]); //register for persistence (in case they're used standalone)
+  RegisterFmxClasses([TLocationSelector, TAreaSelector]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TLocationSelector, TControl);
   GroupDescendentsWith(TAreaSelector, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TLocationSelector, TAreaSelector]);
 end;
 
 {$ENDREGION ...................................................................}
 
 initialization
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
 

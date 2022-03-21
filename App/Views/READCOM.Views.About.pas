@@ -32,7 +32,7 @@ type
 
 implementation
   uses
-    u_UrlOpen; //for "url_Open_In_Browser"
+    READCOM.App.URLs; //for OpenURLinBrowser
 
 {$R *.fmx}
 
@@ -53,7 +53,7 @@ end;
 
 procedure TAboutFrame.GlyphLogoTap(Sender: TObject; const Point: TPointF); //TODO: use some custom TGlyph descendent that surfaces MouseClick event and Cursor properties instead so that we can handle Click event too
 begin
-  url_Open_In_Browser(URL_READCOM);
+  OpenURLinBrowser(URL_READCOM);
 end;
 
 procedure TAboutFrame.btnCloseClick(Sender: TObject);

@@ -195,7 +195,8 @@ destructor TCustomManipulator.Destroy;
 begin
   ReleaseCapture; //make sure we always release Mouse Capture
   FreeAndNil(FAreaSelector_SelectedControls);
-  inherited;
+
+  inherited; //do last
 end;
 
 procedure TCustomManipulator.Loaded;

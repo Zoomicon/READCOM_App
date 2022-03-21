@@ -49,21 +49,21 @@ begin
   BorderVisible := true; //always show Border
 end;
 
-procedure RegisterClasses;
+procedure RegisterSerializationClasses;
 begin
-  RegisterFmxClasses([TPanelStoryItem]); //register for persistence
+  RegisterFmxClasses([TPanelStoryItem]);
 end;
 
 procedure Register;
 begin
   GroupDescendentsWith(TPanelStoryItem, TControl);
-  RegisterClasses;
+  RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TPanelStoryItem]);
 end;
 
 initialization
   //not registering any special file filter and handler here, coverted by generic (de)serialization support of StoryItem ancestor class
 
-  RegisterClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
+  RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
 end.
