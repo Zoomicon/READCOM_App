@@ -28,9 +28,11 @@ https://github.com/Zoomicon/READCOM_Gallery/tree/main/Gallery/Stories/Aesop%20Fa
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/3461504/153725195-3f952633-dbfa-4da1-a3d6-ca280608c6e8.png)
+![image](https://user-images.githubusercontent.com/3461504/159692204-c61e2f77-61c6-4afe-860b-5d4e9acf840c.png)
 
 Older screenshots:
+
+![image](https://user-images.githubusercontent.com/3461504/153725195-3f952633-dbfa-4da1-a3d6-ca280608c6e8.png)
 
 ![image](https://user-images.githubusercontent.com/3461504/152587444-315f557f-55d9-453a-94f1-042d7b76e010.png)
 
