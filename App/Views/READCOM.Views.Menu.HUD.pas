@@ -135,8 +135,10 @@ begin
 
   layoutButtonsEdit.Visible := Value; //show Edit-related buttons
 
+  (**) //TODO: Should removed so that an author can quickly see how StructureView looks when toggling Edit mode - currently causes leaks if commented out
   if not Value then
-    StructureVisible := false; //hide StructureView when existing EditMode
+    StructureVisible := false; //hide StructureView when exiting EditMode
+  (**)
 
   if Assigned(FEditModeChanged) then
     FEditModeChanged(Self, Value);
