@@ -18,8 +18,7 @@ object PanelStoryItem2: TPanelStoryItem
     Size.Height = 300.000000000000000000
     Size.PlatformDefault = False
     TabStop = False
-    UrlAction = 'https://www.read-com-eu.uma.es/'
-    SVGText = 
+    SVGText =
       '<svg id="Livello_1" data-name="Livello 1" xmlns="http://www.w3.o' +
       'rg/2000/svg" viewBox="0 0 315.5 363.98"><defs><style>.cls-1{fill' +
       ':#1d1d1b;}.cls-2{fill:#fff;}.cls-3,.cls-4{fill:none;stroke:#1d1d' +
