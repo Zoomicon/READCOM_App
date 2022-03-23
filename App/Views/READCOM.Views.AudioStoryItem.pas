@@ -53,6 +53,12 @@ type
     {DefaultSize}
     function GetDefaultSize: TSizeF; override;
 
+    {Active}
+    procedure SetActive(const Value: Boolean); override;
+
+    {EditMode}
+    procedure SetEditMode(const Value: Boolean); override;
+
     {Muted}
     function IsMuted: Boolean;
     procedure SetMuted(const Value: Boolean);
@@ -181,6 +187,24 @@ end;
 function TAudioStoryItem.GetDefaultSize: TSizeF;
 begin
   Result := TSizeF.Create(64, 64);
+end;
+
+{$endregion}
+
+{$region 'Active'}
+
+procedure TAudioStoryItem.SetActive(const Value: Boolean);
+begin
+  inherited;
+  Play;
+end;
+
+{$region 'EditMode'}
+
+procedure TAudioStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+  Hidden := not (EditMode or (Assigned(ParentStoryItem) and ParentStoryItem.EditMode)); //TODO: need to hide/unhide the Glyph when the item is in EditMode or when its parent is in EditMode (Hidden is reapplied in that case - see StoryItem code [should see though how the parent now makes the child appear in editmode to remove that extra code and also should tell the sturcureview to show even non-visible storyitems])
 end;
 
 {$endregion}

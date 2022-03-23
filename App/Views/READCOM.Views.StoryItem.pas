@@ -574,6 +574,8 @@ begin
     FActiveStoryItem := nil;
 
   ActiveChanged;
+
+  PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
 end;
 
 class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
