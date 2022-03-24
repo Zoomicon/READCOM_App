@@ -552,7 +552,7 @@ procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject); //
 begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
 
-  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView
+  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView //TODO: see why if we use a TVectorImageStoryItem it does show a default Glyph, but using this doesn't (used to show, after descending TBitmapStoryItem from TVectorStoryItem it stopped) - also decide if we do want such default Glyph or want to use those blank images instead of TPanelStoryItem: problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width etc.
 end;
 
 procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
