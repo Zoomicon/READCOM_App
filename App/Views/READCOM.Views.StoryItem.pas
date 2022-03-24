@@ -166,19 +166,21 @@ type
     procedure PlayRandomAudioStoryItem;
 
     {IClipboardEnabled}
+    procedure Delete; virtual;
+    procedure Cut; virtual;
     procedure Copy; virtual;
     procedure Paste; overload; virtual;
 
     {IStoreable}
     procedure ReadState(Reader: TReader); override;
     procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
-
+    //
     function GetAddFilesFilter: String; virtual;
     procedure Add(const StoryItem: IStoryItem); overload; virtual;
     procedure AddFromString(const Data: String); virtual;
     procedure Add(const Filepath: String); overload; virtual;
     procedure Add(const Filepaths: array of string); overload; virtual;
-
+    //
     function GetLoadFilesFilter: String; virtual;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
@@ -194,6 +196,9 @@ type
     //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
+
+    {Navigation}
+    procedure ActivateParentStoryItem;
 
   //--- Events ---
 
@@ -255,7 +260,7 @@ begin
   FStoryItems := TIStoryItemList.Create;
   FAudioStoryItems := TIAudioStoryItemList.Create;
 
-  inherited; //must create FStoryItems first, since EditMode ancestor's property is overriden and tries to access StoryItems when the ancestor's constructor initializes it
+  inherited; //must create FStoryItems first, since ancestor's EditMode property is overriden and causes access to StoryItems property when the ancestor's constructor sets it
 
   //FID := TGUID.NewGuid; //Generate new statistically unique ID
   Init;
@@ -281,8 +286,9 @@ procedure TStoryItem.Init;
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
       SetGlyphZorder;
+      //BitmapZoom := 10; //not used, just gives worse quality (pixelization). Plus it doesn't take 1/10 (non-integers) //TODO: report on that
       HitTest := false;
-    end;
+    end; //TODO: see how we can tell TSVGIconImage to stretch the SVG to fit its size instead of placing it so that it fits without distortion
   end;
 
   procedure InitBorder;
@@ -321,6 +327,8 @@ begin
   InitBorder;
 
   Anchored := true;
+
+  //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
 end;
 
 class destructor TStoryItem.Destroy;
@@ -554,6 +562,16 @@ end;
 
 {$region 'Active'}
 
+class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
+begin
+  if (Value = FActiveStoryItem) then exit;
+
+  if Assigned(Value) then //not checking if StoryPoint, since a non-StoryPoint may be activated directly via a target if it belongs to other StoryPoint parent
+    Value.Active := true //this will also deactivate the ActiveStoryItem if any
+  else {if Assigned(FActiveStoryItem) then} //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem (no need to check if it is Assigned [not nil], since the "Value = FActiveStoryItem" check above would have exited)
+    FActiveStoryItem.Active := false;
+end;
+
 function TStoryItem.IsActive: Boolean;
 begin
   result := Assigned(FActiveStoryItem) and (FActiveStoryItem.View = Self);
@@ -578,14 +596,11 @@ begin
   PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
 end;
 
-class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
+procedure TStoryItem.ActivateParentStoryItem;
 begin
-  if (Value = FActiveStoryItem) then exit;
-
-  if Assigned(Value) then //not checking if StoryPoint, since a non-StoryPoint may be activated directly via a target if it belongs to other StoryPoint parent
-    Value.Active := true //this will also deactivate the ActiveStoryItem if any
-  else {if Assigned(FActiveStoryItem) then} //if SetActiveStoryItem(nil) was called then deactivate ActiveStoryItem (no need to check if it is Assigned [not nil], since the "Value = FActiveStoryItem" check above would have exited)
-    FActiveStoryItem.Active := false;
+  var parentItem := ParentStoryItem;
+  if Assigned(parentItem) then //don't want to make RootStoryItem (aka the StoryItem without a parent StoryItem) inactive, so don't set ActiveStoryItem to nil
+    ActiveStoryItem := parentItem;
 end;
 
 procedure TStoryItem.ActiveChanged;
@@ -972,20 +987,26 @@ end;
 
 {$ENDREGION}
 
-{$region 'IClipboardEnabled'}
+{$region 'Clipboard'}
+
+procedure TStoryItem.Delete;
+begin
+  ActivateParentStoryItem; //make ParentStoryItem active before deleting
+  FreeAndNil(Self);
+end;
+
+procedure TStoryItem.Cut;
+begin
+  Copy;
+  Delete; //this makes ParentStoryItem active
+end;
 
 procedure TStoryItem.Copy;
 begin
  var svc: IFMXExtendedClipboardService;
  if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
  begin
-   var wasEditing := EditMode;
-   try
-     EditMode := false;
-     Svc.SetText(SaveToString);
-   finally
-     EditMode := wasEditing;
-   end;
+   Svc.SetText(SaveToString);
  end;
 end;
 
@@ -1004,7 +1025,7 @@ end;
 
 procedure TStoryItem.PasteText(const Value: String);
 begin
-  if Value.StartsWith('object') then //ignore if not Delphi serialization format (its text-based form)
+  if TrimLeft(Value).StartsWith('object') then //ignore if not Delphi serialization format (its text-based form) //Left-trimming since we may have pasted an indented object from a .readcom file
     AddFromString(Value); //add a new child StoryItem
 end;
 
@@ -1096,8 +1117,7 @@ begin
   end
   else
   begin
-    var ItemSize := DefaultSize;
-    Size.Size := ItemSize; //TODO: StoryItem constructor should have set its DefaultSize
+    var ItemSize := Size.Size; //StoryItem constructor sets its DefaultSize, don't set Size to DefaultSize here since the StoryItem may have a different size set
     //Center the new item in its parent...
     Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
   end;
@@ -1207,7 +1227,7 @@ function TStoryItem.Load(const Filepath: String; const CreateNew: Boolean = fals
 begin
   var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
   try
-    result := Load(InputFileStream, ExtractFileExt(Filepath), CreateNew);
+    result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
   finally
     FreeAndNil(InputFileStream);
   end;
@@ -1244,21 +1264,20 @@ procedure TStoryItem.SaveReadCom(const Stream: TStream);
 begin
   var writer := TStreamWriter.Create(Stream);
   try
-    writer.Write(SaveToString);
+    writer.Write(SaveToString); //SaveToString uses SaveReadComBin (then converts to String)
   finally
     FreeAndNil(writer); //the writer doesn't own the stream by default, so this won't close the stream
   end;
 end;
 
-procedure TStoryItem.SaveReadComBin(const Stream: TStream);
+procedure TStoryItem.SaveReadComBin(const Stream: TStream); //also called by SaveToString
 begin
-  var oldEditMode := EditMode;
-  EditMode := false; //need to clear this since it disabled children and don't want them to be saved with "Enabled=false"
-
+  var wasActive := Active;
   try
-    Stream.WriteComponent(Self);
+    Active := false; //hide any UI related to being active, enable children etc., but also don't store Active=true so that at Paste it won't cause issues
+    Stream.WriteComponent(Self); //note: this will result in the RootStoryItem never having Active=true when serialized, but if no StoryItem is Active the HomeStoryItem or the RootStoryItem if no HomeStoryItem is set with become the Active one
   finally
-    EditMode := oldEditMode; //restore previous EditMode setting
+    Active := wasActive; //restore previous Active state
   end;
 end;
 

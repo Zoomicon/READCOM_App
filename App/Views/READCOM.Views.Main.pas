@@ -48,6 +48,8 @@ type
 
     procedure FormResize(Sender: TObject);
     procedure StoryTimerTimer(Sender: TObject);
+    procedure HUDactionCutExecute(Sender: TObject);
+    procedure HUDactionAddExecute(Sender: TObject);
 
   protected
     FTimerStarted: Boolean;
@@ -294,7 +296,7 @@ end;
 
 procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
 begin
-  TStoryItem.ActiveStoryItem := Value;
+  TStoryItem.ActiveStoryItem := Value; //this will trigger "ActiveStoryItemChanged" class event
 end;
 
 procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
@@ -338,6 +340,8 @@ begin
 
   //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
 
+  if not (Value.StoryPoint or Value.Home) then //not zooming down to items that are not StoryPoints or Home //must do last before the ZoomTo since we change the "Value" local variable
+    Value := Value.GetAncestorStoryPoint; //if it returns nil it will result in zooming to the RootStoryPoint
   ZoomTo(Value);
 end;
 
@@ -352,11 +356,7 @@ procedure TMainForm.ActivateParentStoryItem;
 begin
   var activeItem := ActiveStoryItem;
   if Assigned(activeItem) then
-  begin
-    var parentItem := activeItem.ParentStoryItem;
-    if Assigned(parentItem) then //don't want to make RootStoryItem (aka the StoryItem without a parent StoryItem) inactive
-      ActiveStoryItem := parentItem;
-  end;
+    activeItem.ActivateParentStoryItem;
 end;
 
 procedure TMainForm.ActivateHomeStoryItem;
@@ -366,14 +366,16 @@ end;
 
 procedure TMainForm.ActivatePreviousStoryPoint;
 begin
-  if Assigned(ActiveStoryItem) then
-     ActiveStoryItem := ActiveStoryItem.PreviousStoryPoint;
+  var activeItem := ActiveStoryItem;
+  if Assigned(activeItem) then
+     ActiveStoryItem := activeItem.PreviousStoryPoint;
 end;
 
 procedure TMainForm.ActivateNextStoryPoint;
 begin
-  if Assigned(ActiveStoryItem) then
-    ActiveStoryItem := ActiveStoryItem.NextStoryPoint;
+  var activeItem := ActiveStoryItem;
+  if Assigned(activeItem) then
+    ActiveStoryItem := activeItem.NextStoryPoint;
 end;
 
 {$endregion}
@@ -538,16 +540,26 @@ begin
     StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
 end;
 
-procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
+procedure TMainForm.HUDactionAddExecute(Sender: TObject);
 begin
-  //HUD.actionAddBitmapImageStoryItemExecute(Sender);
-  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem');
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  ActiveStoryItem.Options.ActAdd;
+  UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
+end;
+
+procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
+begin
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView
 end;
 
 procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
 begin
-  //HUD.actionAddTextStoryItemExecute(Sender);
-  AddChildStoryItem(TTextStoryItem, 'TextStoryItem');
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  AddChildStoryItem(TTextStoryItem, 'TextStoryItem'); //will also update the StructureView
 end;
 
 procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
@@ -576,9 +588,11 @@ begin
       //Center the new item in its parent...
       Position.Point := PointF(OwnerAndParent.Size.Width/2 - ItemSize.Width/2, OwnerAndParent.Size.Height/2 - ItemSize.Height/2); //not creating TPosition objects to avoid leaking (TPointF is a record)
     end;
+
+    BringToFront; //load as front-most
   end;
 
-  StoryItem.BringToFront; //load as front-most
+  UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
 end;
 
 procedure TMainForm.DeleteActiveStoryItem;
@@ -586,11 +600,7 @@ begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
 
   if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
-    begin
-    var StoryItem := ActiveStoryItem.View;
-    ActivateParentStoryItem; //make ParentStoryItem active before deleting the previously ActiveStoryItem
-    FreeAndNil(StoryItem);
-    end
+    ActiveStoryItem.Delete //this makes ParentStoryItem active
   else
     NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
 end;
@@ -598,6 +608,17 @@ end;
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
   DeleteActiveStoryItem;
+end;
+
+procedure TMainForm.HUDactionCutExecute(Sender: TObject);
+begin
+  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
+    ActiveStoryItem.Cut //this makes ParentStoryItem active
+  else
+  begin
+    ActiveStoryItem.Copy;
+    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
+  end;
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
@@ -609,19 +630,28 @@ end;
 procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
 begin
   if Assigned(ActiveStoryItem) then
+  begin
     ActiveStoryItem.Paste;
+    UpdateStructureView; //TODO: should do similar to deletion by somehow notifying from inside the StoryItem itself the StructureView that items have been added
+  end;
 end;
 
 procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
 begin
   if Assigned(ActiveStoryItem) then
+  begin
     ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
+    UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
+  end;
 end;
 
 procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
 begin
   if Assigned(ActiveStoryItem) then
+  begin
     ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
+    UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
+  end;
 end;
 
 {$endregion}

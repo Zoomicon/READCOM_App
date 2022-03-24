@@ -99,7 +99,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 43.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -172,7 +172,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 230.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -194,7 +194,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 276.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -214,7 +214,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 325.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -233,7 +233,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 374.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -250,7 +250,7 @@ object StoryHUD: TStoryHUD
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 420.000000000000000000
-        Size.Width = 41.000000000000000000
+        Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
@@ -267,23 +267,40 @@ object StoryHUD: TStoryHUD
       Justify = Left
       JustifyLastLine = Left
       FlowDirection = LeftToRight
+      object btnAdd: TSpeedButton
+        Action = actionAdd
+        Align = Client
+        Enabled = True
+        Hint = 
+          'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
+          ' audio, text) or saved StoryItems (.readcom files). Respective S' +
+          'toryItems are added as children of the edited StoryItem.'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 10
+        Margins.Left = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
       object btnAddBitmapImageStoryItem: TSpeedButton
         Action = actionAddBitmapImageStoryItem
         Anchors = [akTop, akRight]
         Enabled = True
         Hint = 
-          'Add Bitmap Image'#13#13'Adds a BitmapImageStoryItem placeholder into t' +
-          'he edited StoryItem'
+          'Add Image'#13#13'Adds an ImageStoryItem placeholder into the edited St' +
+          'oryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 23
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
-        Margins.Bottom = 6.000000000000000000
+        Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 3.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 43.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -301,9 +318,9 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 45.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 89.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -318,10 +335,29 @@ object StoryHUD: TStoryHUD
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
+        Position.X = 49.000000000000000000
+        Position.Y = 89.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+        Visible = False
+      end
+      object btnCut: TSpeedButton
+        Action = actionCut
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Hint = 'Cut'#13#13'Moves the edited StoryItem to the Clipboard'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 25
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 87.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 138.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -329,7 +365,7 @@ object StoryHUD: TStoryHUD
         Action = actionCopy
         Anchors = [akTop, akRight]
         Enabled = True
-        Hint = 'Copy'#13#13'Copy the edited StoryItem to the Clipboard'
+        Hint = 'Copy'#13#13'Copies the edited StoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 17
         Margins.Left = 3.000000000000000000
@@ -337,9 +373,9 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 126.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 184.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -348,8 +384,8 @@ object StoryHUD: TStoryHUD
         Anchors = [akTop, akRight]
         Enabled = True
         Hint = 
-          'Paste'#13#13'Paste content from the Clipboard into the edited StoryIte' +
-          'm'
+          'Paste'#13#13'Pastes content from the Clipboard into the edited StoryIt' +
+          'em'
         Images = Globals.SVGIconImageList
         ImageIndex = 18
         Margins.Left = 3.000000000000000000
@@ -357,9 +393,9 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 165.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 230.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -373,9 +409,9 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 207.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 279.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -389,9 +425,9 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 246.000000000000000000
-        Size.Width = 41.000000000000000000
-        Size.Height = 33.000000000000000000
+        Position.Y = 325.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
@@ -434,11 +470,23 @@ object StoryHUD: TStoryHUD
       ImageIndex = 17
       ImageIndex = 17
     end
+    object actionCut: TAction
+      Category = 'Edit'
+      Text = 'Delete'
+      ImageIndex = 25
+      ImageIndex = 25
+    end
     object actionDelete: TAction
       Category = 'Edit'
       Text = 'Delete'
       ImageIndex = 8
       ImageIndex = 8
+    end
+    object actionAdd: TAction
+      Category = 'Edit'
+      Text = 'Add'
+      ImageIndex = 10
+      ImageIndex = 10
     end
     object actionHome: TAction
       Category = 'Navigation'

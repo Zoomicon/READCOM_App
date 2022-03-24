@@ -2,8 +2,8 @@ object PanelStoryItem2: TPanelStoryItem
   Align = Center
   ClipChildren = True
   Locked = True
-  Size.Width = 716.000000000000000000
-  Size.Height = 587.000000000000000000
+  Size.Width = 1000.000000000000000000
+  Size.Height = 1000.000000000000000000
   Size.PlatformDefault = False
   TabStop = False
   TabOrder = 32767
@@ -12,10 +12,10 @@ object PanelStoryItem2: TPanelStoryItem
   object READCOM1441757997: TVectorImageStoryItem
     Align = Scale
     Locked = True
-    Position.X = 208.000000000000000000
-    Position.Y = 143.500000000000000000
-    Size.Width = 300.000000000000000000
-    Size.Height = 300.000000000000000000
+    Position.X = 150.000000000000000000
+    Position.Y = 150.000000000000000000
+    Size.Width = 700.000000000000000000
+    Size.Height = 700.000000000000000000
     Size.PlatformDefault = False
     TabStop = False
     SVGText =

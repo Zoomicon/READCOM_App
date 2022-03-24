@@ -30,6 +30,8 @@ type
 
   IClipboardEnabled = interface
     ['{FDD22AC7-873A-4127-B200-E99DB4F2DEBF}']
+    procedure Delete;
+    procedure Cut; //does Copy, then Delete
     procedure Copy;
     procedure Paste;
   end;
@@ -133,6 +135,7 @@ type
     {Active}
     function IsActive: Boolean;
     procedure SetActive(const Value: Boolean);
+    procedure ActivateParentStoryItem;
 
     {EditMode}
     function IsEditMode: Boolean;

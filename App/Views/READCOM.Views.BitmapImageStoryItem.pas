@@ -14,7 +14,7 @@ uses
   FMX.Surfaces, //for TBitmapSurface
   FMX.SVGIconImage, //for TSVGIconImage
   READCOM.App.Models, //for IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable
-  READCOM.Views.ImageStoryItem; //for TImageStoryItem
+  READCOM.Views.VectorImageStoryItem, READCOM.Views.ImageStoryItem; //for TVectorImageStoryItem
 
 const
   EXT_PNG = '.png';
@@ -24,11 +24,16 @@ const
   FILTER_BITMAP_IMAGE_EXTS = '*' + EXT_PNG + ';*' + EXT_JPG + ';*' + EXT_JPEG;
   FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
 
+   //TODO: temporarily extending from VectorStoryImage so supporting both vector and bitmap images
+  FILTER_IMAGE_TITLE = 'Images (*.svg, *.png, *.jpg, *.jpeg)';
+  FILTER_IMAGE_EXTS = FILTER_VECTOR_IMAGE_EXTS + ';' + FILTER_BITMAP_IMAGE_EXTS;
+  FILTER_IMAGE = FILTER_IMAGE_TITLE + '|' + FILTER_IMAGE_EXTS;
+
 type
 
   {$REGION 'TBitmapImageStoryItem' ----------------------------------------------}
 
-  TBitmapImageStoryItem = class(TImageStoryItem, IBitmapImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
+  TBitmapImageStoryItem = class(TVectorImageStoryItem, IBitmapImageStoryItem, IVectorImageStoryItem, IImageStoryItem, IStoryItem, IStoreable)
     ImageControl: TImage;
 
   //--- Methods ---
@@ -182,7 +187,7 @@ begin
   if (ContentFormat = EXT_PNG) or (ContentFormat = EXT_JPG) or (ContentFormat = EXT_JPEG) then //load EXT_PNG, EXT_JPG, EXT_JPEG
     result := LoadBitmap(Stream)
   else
-    result := inherited; //load EXT_READCOM
+    result := inherited; //load formats supported by ancestor
 end;
 
 function TBitmapImageStoryItem.LoadBitmap(const Stream: TStream): TObject;
@@ -269,8 +274,9 @@ begin
 end;
 
 initialization
-  StoryItemFactories.Add([EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create);
+  StoryItemFactories.Add([EXT_SVG, EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create); //TODO: temporarily extending from VectorStoryImage so supporting both vector and bitmap images
   AddStoryItemFileFilter(FILTER_BITMAP_IMAGE_TITLE, FILTER_BITMAP_IMAGE_EXTS);
+  AddStoryItemFileFilter(FILTER_IMAGE_TITLE, FILTER_IMAGE_EXTS); //TODO: temporarily extending from VectorStoryImage so supporting both vector and bitmap images
 
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 

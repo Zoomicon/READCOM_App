@@ -61,6 +61,10 @@ type
     btnFlipVertically: TSpeedButton;
     btnPaste: TSpeedButton;
     btnAddBitmapImageStoryItem: TSpeedButton;
+    btnCut: TSpeedButton;
+    actionCut: TAction;
+    btnAdd: TSpeedButton;
+    actionAdd: TAction;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

@@ -59,7 +59,8 @@ interface
         function Execute: integer; virtual; //returns HTTP status code //called by TDownloaderThread
 
       public
-        constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
+        constructor Create(AOwner: TComponent); overload; override;
+        constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); reintroduce; overload; virtual; //TODO: see why we need to use "reintroduce" here even though we have overriden "constructor Create(AOwner: TComponent)" which the compiler was complaining this method was hiding
         procedure Initialize(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 
         procedure Start; virtual;
@@ -172,6 +173,11 @@ end;
 {$endregion}
 
 {$REGION 'TDownloader'}
+
+constructor TDownloader.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
 
 constructor TDownloader.Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin

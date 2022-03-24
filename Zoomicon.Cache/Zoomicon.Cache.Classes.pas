@@ -35,7 +35,7 @@ implementation
 
 function TFileCache.GetKeyHash(const Key: String): String;
 begin
-  result := THashSHA2.GetHashString(Key, THashSHA2.TSHA2Version.SHA512).ToUpper; //See https://en.wikipedia.org/wiki/SHA-2
+  result := THashSHA2.GetHashString(Key, THashSHA2.TSHA2Version.SHA512).ToUpperInvariant; //See https://en.wikipedia.org/wiki/SHA-2 //ends up calling THash.DigestAsString which returns lowercase hex chars A-F, so converting to uppercase (using Locale invariant conversion)
 end;
 
 function TFileCache.GetFilepath(const Key: String): String;

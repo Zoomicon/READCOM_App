@@ -149,7 +149,8 @@ uses
   Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper, TControlSubComponentHelper
   Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections, //for TListEx
-  System.SysUtils; //for Supports
+  System.SysUtils, //for Supports
+  System.Rtti; //for TValue
 
 {$R *.fmx}
 
@@ -238,7 +239,15 @@ procedure TCustomManipulator.Loaded;
       Visible := EditMode;
       Opacity := 0.4;
       //not doing SendToBack, assuming it's created first, since we reserve one place for it at the bottom with GetBackIndex
-      DropTarget.Align := TAlignLayout.Client;
+      Align := TAlignLayout.Client;
+
+      (* //comment out, doesn't seem to work (need to make "Path" invisible using the Style Designer if don't want to see the "drop" arrow)
+      var P := TStyledControl.Create(nil);
+      Parent := P;
+      P.StylesData['droptargetstyle.Path.Visible']:= TValue.From(false);
+      Parent := nil;
+      FreeAndNil(P);
+      *)
 
       Enabled := true;
       OnDragOver := DropTargetDragOver;
@@ -766,7 +775,12 @@ begin
     begin
       //var dSize := SelectedArea.Size - FLastAreaSelectorBounds.Size;
       //ResizeControls(FAreaSelector_SelectedControls, dSize.Width/FLastAreaSelectorBounds.Width, dSize.Height/FLastAreaSelectorBounds.Height); //scaling down the deltas by the respective initial width/height so that we scale up again when resizing each individual control by its current width/height inside its parent
-      ResizeControls(FAreaSelector_SelectedControls, SelectedArea); //resizing (distorting) to the new SelectedArea bounds, this is more stable and straightforward to implement
+
+      var rect := SelectedArea;
+      var d := SELECTION_GRIP_SIZE/1.3;
+      rect.Inflate(-d, -d, -d, -d); //Inflating by -SELECTION_GRIP_SIZE * 1.5 to avoid strange issue where dragging from the part of the knob that is over the object does selection update
+
+      ResizeControls(FAreaSelector_SelectedControls, rect); //resizing (distorting) to the new SelectedArea bounds, this is more stable and straightforward to implement
     end
     else
     begin

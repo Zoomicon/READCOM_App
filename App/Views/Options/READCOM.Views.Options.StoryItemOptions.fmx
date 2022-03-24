@@ -101,21 +101,6 @@ object StoryItemOptions: TStoryItemOptions
       Text = 'Is Anchored'
       OnClick = actionToggleAnchoredExecute
     end
-    object btnAdd: TSpeedButton
-      Action = actionAdd
-      Align = Client
-      Enabled = True
-      Hint = 
-        'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
-        ' audio, text) or saved StoryItems (.readcom files), creating Sto' +
-        'ryItems as children of the Active StoryItem.'
-      Images = Globals.SVGIconImageList
-      ImageIndex = 10
-      Size.Width = 64.000000000000000000
-      Size.Height = 57.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'actiontoolbutton'
-    end
     object btnLoad: TSpeedButton
       Action = actionLoad
       Align = Client

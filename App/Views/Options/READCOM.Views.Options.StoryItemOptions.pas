@@ -27,7 +27,6 @@ type
     actionAdd: TAction;
     layoutButtons: TFlowLayout;
     btnToggleAnchored: TSpeedButton;
-    btnAdd: TSpeedButton;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
     OpenDialog: TOpenDialog;
@@ -75,9 +74,7 @@ type
 
 implementation
   uses
-    FMX.DialogService.Async, //for TDialogServiceAsync
-    FMX.Objects, //for TImageWrapMode
-    FMX.Styles.Objects; //for TStyleObject
+    FMX.DialogService.Async; //for TDialogServiceAsync
 
 {$R *.fmx}
 
