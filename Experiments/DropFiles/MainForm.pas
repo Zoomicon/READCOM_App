@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.ExtCtrls,
-  uDropFrame, FMX.Layouts, uInheritedFrame;
+  uDropFrame, FMX.Layouts, uInheritedFrame, FMX.Controls.Presentation,
+  FMX.StdCtrls;
 
 type
   TForm2 = class(TForm)
@@ -17,6 +18,7 @@ type
     Frame15: TDropFrame;
     Frame16: TDropFrame;
     Frame21: TInheritedFrame;
+    btnAutoDrag: TButton;
   end;
 
 var

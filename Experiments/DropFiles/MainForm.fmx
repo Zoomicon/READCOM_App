@@ -89,5 +89,15 @@ object Form2: TForm2
         Size.Height = 200.000000000000000000
       end
     end
+    object btnAutoDrag: TButton
+      DragMode = dmAutomatic
+      Position.X = 200.000000000000000000
+      Position.Y = 400.000000000000000000
+      Size.Width = 200.000000000000000000
+      Size.Height = 200.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Drag me'
+    end
   end
 end

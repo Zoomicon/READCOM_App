@@ -40,8 +40,10 @@ end;
 
 procedure TDropFrame.DoDropTarget1Dropped(Sender: TObject; const Data: TDragObject;  const Point: TPointF);
 begin
-  if SizeOf(Data.Files) <> 0 then
-    ShowMessage(Format('Received %s at %s', [Data.Files[0], Name]));
+  if Assigned(Data.Files) and (SizeOf(Data.Files) <> 0) then
+    ShowMessage(Format('Received %s at %s', [Data.Files[0], Name]))
+  else
+    ShowMessage('Please drop some file(s)');
 end;
 
 

@@ -21,6 +21,9 @@
         <Projects Include="MoveToTarget\MoveToTarget.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="SVGViewer\SVGViewer.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="MoveToTarget:Make">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj" Targets="Make"/>
     </Target>
+    <Target Name="SVGViewer">
+        <MSBuild Projects="SVGViewer\SVGViewer.dproj"/>
+    </Target>
+    <Target Name="SVGViewer:Clean">
+        <MSBuild Projects="SVGViewer\SVGViewer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SVGViewer:Make">
+        <MSBuild Projects="SVGViewer\SVGViewer.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget"/>
+        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget;SVGViewer"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean;SVGViewer:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make"/>
+        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make;SVGViewer:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
