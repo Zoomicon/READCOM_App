@@ -67,7 +67,8 @@ type
 
 implementation
   uses
-    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Views.StoryItemFactory, //for StoryItemFactories, StoryItemAddFileFilter
+    Zoomicon.Text; //for ReadAllText
 
 {$R *.fmx}
 
@@ -100,7 +101,10 @@ begin
   if FAutoSize then
     Glyph.Align := TAlignLayout.None;
   var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
-  bitmap.SVG.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
+
+  //bitmap.SVG.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
+  bitmap.SVG.LoadFromText(ReadAllText(Stream)); //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore
+
   //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
   FStoreSVG := true; //mark that we loaded custom SVG
   bitmap.DrawSVGIcon;

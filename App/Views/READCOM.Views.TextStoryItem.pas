@@ -108,7 +108,7 @@ implementation
   uses
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
-    Zoomicon.Text, //for ReadAllText
+    //Zoomicon.Text, //for ReadAllText
     READCOM.Views.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
 
 {$R *.fmx}
