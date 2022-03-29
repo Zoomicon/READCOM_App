@@ -71,11 +71,11 @@ type
 
     {$region 'Events'}
     {AreaSelector}
-    procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean);
-    procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single);
-    procedure HandleAreaSelectorTrack(Sender: TObject); //called while user resizes the area selector
-    procedure HandleAreaSelectorChange(Sender: TObject); //called when user finishes resizing the area selector
-    procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure HandleAreaSelectorMoving(Sender: TObject; const DX, DY: Single; out Canceled: Boolean); virtual;
+    procedure HandleAreaSelectorMoved(Sender: TObject; const DX, DY: Single); virtual;
+    procedure HandleAreaSelectorTrack(Sender: TObject); virtual; //called while user resizes the area selector
+    procedure HandleAreaSelectorChange(Sender: TObject); virtual; //called when user finishes resizing the area selector
+    procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); virtual;
 
     {Gestures}
     procedure DoGesture(const EventInfo: TGestureEventInfo; var Handled: Boolean); override;
@@ -92,6 +92,8 @@ type
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
 
     {DragDrop}
+    procedure DragEnter(const Data: TDragObject; const Point: TPointF); override;
+    procedure DragLeave; override;
     procedure DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation); virtual;
     procedure DropTargetDropped(Sender: TObject; const Data: TDragObject; const Point: TPointF); overload; virtual;
     procedure DropTargetDropped(const Filepaths: array of string); overload; virtual;
@@ -880,7 +882,11 @@ begin
 
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
-  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then
+  begin
+    //FLastPosition := PointF(X, Y); //TODO: fix logic to move around non-Locked objects via mousedown+mousemove (also see Pan action at gestures section)
+    exit;
+  end;
 
   if (ssLeft in Shift) then
     begin
@@ -907,7 +913,28 @@ procedure TCustomManipulator.MouseMove(Shift: TShiftState; X, Y: Single);
 begin
   inherited; //needed so that FMX will know this wasn't a MouseClick (that we did drag between MouseDown and MouseUp) and for event handlers to be fired (e.g. at ancestors)
 
-  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then exit;
+  if {((AreaSelector.Parent <> Self) and not (Parent is TCustomManipulator)) and }(not EditMode) then
+  begin
+{ //TODO: fix logic to move around non-Locked objects via mousedown+mousemove (also see Pan action at gestures section) - need to know that we are dragging, e.g. check ssLeft in Shift
+    var Pos := PointF(X, Y);
+    var LObj := ObjectAtLocalPoint(Pos, false, true, false, false); //only checking the immediate children (ignoring SubComponents)
+    if Assigned(LObj) then
+    begin
+      if (LObj.GetObject is TControl) then
+      begin
+        var Control := TControl(LObj.GetObject);
+        if not Control.Locked then
+          Movecontrol(Control,
+            X - FLastPosition.X, //DX
+            Y - FLastPosition.Y //DY
+          );
+      end;
+
+      FLastPosition := Pos;
+    end;
+}
+    exit;
+  end;
 
   if (ssLeft in Shift) then
   begin
@@ -1024,7 +1051,22 @@ end;
 
 {$endregion}
 
-{$region 'Drop target'}
+{$region 'DragDrop'}
+
+procedure TCustomManipulator.DragEnter(const Data: TDragObject; const Point: TPointF);
+begin
+  inherited;
+
+  if EditMode then
+    DropTarget.HitTest := true;
+end;
+
+procedure TCustomManipulator.DragLeave;
+begin
+  inherited;
+
+  //DropTarget.HitTest := false; //always do just in case it was missed //NOT DOING, CAUSES FLASHING AND CONTINUOUS ENABLE-DISABLE OF DROP OPERATION (PROBABLY FMX BUG) - COULD HAVE KEPT DROPTARGET WITH HITTEST TRUE ANYWAY
+end;
 
 procedure TCustomManipulator.DropTargetDragOver(Sender: TObject; const Data: TDragObject; const Point: TPointF; var Operation: TDragOperation);
 begin

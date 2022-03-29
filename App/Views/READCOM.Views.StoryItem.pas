@@ -205,6 +205,7 @@ type
   protected
     procedure ActiveChanged;
     procedure DropTargetDropped(const Filepaths: array of string); override;
+    procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
     procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
     procedure Tap(const Point: TPointF); override;
 
@@ -326,9 +327,11 @@ begin
   InitGlyph;
   InitBorder;
 
+  //DragMode := TDragMode.dmManual; //no automatic drag (it's the default)
   Anchored := true;
 
   //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
+
 end;
 
 class destructor TStoryItem.Destroy;
@@ -931,6 +934,18 @@ end;
 
 {$region 'Mouse'}
 
+procedure TStoryItem.HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  inherited; //make sure we call this since it does the bring to front / send to back with double click
+
+  if (ssCtrl in Shift) then
+  begin
+    var LObj := ObjectAtLocalPoint(PointF(X, Y) + AreaSelector.Position.Point, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
+    if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
+      ActiveStoryItem := TStoryItem(LObj.GetObject);
+  end;
+end;
+
 procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
@@ -968,8 +983,10 @@ end;
 
 procedure TStoryItem.DropTargetDropped(const Filepaths: array of string);
 begin
-  inherited;
+  //inherited;
   Add(Filepaths);
+
+  DropTarget.HitTest := false; //always do just in case it was missed
 end;
 
 {$endregion}
@@ -1091,9 +1108,12 @@ begin
   begin
     listFilters.Add(Pair.Key {+ '(' + Pair.Value.Replace(';', ',') + ')'}); //note: title already contains the exts in parentheses
     listFilters.Add(Pair.Value);
+    listExt.Add(Pair.Value);
   end;
+
+  //Insert first an entry for all supported extensions
   listFilters.Insert(0, listExt.DelimitedText);
-  listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text');
+  listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text'); //TODO: ideally the key should only contain the text (not *.xx too) so that we could concatenate the names (even if in singular) instead of hard-coding known type names here
 
   result := listFilters.DelimitedText;
 
@@ -1136,21 +1156,26 @@ end;
 
 procedure TStoryItem.Add(const Filepath: String);
 begin
-  var FileExt := ExtractFileExt(Filepath);
+  var FileExt := ExtractFileExt(Filepath).ToLowerInvariant; //make file extension lower case
 
-  var StoryItemFactory := StoryItemFactories.Get(FileExt);
+  try
+    var StoryItemFactory := StoryItemFactories.Get(FileExt);
 
-  var StoryItem: TStoryItem;
-  if Assigned(StoryItemFactory) then
-  begin
-    StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
-    StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
-    StoryItem.Load(Filepath); //this should also set the Size of the control
-  end
-  else
-    StoryItem := Load(Filepath, true) as TStoryItem;
+    var StoryItem: TStoryItem;
+    if Assigned(StoryItemFactory) then
+    begin
+      StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
+      StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
+      StoryItem.Load(Filepath); //this should also set the Size of the control
+    end
+    else
+      StoryItem := Load(Filepath, true) as TStoryItem;
 
-  Add(StoryItem);
+    Add(StoryItem);
+  except
+    on EListError do
+      raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [FileExt]);
+  end;
 end;
 
 procedure TStoryItem.Add(const Filepaths: array of String);

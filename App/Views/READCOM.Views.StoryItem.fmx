@@ -5,7 +5,6 @@ inherited StoryItem: TStoryItem
   object Glyph: TSVGIconImage
     MultiResBitmap = <
       item
-        SVGText = '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
       end>
     Align = Contents
     DisableInterpolation = True
@@ -13,6 +12,7 @@ inherited StoryItem: TStoryItem
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
+    SVGText = '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
   end
   object Border: TRectangle
     Align = Contents
