@@ -1,7 +1,4 @@
 inherited TextStoryItem: TTextStoryItem
-  inherited Glyph: TSVGIconImage
-    SVGText = ''
-  end
   object Memo: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
     AutoHide = False

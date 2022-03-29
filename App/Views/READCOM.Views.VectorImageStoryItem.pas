@@ -100,14 +100,23 @@ function TVectorImageStoryItem.LoadSVG(const Stream: TStream): TObject;
 begin
   if FAutoSize then
     Glyph.Align := TAlignLayout.None;
-  var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
 
-  //bitmap.SVG.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
-  bitmap.SVG.LoadFromText(ReadAllText(Stream)); //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore
+  //SVGImage.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
+  //SVGImage.SVGText := ReadAllText(Stream); //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore //TODO: see why it fails (stack pointer corruption?)
 
-  //bitmap.SVG.FixedColor := TAlphaColorRec.Red;
+  var s := TStringList.Create(#0, #13);
+  try
+    s.LoadFromStream(Stream);
+    var txt := s.DelimitedText;
+    SVGImage.SVGText := txt; //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore
+  finally
+    FreeAndNil(s);
+  end;
+
+  //SVGImage.FixedColor := TAlphaColorRec.Red;
+
   FStoreSVG := true; //mark that we loaded custom SVG
-  bitmap.DrawSVGIcon;
+
   if FAutoSize then
     begin
     //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
@@ -145,7 +154,7 @@ end;
 
 procedure TVectorImageStoryItem.SetSVGImage(const Value: TSVGIconImage);
 begin
-  SVGText := (Value.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText; //this will also set Size
+  SVGText := Value.SVGText; //this will also set Size
 end;
 
 {$endregion}
@@ -155,7 +164,7 @@ end;
 function TVectorImageStoryItem.GetSVGText: String;
 begin
   if Assigned(Glyph) then
-    result := (Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem).SVGText
+    result := SVGImage.SVGText
   else
     result := '';
 end;
@@ -167,8 +176,8 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
     if FAutoSize then
       Glyph.Align := TAlignLayout.None;
 
-    var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
-    bitmap.SVGText := Value;
+    SVGImage.SVGText := Value;
+
     if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
       begin
       //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
@@ -176,7 +185,10 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
       Glyph.Align := TAlignLayout.Contents;
       end;
 
-    FStoreSVG := true; //mark that we loaded custom SVG
+    FStoreSVG := (Value <> '') and (Value <> '<svg xmlns="http://www.w3.org/2000/svg"></svg>'); //mark that we loaded custom SVG
+
+    //var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
+    //bitmap.DrawSVGIcon;
   end;
 end;
 
@@ -195,6 +207,8 @@ end;
 
 {$ENDREGION}
 
+{$region 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TVectorImageStoryItem]);
@@ -206,6 +220,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TVectorImageStoryItem]);
 end;
+
+{$endregion}
 
 initialization
   StoryItemFactories.Add([EXT_SVG], TVectorImageStoryItemFactory.Create);

@@ -59,6 +59,8 @@ type
     {EditMode}
     procedure SetEditMode(const Value: Boolean); override;
 
+    function GetStoreBitmap: Boolean;
+
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -70,7 +72,7 @@ type
 
   //--- Properties ---
   published
-    property Image: TImage read GetImage write SetImage stored true default nil; //overrides ancestor's "stored" setting
+    property Image: TImage read GetImage write SetImage stored GetStoreBitmap default nil; //overrides ancestor's "stored" setting
 
   end;
 
@@ -127,7 +129,8 @@ end;
 
 procedure TBitmapImageStoryItem.UpdateGlyphVisibility;
 begin
-  Glyph.Visible := not Assigned(ImageControl.Bitmap.Image); //hide default Glyph if we have a bitmap image
+  var img := ImageControl.Bitmap.Image;
+  Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
 end;
 
 procedure TBitmapImageStoryItem.Loaded;
@@ -207,6 +210,11 @@ end;
 
 {$region 'Image'}
 
+function TBitmapImageStoryItem.GetStoreBitmap: Boolean;
+begin
+  result := not FStoreSVG;
+end;
+
 function TBitmapImageStoryItem.GetImage: TImage;
 begin
   result := ImageControl;
@@ -214,7 +222,10 @@ end;
 
 procedure TBitmapImageStoryItem.SetImage(const Value: TImage);
 begin
+  if not Assigned(Value) then exit;
+
   ImageControl.Bitmap.Assign(Value.Bitmap); //can't assign TImage directly
+
   UpdateGlyphVisibility;
 
   if FAutoSize then
@@ -261,6 +272,8 @@ end;
 
 {$ENDREGION}
 
+{$region 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TBitmapImageStoryItem]);
@@ -272,6 +285,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TBitmapImageStoryItem]);
 end;
+
+{$endregion}
 
 initialization
   StoryItemFactories.Add([EXT_SVG, EXT_PNG, EXT_JPG, EXT_JPEG], TBitmapImageStoryItemFactory.Create); //TODO: temporarily extending from VectorStoryImage so supporting both vector and bitmap images

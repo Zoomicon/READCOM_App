@@ -1,9 +1,4 @@
 inherited BitmapImageStoryItem: TBitmapImageStoryItem
-  inherited Glyph: TSVGIconImage
-    MultiResBitmap = <
-      item
-      end>
-  end
   object ImageControl: TImage
     MultiResBitmap = <
       item

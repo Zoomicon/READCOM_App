@@ -279,13 +279,16 @@ end;
 function TTextStoryItem.LoadTXT(const Stream: TStream): TObject;
 begin
   //Text := ReadAllText(Stream);
+
   var s := TStringList.Create(#0, #13);
+  try
+    s.LoadFromStream(Stream);
+    Text := s.DelimitedText;
 
-  s.LoadFromStream(Stream);
-  Text := s.DelimitedText;
-  Size.Size := TSizeF.Create(50, 30); //TODO: judge on text volume
-
-  FreeAndNil(s);
+    Size.Size := TSizeF.Create(50, 30); //TODO: judge on text volume
+  finally
+    FreeAndNil(s);
+  end;
 
   result := Self;
 end;
