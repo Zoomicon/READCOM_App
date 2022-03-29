@@ -61,6 +61,7 @@ type
     procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
     function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
+    procedure SaveCurrentState;
 
     {RootStoryItemStoryView}
     function GetRootStoryItemView: TStoryItem;
@@ -110,6 +111,7 @@ type
   public
     property StructureView: TStructureView read GetStructureView stored false;
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+    procedure ZoomToActiveStoryPointOrHome;
     procedure DeleteActiveStoryItem;
 
   published
@@ -183,7 +185,7 @@ end;
 
 procedure TMainForm.FormResize(Sender: TObject);
 begin
-  ZoomTo(ActiveStoryItem); //keep the ActiveStoryItem in view
+  ZoomToActiveStoryPointOrHome; //keep the Active StoryPoint or Home in view
 end;
 
 {$ENDREGION}
@@ -256,9 +258,6 @@ begin
 
     if not Assigned(ActiveStoryItem) then
       ActiveStoryItem := RootStoryItem; //set RootStoryItem as the ActiveStoryItem if no such is set (e.g. from loaded state). Note this will also try to ZoomTo it
-
-    //ZoomTo(ActiveStoryItem); //zoom to the previously active storyitem after loading //TODO: this doesn't seem to work correctly
-    //ActiveStoryItem := ActiveStoryItem; //re-apply ActiveStoryItem to zoom to it and do misc actions //MAYBE BETTER ALTERNATIVE TO JUST ZOOMTO, BUT STILL DOESN'T WORK OK
   end;
 
   UpdateStructureView;
@@ -296,7 +295,8 @@ end;
 
 procedure TMainForm.SetActiveStoryItem(const Value: IStoryItem);
 begin
-  TStoryItem.ActiveStoryItem := Value; //this will trigger "ActiveStoryItemChanged" class event
+  TStoryItem.ActiveStoryItem := nil; //this will make sure the assignment to Value will then trigger "ActiveStoryItemChanged" class event
+  TStoryItem.ActiveStoryItem := Value;
 end;
 
 procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
@@ -340,9 +340,7 @@ begin
 
   //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
 
-  if not (Value.StoryPoint or Value.Home) then //not zooming down to items that are not StoryPoints or Home //must do last before the ZoomTo since we change the "Value" local variable
-    Value := Value.GetAncestorStoryPoint; //if it returns nil it will result in zooming to the RootStoryPoint
-  ZoomTo(Value);
+  ZoomToActiveStoryPointOrHome;
 end;
 
 {$endregion}
@@ -426,7 +424,7 @@ begin
     if Assigned(view) then
     begin
       view.EditMode := isEditMode; //TODO: should add an EditMode property to the Story?
-      ZoomTo(view); //TODO: should we always ZoomTo ActiveStoryItem when switching story mode? (e.g. entering or exiting EditMode? this is useful after having autoloaded saved state)
+      ZoomToActiveStoryPointOrHome; //keep the Active StoryPoint or Home in view //TODO: should we always ZoomTo when switching story mode? (e.g. entering or exiting EditMode? this is useful after having autoloaded saved state)
     end;
   end;
 
@@ -454,6 +452,14 @@ begin
     ZoomFrame.ZoomTo; //Zoom to all content
 end;
 
+procedure TMainForm.ZoomToActiveStoryPointOrHome;
+begin
+  var Value := ActiveStoryItem;
+  if not (Value.StoryPoint or Value.Home) then //not zooming down to items that are not StoryPoints or Home //must do last before the ZoomTo since we change the "Value" local variable
+    Value := Value.GetAncestorStoryPoint; //if it returns nil it will result in zooming to the RootStoryPoint
+  ZoomTo(Value);
+end;
+
 {$endregion}
 
 {$endregion}
@@ -473,8 +479,7 @@ begin
   if not (StoryMode = EditMode) then //in non-Edit mode
     HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
 
-  ActiveStoryItem := TStoryItem(Selection); //Make active (will also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
-  //TODO: in EditMode should allow anything to become active, in StoryMode should only allow those items that are StoryPoints (and only show those)
+  ActiveStoryItem := TStoryItem(Selection); //Make active (may also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
 end;
 
 {$endregion}
@@ -486,7 +491,7 @@ begin
   //special case used at app startup
   if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
   begin
-    ZoomTo(ActiveStoryItem); //needed upon app first loading to ZoomTo ActiveStoryItem from loaded saved state
+    ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
     StoryTimer.Enabled := false;
     exit;
   end;
@@ -869,7 +874,7 @@ begin
   end;
 end;
 
-procedure TMainForm.FormSaveState(Sender: TObject);
+procedure TMainForm.SaveCurrentState;
 begin
   {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.EnterMethod('SaveState');{$ENDIF}{$ENDIF}
   //StoragePath := ... //TODO: default is transient, change to make permanent
@@ -896,6 +901,12 @@ begin
           end;
     end;
   {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
+end;
+
+procedure TMainForm.FormSaveState(Sender: TObject);
+begin
+  HUD.EditMode := false; //make sure we exit EditMode, else child items of ActiveStoryItem are saved as disabled
+  SaveState;
 end;
 
 {$endregion}

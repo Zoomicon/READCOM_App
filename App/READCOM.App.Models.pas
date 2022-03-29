@@ -79,6 +79,7 @@ type
   IStory = interface
     ['{3A6CAD51-3787-4D18-9DA7-A07895BC4661}']
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+    procedure ZoomToActiveStoryPointOrHome;
 
     {RootStoryItem}
     function GetRootStoryItem: IStoryItem;
