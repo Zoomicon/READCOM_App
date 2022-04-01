@@ -34,11 +34,18 @@ type
     FUrlAction: String;
     FOptions: IStoryItemOptions;
     FTargetsVisible: Boolean;
+    FDragging: Boolean; //=False
+    FDragStart: TPointF; //=TPointF.Zero
 
     FStoryItems: TIStoryItemList;
     FAudioStoryItems: TIAudioStoryItemList;
 
     FOnActiveChanged: TNotifyEvent;
+
+    { //TODO: have a global IStory (a context) and talk to that so that we could tell it to open hyperlinks (e.g. http:/...) but also special hyperlinks like story:next, story:previous etc. that can invoke methods to navigate in the story (actually could pass the "verb" to the story itself via special method and it would know how to handle the hyperlinks and the special ones [not have any download and url opening code in the StoryItem])
+    class var
+      FStory: IStory;
+    }
 
     class var
       FActiveStoryItem: IStoryItem;
@@ -62,8 +69,8 @@ type
 
     {Z-Order}
     function GetBackIndex: Integer; override;
-    procedure SetGlyphZorder;
-    procedure SetBorderZorder;
+    procedure SetGlyphZorder; virtual;
+    procedure SetBorderZorder; virtual;
 
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
@@ -206,6 +213,9 @@ type
     procedure ActiveChanged;
     procedure DropTargetDropped(const Filepaths: array of string); override;
     procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;  X, Y: single); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;  X, Y: single); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Single); override;
     procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
     procedure Tap(const Point: TPointF); override;
 
@@ -453,10 +463,10 @@ end;
 
 procedure TStoryItem.SetBorderZorder;
 begin
-  (*
+  (* //NOT WORKING
   BeginUpdate;
   RemoveObject(Border);
-  InsertObject(GetBackIndex - 2, Border);
+  InsertObject((inherited GetBackIndex) + 1, Border);
   EndUpdate;
   *)
   Border.SendToBack;
@@ -464,10 +474,10 @@ end;
 
 procedure TStoryItem.SetGlyphZorder;
 begin
-  (*
+  (* //NOT WORKING
   BeginUpdate;
   RemoveObject(Glyph);
-  InsertObject(GetBackIndex - 1, Glyph);
+  InsertObject((inherited GetBackIndex) + 2, Glyph);
   EndUpdate;
   *)
   Glyph.SendToBack;
@@ -946,6 +956,47 @@ begin
   end;
 end;
 
+procedure TStoryItem.MouseDown(Button: TMouseButton; Shift: TShiftState;  X, Y: single);
+begin
+  inherited;
+
+  if EditMode or Anchored then exit;
+
+  FDragStart := PointF(X, Y);
+  FDragging := true;
+
+  Capture; //Capture the mouse actions
+end;
+
+procedure TStoryItem.MouseUp(Button: TMouseButton; Shift: TShiftState;  X, Y: single);
+begin
+  inherited;
+
+  if EditMode or (not FDragging) then exit;
+
+  FDragging := false;
+  FDragStart := TPointF.Zero;
+
+  ReleaseCapture; //Release capture of mouse actions
+end;
+
+procedure TStoryItem.MouseMove(Shift: TShiftState; X, Y: Single);
+begin
+  inherited;
+
+  if EditMode or (not FDragging) then exit;
+
+  var LParent := ParentStoryItem;
+  if Assigned(LParent) and ParentStoryItem.Active then //only when ParentStoryItem is the ActiveStoryItem
+  begin
+    var LParentView := LParent.View;
+    var newPos := PointF(X, Y) - FDragStart;
+    var newAbsoluteBounds := LocalToAbsolute(TRectF.Create(newPos, Width, Height)); //TODO: does this take Scale in mind?
+    if LParentView.AbsoluteRect.Contains(newAbsoluteBounds) then //only when the new bounds are contained in Parent to avoid user losing the moved StoryItem at the edges of its parent
+      Position.Point := LParentView.AbsoluteToLocal(newAbsoluteBounds.TopLeft);
+  end;
+end;
+
 procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
@@ -957,15 +1008,15 @@ begin
     if (FUrlAction <> '') then //TODO: should pass the Open URL action to the MainForm and that should do the following logic
       if FUrlAction.EndsWith(EXT_READCOM) then
       begin
-        //TODO: use downloader with caching to fetch .readcom URL and then tell the app to open it (replace current document) - that way we can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run
         var memStream := DownloadFileWithFallbackCache(FUrlAction);
-
+        //TODO: tell app to open the fetched memstream as new RootStoryItem [maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that] - that way we can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run
         FreeAndNil(memStream);
       end
       else
         OpenURLinBrowser(FUrlAction);
     end
-  else
+
+  else //EditMode
 
     if (ssCtrl in Shift) then
     begin

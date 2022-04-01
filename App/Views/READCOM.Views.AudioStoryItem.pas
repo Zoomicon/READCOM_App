@@ -24,10 +24,7 @@ type
   {$REGION 'TAudioStoryItem' --------------------------------------------------------}
 
   TAudioStoryItem = class(TStoryItem, IAudioStoryItem, IStoryItem, IStoreable)
-    GlyphImage: TSVGIconImage;
     MediaPlayer: TMediaPlayerEx;
-    procedure FrameTap(Sender: TObject; const Point: TPointF);
-    procedure FrameClick(Sender: TObject);
 
   //--- Methods ---
   public
@@ -79,6 +76,12 @@ type
     function GetAudio: TMediaPlayerEx;
     procedure SetAudio(const Value: TMediaPlayerEx);
 
+  //--- Events ---
+
+  protected
+    procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
+    procedure Tap(const Point:TPointF); override;
+
   //--- Properties ---
 
   published
@@ -116,7 +119,6 @@ begin
   FPlayedOnce := false;
 
   MediaPlayer.Stored := false; //don't store state, should use state from designed .FMX resource
-  GlyphImage.Stored := false; //don't store state, should use state from designed .FMX resource
 
   Hidden := true;
 end;
@@ -284,13 +286,13 @@ end;
 
 {$REGION 'EVENTS'}
 
-procedure TAudioStoryItem.FrameClick(Sender: TObject);
+procedure TAudioStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
   inherited;
   Play;
 end;
 
-procedure TAudioStoryItem.FrameTap(Sender: TObject; const Point: TPointF);
+procedure TAudioStoryItem.Tap(const Point:TPointF);
 begin
   inherited;
   Play;

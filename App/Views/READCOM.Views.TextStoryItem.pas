@@ -39,7 +39,9 @@ type
   protected
     FEditable: Boolean;
 
-    procedure UpdateMemoReadOnly;
+    {Z-Order}
+    function GetBackIndex: Integer; override;
+    procedure SetMemoZorder;
 
     {Clipboard}
     procedure PasteText(const Value: String); override;
@@ -60,6 +62,7 @@ type
     {Editable}
     function IsEditable: Boolean;
     procedure SetEditable(const Value: Boolean);
+    procedure UpdateMemoReadOnly;
 
     {InputPrompt}
     function GetInputPrompt: String;
@@ -86,7 +89,7 @@ type
 
   published
     property Text: String read GetText write SetText;
-    property Editable: Boolean read IsEditable write SetEditable; //default false
+    property Editable: Boolean read IsEditable write SetEditable default false;
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
     property TextColor: TAlphaColor read GetTextColor write SetTextColor;
@@ -118,16 +121,42 @@ implementation
 {$region 'Lifetime management'}
 
 constructor TTextStoryItem.Create(AOnwer: TComponent);
+
+  procedure InitMemo;
+  begin
+    with Memo do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      ReadOnly := true; //since we have Editable property defaulting to false
+      Text := DEFAULT_TEXT;
+      SetMemoZorder;
+    end;
+  end;
+
 begin
   inherited;
+  InitMemo;
+end;
 
-  with Memo do
-  begin
-    Stored := false; //don't store state, should use state from designed .FMX resource
-    SetSubComponent(true);
-    ReadOnly := true; //since we have Editable property defaulting to false
-    Text := DEFAULT_TEXT;
-  end;
+{$endregion}
+
+{$region 'Z-order'}
+
+function TTextStoryItem.GetBackIndex: Integer;
+begin
+  result := inherited + 1; //reserve one more place at the bottom for Memo
+end;
+
+procedure TTextStoryItem.SetMemoZorder;
+begin
+  (* //NOT WORKING
+  BeginUpdate;
+  RemoveObject(Memo);
+  InsertObject((inherited GetBackIndex) + 1, Memo);
+  EndUpdate;
+  *)
+  Memo.SendToBack;
 end;
 
 {$endregion}

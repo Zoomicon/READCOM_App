@@ -103,10 +103,13 @@ constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 
   procedure SetImageControlZorder;
   begin
+    (* //NOT WORKING
     BeginUpdate;
     RemoveObject(ImageControl);
     InsertObject(GetBackIndex - 1, ImageControl);
     EndUpdate;
+    *)
+    ImageControl.SendToBack;
   end;
 
   procedure InitImageControl;
@@ -125,12 +128,14 @@ begin
 
   InitImageControl;
   Glyph.Visible := true;
+  SetGlyphZorder;
 end;
 
 procedure TBitmapImageStoryItem.UpdateGlyphVisibility;
 begin
   var img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
+  SetGlyphZorder;
 end;
 
 procedure TBitmapImageStoryItem.Loaded;
@@ -145,7 +150,7 @@ end;
 
 function TBitmapImageStoryItem.GetBackIndex: Integer;
 begin
-  result := inherited + 1; //reserve two more places at the bottom for ImageControl
+  result := inherited + 1; //reserve one more place at the bottom for ImageControl
 end;
 
 {$endregion}

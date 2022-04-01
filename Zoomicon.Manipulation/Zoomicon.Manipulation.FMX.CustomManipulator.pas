@@ -271,7 +271,7 @@ end;
 
 function TCustomManipulator.GetBackIndex: Integer;
 begin
-  result := inherited + 1; //reserve one place at the bottom for DropTarget
+  result := inherited + 1; //reserve one more place at the bottom for DropTarget
 end;
 
 procedure TCustomManipulator.BringToFrontElseSendToBack(const Control: TControl);
