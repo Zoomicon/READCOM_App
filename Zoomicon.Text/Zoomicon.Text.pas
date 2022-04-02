@@ -32,13 +32,16 @@ begin
    if Assigned(Obj) then
    begin
       TControl(Obj).Margins.Rect := RectF(-1, -1, -1, -1);
-      var Rectangle1              := TRectangle.Create(Obj);
-      Obj.AddObject(Rectangle1);
-      Rectangle1.Align        := TAlignLayout.Client;
-      Rectangle1.Fill.Color   := claLightslategrey;
-      Rectangle1.Stroke.Color := claNull;
-      Rectangle1.HitTest      := False;
-      Rectangle1.SendToBack;
+      var LRect := TRectangle.Create(Obj);
+      Obj.AddObject(LRect);
+      with LRect do
+      begin
+        Align := TAlignLayout.Client;
+        Fill.Color := claLightslategrey;
+        Stroke.Color := claNull;
+        HitTest := False;
+        SendToBack;
+      end;
    end;
 end;
 

@@ -846,7 +846,9 @@ end;
 function TStoryItem.GetBackgroundColor: TAlphaColor;
 begin
   if Assigned(Border) then
-    result := Border.Fill.Color;
+    result := Border.Fill.Color
+  else
+    result := TAlphaColorRec.Null;
 end;
 
 procedure TStoryItem.SetBackgroundColor(const Value: TAlphaColor);
