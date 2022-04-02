@@ -58,6 +58,15 @@ object MainForm: TMainForm
         inherited btnFlipVertically: TSpeedButton
           Action = HUD.actionFlipVertically
         end
+        inherited comboForeColor: TComboColorBox
+          OnChange = HUDcomboForeColorChange
+        end
+        inherited comboBackColor: TComboColorBox
+          Position.X = 52.000000000000000000
+          Position.Y = 374.000000000000000000
+          Visible = False
+          OnChange = HUDcomboBackColorChange
+        end
       end
       object StoryTimer: TTimer
         Enabled = False

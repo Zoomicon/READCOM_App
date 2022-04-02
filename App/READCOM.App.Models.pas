@@ -164,6 +164,10 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    {BackgroundColor}
+    function GetBackgroundColor: TAlphaColor;
+    procedure SetBackgroundColor(const Value: TAlphaColor);
+
     {FlippedHorizontally}
     function IsFlippedHorizontally: Boolean;
     procedure SetFlippedHorizontally(const Value: Boolean);
@@ -210,6 +214,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
     property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
+    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor; //default nil
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden; //default false

@@ -423,13 +423,39 @@ object StoryHUD: TStoryHUD
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
-        Margins.Bottom = 3.000000000000000000
+        Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
         Position.Y = 325.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+      end
+      object comboForeColor: TComboColorBox
+        Color = claWhite
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 374.000000000000000000
+        Size.Width = 43.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 5
+      end
+      object comboBackColor: TComboColorBox
+        Color = claWhite
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 6.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 413.000000000000000000
+        Size.Width = 43.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
       end
     end
   end

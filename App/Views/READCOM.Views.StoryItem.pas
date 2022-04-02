@@ -6,7 +6,8 @@ unit READCOM.Views.StoryItem;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  System.UITypes,
+  System.SysUtils, System.Types, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation,
   FMX.Surfaces, //for TBitmapSurface
@@ -136,6 +137,10 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    {BackgroundColor}
+    function GetBackgroundColor: TAlphaColor;
+    procedure SetBackgroundColor(const Value: TAlphaColor);
+
     {FlippedHorizontally}
     function IsFlippedHorizontally: Boolean; virtual;
     procedure SetFlippedHorizontally(const Value: Boolean); virtual;
@@ -239,6 +244,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default false;
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
     property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
+    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default TAlphaColorRec.Null; //claNull
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default false; //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden default false;
@@ -831,6 +837,22 @@ begin
   end;
 
   result := nil;
+end;
+
+{$endregion}
+
+{$region 'BackgroundColor'}
+
+function TStoryItem.GetBackgroundColor: TAlphaColor;
+begin
+  if Assigned(Border) then
+    result := Border.Fill.Color;
+end;
+
+procedure TStoryItem.SetBackgroundColor(const Value: TAlphaColor);
+begin
+  if Assigned(Border) then
+    Border.Fill.Color := Value;
 end;
 
 {$endregion}

@@ -9,7 +9,7 @@ uses
   FMX.Layouts, System.Actions, FMX.ActnList,
   FMX.MultiView, SubjectStand, FrameStand,
   READCOM.Views.About, //for TAboutFrame
-  READCOM.App.Globals;
+  READCOM.App.Globals, FMX.Colors;
 
 type
 
@@ -65,6 +65,8 @@ type
     actionCut: TAction;
     btnAdd: TSpeedButton;
     actionAdd: TAction;
+    comboForeColor: TComboColorBox;
+    comboBackColor: TComboColorBox;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

@@ -50,6 +50,8 @@ type
     procedure StoryTimerTimer(Sender: TObject);
     procedure HUDactionCutExecute(Sender: TObject);
     procedure HUDactionAddExecute(Sender: TObject);
+    procedure HUDcomboForeColorChange(Sender: TObject);
+    procedure HUDcomboBackColorChange(Sender: TObject);
 
   protected
     FTimerStarted: Boolean;
@@ -332,8 +334,13 @@ begin
       EditMode := HUD.EditMode; //TODO: see StoryMode of IStoryItem instead (or move that to the IStory)
       //AreaSelector := RootStoryItemView.AreaSelector; //re-use RootStoryItem's AreaSelector (so that we don't get drawing artifacts when resizing area selector and is always on top of everything when extending outside of ActiveStoryItem's bounds - since that can have children that are not inside its area, like a speech bubble for a character) //TODO: not working correctly
     end;
-    //Change StructureView selection
-    StructureView.SelectedObject := StoryItem;
+
+    var isTextStoryItem := (StoryItem is TTextStoryItem);
+    HUD.comboForeColor.Enabled := isTextStoryItem; //TODO: if we use ITextStoryItem interface instead at that combo's chane event, do similar check here //TODO: also check for other types that may support forecolor (say SVG images could allow to change dominant color) //TODO: Visible doesn't work (keeps combo hidden), using Enabled instead for now
+    if isTextStoryItem then //TODO: adapt if other items support fore color to check which one it is
+      HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor;
+
+    StructureView.SelectedObject := StoryItem; //Change StructureView selection
   end
   else
     StructureView.SelectedObject := nil;
@@ -658,6 +665,26 @@ begin
     ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
     UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
   end;
+end;
+
+procedure TMainForm.HUDcomboForeColorChange(Sender: TObject);
+begin
+  var LActive := ActiveStoryItem;
+  if not Assigned(LActive) then exit;
+
+  if LActive is TTextStoryItem then //TODO: could use interfaces instead (ITextStoryItem or some IForegroundColor interface)
+    TTextStoryItem(LActive).TextColor := HUD.comboForeColor.Color;
+
+  //TODO: for Vector images could replace dominant color if supported
+end;
+
+procedure TMainForm.HUDcomboBackColorChange(Sender: TObject);
+begin
+  var LActive := ActiveStoryItem;
+  if not Assigned(LActive) then exit;
+
+  LActive.BackgroundColor := HUD.comboForeColor.Color; //TODO: could check for special interface instead (some IBackgroundColor interface)
+  //TODO: doesn't seem to do something (plus the Border is shown only when items are children of edited activestoryitem, whereas we want to always draw background in that case - need extra background control that is)
 end;
 
 {$endregion}
