@@ -115,6 +115,7 @@ type
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
     procedure ZoomToActiveStoryPointOrHome;
     procedure DeleteActiveStoryItem;
+    procedure CutActiveStoryItem;
 
   published
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
@@ -127,6 +128,9 @@ type
 var
   MainForm: TMainForm;
 
+resourcestring
+  MSG_CONFIRM_CLEAR_STORY = 'Clearing story: are you sure?';
+
 implementation
   uses
     {$IFDEF DEBUG}
@@ -137,6 +141,7 @@ implementation
     System.Math, //for Max
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
     READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
     READCOM.Views.AudioStoryItem,
     READCOM.Views.ImageStoryItem,
@@ -517,8 +522,7 @@ end;
 
 procedure TMainForm.HUDactionNewExecute(Sender: TObject);
 begin
-  //if ConfirmClose then //TODO (should show some image asking?)
-  if (not LoadDefaultDocument) then
+  if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) and (not LoadDefaultDocument) then //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper
     NewRootStoryItem;
 end;
 
@@ -575,6 +579,8 @@ begin
   AddChildStoryItem(TTextStoryItem, 'TextStoryItem'); //will also update the StructureView
 end;
 
+{$region 'Action Helpers'}
+
 procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
@@ -613,10 +619,25 @@ begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
 
   if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
-    ActiveStoryItem.Delete //this makes ParentStoryItem active
-  else
-    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
+    ActiveStoryItem.Delete //this makes ParentStoryItem active (which updates StructureView)
+
+  else if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) then
+    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
 end;
+
+procedure TMainForm.CutActiveStoryItem;
+begin
+  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
+    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
+
+  else if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) then
+    begin
+      ActiveStoryItem.Copy; //needed to simulate "Cut"
+      NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
+    end;
+end;
+
+{$endregion}
 
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
@@ -625,13 +646,7 @@ end;
 
 procedure TMainForm.HUDactionCutExecute(Sender: TObject);
 begin
-  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
-    ActiveStoryItem.Cut //this makes ParentStoryItem active
-  else
-  begin
-    ActiveStoryItem.Copy;
-    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first
-  end;
+  CutActiveStoryItem;
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);

@@ -135,6 +135,7 @@ procedure TBitmapImageStoryItem.UpdateGlyphVisibility;
 begin
   var img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
+  FStoreSVG := Glyph.Visible;
   SetGlyphZorder;
 end;
 

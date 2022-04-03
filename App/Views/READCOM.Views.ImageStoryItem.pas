@@ -22,7 +22,7 @@ type
     procedure SetImage(const Value: TImage); virtual; abstract;
 
   //--- Properties ---
-  published
+  protected //publish at appropriate descendent
     property Image: TImage read GetImage write SetImage stored false;
   end;
 
