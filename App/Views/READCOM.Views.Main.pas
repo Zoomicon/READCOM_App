@@ -59,7 +59,6 @@ type
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
     {SavedState}
-    procedure NewRootStoryItem;
     procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
     function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
@@ -108,14 +107,16 @@ type
 
     procedure HandleActiveStoryItemChanged(Sender: TObject);
 
-    procedure AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
-
   public
     property StructureView: TStructureView read GetStructureView stored false;
     procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
     procedure ZoomToActiveStoryPointOrHome;
+
+    {Edit actions}
+    procedure NewRootStoryItem;
     procedure DeleteActiveStoryItem;
     procedure CutActiveStoryItem;
+    procedure AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 
   published
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode stored false;
@@ -581,6 +582,18 @@ end;
 
 {$region 'Action Helpers'}
 
+procedure TMainForm.NewRootStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
+begin
+  RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
+  var newRootStoryItemView := TPanelStoryItem.Create(Self);
+  with newRootStoryItemView do
+    begin
+    Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+    EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
+    end;
+  RootStoryItemView := newRootStoryItemView;
+end;
+
 procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
@@ -614,23 +627,23 @@ begin
   UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
 end;
 
-procedure TMainForm.DeleteActiveStoryItem;
+procedure TMainForm.DeleteActiveStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not Assigned(ActiveStoryItem) then exit;
 
-  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
+  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then
     ActiveStoryItem.Delete //this makes ParentStoryItem active (which updates StructureView)
-
-  else if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) then
+  else //note: confirmation is only done at "HUDactionCutExecute"
     NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
 end;
 
-procedure TMainForm.CutActiveStoryItem;
+procedure TMainForm.CutActiveStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
 begin
-  if Assigned(ActiveStoryItem) and Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View) then
-    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
+  if not Assigned(ActiveStoryItem) then exit;
 
-  else if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) then
+  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then
+    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
+  else //note: confirmation is only done at "HUDactionCutExecute"
     begin
       ActiveStoryItem.Copy; //needed to simulate "Cut"
       NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
@@ -641,12 +654,22 @@ end;
 
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
-  DeleteActiveStoryItem;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) or
+     TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY)
+  then
+    DeleteActiveStoryItem;
 end;
 
 procedure TMainForm.HUDactionCutExecute(Sender: TObject);
 begin
-  CutActiveStoryItem;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) or
+     TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY)
+  then
+    CutActiveStoryItem;
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
@@ -822,18 +845,6 @@ end;
 {$ENDREGION}
 
 {$region 'SavedState'}
-
-procedure TMainForm.NewRootStoryItem;
-begin
-  RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
-  var newRootStoryItemView := TPanelStoryItem.Create(Self);
-  with newRootStoryItemView do
-    begin
-    Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-    EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
-    end;
-  RootStoryItemView := newRootStoryItemView;
-end;
 
 procedure TMainForm.LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
 begin

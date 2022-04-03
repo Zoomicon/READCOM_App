@@ -104,6 +104,11 @@ type
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
 
+    {Edit Actions}
+    procedure NewRootStoryItem;
+    procedure DeleteActiveStoryItem;
+    procedure CutActiveStoryItem;
+
     property StoryMode: TStoryMode read GetStoryMode write SetStoryMode; //default AnimatedStoryMode
     property RootStoryItem: IStoryItem read GetRootStoryItem write SetRootStoryItem;
     property HomeStoryItem: IStoryItem read GetHomeStoryItem write SetHomeStoryItem;
