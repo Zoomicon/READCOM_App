@@ -50,6 +50,7 @@ type
 
     {Z-order}
     function GetBackIndex: Integer; override;
+    procedure SetDropTargetZorder; virtual;
 
     {AreaSelector}
     procedure SetAreaSelector(const Value: TAreaSelector);
@@ -242,6 +243,7 @@ procedure TCustomManipulator.Loaded;
       Opacity := 0.4;
       //not doing SendToBack, assuming it's created first, since we reserve one place for it at the bottom with GetBackIndex
       Align := TAlignLayout.Client;
+      SetDropTargetZorder;
 
       (* //comment out, doesn't seem to work (need to make "Path" invisible using the Style Designer if don't want to see the "drop" arrow)
       var P := TStyledControl.Create(nil);
@@ -272,6 +274,17 @@ end;
 function TCustomManipulator.GetBackIndex: Integer;
 begin
   result := inherited + 1; //reserve one more place at the bottom for DropTarget
+end;
+
+procedure TCustomManipulator.SetDropTargetZorder;
+begin
+  (* //NOT WORKING
+  BeginUpdate;
+  RemoveObject(DropTarget);
+  InsertObject(GetBackIndex - 1, DropTarget);
+  EndUpdate;
+  *)
+  DropTarget.SendToBack;
 end;
 
 procedure TCustomManipulator.BringToFrontElseSendToBack(const Control: TControl);

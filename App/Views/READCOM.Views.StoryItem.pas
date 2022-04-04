@@ -302,8 +302,8 @@ procedure TStoryItem.Init;
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
+      WrapMode := TImageWrapMode.Stretch;
       SetGlyphZorder;
-      //BitmapZoom := 10; //not used, just gives worse quality (pixelization). Plus it doesn't take 1/10 (non-integers) //TODO: report on that
       HitTest := false;
     end; //TODO: see how we can tell TSVGIconImage to stretch the SVG to fit its size instead of placing it so that it fits without distortion
   end;
@@ -332,7 +332,7 @@ procedure TStoryItem.Init;
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
       Visible := EditMode;
-      //Z-order should have been locked via GetBackIndex at ancestor
+      SetDropTargetZorder;
 
       HitTest := false; //TODO: done at ancestor anyway?
     end;

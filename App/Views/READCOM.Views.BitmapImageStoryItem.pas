@@ -108,9 +108,10 @@ constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
     begin
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
+      Align := TAlignLayout.Contents;
       WrapMode := TImageWrapMode.Stretch;
-      HitTest := false;
       SetImageControlZorder;
+      HitTest := false;
     end;
   end;
 

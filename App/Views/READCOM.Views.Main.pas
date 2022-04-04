@@ -46,7 +46,6 @@ type
     procedure HUDactionNextExecute(Sender: TObject);
     procedure StoryTimerTimer(Sender: TObject);
 
-
     //Add actions
     procedure HUDactionAddExecute(Sender: TObject);
     procedure HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
@@ -98,6 +97,7 @@ type
     {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
+    procedure HandleActiveStoryItemChanged(Sender: TObject);
 
     procedure ActivateRootStoryItem;
     procedure ActivateParentStoryItem;
@@ -117,12 +117,11 @@ type
 
     procedure RootStoryItemViewResized(Sender: TObject);
 
+    {HUD}
     procedure HUDEditModeChanged(Sender: TObject; const Value: Boolean);
     procedure HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
     procedure HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
     procedure HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
-
-    procedure HandleActiveStoryItemChanged(Sender: TObject);
 
   public
     property StructureView: TStructureView read GetStructureView stored false;
@@ -328,6 +327,7 @@ begin
   TStoryItem.ActiveStoryItem := nil; //this will make sure the assignment to Value will then trigger "ActiveStoryItemChanged" class event
   TStoryItem.ActiveStoryItem := Value;
 end;
+
 
 procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
 
