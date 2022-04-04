@@ -347,6 +347,9 @@ type
     function GetText: String;
     procedure SetText(const Value: String);
 
+    {SelectedText}
+    function GetSelectedText: String;
+
     {Editable}
     function IsEditable: Boolean;
     procedure SetEditable(const Value: Boolean);
@@ -365,6 +368,7 @@ type
 
     //--- Properties ---
     property Text: String read GetText write SetText; //default ''
+    property SelectedText: String read GetSelectedText; //stored false
     property Editable: Boolean read IsEditable write SetEditable; //default false
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)

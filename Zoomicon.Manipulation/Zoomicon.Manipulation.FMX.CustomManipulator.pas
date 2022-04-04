@@ -1025,7 +1025,7 @@ begin
         then new_scale := (1 + (WheelDelta / 120)/5)
         else new_scale := 1 / (1 - (WheelDelta / 120)/5);
 
-      BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
+      //BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
 
       if (ssShift in Shift) then
       begin
@@ -1036,12 +1036,12 @@ begin
       end
       else
       begin
-        Control.Size.Size := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality?
-        //correction for zoom center position
-        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale);
+        var newSize := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality? (see SHIFT key above)
+        var newPos := Control.Position.Point + zoom_center * (1-new_scale); //correction for zoom center position
+        Control.BoundsRect := TRectF.Create(Control.Position.Point + zoom_center * (1-new_scale), newSize.Width, newSize.Height);
       end; //TODO: see why control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change (probably need to tell them to realign / parent size changed?)
 
-      EndUpdate;
+      //EndUpdate;
 
       Handled := true; //needed for parent containers to not scroll
       exit;

@@ -24,36 +24,53 @@ type
     HUD: TStoryHUD;
     ZoomFrame: TZoomFrame;
     StoryTimer: TTimer;
+
+    //Initialiation
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
 
+    //State saving
     procedure FormSaveState(Sender: TObject);
 
-    {Keyboard}
+    //Keyboard
     procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 
+    //File actions
+    procedure HUDactionNewExecute(Sender: TObject);
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
-    procedure HUDactionNewExecute(Sender: TObject);
+
+    //Navigation actions
     procedure HUDactionHomeExecute(Sender: TObject);
     procedure HUDactionPreviousExecute(Sender: TObject);
     procedure HUDactionNextExecute(Sender: TObject);
+    procedure StoryTimerTimer(Sender: TObject);
+
+
+    //Add actions
+    procedure HUDactionAddExecute(Sender: TObject);
     procedure HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
     procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
+
+    //Edit actions
     procedure HUDactionDeleteExecute(Sender: TObject);
+    procedure HUDactionCutExecute(Sender: TObject);
     procedure HUDactionCopyExecute(Sender: TObject);
     procedure HUDactionPasteExecute(Sender: TObject);
+
+    //Flip actions
     procedure HUDactionFlipHorizontallyExecute(Sender: TObject);
     procedure HUDactionFlipVerticallyExecute(Sender: TObject);
 
-    procedure FormResize(Sender: TObject);
-    procedure StoryTimerTimer(Sender: TObject);
-    procedure HUDactionCutExecute(Sender: TObject);
-    procedure HUDactionAddExecute(Sender: TObject);
+    //Color actions
     procedure HUDcomboForeColorChange(Sender: TObject);
     procedure HUDcomboBackColorChange(Sender: TObject);
 
+    //Scaling
+    procedure FormResize(Sender: TObject);
+
   protected
+    FShortcutCut, FShortcutCopy, FShortcutPaste: TShortCut;
     FTimerStarted: Boolean;
     FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
@@ -160,6 +177,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
   begin
     with HUD do
     begin
+      //keep shortcut keys for Cut/Copy/Paste actions to be able to restore them after disabling them when TextStoryItem is active (to not interfere with text editing)
+      FShortcutCut := HUD.actionCut.ShortCut;
+      FShortcutCopy := HUD.actionCopy.ShortCut;
+      FShortcutPaste := HUD.actionPaste.ShortCut;
+
       BringToFront;
       BtnMenu.BringToFront;
       layoutButtons.BringToFront;
@@ -343,8 +365,19 @@ begin
 
     var isTextStoryItem := (StoryItem is TTextStoryItem);
     HUD.comboForeColor.Enabled := isTextStoryItem; //TODO: if we use ITextStoryItem interface instead at that combo's chane event, do similar check here //TODO: also check for other types that may support forecolor (say SVG images could allow to change dominant color) //TODO: Visible doesn't work (keeps combo hidden), using Enabled instead for now
-    if isTextStoryItem then //TODO: adapt if other items support fore color to check which one it is
-      HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor;
+    if isTextStoryItem then
+    begin
+      HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor; //TODO: if other items support fore color move to some interface based check and cast
+      HUD.actionCut.ShortCut := TextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
+      HUD.actionCopy.ShortCut := TextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
+      HUD.actionPaste.ShortCut := TextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited
+    end
+    else
+    begin
+      HUD.actionCut.ShortCut := FShortcutCut; //TextToShortCut('Ctrl+X'); //Note: instead of hardcoding shortcuts here reading them on form statup and keep them to restore here
+      HUD.actionCopy.ShortCut := FShortcutCopy; //TextToShortCut('Ctrl+C');
+      HUD.actionPaste.ShortCut := FShortcutPaste; //TextToShortCut('Ctrl+V');
+    end;
 
     StructureView.SelectedObject := StoryItem; //Change StructureView selection
   end
@@ -674,35 +707,32 @@ end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
 begin
-  if Assigned(ActiveStoryItem) then
-    ActiveStoryItem.Copy;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  ActiveStoryItem.Copy;
 end;
 
 procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
 begin
-  if Assigned(ActiveStoryItem) then
-  begin
-    ActiveStoryItem.Paste;
-    UpdateStructureView; //TODO: should do similar to deletion by somehow notifying from inside the StoryItem itself the StructureView that items have been added
-  end;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  ActiveStoryItem.Paste;
+  UpdateStructureView; //TODO: should do similar to deletion by somehow notifying from inside the StoryItem itself the StructureView that items have been added
 end;
 
 procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
 begin
-  if Assigned(ActiveStoryItem) then
-  begin
-    ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
-    UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
-  end;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
+  UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
 end;
 
 procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
 begin
-  if Assigned(ActiveStoryItem) then
-  begin
-    ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
-    UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
-  end;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+
+  ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
+  UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
 end;
 
 procedure TMainForm.HUDcomboForeColorChange(Sender: TObject);
@@ -803,7 +833,7 @@ end;
 
 {$region 'Keyboard'}
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState); //also see HUD Actions' shortcuts
 begin
   case Key of
 

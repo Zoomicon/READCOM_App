@@ -488,18 +488,21 @@ object StoryHUD: TStoryHUD
       Category = 'Edit'
       Text = 'Paste'
       ImageIndex = 18
+      ShortCut = 16470
       ImageIndex = 18
     end
     object actionCopy: TAction
       Category = 'Edit'
       Text = 'Copy'
       ImageIndex = 17
+      ShortCut = 16451
       ImageIndex = 17
     end
     object actionCut: TAction
       Category = 'Edit'
       Text = 'Delete'
       ImageIndex = 25
+      ShortCut = 16472
       ImageIndex = 25
     end
     object actionDelete: TAction
@@ -518,6 +521,7 @@ object StoryHUD: TStoryHUD
       Category = 'Navigation'
       Text = 'Home'
       ImageIndex = 13
+      ShortCut = 16456
       ImageIndex = 13
     end
     object actionPrevious: TAction
@@ -580,6 +584,7 @@ object StoryHUD: TStoryHUD
       Category = 'Help'
       Text = 'Help'
       ImageIndex = 16
+      ShortCut = 112
       OnExecute = actionHelpExecute
       ImageIndex = 16
     end

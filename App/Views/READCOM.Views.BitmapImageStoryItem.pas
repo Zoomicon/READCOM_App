@@ -44,6 +44,7 @@ type
 
     {Z-Order}
     function GetBackIndex: Integer; override;
+    procedure SetImageControlZorder; virtual;
 
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
@@ -101,25 +102,15 @@ implementation
 
 constructor TBitmapImageStoryItem.Create(AOwner: TComponent);
 
-  procedure SetImageControlZorder;
-  begin
-    (* //NOT WORKING
-    BeginUpdate;
-    RemoveObject(ImageControl);
-    InsertObject(GetBackIndex - 1, ImageControl);
-    EndUpdate;
-    *)
-    ImageControl.SendToBack;
-  end;
-
   procedure InitImageControl;
   begin
     with ImageControl do
     begin
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
-      SetImageControlZorder;
+      WrapMode := TImageWrapMode.Stretch;
       HitTest := false;
+      SetImageControlZorder;
     end;
   end;
 
@@ -127,6 +118,7 @@ begin
   inherited;
 
   InitImageControl;
+
   Glyph.Visible := true;
   SetGlyphZorder;
 end;
@@ -136,6 +128,7 @@ begin
   var img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
   FStoreSVG := Glyph.Visible;
+  SetImageControlZorder;
   SetGlyphZorder;
 end;
 
@@ -152,6 +145,17 @@ end;
 function TBitmapImageStoryItem.GetBackIndex: Integer;
 begin
   result := inherited + 1; //reserve one more place at the bottom for ImageControl
+end;
+
+procedure TBitmapImageStoryItem.SetImageControlZorder;
+begin
+  (* //NOT WORKING
+  BeginUpdate;
+  RemoveObject(ImageControl);
+  InsertObject(GetBackIndex - 1, ImageControl);
+  EndUpdate;
+  *)
+  ImageControl.SendToBack;
 end;
 
 {$endregion}
