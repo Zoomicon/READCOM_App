@@ -726,7 +726,7 @@ end;
 procedure TCustomManipulator.SetProportional(Value: boolean);
 begin
   //if Value then Align := TAlignLayout.Fit else Align := TAlignLayout.Scale;
-  AreaSelector.Proportional := Value;
+  AreaSelector.Proportional := Value; //TODO: if we reuse some passed to us AreaSelector should we have kept this value in local field and apply to it? (or use what that AreaSelector provides instead?)
 end;
 
 {$endregion}
@@ -817,7 +817,9 @@ end;
 
 procedure TCustomManipulator.HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
-  if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it)
+  AreaSelector.Proportional := (ssShift in Shift); //if SHIFT key is pressed do proportional resizing of AreaSelection
+
+  if (ssDouble in Shift) then //TODO: must do in EditMode (but has issue detecting it - anyway area select is hidden in non-Edit mode)
     BringToFrontElseSendToBackSelected;
 end;
 
