@@ -1,4 +1,4 @@
-# READ-COM_App
+# READ-COM: Reading Communities
 [READ-COM](https://www.read-com-eu.uma.es/) Project's Multi-Platform Application
 
 Design:
