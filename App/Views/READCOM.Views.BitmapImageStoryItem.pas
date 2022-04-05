@@ -193,7 +193,7 @@ end;
 
 function TBitmapImageStoryItem.GetLoadFilesFilter: String;
 begin
-  result := FILTER_BITMAP_IMAGE + '|' + inherited;
+  result := FILTER_IMAGE + '|' + FILTER_BITMAP_IMAGE + '|' + inherited;
 end;
 
 function TBitmapImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
