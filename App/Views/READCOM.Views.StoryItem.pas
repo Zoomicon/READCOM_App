@@ -619,7 +619,7 @@ procedure TStoryItem.ActivateParentStoryItem;
 begin
   var parentItem := ParentStoryItem;
   if Assigned(parentItem) then //don't want to make RootStoryItem (aka the StoryItem without a parent StoryItem) inactive, so don't set ActiveStoryItem to nil
-    ActiveStoryItem := parentItem;
+    parentItem.Active := true;
 end;
 
 procedure TStoryItem.ActiveChanged;
@@ -976,7 +976,7 @@ begin
   begin
     var LObj := ObjectAtLocalPoint(PointF(X, Y) + AreaSelector.Position.Point, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
     if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-      ActiveStoryItem := TStoryItem(LObj.GetObject);
+      TStoryItem(LObj.GetObject).Active := true;
   end;
 end;
 
@@ -1040,13 +1040,13 @@ begin
         OpenURLinBrowser(FUrlAction);
     end
 
-  else //EditMode
+  else //EditMode //TODO: if the StoryItem is not in EditMode but the Story is in EditMode, then make the StoryItem active (else do like below)
 
     if (ssCtrl in Shift) then
     begin
       var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
       if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-        ActiveStoryItem := TStoryItem(LObj.GetObject);
+        TStoryItem(LObj.GetObject).Active := true;
     end
     else if (ssRight in Shift) then
       Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
@@ -1177,18 +1177,23 @@ end;
 function TStoryItem.GetAddFilesFilter: String;
 begin
   var listFilters := TStringList.Create(#0, '|');
+
   var listExt := TStringList.Create(#0, ';');
+  listExt.Sorted := true;
+  listExt.Duplicates := dupIgnore; //for "Duplicates" to work, need to have "Sorted := true" in listExt
 
   for var Pair in StoryItemFileFilters do
   begin
     listFilters.Add(Pair.Key {+ '(' + Pair.Value.Replace(';', ',') + ')'}); //note: title already contains the exts in parentheses
     listFilters.Add(Pair.Value);
-    listExt.Add(Pair.Value);
+    for var ext in Pair.Value.Split([';']) do
+      listExt.Add(ext);
   end;
 
   //Insert first an entry for all supported extensions
   listFilters.Insert(0, listExt.DelimitedText);
-  listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text'); //TODO: ideally the key should only contain the text (not *.xx too) so that we could concatenate the names (even if in singular) instead of hard-coding known type names here
+  listExt.Delimiter := ','; //There's no way to use ', ' (aka a string separator instead of a char, to also have space after comma), could concatenate with for loop instead, but the entry is long anyway, so skip the extra spaces
+  listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text (' + listExt.DelimitedText + ')'); //TODO: ideally the key should only contain the text (not *.xx too) so that we could concatenate the names (even if in singular) instead of hard-coding known type names here //Seems if we don't add the file extensions in parentheses in the name, Delphi or Win11 adds them with ";" format to the text of the entry (so it would be better if we auto-add them with ", ")
 
   result := listFilters.DelimitedText;
 
