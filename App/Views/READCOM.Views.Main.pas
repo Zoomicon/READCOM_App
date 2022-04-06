@@ -151,7 +151,7 @@ resourcestring
 implementation
   uses
     {$IFDEF DEBUG}
-    {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
+    {$IF Defined(MSWINDOWS)}CodeSiteLogging,{$ENDIF}
     ObjectDebuggerFMXForm,
     {$ENDIF}
     System.Contnrs, //for TClassList
@@ -199,7 +199,10 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  Caption := STR_APP_TITLE;
+  if not GlobalUseDX then //GlobalUseDX10 (not using that, using fallback to plain GDI)
+    Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE
+  else
+    Caption := STR_APP_TITLE;
 
   FTimerStarted := false;
   InitHUD;
@@ -364,10 +367,17 @@ begin
     end;
 
     var isTextStoryItem := (StoryItem is TTextStoryItem);
+
+    //Update Foreground color picker
     HUD.comboForeColor.Enabled := isTextStoryItem; //TODO: if we use ITextStoryItem interface instead at that combo's chane event, do similar check here //TODO: also check for other types that may support forecolor (say SVG images could allow to change dominant color) //TODO: Visible doesn't work (keeps combo hidden), using Enabled instead for now
+    if isTextStoryItem then HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor; //TODO: if other items support fore color move to some interface based check and cast (and/or add Foreground color to IStoryItem)
+
+    //Update Background color picker
+    HUD.comboBackColor.Color := StoryItem.BackgroundColor;
+
+    //Cut-Copy-Paste shortcut keys variation for TextStoryItem //TODO: should maybe disable respective actions in non-Edit mode, even though they do check it to do nothing when not in edit mode
     if isTextStoryItem then
     begin
-      HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor; //TODO: if other items support fore color move to some interface based check and cast
       HUD.actionCut.ShortCut := TextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
       HUD.actionCopy.ShortCut := TextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
       HUD.actionPaste.ShortCut := TextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited
@@ -751,7 +761,7 @@ begin
   var LActive := ActiveStoryItem;
   if not Assigned(LActive) then exit;
 
-  LActive.BackgroundColor := HUD.comboForeColor.Color; //TODO: could check for special interface instead (some IBackgroundColor interface)
+  LActive.BackgroundColor := HUD.comboBackColor.Color; //TODO: could check for special interface instead (some IBackgroundColor interface)
   //TODO: doesn't seem to do something (plus the Border is shown only when items are children of edited activestoryitem, whereas we want to always draw background in that case - need extra background control that is)
 end;
 
@@ -893,7 +903,7 @@ begin
       var TheRootStoryItemView := TPanelStoryItem.Create(Self);
       try
         TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}{$IFDEF WINDOWS}
+        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
         try
           CodeSite.Send(TheRootStoryItemView.SaveToString);
         finally
@@ -906,7 +916,7 @@ begin
         on E: Exception do
           begin
           Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-          {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
           end;
@@ -932,7 +942,7 @@ begin
         var TheRootStoryItemView := TPanelStoryItem.Create(Self);
         try
           TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-          {$IFDEF DEBUG}{$IFDEF WINDOWS}
+          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
           try
             CodeSite.Send(TheRootStoryItemView.SaveToString);
           finally
@@ -944,7 +954,7 @@ begin
         except
           on E: Exception do
             begin
-            {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+            {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
             ShowException(E, @TMainForm.FormCreate);
             FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
             end;
@@ -960,7 +970,7 @@ end;
 
 procedure TMainForm.SaveCurrentState;
 begin
-  {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.EnterMethod('SaveState');{$ENDIF}{$ENDIF}
+  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.EnterMethod('SaveState');{$ENDIF}{$ENDIF}
   //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
@@ -969,7 +979,7 @@ begin
     with SaveState do
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}{$IFDEF WINDOWS}
+        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
         try
           CodeSite.Send(TheRootStoryItemView.SaveToString);
         finally
@@ -980,11 +990,11 @@ begin
         On E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
-          {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
           ShowException(E, @TMainForm.FormCreate);
           end;
     end;
-  {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
+  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
 end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);

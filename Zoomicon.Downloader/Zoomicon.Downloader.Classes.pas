@@ -112,9 +112,11 @@ interface
 
 implementation
 uses
-  {$ifdef WINDOWS}
-  //Winapi.Windows, //for OutputDebugStr
-  {$endif}
+  {$IFDEF DEBUG}
+    {$IF Defined(MSWINDOWS)}
+    Winapi.Windows, //for OutputDebugString
+    {$endif}
+  {$ENDIF}
   System.IOUtils, //for TPath, TDirectory
   System.NetConsts, //to expand inline THTTPClient.SetAccept
   System.Net.HttpClient, //for THTTPClient
@@ -257,9 +259,12 @@ begin
       FShouldResume := False;
       FPaused := False;
       result := Download(FLastSessionReadCount, FEndPosition);
-      {$ifdef WINDOWS}
-      //OutputDebugStr(IntToStr(result));
-      {$endif}
+      {$IFDEF DEBUG}
+        {$IF Defined(MSWINDOWS)}
+        //var msg := IntToStr(result);
+        //OutputDebugString(@msg); //TODO, doesn't seem to work, better use CodeSite instead
+        {$ENDIF}
+      {$ENDIF}
     end;
 
     Sleep(SleepTimeMS); //sleep a bit, being polite to other threads

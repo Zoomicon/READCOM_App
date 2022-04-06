@@ -62,9 +62,6 @@ object MainForm: TMainForm
           OnChange = HUDcomboForeColorChange
         end
         inherited comboBackColor: TComboColorBox
-          Position.X = 52.000000000000000000
-          Position.Y = 374.000000000000000000
-          Visible = False
           OnChange = HUDcomboBackColorChange
         end
       end

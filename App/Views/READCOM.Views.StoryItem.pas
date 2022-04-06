@@ -515,7 +515,8 @@ end;
 
 function TStoryItem.IsBorderVisible: Boolean;
 begin
-  result := Border.Visible;
+  result := Assigned(Border) and Border.Visible;
+  //result := Assigned(Border) and Assigned(Border.Stroke); //TODO: allow to hide outline of Border subcomponent (maybe rename it to Background since it will also be used for fill)
 end;
 
 procedure TStoryItem.SetBorderVisible(const Value: Boolean);
@@ -854,7 +855,10 @@ end;
 procedure TStoryItem.SetBackgroundColor(const Value: TAlphaColor);
 begin
   if Assigned(Border) then
+  begin
+    //Border.Fill.Kind := TBrushKind.Solid; //TODO
     Border.Fill.Color := Value;
+  end;
 end;
 
 {$endregion}
