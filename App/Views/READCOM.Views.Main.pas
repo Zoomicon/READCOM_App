@@ -773,7 +773,7 @@ procedure TMainForm.HUDStructureVisibleChanged(Sender: TObject; const Value: Boo
 begin
   if Value then
   begin
-    HUD.MultiViewFrameStand.CloseAllExcept(TStructureView);
+    HUD.MultiViewFrameStand.CloseAllExcept(TStructureView); //TODO: ???
 
     if (StoryMode <> EditMode) then //if non-Edit mode
       StructureView.FilterMode := tfFlatten
@@ -784,10 +784,24 @@ begin
 
     FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
   end;
+
+  with StructureView do //TODO: see why we need those for the hidden StructureView to not grab mouse events from the area it was before collapse on the form
+  begin
+    Enabled := Value;
+    HitTest := Value;
+  end;
 end;
 
 procedure TMainForm.UpdateStructureView;
 begin
+  if not HUD.StructureVisible then
+  begin
+    {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendMsg('Ignoring UpdateStructureView, currently hidden');{$ENDIF}{$ENDIF}
+    exit;
+  end;
+
+  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.EnterMethod('UpdateStructureView');{$ENDIF}{$ENDIF}
+
   if (StoryMode <> EditMode) then
     StructureView.FilterMode := tfFlatten
   else
@@ -799,6 +813,8 @@ begin
      and (StoryMode = EditMode) //TODO: temp extra check, since StructureView wasn't opening up in non-Edit mode for unknown reason, remove extra check when fixed
   then
     StructureView.SelectedObject := ActiveStoryItem.View;
+
+  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('UpdateStructureView');{$ENDIF}{$ENDIF}
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
