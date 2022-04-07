@@ -50,17 +50,21 @@ type
 
     function DoGetUpdateRect: TRectF; override; //used to fix bug in TSelection that doesn't consider usage inside a TScaledLayout
 
-    function GetControls(const RectPicker: TRectFPredicate): TControlList;
+    function GetSelectedArea: TRectF; virtual;
+
+    function GetControls(const RectPicker: TRectFPredicate): TControlList; virtual;
     function GetContained: TControlList; virtual;
     function GetIntersected: TControlList; virtual;
     function GetSelected: TControlList; virtual;
 
-    function GetControlCount(const RectPicker: TRectFPredicate): Integer;
+    function GetControlCount(const RectPicker: TRectFPredicate): Integer; virtual;
     function GetContainedCount: Integer; virtual;
     function GetIntersectedCount: Integer; virtual;
     function GetSelectedCount: Integer; virtual;
 
   published
+    property SelectedArea: TRectF read GetSelectedArea;
+
     property Contained: TControlList read GetContained;
     property Intersected: TControlList read GetIntersected;
     property Selected: TControlList read GetSelected;
@@ -141,6 +145,14 @@ begin
 end;
 
 {$region 'Get'}
+
+function TAreaSelector.GetSelectedArea: TRectF;
+begin
+  var rect := BoundsRect; //TODO: if reusing AreaSelector without reparenting it, should allow setting its "user/target" control to do coordinate conversion (it should provide property to set what control it's using as base and it should provide mapped bounds for that as special property)
+  var d := GripSize/1.3;
+  rect.Inflate(-d, -d, -d, -d); //Inflating by -SELECTION_GRIP_SIZE * 1.5 to avoid strange issue where dragging from the part of the knob that is over the object does selection update
+  result := rect;
+end;
 
 function TAreaSelector.GetControls(const RectPicker: TRectFPredicate): TControlList;
 begin

@@ -49,7 +49,8 @@ type
     }
 
     class var
-      FActiveStoryItem: IStoryItem;
+      FIgnoreActiveStoryItemChanges: Boolean; //=False
+      FActiveStoryItem: IStoryItem; //=nil
       FOnActiveStoryItemChanged: TNotifyEvent;
 
     class var
@@ -584,7 +585,7 @@ end;
 
 class procedure TStoryItem.SetActiveStoryItem(const Value: IStoryItem);
 begin
-  if (Value = FActiveStoryItem) then exit;
+  if FIgnoreActiveStoryItemChanges or (Value = FActiveStoryItem) then exit;
 
   if Assigned(Value) then //not checking if StoryPoint, since a non-StoryPoint may be activated directly via a target if it belongs to other StoryPoint parent
     Value.Active := true //this will also deactivate the ActiveStoryItem if any
@@ -599,7 +600,7 @@ end;
 
 procedure TStoryItem.SetActive(const Value: Boolean);
 begin
-  if (Value = IsActive) then exit; //Important
+  if FIgnoreActiveStoryItemChanges or (Value = IsActive) then exit; //Important
 
   if (Value) then //make active
   begin
@@ -1123,6 +1124,7 @@ procedure TStoryItem.PasteText(const Value: String);
 begin
   if TrimLeft(Value).StartsWith('object') then //ignore if not Delphi serialization format (its text-based form) //Left-trimming since we may have pasted an indented object from a .readcom file
     AddFromString(Value); //add a new child StoryItem
+  //TODO: if not an object then tell the IStory context to add a new TTextStoryItem (in the current selection or in middle of active storyitem [us]) and populate it with that text (same goes if the clipboard contains an image: however since the main app invokes those shortcuts maybe it could have done so by itself [as long as it checked that text doesn't start with "object"] - asking the component if it can handle the content and only then add as child isn't option, since it would be hard to understand how to paste an image child inside an image [so paste should always add a child])
 end;
 
 procedure TStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
@@ -1161,19 +1163,19 @@ end;
 
 function RemoveNonAllowedIdentifierChars(const s: String): String; //TODO: move to some utility library?
 begin
+  result := '';
+
   var count := s.Length;
-  var builder := TStringBuilder.Create(count);
-  try
+  if (count <> 0) then
     for var i := 1 to count do //strings are 1-indexed
-      begin
+    begin
       var c := s[i];
-      if IsValidIdent(c) then //keep only characters that would be allowed by themselves as an Identifier
-        builder.Append(c);
-      end;
-    result := builder.ToString;
-  finally
-    FreeAndNil(builder);
-  end;
+      if IsValidIdent(result + c) then //keep only characters that don't cause the identifier to be invalid
+        result := result + c;
+    end;
+
+  if (result.Length = 0) then
+    result := 'Item'; //NOTE: don't localize
 end;
 
 {Add}
@@ -1215,10 +1217,8 @@ begin
   var TheAreaSelector := AreaSelector; //need our AreaSelector, not the StoryItem's
   with StoryItemView do
   if TheAreaSelector.Visible and (TheAreaSelector.Width <> 0) and (TheAreaSelector.Height <> 0) then
-  begin
-    Size.Size := TheAreaSelector.Size.Size;
-    Position.Point := TheAreaSelector.Position.Point; //TODO: assuming the AreaSelector has the same parent, if not (say using a global area selector in the future) should have some way for the AreaSelector to give map the coordinates to the wanted parent
-  end
+    BoundsRect := TheAreaSelector.SelectedArea //TODO: does this take in mind scale? //TODO: assuming the AreaSelector has the same parent, if not (say using a global area selector in the future) should have some way for the AreaSelector to give map the coordinates to the wanted parent
+    //Note: need to use BoundsRect, not Size, else control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change
   else
   begin
     var ItemSize := Size.Size; //StoryItem constructor sets its DefaultSize, don't set Size to DefaultSize here since the StoryItem may have a different size set
@@ -1234,31 +1234,44 @@ end;
 procedure TStoryItem.AddFromString(const Data: string);
 var StoryItem: IStoryItem;
 begin
-  if Supports(LoadFromString(Data, true), IStoryItem, StoryItem) then
-    Add(StoryItem);
+  try
+    FIgnoreActiveStoryItemChanges := true; //ignore changes to ActiveStoryItem while loading children since "Active" is persisted property
+
+    if Supports(LoadFromString(Data, true), IStoryItem, StoryItem) then
+      Add(StoryItem);
+
+  finally
+    FIgnoreActiveStoryItemChanges := false; //restore value
+  end;
 end;
 
 procedure TStoryItem.Add(const Filepath: String);
 begin
-  var FileExt := ExtractFileExt(Filepath).ToLowerInvariant; //make file extension lower case
-
   try
-    var StoryItemFactory := StoryItemFactories.Get(FileExt);
+    FIgnoreActiveStoryItemChanges := true; //ignore changes to ActiveStoryItem while loading children since "Active" is persisted property
 
-    var StoryItem: TStoryItem;
-    if Assigned(StoryItemFactory) then
-    begin
-      StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
-      StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
-      StoryItem.Load(Filepath); //this should also set the Size of the control
-    end
-    else
-      StoryItem := Load(Filepath, true) as TStoryItem;
+    var FileExt := ExtractFileExt(Filepath).ToLowerInvariant; //make file extension lower case
+    try
+      var StoryItemFactory := StoryItemFactories.Get(FileExt);
 
-    Add(StoryItem);
-  except
-    on EListError do
-      raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [FileExt]);
+      var StoryItem: TStoryItem;
+      if Assigned(StoryItemFactory) then
+      begin
+        StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
+        StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
+        StoryItem.Load(Filepath); //this should also set the Size of the control
+      end
+      else
+        StoryItem := Load(Filepath, true) as TStoryItem;
+
+      Add(StoryItem);
+    except
+      on EListError do
+        raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [FileExt]);
+    end;
+
+  finally
+    FIgnoreActiveStoryItemChanges := false; //restore value
   end;
 end;
 
@@ -1386,7 +1399,8 @@ begin
     Active := false; //hide any UI related to being active, enable children etc., but also don't store Active=true so that at Paste it won't cause issues
     Stream.WriteComponent(Self); //note: this will result in the RootStoryItem never having Active=true when serialized, but if no StoryItem is Active the HomeStoryItem or the RootStoryItem if no HomeStoryItem is set with become the Active one
   finally
-    Active := wasActive; //restore previous Active state
+    if wasActive then
+      Active := true; //restore previous Active state
   end;
 end;
 

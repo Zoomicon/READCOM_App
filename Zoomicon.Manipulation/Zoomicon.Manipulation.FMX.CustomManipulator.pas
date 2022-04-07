@@ -782,24 +782,20 @@ begin
 
   if Assigned(FAreaSelector_SelectedControls) then
   begin
-    var SelectedArea := AreaSelector.BoundsRect; //TODO: if using external AreaSelector should do coordinate conversion (it should provide property to set what control it's using as base and it should provide mapped bounds for that as special property)
+    var LSelectedArea := AreaSelector.BoundsRect; //TODO: if using external AreaSelector should do coordinate conversion (it should provide property to set what control it's using as base and it should provide mapped bounds for that as special property)
 
     //Not using ResizeSelected, that will select other controls while resizing
 
-    if SelectedArea.Size <> FLastAreaSelectorBounds.Size then //don't manually subtract and compare Width and Height to 0, TSizeF.NotEquals class operator function ends up using "SameValue" function from System.Types internally that has some error tolerance
+    if LSelectedArea.Size <> FLastAreaSelectorBounds.Size then //don't manually subtract and compare Width and Height to 0, TSizeF.NotEquals class operator function ends up using "SameValue" function from System.Types internally that has some error tolerance
     begin
       //var dSize := SelectedArea.Size - FLastAreaSelectorBounds.Size;
       //ResizeControls(FAreaSelector_SelectedControls, dSize.Width/FLastAreaSelectorBounds.Width, dSize.Height/FLastAreaSelectorBounds.Height); //scaling down the deltas by the respective initial width/height so that we scale up again when resizing each individual control by its current width/height inside its parent
-
-      var rect := SelectedArea;
-      var d := SELECTION_GRIP_SIZE/1.3;
-      rect.Inflate(-d, -d, -d, -d); //Inflating by -SELECTION_GRIP_SIZE * 1.5 to avoid strange issue where dragging from the part of the knob that is over the object does selection update
-
-      ResizeControls(FAreaSelector_SelectedControls, rect); //resizing (distorting) to the new SelectedArea bounds, this is more stable and straightforward to implement
+      ResizeControls(FAreaSelector_SelectedControls, AreaSelector.SelectedArea); //resizing (distorting) to the new SelectedArea bounds, this is more stable and straightforward to implement
+      //Note: Inflating by -SELECTION_GRIP_SIZE * 1.5 (via AreaSelector.SelectedArea property) to avoid strange issue where dragging from the part of the knob that is over the object does selection update
     end
     else
     begin
-      var NewPosition := SelectedArea.Location;
+      var NewPosition := LSelectedArea.Location;
       var Offset := NewPosition - FLastPosition;
       FLastPosition := NewPosition;
       MoveControls(FAreaSelector_SelectedControls, Offset.X, Offset.Y);
@@ -1053,8 +1049,8 @@ begin
       begin
         var newSize := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality? (see SHIFT key above)
         var newPos := Control.Position.Point + zoom_center * (1-new_scale); //correction for zoom center position
-        Control.BoundsRect := TRectF.Create(Control.Position.Point + zoom_center * (1-new_scale), newSize.Width, newSize.Height);
-      end; //TODO: see why control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change (probably need to tell them to realign / parent size changed?)
+        Control.BoundsRect := TRectF.Create(newPos, newSize.Width, newSize.Height); //TODO: does this take in mind Scale?
+      end; //Note: need to use BoundsRect, not Size, else control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change
 
       //EndUpdate;
 
