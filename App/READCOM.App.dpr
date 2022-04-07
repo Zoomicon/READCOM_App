@@ -4,7 +4,7 @@ program READCOM.App;
 
 uses
   System.StartUpCopy, //TODO: do we need this? used to deploy extra files to mobiles, if not needed should remove, saw mentions its takes some app startup time and may need some extra rights in various platform app manifests
-  {$IF Defined(MSWINDOWS)}
+  {$IFDEF DEBUG}
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},

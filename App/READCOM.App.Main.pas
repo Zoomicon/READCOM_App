@@ -6,15 +6,17 @@ interface
 
 implementation
   uses
+    {$IF Defined(MSWINDOWS)}Windows,{$ENDIF} //for GetKeyState
+
     {$IFDEF DEBUG}
-    {$IF Defined(MSWINDOWS)}
-    CodeSiteLogging,
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
-    Windows, //for GetKeyState
-    {$ENDIF }
+      {$IF Defined(MSWINDOWS)}
+      CodeSiteLogging,
+      Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
+      {$ENDIF }
     FormMessage,
     ObjectDebuggerFMXForm,
     {$ENDIF}
+
     FMX.Dialogs, //for ShowMessage
     FMX.Types, //for GlobalUseDX
     FMX.Forms, //for Application
