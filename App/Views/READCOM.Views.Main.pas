@@ -40,6 +40,9 @@ type
     procedure HUDactionLoadExecute(Sender: TObject);
     procedure HUDactionSaveExecute(Sender: TObject);
 
+    //Light-Dark mode
+    procedure HUDactionNextThemeExecute(Sender: TObject);
+
     //Navigation actions
     procedure HUDactionHomeExecute(Sender: TObject);
     procedure HUDactionPreviousExecute(Sender: TObject);
@@ -156,6 +159,7 @@ implementation
     {$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
+    FMX.Styles, //for TStyleManager
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
@@ -586,6 +590,26 @@ begin
   //HUD.actionSaveExecute(Sender);
 
   RootStoryItem.Options.ActSave;
+end;
+
+{$endregion}
+
+{$region 'Light-Dark mode'}
+
+procedure TMainForm.HUDactionNextThemeExecute(Sender: TObject);
+begin
+  var switchToLightMode: Boolean;
+  with Globals do
+  begin
+    switchToLightMode := DarkTheme.UseStyleManager; //don't use "LightTheme.UseStyleManager" this seems to return false, even though it's set to true in the designer (the default style is white)
+    LightTheme.UseStyleManager := switchToLightMode;
+    DarkTheme.UseStyleManager := not switchToLightMode;
+  end;
+
+  if switchToLightMode then //the code above isn't enough to switch theme, so switching the MainForm's theme directly //TODO: this won't work for extra forms, try TStyleManager instead
+    StyleBook := Globals.LightTheme
+  else
+    StyleBook := Globals.DarkTheme;
 end;
 
 {$endregion}

@@ -145,6 +145,10 @@ object MainForm: TMainForm
         OnExecute = HUDactionAddBitmapImageStoryItemExecute
         ImageIndex = 23
       end
+      inherited actionNextTheme: TAction
+        OnExecute = HUDactionNextThemeExecute
+        ImageIndex = 26
+      end
     end
     inherited MultiViewFrameStand: TFrameStand
       Left = 432

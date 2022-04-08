@@ -15,8 +15,9 @@ resourcestring
 
 type
   TGlobals = class(TDataModule)
-    DefaultStyleBook: TStyleBook;
     Lang: TLang;
+    LightTheme: TStyleBook;
+    DarkTheme: TStyleBook;
     SVGIconImageList: TSVGIconImageList;
   end;
 

@@ -238,6 +238,22 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
       end
+      object btnNextTheme: TSpeedButton
+        Action = actionNextTheme
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 26
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 420.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
       object btnAbout: TSpeedButton
         Action = actionAbout
         Enabled = True
@@ -249,7 +265,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 420.000000000000000000
+        Position.Y = 466.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -593,6 +609,12 @@ object StoryHUD: TStoryHUD
       Text = 'Add BitmapImageStoryItem'
       ImageIndex = 23
       ImageIndex = 23
+    end
+    object actionNextTheme: TAction
+      Category = 'View'
+      Text = 'actionNextTheme'
+      ImageIndex = 26
+      ImageIndex = 26
     end
   end
   object MultiViewFrameStand: TFrameStand
