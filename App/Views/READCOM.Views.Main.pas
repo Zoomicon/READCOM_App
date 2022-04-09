@@ -164,6 +164,7 @@ implementation
     {$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
+    System.Net.URLClient, //for TURLStream (Delphi 11.1+)
     FMX.Styles, //for TStyleManager
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
@@ -974,11 +975,23 @@ end;
 
 function TMainForm.LoadFromUrl(const Url: String): Boolean; //TODO: should add LoadFromUrl and AddFromUrl to TStoryItem too
 begin
-  var memStream := DownloadFileWithFallbackCache(Url);
+  //var memStream := DownloadFileWithFallbackCache(Url); //TODO: this seems to bring empty file
   try
-    result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
+    //result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
+
+    var loaded := false;
+    TUrlStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
+      procedure(AStream: TStream)
+      begin
+        loaded := LoadFromStream(AStream); //probably it can start loading while the content is coming
+      end,
+      false, //no synchronization provided //TODO: what is this? is it for showing progress or does it allow to start consuming from the stream before the download is complete?
+      true //free on completion
+    );
+    result := loaded;
+
   finally
-    FreeAndNil(memStream);
+    //FreeAndNil(memStream);
   end;
 end;
 
