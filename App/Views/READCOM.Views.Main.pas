@@ -599,7 +599,7 @@ procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
 begin
   //HUD.actionLoadExecute(Sender);
 
-  if RootStoryItem.Options.ActLoad then //assuming this is blocking action
+  if RootStoryItem.Options.ActLoad then //assuming this is blocking action //TODO: need to change ActLoad to load any file and replace the current one (if not the RootStoryItem should maybe resize to take current bounds), then return the StoryItem instance that was created from that file info (not assume it's same class of StoryItem, TPanelStoryItem in the case of the story [want to load any StoryItem as root - also make sure when RootStoryItem changes the old one is released to not leak])
     begin
     RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
     ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
