@@ -14,8 +14,6 @@ program Zoomicon.Downloader.Tests;
 {$APPTYPE CONSOLE}
 {$ENDIF}
 
-
-
 uses
   DUnitTestRunner,
   Test.Zoomicon.Downloader in 'Test.Zoomicon.Downloader.pas',
@@ -27,6 +25,7 @@ uses
 {$R *.RES}
 
 begin
+  ReportMemoryLeaksOnShutdown := True; //added to check memory leaks on exit
   DUnitTestRunner.RunRegisteredTests;
 end.
 

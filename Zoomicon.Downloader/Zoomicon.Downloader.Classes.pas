@@ -22,7 +22,9 @@ interface
       public
         constructor Create(const TheDownloader: TDownloader);
         destructor Destroy; override;
+
         procedure Execute; override;
+
         function WaitForTermination(Timeout: cardinal = INFINITE): TWaitResult;
         procedure SetTerminationEvent;
 
@@ -62,6 +64,7 @@ interface
         constructor Create(AOwner: TComponent); overload; override;
         constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); reintroduce; overload; virtual; //TODO: see why we need to use "reintroduce" here even though we have overriden "constructor Create(AOwner: TComponent)" which the compiler was complaining this method was hiding
         procedure Initialize(const TheContentURI: TURI; const TheData: TStream; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
+        destructor Destroy; override;
 
         procedure Start; virtual;
         function WaitForDownload(Timeout: cardinal = INFINITE): TWaitResult;
@@ -99,9 +102,9 @@ interface
 
       public
         constructor Create(AOwner: TComponent; const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
+        procedure Initialize(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         destructor Destroy; override;
 
-        procedure Initialize(const TheContentURI: TURI; const TheFilepath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0); overload;
         procedure Start; override;
 
       published
@@ -122,7 +125,9 @@ uses
   System.Net.HttpClient, //for THTTPClient
   System.SysUtils; //for fmOpenWrite, fmShareDenyNone
 
-{$region 'TDownloaderThread'}
+{$REGION 'TDownloaderThread'}
+
+{$region 'Lifecyle management'}
 
 constructor TDownloaderThread.Create(const TheDownloader: TDownloader);
 begin
@@ -137,6 +142,8 @@ begin
   SetTerminationEvent; //notify any threads waiting on our event object
   inherited; //do last
 end;
+
+{$endregion}
 
 procedure TDownloaderThread.Execute; //returns HTTP status code
 begin
@@ -171,9 +178,11 @@ begin
     end;
 end;
 
-{$endregion}
+{$ENDREGION}
 
 {$REGION 'TDownloader'}
+
+{$region 'Lifecycle management'}
 
 constructor TDownloader.Create(AOwner: TComponent);
 begin
@@ -204,6 +213,16 @@ begin
   if AutoStart then
     Start;
 end;
+
+destructor TDownloader.Destroy;
+begin
+  FreeAndNil(FDownloaderThread); //this will invoke TerminationEvent (for other waiting threads)
+  FreeAndNil(FDownloaderThreadTerminationEvent);
+
+  inherited; //do last
+end;
+
+{$endregion}
 
 function TDownloader.IsTerminated: Boolean;
 begin
@@ -363,9 +382,9 @@ begin
   end;
 end;
 
-{$endregion}
+{$ENDREGION}
 
-{$region 'TFileDownloader'}
+{$REGION 'TFileDownloader'}
 
 constructor TFileDownloader.Create(AOwner: TComponent; const TheContentURI: TURI; const TheFilePath: String; const TheContentCache: IContentCache = nil; const AutoStart: Boolean = false; const TheStartPosition: Int64 = 0; const TheEndPosition: Int64 = 0);
 begin
@@ -414,7 +433,9 @@ begin
   end;
 end;
 
-{$endregion}
+{$ENDREGION}
+
+{$REGION 'Registration'}
 
 procedure RegisterSerializationClasses;
 begin
@@ -428,6 +449,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TDownloader, TFileDownloader]);
 end;
+
+{$ENDREGION}
 
 initialization
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
