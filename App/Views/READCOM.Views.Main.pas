@@ -79,6 +79,8 @@ type
 
     {SavedState}
     procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
+    function LoadFromStream(const Stream: TStream): Boolean;
+    function LoadFromUrl(const Url: String): Boolean;
     function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
     procedure SaveCurrentState;
@@ -96,6 +98,9 @@ type
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
     {NAVIGATION}
+
+    {URLs}
+    procedure OpenUrl(const Url: string);
 
     {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
@@ -163,6 +168,7 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
+    READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
     READCOM.Views.AudioStoryItem,
     READCOM.Views.ImageStoryItem,
@@ -207,6 +213,8 @@ begin
     Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE
   else
     Caption := STR_APP_TITLE;
+
+  TStoryItem.Story := Self; //provide a way to StoryItems to influence the Story context
 
   FTimerStarted := false;
   InitHUD;
@@ -321,6 +329,18 @@ end;
 {$endregion}
 
 {$region 'Navigation'}
+
+{$region 'URLs'}
+
+procedure TMainForm.OpenUrl(const Url: String);
+begin
+  if Url.EndsWith(EXT_READCOM, True) then //if it's a URL to a .readcom file (case-insensitive comparison)
+    LoadFromUrl(Url)
+  else
+    OpenURLinBrowser(Url); //else open in system browser
+end;
+
+{$endregion}
 
 {$region 'ActiveStoryItem'}
 
@@ -932,36 +952,42 @@ begin
     NewRootStoryItem;
 end;
 
-function TMainForm.LoadSavedState: Boolean;
+function TMainForm.LoadFromStream(const Stream: TStream): Boolean;
 begin
   result := false;
+  if Stream.Size > 0 then
+  begin
+    try
+      var TheRootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created
+      RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
+      result := true;
+    except
+      on E: Exception do
+        begin
+        //Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
+        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+        ShowException(E, @TMainForm.FormCreate);
+        end;
+    end;
+  end;
+end;
+
+function TMainForm.LoadFromUrl(const Url: String): Boolean; //TODO: should add LoadFromUrl and AddFromUrl to TStoryItem too
+begin
+  var memStream := DownloadFileWithFallbackCache(Url);
+  try
+    result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
+  finally
+    FreeAndNil(memStream);
+  end;
+end;
+
+function TMainForm.LoadSavedState: Boolean;
+begin
   With SaveState do
   begin
     //StoragePath := ... //TODO: default is transient, change to make permanent
-    if Stream.Size > 0 then
-    begin
-      var TheRootStoryItemView := TPanelStoryItem.Create(Self);
-      try
-        TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
-        try
-          CodeSite.Send(TheRootStoryItemView.SaveToString);
-        finally
-          //NOP
-        end;
-        {$ENDIF}{$ENDIF}
-        RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
-        result := true;
-      except
-        on E: Exception do
-          begin
-          Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
-          ShowException(E, @TMainForm.FormCreate);
-          FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
-          end;
-      end;
-    end;
+    result := LoadFromStream(Stream);
   end;
 
   with StoryTimer do
@@ -982,13 +1008,6 @@ begin
         var TheRootStoryItemView := TPanelStoryItem.Create(Self);
         try
           TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
-          try
-            CodeSite.Send(TheRootStoryItemView.SaveToString);
-          finally
-            //NOP
-          end;
-          {$ENDIF}{$ENDIF}
           RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
           result := true;
         except
@@ -1019,18 +1038,11 @@ begin
     with SaveState do
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
-        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
-        try
-          CodeSite.Send(TheRootStoryItemView.SaveToString);
-        finally
-          //NOP
-        end;
-        {$ENDIF}{$ENDIF}
       except
         On E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
-          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF} //TODO: add an app-global exception handling method that also logs in debug mode (maybe in production too ?)
           ShowException(E, @TMainForm.FormCreate);
           end;
     end;

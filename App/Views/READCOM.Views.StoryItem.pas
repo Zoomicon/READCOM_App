@@ -43,16 +43,17 @@ type
 
     FOnActiveChanged: TNotifyEvent;
 
-    { //TODO: have a global IStory (a context) and talk to that so that we could tell it to open hyperlinks (e.g. http:/...) but also special hyperlinks like story:next, story:previous etc. that can invoke methods to navigate in the story (actually could pass the "verb" to the story itself via special method and it would know how to handle the hyperlinks and the special ones [not have any download and url opening code in the StoryItem])
+    //Global IStory (context) //TODO: talk to that so that we could tell it to open hyperlinks (e.g. http:/...) but also special hyperlinks like story:next, story:previous etc. that can invoke methods to navigate in the story (actually could pass the "verb" to the story itself via special method and it would know how to handle the hyperlinks and the special ones [not have any download and url opening code in the StoryItem])
     class var
       FStory: IStory;
-    }
 
+    //TODO: maybe move to IStory so that we don't have many class variables and maybe also be able to have side-by-side stories by passing them different context (IStory)
     class var
       FIgnoreActiveStoryItemChanges: Boolean; //=False
       FActiveStoryItem: IStoryItem; //=nil
       FOnActiveStoryItemChanged: TNotifyEvent;
 
+    //TODO: maybe move to IStory so that we don't have many class variables
     class var
       FHomeStoryItem: IStoryItem;
 
@@ -196,6 +197,7 @@ type
     //
     function GetLoadFilesFilter: String; virtual;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
+    class function LoadNew(const Stream: TStream; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
     function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload; virtual;
     //
@@ -231,6 +233,8 @@ type
     property Options: IStoryItemOptions read GetOptions stored false;
     property BorderVisible: Boolean read IsBorderVisible write SetBorderVisible stored false default false;
 
+    class property Story: IStory read FStory write FStory; //Note: class properties can't be published and are not stored
+
     class property ActiveStoryItem: IStoryItem read FActiveStoryItem write SetActiveStoryItem;
     class property OnActiveStoryItemChanged: TNotifyEvent read FOnActiveStoryItemChanged write FOnActiveStoryItemChanged;
 
@@ -251,7 +255,7 @@ type
     property Hidden: Boolean read IsHidden write SetHidden default false;
     property Anchored: Boolean read IsAnchored write SetAnchored default true;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
-    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible default false;
+    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible stored false default false;
   end;
 
   TStoryItemClass = class of TStoryItem;
@@ -259,9 +263,8 @@ type
 implementation
   uses
     {$IFDEF DEBUG}
-    {$IFDEF WINDOWS}CodeSiteLogging,{$ENDIF}
+    {$IF defined(MSWINDOWS)}CodeSiteLogging,{$ENDIF}
     {$ENDIF}
-    READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     System.IOUtils, //for TPath
     FMX.Platform, //for TPlatformServices
     Zoomicon.Generics.Collections, //for TObjectListEx
@@ -1034,15 +1037,8 @@ begin
 
   if not EditMode then
     begin
-    if (FUrlAction <> '') then //TODO: should pass the Open URL action to the MainForm and that should do the following logic
-      if FUrlAction.EndsWith(EXT_READCOM) then
-      begin
-        var memStream := DownloadFileWithFallbackCache(FUrlAction);
-        //TODO: tell app to open the fetched memstream as new RootStoryItem [maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that] - that way we can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run
-        FreeAndNil(memStream);
-      end
-      else
-        OpenURLinBrowser(FUrlAction);
+      if (FUrlAction <> '') then
+        FStory.OpenUrl(FUrlAction);
     end
 
   else //EditMode //TODO: if the StoryItem is not in EditMode but the Story is in EditMode, then make the StoryItem active (else do like below)
@@ -1155,7 +1151,7 @@ begin
   with THackReader(Reader) do
     begin
     Handled := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
-    {$IFDEF DEBUG}{$IFDEF WINDOWS}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}{$ENDIF}
+    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}{$ENDIF}
     end;
 end;
 
@@ -1261,7 +1257,7 @@ begin
         StoryItem.Name := RemoveNonAllowedIdentifierChars(TPath.GetFileNameWithoutExtension(Filepath)) + IntToStr(Random(maxint)); //TODO: use a GUID
         StoryItem.Load(Filepath); //this should also set the Size of the control
       end
-      else
+      else //we are adding a ".readcom" file, don't know beforehand what class of TStoryItem descendent it contains serialized
         StoryItem := Load(Filepath, true) as TStoryItem;
 
       Add(StoryItem);
@@ -1288,13 +1284,26 @@ begin
   result := FILTER_READCOM;
 end;
 
+class function TStoryItem.LoadNew(const Stream: TStream; const ContentFormat: String): TStoryItem;
+begin
+  var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
+  try
+    result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
+  finally
+    FreeAndNil(tempStoryItem); //releasing the tempStoryItem
+  end;
+end;
+
 function TStoryItem.LoadFromString(const Data: string; const CreateNew: Boolean = false): TObject;
 begin
   var StrStream := TStringStream.Create(Data);
   try
     var BinStream := TMemoryStream.Create;
     try
-      ObjectTextToBinary(StrStream, BinStream);
+      {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}
+      CodeSite.Send(StrStream.DataString); //TODO: see if the stream needs to be rewinded after this
+      {$ENDIF}{$ENDIF}
+      ObjectTextToBinary(StrStream, BinStream); //may throw exception here
       BinStream.Seek(0, soFromBeginning);
       result := LoadReadComBin(BinStream, CreateNew).View;
     finally
@@ -1380,6 +1389,10 @@ begin
   finally
     BinStream.Free;
   end;
+
+  {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}
+  CodeSite.Send(result);
+  {$ENDIF}{$ENDIF}
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);

@@ -89,6 +89,9 @@ type
     function GetHomeStoryItem: IStoryItem;
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
+    {URLs}
+    procedure OpenUrl(const Url: string);
+
     {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
     procedure SetActiveStoryItem(const Value: IStoryItem);
