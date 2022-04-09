@@ -153,11 +153,10 @@ begin
     begin
     var TerminationEvent := FDownloader.DownloaderThreadTerminationEvent;
     if Assigned(TerminationEvent) then
-      begin
-      result := TerminationEvent.WaitFor(Timeout);
-      exit;
-      end;
-    end;
+      exit(TerminationEvent.WaitFor(Timeout));
+    end
+  else
+    exit(TWaitResult.wrError);
 
   result := TWaitResult.wrAbandoned;
 end;

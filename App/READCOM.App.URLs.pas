@@ -68,9 +68,12 @@ function DownloadFileWithFallbackCache(const url: string): TMemoryStream;
 begin
   result := TMemoryStream.Create; //caller should free this
   var FileDownloader := TDownloader.Create(Application.MainForm, TURI.Create(url), result, FileCache, true); //AutoStart
-  FileDownloader.OnlyFallbackCache := true; //would use this if we only wanted to fallback to cache in case of download errors / offline case
-  FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
-  FreeAndNil(FileDownloader);
+  try
+    FileDownloader.OnlyFallbackCache := true; //would use this if we only wanted to fallback to cache in case of download errors / offline case
+    FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
+  finally
+    FreeAndNil(FileDownloader);
+  end;
 end;
 
 initialization
