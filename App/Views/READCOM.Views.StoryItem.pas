@@ -936,6 +936,10 @@ end;
 procedure TStoryItem.SetUrlAction(const Value: String);
 begin
   FUrlAction := Value;
+  if (Value <> '') then
+    Cursor := crHandPoint
+  else
+    Cursor := crDefault;
 end;
 
 {$endregion}

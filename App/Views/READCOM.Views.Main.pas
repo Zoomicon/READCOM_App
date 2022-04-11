@@ -517,8 +517,14 @@ begin
       UpdateStructureView; //must refresh StructureView contents since we change the FilterMode based on isEditMode
     end;
 
-  if (not isEditMode) and Assigned(ActiveStoryItem) and (not ActiveStoryItem.StoryPoint) then
-    ActiveStoryItem := ActiveStoryItem.PreviousStoryPoint;
+  if (not isEditMode) and Assigned(ActiveStoryItem) and (not ActiveStoryItem.StoryPoint) then //if current ActiveStoryItem isn't a StoryPoint, then when exiting Edit mode...
+  begin
+    var ancestor := ActiveStoryItem.GetAncestorStoryPoint; //...try to activeate an ancestor StoryPoint
+    if Assigned(ancestor) then
+      ActiveStoryItem := ancestor
+    else
+      ActiveStoryItem := RootStoryItem; //...making sure we always end up with an ActiveStoryItem (the RootStoryItem) when no StoryPoints have been defined
+  end;
 end;
 
 {$endregion}
