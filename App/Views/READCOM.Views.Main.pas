@@ -561,8 +561,9 @@ end;
 
 procedure TMainForm.StructureViewShowFilter(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean);
 begin
-  if (StoryMode <> EditMode) and (TheObject is TStoryItem) then //in non-Edit mode
-    ShowObject := TStoryItem(TheObject).StoryPoint; //only show StoryPoints (assuming StructureView's FilterMode=tfFlatten since we're not in Edit mode - this is important to be set
+  if (StoryMode <> EditMode) and (TheObject is TStoryItem) then //when in non-Edit mode...
+    with TStoryItem(TheObject) do
+      ShowObject := StoryPoint or Home; //...only show StoryPoints and Home //IMPORTANT: assuming StructureView's FilterMode=tfFlatten since we're in non-Edit mode
 end;
 
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
@@ -836,14 +837,7 @@ begin
   if Value then
   begin
     HUD.MultiViewFrameStand.CloseAllExcept(TStructureView); //TODO: ???
-
-    if (StoryMode <> EditMode) then //if non-Edit mode
-      StructureView.FilterMode := tfFlatten
-    else
-      StructureView.FilterMode := tfPrune;
-
     UpdateStructureView; //in case the RootStoryItem has changed
-
     FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
   end;
 
