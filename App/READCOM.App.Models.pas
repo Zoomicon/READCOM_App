@@ -222,7 +222,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
     property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
-    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor; //default nil
+    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor; //default TAlphaColorRec.Null
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden; //default false
@@ -375,7 +375,7 @@ type
     property Editable: Boolean read IsEditable write SetEditable; //default false
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
-    property TextColor: TAlphaColor read GetTextColor write SetTextColor;
+    property TextColor: TAlphaColor read GetTextColor write SetTextColor; //default TAlphaColorRec.Black
     //TODO:  (maybe remove and just add filterchar string like in TEdit)
   end;
 

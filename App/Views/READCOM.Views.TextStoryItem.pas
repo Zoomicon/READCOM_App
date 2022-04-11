@@ -96,7 +96,7 @@ type
     property Editable: Boolean read IsEditable write SetEditable default false;
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
-    property TextColor: TAlphaColor read GetTextColor write SetTextColor;
+    property TextColor: TAlphaColor read GetTextColor write SetTextColor default TAlphaColorRec.Black;
   end;
 
   {$ENDREGION ........................................................................}
@@ -133,7 +133,6 @@ constructor TTextStoryItem.Create(AOnwer: TComponent);
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       ReadOnly := true; //since we have Editable property defaulting to false
-      Text := DEFAULT_TEXT;
       SetMemoZorder;
     end;
   end;
@@ -141,6 +140,8 @@ constructor TTextStoryItem.Create(AOnwer: TComponent);
 begin
   inherited;
   InitMemo;
+  Text := DEFAULT_TEXT;
+  TextColor := TAlphaColorRec.Black;
 end;
 
 {$endregion}

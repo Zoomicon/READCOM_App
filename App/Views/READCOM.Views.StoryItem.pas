@@ -349,9 +349,9 @@ begin
 
   //DragMode := TDragMode.dmManual; //no automatic drag (it's the default)
   Anchored := true;
+  BackgroundColor := TAlphaColorRec.Null;
 
   //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
-
 end;
 
 class destructor TStoryItem.Destroy;
