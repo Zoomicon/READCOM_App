@@ -286,7 +286,12 @@ procedure TStructureView.LoadTreeView;
 
       //Load items recursively (depth-first)//
       for var ChildControl in TheControl.Controls do
-        LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
+        try
+          LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
+        except
+          on E: Exception do
+            ShowException(E, @TStructureView.LoadTreeView); //TODO: maybe should do one try-catch for the whole for loop to avoid multiple error messages?
+        end;
 
       EndUpdate;
     end;

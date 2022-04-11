@@ -965,14 +965,14 @@ begin
   if Stream.Size > 0 then
   begin
     try
-      RootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created
+      RootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created //only set RootStoryItemView (this affects RootStoryItem too)
       result := true;
     except
       on E: Exception do
         begin
         //Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
         {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
-        ShowException(E, @TMainForm.FormCreate);
+        ShowException(E, @TMainForm.LoadFromStream);
         end;
     end;
   end;
@@ -985,15 +985,19 @@ begin
     //result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
 
     var loaded := false;
-    TUrlStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
+    CodeSite.Send('Before call to TURLStream');
+    TURLStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
       procedure(AStream: TStream)
       begin
+        CodeSite.Send('Started download');
         loaded := LoadFromStream(AStream); //probably it can start loading while the content is coming
+        CodeSite.Send('Finished download');
       end,
-      false, //no synchronization provided //TODO: what is this? is it for showing progress or does it allow to start consuming from the stream before the download is complete?
+      true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread
       true //free on completion
-    );
-    result := loaded;
+    ).AsyncResult.AsyncWaitEvent.WaitFor; //TODO: check if this works properly on Android
+    CodeSite.Send('After call to TURLStream'); //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
+    result := loaded; //TODO: due to WaitFor not working as expected, make sure the result of LoadFromUrl isn't used for now (will be false)
 
   finally
     //FreeAndNil(memStream);
@@ -1023,17 +1027,14 @@ begin
     try
       if Stream.Size > 0 then
       begin
-        var TheRootStoryItemView := TPanelStoryItem.Create(Self);
         try
-          TheRootStoryItemView.Load(Stream); //default file format is EXT_READCOM
-          RootStoryItemView := TheRootStoryItemView; //only set RootStoryItemView (this affects RootStoryItem too)
+          RootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created //only set RootStoryItemView (this affects RootStoryItem too)
           result := true;
         except
           on E: Exception do
             begin
             {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
-            ShowException(E, @TMainForm.FormCreate);
-            FreeAndNil(TheRootStoryItemView); //Free partially loaded - corrupted StoryItem
+            ShowException(E, @TMainForm.LoadDefaultDocument);
             end;
         end;
       end;
@@ -1057,11 +1058,11 @@ begin
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
       except
-        On E: Exception do
+        on E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
           {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF} //TODO: add an app-global exception handling method that also logs in debug mode (maybe in production too ?)
-          ShowException(E, @TMainForm.FormCreate);
+          ShowException(E, @TMainForm.SaveCurrentState);
           end;
     end;
   {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
