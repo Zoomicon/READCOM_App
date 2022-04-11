@@ -274,6 +274,10 @@ begin
   begin
     with Value do
     begin
+      Position.Point := TPointF.Zero; //ignore any Position value, want to have the RootStoryItem centered in the zoomable container
+
+      Align := TAlignLayout.Center; //IMPORTANT: Center to zoomable container, if it had "Scaled" it would crash on Zoom in/out. Note that at TStoryItem.Add any .readcom content added as children is set to use "Align := TAlignLayout.Scale", so that the children scale as their parent StoryItem resizes
+
       AutoSize := true; //TODO: the Root StoryItem should be expandable
       OnResized := RootStoryItemViewResized; //listen for resizing to adapt ZoomFrame.ScaledLayout's size //TODO: this doesn't seem to get called
 
@@ -605,11 +609,18 @@ procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
 begin
   //HUD.actionLoadExecute(Sender);
 
-  if RootStoryItem.Options.ActLoad then //assuming this is blocking action //TODO: need to change ActLoad to load any file and replace the current one (if not the RootStoryItem should maybe resize to take current bounds), then return the StoryItem instance that was created from that file info (not assume it's same class of StoryItem, TPanelStoryItem in the case of the story [want to load any StoryItem as root - also make sure when RootStoryItem changes the old one is released to not leak])
-    begin
-    RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
-    ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
-    end;
+  var TempStoryItem := TStoryItem.Create(nil); //using TempStoryItem of TStoryItem type to show generic file dialog filter
+  try
+    var Filename := TempStoryItem.Options.ActLoad_GetFilename; //assuming this is blocking action
+    if (Filename <> '') then
+      begin
+      RootStoryItemView := TStoryItem.LoadNew(Filename);
+      //TODO: OLD-CODE-LINE-REMOVE? //RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
+      ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+      end;
+  finally
+    FreeAndNil(TempStoryItem);
+  end;
 end;
 
 procedure TMainForm.HUDactionSaveExecute(Sender: TObject);

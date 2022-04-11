@@ -198,6 +198,7 @@ type
     function GetLoadFilesFilter: String; virtual;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     class function LoadNew(const Stream: TStream; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
+    class function LoadNew(const Filepath: string; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
     function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload; virtual;
     //
@@ -1227,6 +1228,7 @@ begin
   end;
 
   StoryItemView.Align := TAlignLayout.Scale; //IMPORTANT: adjust when parent resizes
+
   StoryItemView.Parent := Self;
   StoryItemView.BringToFront; //load as front-most
 end;
@@ -1293,6 +1295,16 @@ begin
   var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
   try
     result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
+  finally
+    FreeAndNil(tempStoryItem); //releasing the tempStoryItem
+  end;
+end;
+
+class function TStoryItem.LoadNew(const Filepath: string; const ContentFormat: String = EXT_READCOM): TStoryItem;
+begin
+  var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
+  try
+    result := TStoryItem(tempStoryItem.Load(Filepath, true)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
   finally
     FreeAndNil(tempStoryItem); //releasing the tempStoryItem
   end;

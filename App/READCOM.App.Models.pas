@@ -248,6 +248,7 @@ type
 
     {File}
     function ActAdd: Boolean;
+    function ActLoad_GetFilename: String;
     function ActLoad: Boolean;
     function ActSave: Boolean;
 
