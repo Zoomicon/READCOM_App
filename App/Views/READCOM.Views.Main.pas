@@ -996,18 +996,18 @@ begin
     //result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
 
     var loaded := false;
-    CodeSite.Send('Before call to TURLStream');
+    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Before call to TURLStream');{$ENDIF}{$ENDIF}
     TURLStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
       procedure(AStream: TStream)
       begin
-        CodeSite.Send('Started download');
+        {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Started download');{$ENDIF}{$ENDIF}
         loaded := LoadFromStream(AStream); //probably it can start loading while the content is coming
-        CodeSite.Send('Finished download');
+        {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Finished download');{$ENDIF}{$ENDIF}
       end,
       true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread
       true //free on completion
     ).AsyncResult.AsyncWaitEvent.WaitFor; //TODO: check if this works properly on Android
-    CodeSite.Send('After call to TURLStream'); //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
+    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('After call to TURLStream');{$ENDIF}{$ENDIF} //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
     result := loaded; //TODO: due to WaitFor not working as expected, make sure the result of LoadFromUrl isn't used for now (will be false)
 
   finally
