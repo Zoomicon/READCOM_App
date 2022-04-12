@@ -418,7 +418,8 @@ begin
       HUD.actionPaste.ShortCut := FShortcutPaste; //TextToShortCut('Ctrl+V');
     end;
 
-    StructureView.SelectedObject := StoryItem; //Change StructureView selection
+    if HUD.StructureVisible then
+      StructureView.SelectedObject := StoryItem; //Change StructureView selection (ONLY WHEN StructureView is visible)
   end
   else
     StructureView.SelectedObject := nil;
@@ -568,9 +569,6 @@ end;
 
 procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
 begin
-  if not (StoryMode = EditMode) then //in non-Edit mode
-    HUD.StructureVisible := false; //we want to hide the StructureView before zooming to the item selected
-
   ActiveStoryItem := TStoryItem(Selection); //Make active (may also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
 end;
 
@@ -838,10 +836,10 @@ begin
   begin
     HUD.MultiViewFrameStand.CloseAllExcept(TStructureView); //TODO: ???
     UpdateStructureView; //in case the RootStoryItem has changed
-    FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't
+    FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't (the side-panel has already opened, show the StructureView frame in it)
   end;
 
-  with StructureView do //TODO: see why we need those for the hidden StructureView to not grab mouse events from the area it was before collapse on the form
+  with StructureView do //TODO: see why we need those for the hidden StructureView to not grab mouse events from the area it was before collapse on the form (Probably a MultiView bug with or without the combination of TFrameStand to put a frame at the side tray)
   begin
     Enabled := Value;
     HitTest := Value;
@@ -865,9 +863,7 @@ begin
 
   StructureView.GUIRoot := RootStoryItemView;
 
-  if Assigned(ActiveStoryItem)
-     and (StoryMode = EditMode) //TODO: temp extra check, since StructureView wasn't opening up in non-Edit mode for unknown reason, remove extra check when fixed
-  then
+  if Assigned(ActiveStoryItem) then
     StructureView.SelectedObject := ActiveStoryItem.View;
 
   {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('UpdateStructureView');{$ENDIF}{$ENDIF}
