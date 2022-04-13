@@ -139,9 +139,13 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    {ForegroundColor}
+    function GetForegroundColor: TAlphaColor; virtual;
+    procedure SetForegroundColor(const Value: TAlphaColor); virtual;
+
     {BackgroundColor}
-    function GetBackgroundColor: TAlphaColor;
-    procedure SetBackgroundColor(const Value: TAlphaColor);
+    function GetBackgroundColor: TAlphaColor; virtual;
+    procedure SetBackgroundColor(const Value: TAlphaColor); virtual;
 
     {FlippedHorizontally}
     function IsFlippedHorizontally: Boolean; virtual;
@@ -250,6 +254,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default false;
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
     property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
+    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default TAlphaColorRec.Null; //claNull
     property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default TAlphaColorRec.Null; //claNull
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default false; //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
@@ -350,6 +355,7 @@ begin
 
   //DragMode := TDragMode.dmManual; //no automatic drag (it's the default)
   Anchored := true;
+  ForegroundColor := TAlphaColorRec.Null;
   BackgroundColor := TAlphaColorRec.Null;
 
   //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
@@ -843,6 +849,20 @@ begin
   end;
 
   result := nil;
+end;
+
+{$endregion}
+
+{$region 'ForegroundColor'}
+
+function TStoryItem.GetForegroundColor: TAlphaColor;
+begin
+  result := TAlphaColorRec.Null; //return the default value of the ForegroundColor property so that it's not stored. To override (including the default value of the property) at descendents
+end;
+
+procedure TStoryItem.SetForegroundColor(const Value: TAlphaColor);
+begin
+  //NOP
 end;
 
 {$endregion}

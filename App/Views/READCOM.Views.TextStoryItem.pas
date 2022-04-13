@@ -76,8 +76,8 @@ type
     procedure SetFont(const Value: TFont);
 
     {Color}
-    function GetTextColor: TAlphaColor;
-    procedure SetTextColor(const Value: TAlphaColor);
+    function GetForegroundColor: TAlphaColor; override;
+    procedure SetForegroundColor(const Value: TAlphaColor); override;
 
   public
     constructor Create(AOnwer: TComponent); override;
@@ -96,7 +96,8 @@ type
     property Editable: Boolean read IsEditable write SetEditable default false;
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
-    property TextColor: TAlphaColor read GetTextColor write SetTextColor default TAlphaColorRec.Black;
+    property TextColor: TAlphaColor read GetForegroundColor write SetForegroundColor stored false; //DEPRECATED, remaped to and storing ForegroundColor instead
+    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default TAlphaColorRec.Black; //redefining default to claBlack instead of claNull that was in TStoryItem
   end;
 
   {$ENDREGION ........................................................................}
@@ -279,14 +280,14 @@ end;
 
 {$endregion}
 
-{$region 'TextColor'}
+{$region 'ForegroundColor'}
 
-function TTextStoryItem.GetTextColor: TAlphaColor;
+function TTextStoryItem.GetForegroundColor: TAlphaColor;
 begin
   result := Memo.FontColor;
 end;
 
-procedure TTextStoryItem.SetTextColor(const Value: TAlphaColor);
+procedure TTextStoryItem.SetForegroundColor(const Value: TAlphaColor);
 begin
   Memo.FontColor := Value;
 end;

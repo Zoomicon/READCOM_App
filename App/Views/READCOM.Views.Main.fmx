@@ -47,21 +47,69 @@ object MainForm: TMainForm
       end
       inherited layoutButtonsMain: TFlowLayout
         Size.Height = 576.000000000000000000
+        inherited btnToggleStructureVisible: TSpeedButton
+          Hint = 
+            'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
+            ' which allows to select the ActiveStoryItem and to rearrange Sto' +
+            'ryItems when in Edit mode'
+        end
+        inherited btnNextTheme: TSpeedButton
+          Hint = 
+            'Change Theme'#13#13'Switches to the next available user interface them' +
+            'e. Light and dark mode ones are available.'
+        end
       end
       inherited layoutButtonsEdit: TFlowLayout
         Position.X = 826.000000000000000000
         Size.Height = 576.000000000000000000
         TabOrder = 174
+        inherited btnAdd: TSpeedButton
+          Hint = 
+            'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
+            ' audio, text) or saved StoryItems (.readcom files). The new Stor' +
+            'yItems are added as children of the ActiveStoryItem at the selec' +
+            'ted area or in the middle'
+        end
+        inherited btnAddBitmapImageStoryItem: TSpeedButton
+          Hint = 
+            'Add Image'#13#13'Adds an ImageStoryItem placeholder into the ActiveSto' +
+            'ryItem at the selected area or in the middle'
+        end
+        inherited btnAddTextStoryItem: TSpeedButton
+          Hint = 
+            'Add Text'#13#13'Adds a TextStoryItem into the ActiveStoryItem at the s' +
+            'elected area or in the middle'
+        end
+        inherited btnCut: TSpeedButton
+          Hint = 'Cut'#13#13'Moves the ActiveStoryItem to the Clipboard'
+        end
+        inherited btnCopy: TSpeedButton
+          Hint = 'Copy'#13#13'Copies the ActiveStoryItem to the Clipboard'
+        end
+        inherited btnPaste: TSpeedButton
+          Hint = 
+            'Paste'#13#13'Pastes content from the Clipboard into the ActiveStoryIte' +
+            'm'
+        end
         inherited btnFlipHorizontally: TSpeedButton
           Action = HUD.actionFlipHorizontally
+          Hint = 'Flip Horizontally'#13#13'Mirrors the ActiveStoryItem horizontally'
         end
         inherited btnFlipVertically: TSpeedButton
           Action = HUD.actionFlipVertically
+          Hint = 'Flip Vertically'#13#13'Flips the ActiveStoryItem vertically'
         end
         inherited comboForeColor: TComboColorBox
+          Hint = 
+            'Set Foreground Color'#13#13'Sets the foreground color and its transpar' +
+            'ency for the ActiveStoryItem, e.g. for a TextStoryItem this chan' +
+            'ges the text color'
           OnChange = HUDcomboForeColorChange
         end
         inherited comboBackColor: TComboColorBox
+          Hint = 
+            'Set Background Color'#13#13'Sets the background color and its transpar' +
+            'ency for the ActiveStoryItem'
           OnChange = HUDcomboBackColorChange
         end
       end

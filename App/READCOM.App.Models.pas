@@ -172,6 +172,10 @@ type
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
 
+    {ForegroundColor}
+    function GetForegroundColor: TAlphaColor;
+    procedure SetForegroundColor(const Value: TAlphaColor);
+
     {BackgroundColor}
     function GetBackgroundColor: TAlphaColor;
     procedure SetBackgroundColor(const Value: TAlphaColor);
@@ -222,6 +226,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
     property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
+    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor; //default TAlphaColorRec.Null
     property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor; //default TAlphaColorRec.Null
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
@@ -366,18 +371,13 @@ type
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
 
-    {Color}
-    function GetTextColor: TAlphaColor;
-    procedure SetTextColor(const Value: TAlphaColor);
-
     //--- Properties ---
     property Text: String read GetText write SetText; //default ''
     property SelectedText: String read GetSelectedText; //stored false
     property Editable: Boolean read IsEditable write SetEditable; //default false
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
-    property TextColor: TAlphaColor read GetTextColor write SetTextColor; //default TAlphaColorRec.Black
-    //TODO:  (maybe remove and just add filterchar string like in TEdit)
+    //TODO:  (maybe remove and just add filterchar string like in TEdit) //???
   end;
 
 implementation
