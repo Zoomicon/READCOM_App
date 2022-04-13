@@ -1008,6 +1008,48 @@ begin
 end;
 
 procedure TCustomManipulator.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+
+  procedure DoAltMouseWheel;
+  begin
+    var ScreenMousePos := Screen.MousePos;
+    var LObj := ObjectAtPoint(ScreenMousePos, false, true, false, false); //only checking the immediate children which are not subcomponents
+
+    var Control := TControl(Self); //if not child under mouse cursor, act upon ourselves
+    if Assigned(LObj) then
+    begin
+      Control := TControl(LObj.GetObject);
+      if Control.SubComponent then exit; //redundant safety check: ignore any subcomponents like the DropTarget (or others added by descendents) in case the parameter we passed to ObjectAtPoint failed somehow
+    end;
+
+    var zoom_center := Control.ScreenToLocal(ScreenMousePos); //use mouse cursor as center
+
+    var new_scale : Single;
+    if WheelDelta >= 0
+      then new_scale := (1 + (WheelDelta / 120)/5)
+      else new_scale := 1 / (1 - (WheelDelta / 120)/5);
+
+    //BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
+
+    if (ssShift in Shift) then //ALT+SHIFT+mousewheel to rescale
+    begin
+      Control.Scale.X := new_scale;
+      Control.Scale.Y := new_scale;
+      //correction for zoom center position
+      Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly (?)
+    end
+    else //ALT+mousewheel to resize
+    begin
+      var newSize := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality? (see SHIFT key above)
+      var newPos := Control.Position.Point + zoom_center * (1-new_scale); //correction for zoom center position
+      Control.BoundsRect := TRectF.Create(newPos, newSize.Width, newSize.Height); //TODO: does this take in mind Scale?
+    end; //adapted from https://stackoverflow.com/a/66049562/903783 //Note: need to use BoundsRect, not Size, else control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change
+
+    //EndUpdate;
+
+    Handled := true; //needed for parent containers to not scroll
+    exit;
+  end;
+
 begin
   inherited; //needed for event handlers to be fired (e.g. at ancestors)
 
@@ -1020,44 +1062,7 @@ begin
   *)
 
   if EditMode and (ssAlt in Shift) then
-  begin
-    var ScreenMousePos := Screen.MousePos;
-    var LObj := ObjectAtPoint(ScreenMousePos, false, true, false, false); //only checking the immediate children which are not subcomponents
-    if Assigned(LObj) then
-    begin
-      var Control := TControl(LObj.GetObject);
-
-      if Control.SubComponent then exit; //redundant safety check: ignore any subcomponents like the DropTarget (or others added by descendents) in case the parameter we passed to ObjectAtPoint failed somehow
-
-      var zoom_center := Control.ScreenToLocal(ScreenMousePos); //use mouse cursor as center
-
-      var new_scale : Single;
-      if WheelDelta >= 0
-        then new_scale := (1 + (WheelDelta / 120)/5)
-        else new_scale := 1 / (1 - (WheelDelta / 120)/5);
-
-      //BeginUpdate; //TODO: would it be enough to do Control.BeginUpdate/Control.EndUpdate instead?
-
-      if (ssShift in Shift) then
-      begin
-        Control.Scale.X := new_scale;
-        Control.Scale.Y := new_scale;
-        //correction for zoom center position
-        Control.Position.Point := Control.Position.Point + zoom_center * (1-new_scale); //TODO: not working correctly (?)
-      end
-      else
-      begin
-        var newSize := TSizeF.Create(Control.Width * new_scale, Control.Height * new_scale); //TODO: maybe rescale instead of resize to preserve quality? (see SHIFT key above)
-        var newPos := Control.Position.Point + zoom_center * (1-new_scale); //correction for zoom center position
-        Control.BoundsRect := TRectF.Create(newPos, newSize.Width, newSize.Height); //TODO: does this take in mind Scale?
-      end; //Note: need to use BoundsRect, not Size, else control's children that are set to use "Align=Scale" seem to become larger when object shrinks and vice-versa instead of following its change
-
-      //EndUpdate;
-
-      Handled := true; //needed for parent containers to not scroll
-      exit;
-    end; //adapted from https://stackoverflow.com/a/66049562/903783
-  end;
+    DoAltMouseWheel;
 end;
 
 {$endregion}
