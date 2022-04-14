@@ -158,10 +158,6 @@ resourcestring
 
 implementation
   uses
-    {$IFDEF DEBUG}
-    {$IF Defined(MSWINDOWS)}CodeSiteLogging,{$ENDIF}
-    ObjectDebuggerFMXForm,
-    {$ENDIF}
     System.Contnrs, //for TClassList
     System.Math, //for Max
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
@@ -170,6 +166,7 @@ implementation
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
+    READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
     READCOM.Views.AudioStoryItem,
     READCOM.Views.ImageStoryItem,
@@ -848,13 +845,13 @@ end;
 
 procedure TMainForm.UpdateStructureView;
 begin
+  Log('UpdateStructureView');
+
   if not HUD.StructureVisible then
   begin
-    {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendMsg('Ignoring UpdateStructureView, currently hidden');{$ENDIF}{$ENDIF}
+    Log('Ignoring UpdateStructureView, currently hidden');
     exit;
   end;
-
-  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.EnterMethod('UpdateStructureView');{$ENDIF}{$ENDIF}
 
   if (StoryMode <> EditMode) then
     StructureView.FilterMode := tfFlatten
@@ -865,8 +862,6 @@ begin
 
   if Assigned(ActiveStoryItem) then
     StructureView.SelectedObject := ActiveStoryItem.View;
-
-  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('UpdateStructureView');{$ENDIF}{$ENDIF}
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
@@ -940,11 +935,8 @@ begin
       ActivateEnd; //TODO: for cheaters, go to EndStoryPoint - HOWEVER MAY WANT TO HAVE MULTIPLE ENDSTORYPOINTS, THEIR NEXTSTORYPOINT WOULD ALWAYS BE HOMESTORYITEM [Home may not be a StoryPoint but End always is else it wouldn't be reachable]? (which is the EndStoryItem should we be able to set such?)
     *)
 
-    {$IFDEF DEBUG}
     vkF11:
-      with ObjectDebuggerFMXForm1 do
-        Visible := not Visible; //toggle Object inspector visibility
-    {$ENDIF}
+      ToggleObjectDebuggerVisibility;
   end;
 end;
 
@@ -974,7 +966,7 @@ begin
       on E: Exception do
         begin
         //Stream.Clear; //clear stream if causes loading error //TODO: instead of Clear which doesn't seem to work, try saving instead a new instance of TPanelStoryItem
-        {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+        Log(E);
         ShowException(E, @TMainForm.LoadFromStream);
         end;
     end;
@@ -988,18 +980,18 @@ begin
     //result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
 
     var loaded := false;
-    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Before call to TURLStream');{$ENDIF}{$ENDIF}
+    Log('Before call to TURLStream');
     TURLStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
       procedure(AStream: TStream)
       begin
-        {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Started download');{$ENDIF}{$ENDIF}
+        Log('Started download');
         loaded := LoadFromStream(AStream); //probably it can start loading while the content is coming
-        {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Finished download');{$ENDIF}{$ENDIF}
+        Log('Finished download');
       end,
-      true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread
+      true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (it not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
       true //free on completion
     ).AsyncResult.AsyncWaitEvent.WaitFor; //TODO: check if this works properly on Android
-    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('After call to TURLStream');{$ENDIF}{$ENDIF} //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
+    Log('After call to TURLStream'); //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
     result := loaded; //TODO: due to WaitFor not working as expected, make sure the result of LoadFromUrl isn't used for now (will be false)
 
   finally
@@ -1036,7 +1028,7 @@ begin
         except
           on E: Exception do
             begin
-            {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF}
+            Log(E);
             ShowException(E, @TMainForm.LoadDefaultDocument);
             end;
         end;
@@ -1051,7 +1043,7 @@ end;
 
 procedure TMainForm.SaveCurrentState;
 begin
-  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.EnterMethod('SaveState');{$ENDIF}{$ENDIF}
+  Log('SaveState');
   //StoragePath := ... //TODO: default is transient, change to make permanent
   SaveState.Stream.Clear;
 
@@ -1064,11 +1056,10 @@ begin
         on E: Exception do
           begin
           Stream.Clear; //clear stream in case it got corrupted
-          {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.SendException(E);{$ENDIF}{$ENDIF} //TODO: add an app-global exception handling method that also logs in debug mode (maybe in production too ?)
+          Log(E);
           ShowException(E, @TMainForm.SaveCurrentState);
           end;
     end;
-  {$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}CodeSite.ExitMethod('SaveState');{$ENDIF}{$ENDIF}
 end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);

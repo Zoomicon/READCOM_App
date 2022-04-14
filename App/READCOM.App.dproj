@@ -405,6 +405,7 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Main.pas"/>
+        <DCCReference Include="READCOM.App.Debugging.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

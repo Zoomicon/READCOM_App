@@ -129,8 +129,8 @@ begin
   var img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
   FStoreSVG := Glyph.Visible;
+  SetGlyphZorder; //keep before SetImageControlZorder to show the Glyph above the bitmap image if due to some error it's appearing together with the bitmap
   SetImageControlZorder;
-  SetGlyphZorder;
 end;
 
 procedure TBitmapImageStoryItem.Loaded;

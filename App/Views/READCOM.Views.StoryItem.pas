@@ -266,13 +266,11 @@ type
 
 implementation
   uses
-    {$IFDEF DEBUG}
-    {$IF defined(MSWINDOWS)}CodeSiteLogging,{$ENDIF}
-    {$ENDIF}
     System.IOUtils, //for TPath
     FMX.Platform, //for TPlatformServices
     Zoomicon.Generics.Collections, //for TObjectListEx
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
+    READCOM.App.Debugging, //for Log
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
 
@@ -1170,7 +1168,7 @@ begin
   with THackReader(Reader) do
     begin
     Handled := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
-    {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}CodeSite.Send('Ignored deprecated property "ActivationOrder"');{$ENDIF}{$ENDIF}
+    Log('Ignored deprecated property "ActivationOrder"');
     end;
 end;
 
@@ -1330,9 +1328,7 @@ begin
   try
     var BinStream := TMemoryStream.Create;
     try
-      {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}
-      CodeSite.Send(StrStream.DataString); //TODO: see if the stream needs to be rewinded after this
-      {$ENDIF}{$ENDIF}
+      Log(StrStream.DataString);
       ObjectTextToBinary(StrStream, BinStream); //may throw exception here
       BinStream.Seek(0, soFromBeginning);
       result := LoadReadComBin(BinStream, CreateNew).View;
@@ -1420,9 +1416,7 @@ begin
     BinStream.Free;
   end;
 
-  {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}
-  CodeSite.Send(result);
-  {$ENDIF}{$ENDIF}
+  Log(result);
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);

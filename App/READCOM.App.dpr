@@ -3,7 +3,7 @@ program READCOM.App;
 {$R *.dres}
 
 uses
-  System.StartUpCopy, //TODO: do we need this? used to deploy extra files to mobiles, if not needed should remove, saw mentions its takes some app startup time and may need some extra rights in various platform app manifests
+  System.StartUpCopy,
   {$IFDEF DEBUG}
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
@@ -54,7 +54,8 @@ uses
   READCOM.Views.Menu.HUD in 'Views\READCOM.Views.Menu.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
-  READCOM.App.Main in 'READCOM.App.Main.pas';
+  READCOM.App.Main in 'READCOM.App.Main.pas',
+  READCOM.App.Debugging in 'READCOM.App.Debugging.pas';
 
 {$R *.res}
 
