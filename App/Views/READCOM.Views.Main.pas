@@ -79,7 +79,7 @@ type
 
     {SavedState}
     procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
-    function LoadFromStream(const Stream: TStream): Boolean;
+    function LoadFromStream(const Stream: TStream; const ActivateHome: Boolean = True): Boolean;
     function LoadFromUrl(const Url: String): Boolean;
     function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
@@ -880,10 +880,10 @@ procedure TMainForm.HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolea
 begin
   with StoryTimer do
   begin
-    Enabled := HUD.UseStoryTimer;
+    FTimerStarted := Value;
+    Enabled := Value;
     Interval := 8000; //proceed ever 8sec (TODO: should be easily adjustable)
   end;
-  FTimerStarted := true;
 end;
 
 {$endregion}
@@ -960,13 +960,15 @@ begin
     NewRootStoryItem;
 end;
 
-function TMainForm.LoadFromStream(const Stream: TStream): Boolean;
+function TMainForm.LoadFromStream(const Stream: TStream; const ActivateHome: Boolean = True): Boolean;
 begin
   result := false;
   if Stream.Size > 0 then
   begin
     try
       RootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created //only set RootStoryItemView (this affects RootStoryItem too)
+      if ActivateHome then
+        ActivateHomeStoryItem;
       result := true;
     except
       on E: Exception do
@@ -1010,7 +1012,7 @@ begin
   With SaveState do
   begin
     //StoragePath := ... //TODO: default is transient, change to make permanent
-    result := LoadFromStream(Stream);
+    result := LoadFromStream(Stream, false); //don't ActivateHome, keep last Active one (needed in case the OS brought down the app and need to continue from where we were from saved state)
   end;
 
   with StoryTimer do

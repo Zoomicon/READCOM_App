@@ -47,7 +47,7 @@ implementation
 
 {$REGION 'TRegistry<TKey, TValue>' -----------------------------------------------------}
 
-{$region 'Create / Destroy'}
+{$region 'Lifetime management'}
 
 constructor TRegistry<TKey, TValue>.Create(const ACapacity: Integer = 0);
 begin

@@ -62,8 +62,6 @@ type
   protected
     class destructor Destroy;
 
-    procedure Init; virtual;
-
     //procedure Loaded; override;
     //procedure Updated; override;
     procedure DoAddObject(const AObject: TFmxObject); override;
@@ -280,30 +278,9 @@ implementation
 
 {$R *.fmx}
 
-{$region 'Create / Init / Destroy'}
+{$region 'Lifetime management'}
 
 constructor TStoryItem.Create(AOwner: TComponent);
-begin
-  FStoryItems := TIStoryItemList.Create;
-  FAudioStoryItems := TIAudioStoryItemList.Create;
-
-  inherited; //must create FStoryItems first, since ancestor's EditMode property is overriden and causes access to StoryItems property when the ancestor's constructor sets it
-
-  //FID := TGUID.NewGuid; //Generate new statistically unique ID
-  Init;
-end;
-
-constructor TStoryItem.Create(AOwner: TComponent; const AName: string);
-begin
-  Create(nil); //this may initialize the component from a referenced resource that has a Default name (say a TFrame descendent's design) for the newly created component: to avoid conflict with other component instance with same name under the same owner, not specifying an onwer yet //don't use "inherited" here
-
-  SetName(FindSafeNewName(AName, AOwner)); //since there's no owner there will be no naming conflict at this point (unless there's an owned control with the same name)
-  AOwner.InsertComponent(Self); //set the owner after changing the (default) Name to the specified one
-
-  //assuming if inherited constructor or other method (say the "Name" setter) called inside this constructor raises an exception the object is destroyed automatically without having to use try/finally and calling a destructor via freeing the new instance
-end;
-
-procedure TStoryItem.Init;
 
   procedure InitGlyph;
   begin
@@ -349,6 +326,13 @@ procedure TStoryItem.Init;
   end;
 
 begin
+  FStoryItems := TIStoryItemList.Create;
+  FAudioStoryItems := TIAudioStoryItemList.Create;
+
+  inherited; //must create FStoryItems first, since ancestor's EditMode property is overriden and causes access to StoryItems property when the ancestor's constructor sets it
+
+  //FID := TGUID.NewGuid; //Generate new statistically unique ID
+
   InitDropTarget;
   InitGlyph;
   InitBorder;
@@ -359,6 +343,16 @@ begin
   BackgroundColor := TAlphaColorRec.Null;
 
   //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
+end;
+
+constructor TStoryItem.Create(AOwner: TComponent; const AName: string);
+begin
+  Create(nil); //this may initialize the component from a referenced resource that has a Default name (say a TFrame descendent's design) for the newly created component: to avoid conflict with other component instance with same name under the same owner, not specifying an onwer yet //don't use "inherited" here
+
+  SetName(FindSafeNewName(AName, AOwner)); //since there's no owner there will be no naming conflict at this point (unless there's an owned control with the same name)
+  AOwner.InsertComponent(Self); //set the owner after changing the (default) Name to the specified one
+
+  //assuming if inherited constructor or other method (say the "Name" setter) called inside this constructor raises an exception the object is destroyed automatically without having to use try/finally and calling a destructor via freeing the new instance
 end;
 
 class destructor TStoryItem.Destroy;

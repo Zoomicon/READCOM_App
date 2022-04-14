@@ -172,8 +172,9 @@ end;
 function TStoryItemOptions.ActLoad: Boolean;
 begin
   var Filename := ActLoad_GetFilename;
-  if (Filename <> '') then
-    StoryItem.Load(Filename); //TODO: seems to cause error (on MouseUp at Form) due to MouseCapture (probably from the popup) not having been released for some (child?) item that gets freed. Should try to get the Root (the form) and do SetCapture(nil) on it or similar, or try to get Capture to us here and release immediately (OR MAYBE THERE IS SOME OTHER ERROR AND WE SHOULD TRY TO REPLACE THE WHOLE ITEM VIA ITS PARENT INSTEAD OF LOADING CONTENT IN IT REMOVING ITS CHILDREN FIRST - THAT WAY WE'LL BE ABLE TO REPLACE AN ITEM WITH ANY OTHER ITEM)
+  result := (Filename <> '');
+  if result then
+    result := Assigned(StoryItem.Load(Filename)); //TODO: seems to cause error (on MouseUp at Form) due to MouseCapture (probably from the popup) not having been released for some (child?) item that gets freed. Should try to get the Root (the form) and do SetCapture(nil) on it or similar, or try to get Capture to us here and release immediately (OR MAYBE THERE IS SOME OTHER ERROR AND WE SHOULD TRY TO REPLACE THE WHOLE ITEM VIA ITS PARENT INSTEAD OF LOADING CONTENT IN IT REMOVING ITS CHILDREN FIRST - THAT WAY WE'LL BE ABLE TO REPLACE AN ITEM WITH ANY OTHER ITEM)
 end; //TODO: need to change ActLoad to load any file and replace the current one (if not the RootStoryItem should maybe resize to take current bounds), then return the StoryItem instance that was created from that file info (not assume it's same class of StoryItem, TPanelStoryItem in the case of the story [want to load any StoryItem as root - also make sure when RootStoryItem changes the old one is released to not leak]). Can pass true to 2nd optional parameter of load, but need to return the storyitem instead of boolean (can return nil on fail/cancel - also add try/catch maybe?)
 
 function TStoryItemOptions.ActSave: Boolean;
