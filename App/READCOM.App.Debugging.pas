@@ -3,7 +3,7 @@ unit READCOM.App.Debugging;
 interface
   uses
     System.Classes, //for TComponent
-    System.SysUtils; //for Exception, FreeAndNil
+    System.SysUtils; //for Exception, FreeAndNil, Format
 
   procedure CheckSafeMode;
 
@@ -11,6 +11,7 @@ interface
   procedure FreeObjectDebugger;
   procedure ToggleObjectDebuggerVisibility;
 
+  procedure Log(const Format: String; const Args: array of const); overload;
   procedure Log(const Msg: String); overload;
   procedure Log(const E: Exception); overload;
 
@@ -97,6 +98,11 @@ begin
   end;
 end;
 {$ENDIF}{$ENDIF}
+
+procedure Log(const Format: String; const Args: array of const);
+begin
+  Log(System.SysUtils.Format(Format, Args));
+end;
 
 procedure Log(const Msg: String);
 begin

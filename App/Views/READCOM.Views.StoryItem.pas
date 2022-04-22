@@ -1167,8 +1167,15 @@ procedure TStoryItem.ReaderError(Reader: TReader; const Message: string; var Han
 begin
   with THackReader(Reader) do
     begin
-    Handled := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
-    Log('Ignored deprecated property "ActivationOrder"');
+    var RemovedActivationOrderProperty := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
+    var UnknownProperty := Message.StartsWith('Error reading ') and Message.EndsWith(' does not exist'); //Ignores unknown properties //TODO: error starts with 'Error reading XX: ...' (not sure if this is always unlocalized) and also assuming System.RTL.Consts.SUnknownProperty = 'Property %s does not exist' - should have instead a function that can compare a format string with some text and match it (could even extract the format parameters)
+
+    if RemovedActivationOrderProperty then
+      Log('Ignored deprecated property "ActivationOrder"');
+    if UnknownProperty then
+      Log('Ignored unknown property "%s"', [PropName]);
+
+    Handled := RemovedActivationOrderProperty or UnknownProperty;
     end;
 end;
 
