@@ -1,55 +1,23 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 484.000000000000000000
-  Size.Height = 260.000000000000000000
+  Size.Width = 400.000000000000000000
+  Size.Height = 64.000000000000000000
   Size.PlatformDefault = False
   object AddDialog: TOpenDialog
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 16
-    Top = 192
+    Left = 152
+    Top = 112
   end
   object SaveDialog: TSaveDialog
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 144
-    Top = 192
-  end
-  object panelUrlAction: TPanel
-    Align = Top
-    Position.Y = 60.000000000000000000
-    Size.Width = 484.000000000000000000
-    Size.Height = 41.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 8
-    object glyphUrlAction: TGlyph
-      Margins.Left = 5.000000000000000000
-      Align = MostLeft
-      Position.X = 5.000000000000000000
-      Size.Width = 33.000000000000000000
-      Size.Height = 41.000000000000000000
-      Size.PlatformDefault = False
-      ImageIndex = 9
-      Images = Globals.SVGIconImageList
-    end
-    object editUrlAction: TEdit
-      Touch.InteractiveGestures = [LongTap, DoubleTap]
-      Align = Client
-      TabOrder = 4
-      Hint = 
-        'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
-        ' Active StoryItem is clicked in non-Edit mode'
-      Margins.Left = 5.000000000000000000
-      Size.Width = 441.000000000000000000
-      Size.Height = 41.000000000000000000
-      Size.PlatformDefault = False
-      OnChangeTracking = editUrlActionChangeTracking
-      OnMouseDown = editUrlActionMouseDown
-    end
+    Left = 88
+    Top = 112
   end
   object layoutButtons: TFlowLayout
     Align = MostTop
-    Size.Width = 484.000000000000000000
+    Size.Width = 400.000000000000000000
     Size.Height = 60.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 13
+    TabOrder = 12
     Justify = Left
     JustifyLastLine = Left
     FlowDirection = LeftToRight
@@ -101,11 +69,26 @@ object StoryItemOptions: TStoryItemOptions
       Text = 'Is Anchored'
       OnClick = actionToggleAnchoredExecute
     end
+    object btnToggleActionURL: TSpeedButton
+      Action = actionChangeUrlAction
+      Align = Client
+      Anchors = []
+      Enabled = True
+      Hint = 
+        'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
+        ' Active StoryItem is clicked in non-Edit mode'
+      Images = Globals.SVGIconImageList
+      ImageIndex = 9
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+    end
     object btnLoad: TSpeedButton
       Action = actionLoad
       Align = Client
       Enabled = True
-      Hint = 'Load StoryItem'#13#13'Replaces content of Active StoryItem'
+      Hint = 'Load Content'#13#13'Replaces Content of Active StoryItem'
       Images = Globals.SVGIconImageList
       ImageIndex = 6
       Size.Width = 64.000000000000000000
@@ -117,7 +100,7 @@ object StoryItemOptions: TStoryItemOptions
       Action = actionSave
       Align = Client
       Enabled = True
-      Hint = 'Save StoryItem'#13#13'Saves content of Active StoryItem'
+      Hint = 'Save StoryItem'#13#13'Saves Content of Active StoryItem'
       Images = Globals.SVGIconImageList
       ImageIndex = 7
       Size.Width = 64.000000000000000000
@@ -128,13 +111,13 @@ object StoryItemOptions: TStoryItemOptions
   end
   object OpenDialog: TOpenDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 80
-    Top = 192
+    Left = 16
+    Top = 112
   end
   object ActionList: TActionList
     Images = Globals.SVGIconImageList
-    Left = 328
-    Top = 192
+    Left = 216
+    Top = 112
     object actionLoad: TAction
       Category = 'File'
       Text = 'Load'

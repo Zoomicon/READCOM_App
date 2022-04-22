@@ -232,6 +232,7 @@ type
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden; //default false
     property Anchored: Boolean read IsAnchored write SetAnchored; //default true
+    property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible; //default false
     property Options: IStoryItemOptions read GetOptions; //stored false
   end;

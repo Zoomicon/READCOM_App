@@ -15,33 +15,28 @@ uses
 
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
-    AddDialog: TOpenDialog;
-    SaveDialog: TSaveDialog;
+    layoutButtons: TFlowLayout;
     ActionList: TActionList;
+    actionChangeUrlAction: TAction;
     actionLoad: TAction;
     actionSave: TAction;
-    panelUrlAction: TPanel;
-    glyphUrlAction: TGlyph;
-    editUrlAction: TEdit;
-    actionChangeUrlAction: TAction;
     actionAdd: TAction;
-    layoutButtons: TFlowLayout;
+    OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
+    AddDialog: TOpenDialog;
+    btnToggleHome: TSpeedButton;
+    btnToggleStoryPoint: TSpeedButton;
     btnToggleAnchored: TSpeedButton;
+    btnToggleActionURL: TSpeedButton;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
-    OpenDialog: TOpenDialog;
-    btnToggleStoryPoint: TSpeedButton;
-    btnToggleHome: TSpeedButton;
+    procedure actionToggleHomeExecute(Sender: TObject);
+    procedure actionToggleStoryPointExecute(Sender: TObject);
     procedure actionToggleAnchoredExecute(Sender: TObject);
+    procedure actionChangeUrlActionExecute(Sender: TObject);
     procedure actionLoadExecute(Sender: TObject);
     procedure actionSaveExecute(Sender: TObject);
-    procedure actionChangeUrlActionExecute(Sender: TObject);
-    procedure Glyph1Tap(Sender: TObject; const Point: TPointF);
-    procedure editUrlActionChangeTracking(Sender: TObject);
-    procedure editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure actionAddExecute(Sender: TObject);
-    procedure actionToggleStoryPointExecute(Sender: TObject);
-    procedure actionToggleHomeExecute(Sender: TObject);
 
   protected
     FStoryItem: IStoryItem;
@@ -65,6 +60,7 @@ type
     function ActLoad_GetFilename: String;
     function ActLoad: Boolean;
     function ActSave: Boolean;
+    procedure ActChangeUrl;
 
     property Popup: TPopup read FPopup write FPopup stored false;
 
@@ -91,16 +87,6 @@ begin
   inherited; //do last
 end;
 
-procedure TStoryItemOptions.editUrlActionChangeTracking(Sender: TObject);
-begin
-  StoryItem.SetUrlAction(editUrlAction.Text);
-end;
-
-procedure TStoryItemOptions.editUrlActionMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-begin
-  actionChangeUrlAction.Execute;
-end;
-
 {$region 'StoryItem'}
 
 function TStoryItemOptions.GetStoryItem: IStoryItem;
@@ -114,10 +100,10 @@ begin
 
   with FStoryItem do
   begin
-    editUrlAction.Text := GetUrlAction;
     btnToggleHome.IsPressed := Home;
     btnToggleStoryPoint.IsPressed := StoryPoint;
     btnToggleAnchored.IsPressed := Anchored;
+    btnToggleActionURL.IsPressed := (UrlAction <> '');
   end;
 end;
 
@@ -128,12 +114,6 @@ end;
 function TStoryItemOptions.GetView: TControl;
 begin
   result := Self;
-end;
-
-procedure TStoryItemOptions.Glyph1Tap(Sender: TObject;
-  const Point: TPointF);
-begin
-  ShowMessage('test');
 end;
 
 {$endregion}
@@ -189,6 +169,20 @@ begin
   end;
 end;
 
+procedure TStoryItemOptions.ActChangeUrl;
+begin
+  TDialogServiceAsync.InputQuery('URL', ['URL'], [StoryItem.GetUrlAction], procedure(const AResult: TModalResult; const AValues: array of string)
+    begin
+    if (AResult = mrOk) then
+      begin
+      StoryItem.SetUrlAction(AValues[0]);
+      //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
+      end;
+    end
+  );
+  ShowPopup;
+end;
+
 ///
 
 procedure TStoryItemOptions.actionToggleHomeExecute(Sender: TObject);
@@ -226,16 +220,7 @@ end;
 
 procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);
 begin
-  TDialogServiceAsync.InputQuery('URL', ['URL'], [StoryItem.GetUrlAction], procedure(const AResult: TModalResult; const AValues: array of string)
-    begin
-    if (AResult = mrOk) then
-      begin
-      editUrlAction.Text := AValues[0]; //this will call "OnChangeTracking" handler
-      //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
-      end;
-    end
-  );
-  ShowPopup;
+  actChangeUrl;
 end;
 
 {$endregion}

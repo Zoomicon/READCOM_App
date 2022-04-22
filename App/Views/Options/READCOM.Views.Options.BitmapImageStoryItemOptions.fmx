@@ -1,13 +1,7 @@
 inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
-  Size.Width = 492.000000000000000000
-  inherited panelUrlAction: TPanel
-    Size.Width = 492.000000000000000000
-    inherited editUrlAction: TEdit
-      Size.Width = 449.000000000000000000
-    end
-  end
+  Size.Width = 452.000000000000000000
   inherited layoutButtons: TFlowLayout
-    Size.Width = 492.000000000000000000
+    Size.Width = 452.000000000000000000
     object btnCamera: TSpeedButton
       Action = TakePhotoFromCameraAction
       Align = Client
