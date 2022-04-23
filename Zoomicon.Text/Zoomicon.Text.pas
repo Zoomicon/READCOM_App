@@ -12,6 +12,8 @@ type
     procedure ApplyStyle; override;
   end;
 
+procedure SetMemoFontSizeToFit(const AMemo: TMemo);
+
 function ReadAllBytes(const Stream: TStream): TBytes;
 function ReadAllText(const Stream: TStream; const DefaultEncoding: TEncoding = nil; const ForceDefaultEncoding: Boolean = false): string;
 
@@ -24,7 +26,7 @@ implementation
     FMX.Objects, //for TRectangle
     FMX.Types; //for TAlignLayout
 
-procedure TMemoExt.ApplyStyle;
+procedure TMemoExt.ApplyStyle; //Make Memo transparent
 begin
    inherited;
 
@@ -43,6 +45,30 @@ begin
         SendToBack;
       end;
    end;
+end;
+
+procedure SetMemoFontSizeToFit(const AMemo: TMemo);
+const
+  Offset = 4; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
+begin
+  with AMemo do
+  begin
+    //set default font size
+    Font.Size := 12;
+
+    if (ContentBounds.Height <> 0) then //must check, else first while will loop for ever since ContentBounds.Height is 0 on load
+    begin
+      //make font bigger
+      while (ContentBounds.Height + Offset < Height) do //using WordWrap, not checking for Width
+        with Font do
+          Size := Size + 0.1;
+
+      //make font smaller
+      while (ContentBounds.Height + Offset > Height) do //using WordWrap, not checking for Width
+        with Font do
+          Size := Size - 0.1;
+    end;
+  end;
 end;
 
 function ReadAllBytes(const Stream: TStream): TBytes;

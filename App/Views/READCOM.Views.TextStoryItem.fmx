@@ -17,7 +17,6 @@ inherited TextStoryItem: TTextStoryItem
     Size.PlatformDefault = False
     TabOrder = 2
     OnApplyStyleLookup = MemoApplyStyleLookup
-    OnResize = MemoResize
     Viewport.Width = 832.000000000000000000
     Viewport.Height = 528.000000000000000000
   end

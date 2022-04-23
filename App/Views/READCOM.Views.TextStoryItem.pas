@@ -14,7 +14,7 @@ uses
   FMX.Objects, FMX.SVGIconImage,
   FMX.ExtCtrls, FMX.Controls.Presentation,
   FMX.ScrollBox,
-  FMX.Memo, FMX.Memo.Types;
+  FMX.Memo, FMX.Memo.Types, FMX.Layouts;
 
 const
   EXT_TXT = '.txt';
@@ -32,12 +32,14 @@ type
   TTextStoryItem = class(TStoryItem, ITextStoryItem, IStoryItem, IStoreable)
     Memo: TMemo;
     procedure MemoApplyStyleLookup(Sender: TObject);
-    procedure MemoResize(Sender: TObject);
 
   //--- Methods ---
 
   protected
     FEditable: Boolean;
+
+    procedure Loaded; override;
+    procedure MemoChangeTracking(Sender: TObject);
 
     {Z-Order}
     function GetBackIndex: Integer; override;
@@ -81,6 +83,7 @@ type
 
   public
     constructor Create(AOnwer: TComponent); override;
+    procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
@@ -116,7 +119,7 @@ implementation
   uses
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
-    //Zoomicon.Text, //for ReadAllText
+    Zoomicon.Text, //for
     READCOM.Views.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
 
 {$R *.fmx}
@@ -133,8 +136,12 @@ constructor TTextStoryItem.Create(AOnwer: TComponent);
     begin
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
+      Align := TAlignLayout.Contents;
+      SetMemoZOrder;
+      WordWrap := true;
+      TextAlign := TTextAlign.Center;
       ReadOnly := true; //since we have Editable property defaulting to false
-      SetMemoZorder;
+      OnChangeTracking := MemoChangeTracking;
     end;
   end;
 
@@ -143,6 +150,23 @@ begin
   InitMemo;
   Text := DEFAULT_TEXT;
   TextColor := TAlphaColorRec.Black;
+end;
+
+procedure TTextStoryItem.Loaded;
+begin
+  inherited;
+  SetMemoFontSizeToFit(Memo);
+end;
+
+procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single);
+begin
+  inherited;
+  SetMemoFontSizeToFit(Memo);
+end;
+
+procedure TTextStoryItem.MemoChangeTracking(Sender: TObject);
+begin
+  SetMemoFontSizeToFit(Memo);
 end;
 
 {$endregion}
@@ -322,14 +346,14 @@ end;
 
 function TTextStoryItem.LoadTXT(const Stream: TStream): TObject;
 begin
-  //Text := ReadAllText(Stream);
+  //Text := ReadAllText(Stream); //TODO: doesn't seem to work correctly
 
   var s := TStringList.Create(#0, #13);
   try
     s.LoadFromStream(Stream);
     Text := s.DelimitedText;
 
-    Size.Size := TSizeF.Create(50, 30); //TODO: judge on text volume
+    Size.Size := TSizeF.Create(50, 30); //TODO: judge based on text volume?
   finally
     FreeAndNil(s);
   end;
@@ -344,12 +368,6 @@ begin
   var Obj := Memo.FindStyleResource('background');
   if Assigned(Obj) And (Obj is TActiveStyleObject) Then
      TActiveStyleObject(Obj).Source := Nil;
-end;
-
-procedure TTextStoryItem.MemoResize(Sender: TObject);
-begin
-  inherited;
-  Size := Memo.Size;
 end;
 
 {$endregion}
