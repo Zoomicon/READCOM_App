@@ -23,8 +23,11 @@ need to install via "Tools/GetIt Package Manager" in Delphi IDE to build the pro
 
 ## Testing
 
-Try downloading and opening this story for testing:
-https://github.com/Zoomicon/READCOM_Gallery/tree/main/Gallery/Stories/Aesop%20Fables/The%20Tortoise%20and%20the%20Hare
+The default document shown when app first launches (or with New button) contains a link to the Tortoise and the Hare Aesop fable story to try.
+
+Alternatively:
+* can try downloading manually and opening [that story](https://raw.githubusercontent.com/zoomicon/READCOM_Gallery/master/Gallery/Stories/Aesop%20Fables/The%20Tortoise%20and%20the%20Hare/The%20Tortoise%20and%20the%20Hare.readcom) for testing (right click the link and select to Save As a .readcom file - to use that story's URL in URLActions of StoryItems right click the URL and select Copy, then right-click and Paste in the URLAction editbox at the popup dialog of the ActiveStoryItem in the app).
+* can download the whole Gallery in a .ZIP file (extract its Gallery subfolder somewhere on your PC) and load that sample story from the "Stories/Aesop Fables" folder, per the instructions found at [https://github.com/Zoomicon/READCOM_Gallery/](https://github.com/Zoomicon/READCOM_Gallery). The Gallery also contains useful media assets of permissive license at "Assets" subfolder to add to your stories
 
 ## Screenshots
 
