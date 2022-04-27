@@ -32,6 +32,7 @@ type
 
 implementation
   uses
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for AppVersion
     READCOM.App.URLs; //for OpenURLinBrowser
 
 {$R *.fmx}
@@ -43,7 +44,7 @@ begin
   inherited;
 
   lblTitle.Text := STR_APP_TITLE;
-  lblVersionValue.Text := STR_APP_VERSION;
+  lblVersionValue.Text := Application.AppVersion;
   GlyphLogo.Cursor := crHandPoint;
 end;
 

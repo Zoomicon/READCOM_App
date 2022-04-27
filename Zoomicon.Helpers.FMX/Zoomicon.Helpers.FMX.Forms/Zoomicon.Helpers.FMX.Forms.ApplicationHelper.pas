@@ -7,36 +7,48 @@ uses
 type
   TApplicationHelper = class helper for TApplication
   public
-    function ExeName: String;
+    function ExeName: String; //TODO: make Property?
+    function AppVersion: String; //TODO: make Property?
     class function Confirm(Prompt: String): Boolean;
   end;
 
 implementation
   uses
-    {$IFDEF ANDROID}
-    System.SysUtils, //TODO: is this needed?
+    {$IF Defined(MSWINDOWS)}
+    Windows,
+    {$ELSEIF Defined(MACOS)}
+    Macapi.CoreFoundation,
+    {$ELSEIF Defined(IOS)}
+    iOSapi.Foundation, Macapi.ObjectiveC,
+    {$ELSEIF Defined(ANDROID)}
+    FMX.Helpers.Android,
     Androidapi.Helpers, //for TAndroidHelper, JStringToString
     Androidapi.Jni.JavaTypes, //to avoid "H2443 Inline function 'JStringToString' has not been expanded"
     {$ENDIF}
+    System.SysUtils, //for LongRec
     System.UITypes, //for TMsgDlgType
     FMX.DialogService, //for TDialogService
     FMX.Dialogs; //for mbYesNo
 
-{$region 'TApplicationHelper'}
+{$REGION 'TApplicationHelper'}
 
-//from https://gist.github.com/freeonterminate/2f7b2e29e40fa30ed3c4
-function TApplicationHelper.ExeName: String;
+{$region 'ExeName'}
+
+function TApplicationHelper.ExeName: String; //from https://gist.github.com/freeonterminate/2f7b2e29e40fa30ed3c4
 begin
   Result := ParamStr(0);
 
-  {$IFDEF ANDROID}
+  {$IF Defined(ANDROID)}
   if (Result.IsEmpty) then
     Result := JStringToString(TAndroidHelper.Context.getPackageCodePath);
   {$ENDIF}
 end;
 
-//based on https://stackoverflow.com/questions/42852945/delphi-correctly-displaying-a-message-dialog-in-firemonkey-and-returning-the-m
-class function TApplicationHelper.Confirm(Prompt: String): Boolean;
+{$endregion}
+
+{$region 'Confirm'}
+
+class function TApplicationHelper.Confirm(Prompt: String): Boolean; //based on https://stackoverflow.com/questions/42852945/delphi-correctly-displaying-a-message-dialog-in-firemonkey-and-returning-the-m
 begin
   var LResult := False;
   with TDialogService do
@@ -57,6 +69,113 @@ begin
 end;
 
 {$endregion}
+
+{$region 'Application Version'} //see https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Version_Info
+
+{$IF Defined(MSWINDOWS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
+
+function GetAppVersionStr2: string;
+var
+  Rec: LongRec;
+begin
+  Rec := LongRec(GetFileVersion(Application.ExeName));
+  Result := Format('%d.%d', [Rec.Hi, Rec.Lo]);
+end;
+
+function GetAppVersionStr3: string;
+var
+  Exe: String;
+  Size, Handle: DWORD;
+  Buffer: TBytes;
+  FixedPtr: PVSFixedFileInfo;
+begin
+  Exe := Application.ExeName;
+  Size := GetFileVersionInfoSize(PChar(Exe), Handle);
+  if (Size = 0) then
+    RaiseLastOSError;
+  SetLength(Buffer, Size);
+  if not GetFileVersionInfo(PChar(Exe), Handle, Size, Buffer) then
+    RaiseLastOSError;
+  if not VerQueryValue(Buffer, '\', Pointer(FixedPtr), Size) then
+    RaiseLastOSError;
+  Result := Format('%d.%d.%d',
+    [LongRec(FixedPtr.dwFileVersionMS).Hi,   //major
+     LongRec(FixedPtr.dwFileVersionMS).Lo,   //minor
+     LongRec(FixedPtr.dwFileVersionLS).Hi]); //release
+end;
+
+function GetAppVersionStr4: string;
+var
+  Exe: String;
+  Size, Handle: DWORD;
+  Buffer: TBytes;
+  FixedPtr: PVSFixedFileInfo;
+begin
+  Exe := Application.ExeName;
+  Size := GetFileVersionInfoSize(PChar(Exe), Handle);
+  if (Size = 0) then
+    RaiseLastOSError;
+  SetLength(Buffer, Size);
+  if not GetFileVersionInfo(PChar(Exe), Handle, Size, Buffer) then
+    RaiseLastOSError;
+  if not VerQueryValue(Buffer, '\', Pointer(FixedPtr), Size) then
+    RaiseLastOSError;
+  Result := Format('%d.%d.%d.%d',
+    [LongRec(FixedPtr.dwFileVersionMS).Hi,   //major
+     LongRec(FixedPtr.dwFileVersionMS).Lo,   //minor
+     LongRec(FixedPtr.dwFileVersionLS).Hi,   //release
+     LongRec(FixedPtr.dwFileVersionLS).Lo]); //build
+end;
+
+{$ELSEIF Defined(MACOS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
+
+function GetAppVersionStr3: string;
+var
+  CFStr: CFStringRef;
+  Range: CFRange;
+begin
+  CFStr := CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle, kCFBundleVersionKey);
+  Range.location := 0;
+  Range.length := CFStringGetLength(CFStr);
+  SetLength(Result, Range.length);
+  CFStringGetCharacters(CFStr, Range, PChar(Result));
+end;
+
+{$ELSEIF Defined(IOS)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
+
+function GetAppVersionStr4: string;
+var
+   AppKey: Pointer;
+   AppBundle: NSBundle;
+   BuildStr : NSString;
+begin
+   AppKey := (NSSTR('CFBundleVersion') as ILocalObject).GetObjectID; //Note: iOS CFBundleVersion is the full version, CFBundleShortVersionString would be the major.minor. This is a little different than xCode projects tend to be where the build number is just the build number it seems
+   AppBundle := TNSBundle.Wrap(TNSBundle.OCClass.mainBundle);
+   BuildStr := TNSString.Wrap(AppBundle.infoDictionary.objectForKey(AppKey));
+   Result := UTF8ToString(BuildStr.UTF8String);
+end;
+
+{$ELSEIF Defined(ANDROID)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
+
+function GetAppVersionStr2: string;
+begin
+  Result := JStringToString(SharedActivityContext.getPackageManager.getPackageInfo(SharedActivityContext.getPackageName, 0).versionName); //Note: can throw JPackageManager_NameNotFoundException, but Delphi should always include a version name
+end;
+
+{$ELSEIF Defined(LINUX)}
+
+//see https://stackoverflow.com/questions/44600597/delphi-linux64-how-to-retrieve-the-version-information-set-by-project-options-v and https://wiki.freepascal.org/Show_Application_Title,_Version,_and_Company#Linux
+
+{$ENDIF}
+
+function TApplicationHelper.AppVersion: String;
+begin
+  Result := GetAppVersionStr3; //TODO: this will fail on non-windows platforms that don't define this, should have extra GetAppVersionStr3 functions for those that don't have such to add .0 or trim .xx from end as needed if less or more digits are provided by those platforms (ELSE HAVE GetMajorVersion, GetMinorVersion etc. that return strings or '0' if they aren't implemented and concat here the major+minor+release ones to get 3-digit version)
+end;
+
+{$endregion}
+
+{$ENDREGION}
 
 end.
 

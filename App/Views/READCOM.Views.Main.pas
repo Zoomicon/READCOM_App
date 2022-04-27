@@ -1019,7 +1019,7 @@ function TMainForm.LoadDefaultDocument: Boolean;
 begin
   result := false; //don't place inside the try, else you get warning that result might be undefined
   try
-    var Stream := TResourceStream.Create(HInstance, 'DefaultDocument', RT_RCDATA);
+    var Stream := TResourceStream.Create(HInstance, 'DefaultDocument', RT_RCDATA); //TODO: added via Project/Deployment, but not sure where the "DefaultDocument" resource name was defined (isn't shown there)
     try
       if Stream.Size > 0 then
       begin
