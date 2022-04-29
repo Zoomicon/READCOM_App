@@ -77,15 +77,17 @@ type
     FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
-    {SavedState}
+    procedure StartInitialZoomTimer(const Delay: Cardinal = 100);
+
+    {Loading / SavedState}
     procedure LoadAtStartup;
     function LoadFromStream(const Stream: TStream; const ActivateHome: Boolean = True): Boolean;
     function LoadFromFile(const Filepath: String): Boolean;
     function LoadFromUrl(const Url: String): Boolean;
     function LoadFromFileOrUrl(const PathOrUrl: String): Boolean;
     function LoadCommandLineParameter: Boolean;
-    function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
+    function LoadSavedState: Boolean;
     procedure SaveCurrentState;
 
     {RootStoryItemStoryView}
@@ -537,6 +539,17 @@ end;
 
 {$region 'ZoomTo'}
 
+procedure TMainForm.StartInitialZoomTimer(const Delay: Cardinal = 100);
+begin
+  with StoryTimer do
+  begin
+    Enabled := false;
+    FTimerStarted := false; //used for timer to detect this is a special case
+    Interval := Delay;
+    Enabled := true; //used to zoom to Active or Home StoryItem after the form has fully sized (FormShow event doesn't do this properly)
+  end;
+end;
+
 procedure TMainForm.ZoomTo(const StoryItem: IStoryItem);
 begin
   if Assigned(StoryItem) then
@@ -582,9 +595,10 @@ begin
   //special case used at app startup
   if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
   begin
+    StoryTimer.Enabled := false;
+
     ZoomTo; //TODO: temp fix, else showing some undrawn text when loading from temp state and till one [un]zooms or resizes (seems 0.3.1 didn't have the issue this fixes, but 0.3.0 and 0.3.2+ had it)
     ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
-    StoryTimer.Enabled := false;
     exit;
   end;
 
@@ -615,9 +629,10 @@ begin
     var Filename := TempStoryItem.Options.ActLoad_GetFilename; //assuming this is blocking action
     if (Filename <> '') then
       begin
-      RootStoryItemView := TStoryItem.LoadNew(Filename);
+      if LoadFromFile(Filename) then //Note: just doing RootStoryItemView := TStoryItem.LoadNew(Filename) wouldn't work do font resizing since that won't do StartInitialZoomTimer
+        ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+
       //TODO: OLD-CODE-LINE-REMOVE? //RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
-      ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
       end;
   finally
     FreeAndNil(TempStoryItem);
@@ -949,7 +964,7 @@ end;
 
 {$ENDREGION}
 
-{$region 'SavedState'}
+{$region 'Loading / SavedState'}
 
 procedure TMainForm.LoadAtStartup;
 begin
@@ -966,8 +981,12 @@ begin
   begin
     try
       RootStoryItemView := TStoryItem.LoadNew(Stream, EXT_READCOM); //a new instance of the TStoryItem descendent serialized in the Stream will be created //only set RootStoryItemView (this affects RootStoryItem too)
+
       if ActivateHome then
         ActivateHomeStoryItem;
+
+      StartInitialZoomTimer(100); //TODO: maybe the timer value is low //TODO: this still won't fix the font autosizing when story is loaded from saved state with Active=true at some of its StoryPoints
+
       result := true;
     except
       on E: Exception do
@@ -1035,12 +1054,6 @@ begin
   begin
     //StoragePath := ... //TODO: default is transient, change to make permanent
     result := LoadFromStream(Stream, false); //don't ActivateHome, keep last Active one (needed in case the OS brought down the app and need to continue from where we were from saved state)
-  end;
-
-  with StoryTimer do
-  begin
-    Interval := 100;
-    Enabled := true; //used to re-apply ActiveStoryItem so that we can zoom to it after the form has fully sized (FormShow event doesn't do this properly)
   end;
 end;
 
