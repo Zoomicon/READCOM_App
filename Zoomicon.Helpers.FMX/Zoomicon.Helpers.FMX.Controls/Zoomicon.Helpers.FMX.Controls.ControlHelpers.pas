@@ -7,9 +7,10 @@ interface
   uses
     System.Types,
     FMX.Controls,
+    FMX.Graphics, //for TBitmap
     FMX.Layouts,
-    FMX.Types,
-    FMX.Objects;
+    FMX.Objects,
+    FMX.Types;
 
   type
 
@@ -22,7 +23,11 @@ interface
       property Scale: TPosition read GetScale write SetScale;
     end;
 
-    TControlObjectAtHelper = class helper(TControlScaleHelper) for TControl //using class helper inheritance, else only last helper defined for same Class is seen by compiler
+    TControlMakeThumbnailHelper = class helper(TControlScaleHelper) for TControl
+      function MakeThumbnail(const MaxWidth, MaxHeight: Integer): TBitmap;
+    end;
+
+    TControlObjectAtHelper = class helper(TControlMakeThumbnailHelper) for TControl //using class helper inheritance, else only last helper defined for same Class is seen by compiler
     protected
       function ObjectAtPoint(const AScreenPoint: TPointF; const RecursionDepth: Integer = 0; const IncludeDisabled: Boolean = false; const IncludeSelf: Boolean = true; const IncludeSubComponents: Boolean = true): IControl; overload;
 
@@ -36,6 +41,7 @@ interface
       procedure FlipVertically;
     end;
 
+    (*  //REMOVED, Delphi 11.1 has TagObject property - if this is used it causes Illegal Access Error when doing an AutoDrag operation in TTreeView (MouseMove calls MakeScreenshot and fails when trying to access Scene property))
     TControlTagObjectHelper = class helper(TControlFlipHelper) for TControl
     protected
       function GetTagObject: TObject;
@@ -44,8 +50,9 @@ interface
     public
       property TagObject: TObject read GetTagObject write SetTagObject stored false;
     end;
+   *)
 
-    TControlConvertLocalRectHelper = class helper(TControlTagObjectHelper) for TControl
+    TControlConvertLocalRectHelper = class helper(TControlFlipHelper{ControlTagObjectHelper}) for TControl
     public
       /// <summary>Converts a rect from the coordinate system of a given <c>AControl</c> to that of the control.</summary>
       function ConvertLocalRectFrom(const AControl: TControl; const AControlLocalRect: TRectF): TRectF;
@@ -70,7 +77,8 @@ interface
 implementation
   uses
     //System.Rtti,
-    System.Classes; //for csSubComponent
+    System.Classes, //for csSubComponent
+    System.Math; //for Min
 
 {$REGION 'TControlScaleHelper'}
 
@@ -98,6 +106,49 @@ begin
 end;
 
 {$ENDREGION}
+
+{$region 'TControlMakeThumbnailHelper'}
+
+function TControlMakeThumbnailHelper.MakeThumbnail(const MaxWidth, MaxHeight: Integer): TBitmap; //based on TControl.MakeScreenshot
+
+  function GetMaxBitmapRect: TRectF;
+  var
+    MaxDimensionSize: Integer;
+  begin
+    MaxDimensionSize := TCanvasManager.DefaultCanvas.GetAttribute(TCanvasAttribute.MaxBitmapSize);
+    Result := TRectF.Create(0, 0, Min(MaxWidth, MaxDimensionSize), Min(MaxHeight, MaxDimensionSize)); //cap the rect based on (MaxWidth, MaxHeight)
+  end;
+
+var
+  SceneScale: Single;
+  BitmapRect: TRectF;
+begin
+  if Scene <> nil then
+    SceneScale := Scene.GetSceneScale
+  else
+    SceneScale := 1;
+
+  // TBitmap has limitation of size. It's a max texture size. If we takes screenshot of control, which exceeds this
+  // limitation, we get "Bitmap size to big" exception. So we normalize size for avoiding it.
+  BitmapRect := TRectF.Create(0, 0, Width * SceneScale, Height * SceneScale);
+  BitmapRect := BitmapRect.PlaceInto(GetMaxBitmapRect);
+
+  Result := TBitmap.Create(Round(BitmapRect.Width), Round(BitmapRect.Height));
+  Result.BitmapScale := SceneScale;
+  Result.Clear(0);
+
+  if (Result.Width = 0) or (Result.Height = 0) then //extra optimization for items with one or both dimensions set to 0 (avoid calling into any drawing code)
+    exit;
+
+  if Result.Canvas.BeginScene then
+  try
+    PaintTo(Result.Canvas, TRectF.Create(0, 0, Result.Width / SceneScale, Result.Height / SceneScale));
+  finally
+    Result.Canvas.EndScene;
+  end;
+end;
+
+{$endregion}
 
 {$region 'TControlObjectAtHelper'}
 
@@ -185,6 +236,7 @@ end;
 
 {$endregion}
 
+(* //REMOVED: see comment at interface section
 {$region 'TControlTagObjectHelper'}
 
 function TControlTagObjectHelper.GetTagObject: TObject;
@@ -198,6 +250,7 @@ begin
 end;
 
 {$endregion}
+*)
 
 {$region 'TControlConvertLocalRectHelper'}
 

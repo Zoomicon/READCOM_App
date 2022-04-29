@@ -80,7 +80,12 @@ type
     {GUIRoot}
     procedure SetGUIRoot(const Value: TControl); virtual;
     procedure LoadTreeView; virtual;
+    {ItemHeight}
+    function GetItemHeight: Single; virtual;
+    procedure SetItemHeight(const Value: Single); virtual;
     {ShowXX}
+    function GetShowCheckboxes: Boolean; virtual;
+    procedure SetShowCheckboxes(const Value: Boolean); virtual;
     procedure SetShowOnlyClasses(const Value: TClassList); virtual;
     procedure SetShowOnlyVisible(const Value: Boolean); virtual;
     procedure SetShowOnlyNamed(const Value: Boolean); virtual;
@@ -106,6 +111,8 @@ type
     //Properties//
     property GUIRoot: TControl read FGUIRoot write SetGUIRoot;
 
+    property ItemHeight: Single read GetItemHeight write SetItemHeight;
+    property ShowCheckboxes: Boolean read GetShowCheckboxes write SetShowCheckboxes default false;
     property ShowOnlyClasses: TClassList read FShowOnlyClasses write SetShowOnlyClasses; //default nil
     property ShowOnlyVisible: Boolean read FShowOnlyVisible write SetShowOnlyVisible default DEFAULT_SHOW_ONLY_VISIBLE;
     property ShowOnlyNamed: Boolean read FShowOnlyNamed write SetShowOnlyNamed default DEFAULT_SHOW_ONLY_NAMED;
@@ -135,8 +142,8 @@ implementation
   uses
     System.UITypes, //for TDragMode
     System.Rtti, //for TValue
-    FMX.Dialogs, //for ShowMessage
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
+    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlMakeThumbnailHelper.MakeThumbnail
     Zoomicon.Helpers.FMX.ImgList.ImageListHelpers, //for TImageListAddBitmapHelper
     Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers; //for TTreeViewItemSearchHelper
 
@@ -265,17 +272,24 @@ procedure TStructureView.LoadTreeView;
       //Nest the TreeStoryItem as needed
       Parent := TheParent;
 
-      //Add screenshot of TheControl to ImageList
-      var ControlThumbnail := TheControl.MakeScreenshot;
-      var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
-      FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
-
-      //Set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
-      ImageIndex := imgIndex; //if -1 then won't show image
-      if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
+      var W := TheControl.Width;
+      var H := TheControl.Height;
+      if (W <> 0) and (H <> 0) then //If TheControl has non-zero dimensions...
       begin
-        var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
-        StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+        //...add screenshot of TheControl to ImageList
+        var ThumbnailSize := TSizeF.Create(W*(IconHeight/H), IconHeight);
+        var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //don't use TheControl.MakeScreenshot, generates a big image wasting resources
+        var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
+        FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+
+        //...set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
+        ImageIndex := imgIndex; //if -1 then won't show image
+        if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
+        begin
+          //var img := ImageList.Source.Items[imgIndex].MultiResBitmap; //don't need to get this to ask for Size, have already calculated ThumbnailSize above
+          StylesData['glyphstyle.Size.Size'] := TValue.From(ThumbnailSize);
+                                                //TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+        end;
       end;
 
       //Titles//
@@ -324,7 +338,31 @@ end;
 
 {$endregion}
 
+{$region 'ItemSize'}
+
+function TStructureView.GetItemHeight: Single;
+begin
+  result := TreeView.ItemHeight;
+end;
+
+procedure TStructureView.SetItemHeight(const Value: Single);
+begin
+  TreeView.ItemHeight := Value;
+end;
+
+{$endregion}
+
 {$region 'ShowXX'}
+
+function TStructureView.GetShowCheckboxes: Boolean;
+begin
+  result := TreeView.ShowCheckBoxes;
+end;
+
+procedure TStructureView.SetShowCheckboxes(const Value: Boolean);
+begin
+  TreeView.ShowCheckboxes := Value;
+end;
 
 procedure TStructureView.SetShowOnlyClasses(const Value: TClassList);
 begin

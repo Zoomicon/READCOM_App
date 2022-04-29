@@ -16,10 +16,10 @@
             <Dependencies>Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
-            <Dependencies>Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj</Dependencies>
+            <Dependencies>Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj</Dependencies>
+            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
             <Dependencies/>
@@ -95,22 +95,22 @@
     <Target Name="Zoomicon_Zooming_FMX:Make" DependsOnTargets="Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Introspection_FMX" DependsOnTargets="Zoomicon.Helpers.RTL">
+    <Target Name="Zoomicon_Introspection_FMX" DependsOnTargets="Zoomicon.Helpers.RTL;Zoomicon.Helpers.FMX">
         <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Introspection_FMX:Clean" DependsOnTargets="Zoomicon.Helpers.RTL:Clean">
+    <Target Name="Zoomicon_Introspection_FMX:Clean" DependsOnTargets="Zoomicon.Helpers.RTL:Clean;Zoomicon.Helpers.FMX:Clean">
         <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Introspection_FMX:Make" DependsOnTargets="Zoomicon.Helpers.RTL:Make">
+    <Target Name="Zoomicon_Introspection_FMX:Make" DependsOnTargets="Zoomicon.Helpers.RTL:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX" DependsOnTargets="Zoomicon.Generics">
+    <Target Name="Zoomicon_Manipulation_FMX" DependsOnTargets="Zoomicon.Generics;Zoomicon.Helpers.FMX">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Clean" DependsOnTargets="Zoomicon.Generics:Clean">
+    <Target Name="Zoomicon_Manipulation_FMX:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Helpers.FMX:Clean">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Make" DependsOnTargets="Zoomicon.Generics:Make">
+    <Target Name="Zoomicon_Manipulation_FMX:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_Cache">
