@@ -162,6 +162,11 @@ begin
   Result := JStringToString(SharedActivityContext.getPackageManager.getPackageInfo(SharedActivityContext.getPackageName, 0).versionName); //Note: can throw JPackageManager_NameNotFoundException, but Delphi should always include a version name
 end;
 
+function GetAppVersionStr3: string;
+begin
+  result := GetAppVersionStr2 + '.0';
+end;
+
 {$ELSEIF Defined(LINUX)}
 
 //see https://stackoverflow.com/questions/44600597/delphi-linux64-how-to-retrieve-the-version-information-set-by-project-options-v and https://wiki.freepascal.org/Show_Application_Title,_Version,_and_Company#Linux
