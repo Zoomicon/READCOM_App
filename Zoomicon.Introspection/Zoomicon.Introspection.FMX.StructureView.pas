@@ -266,14 +266,17 @@ procedure TStructureView.LoadTreeView;
       Parent := TheParent;
 
       //Add screenshot of TheControl to ImageList
-      var ControlToBitmap := TheControl.MakeScreenshot;
-      var imgIndex := ImageList.Add(ControlToBitmap); //this will copy from the bitmap
-      FreeAndNil(ControlToBitmap); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+      var ControlThumbnail := TheControl.MakeScreenshot;
+      var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
+      FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
 
       //Set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
-      ImageIndex := imgIndex;
-      var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
-      StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+      ImageIndex := imgIndex; //if -1 then won't show image
+      if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
+      begin
+        var img := ImageList.Source.Items[imgIndex].MultiResBitmap;
+        StylesData['glyphstyle.Size.Size']:= TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+      end;
 
       //Titles//
       if FShowNames then Text := TheControl.Name;
