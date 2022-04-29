@@ -20,9 +20,7 @@ implementation
 procedure ParseCommandLine;
 begin
   if (ParamCount <> 0) then
-    StorySource := ParamStr(1) //TODO: add optional switch to save screenshot (after having loaded any given story or last state or default document) and close again
-  else
-    StorySource := Application.ExeName + '/Default.readcom';
+    StorySource := ParamStr(1); //TODO: add optional switch to save screenshot (after having loaded any given story or last state or default document) and close again
 end;
 
 procedure Main;

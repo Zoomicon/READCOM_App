@@ -78,9 +78,12 @@ type
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
     {SavedState}
-    procedure LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
+    procedure LoadAtStartup;
     function LoadFromStream(const Stream: TStream; const ActivateHome: Boolean = True): Boolean;
+    function LoadFromFile(const Filepath: String): Boolean;
     function LoadFromUrl(const Url: String): Boolean;
+    function LoadFromFileOrUrl(const PathOrUrl: String): Boolean;
+    function LoadCommandLineParameter: Boolean;
     function LoadSavedState: Boolean;
     function LoadDefaultDocument: Boolean;
     procedure SaveCurrentState;
@@ -165,6 +168,7 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
+    READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
@@ -217,7 +221,7 @@ begin
   FTimerStarted := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
-  LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
+  LoadAtStartup;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -947,9 +951,11 @@ end;
 
 {$region 'SavedState'}
 
-procedure TMainForm.LoadSavedStateOrDefaultDocumentOrNewRootStoryItem;
+procedure TMainForm.LoadAtStartup;
 begin
-  if (not LoadSavedState) and (not LoadDefaultDocument) then //Note: if it keeps on failing at load comment out this line for one run //TODO: shouldn't need to do that
+  if (not LoadCommandLineParameter) and
+     (not LoadSavedState) and
+     (not LoadDefaultDocument) then //Note: if it keeps on failing at load comment out the if check for one run of NewRootStoryItem //TODO: shouldn't need to do that
     NewRootStoryItem;
 end;
 
@@ -971,6 +977,16 @@ begin
         ShowException(E, @TMainForm.LoadFromStream);
         end;
     end;
+  end;
+end;
+
+function TMainForm.LoadFromFile(const Filepath: string): Boolean;
+begin
+  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
+  try
+    result := LoadFromStream(InputFileStream);
+  finally
+    FreeAndNil(InputFileStream);
   end;
 end;
 
@@ -998,6 +1014,19 @@ begin
   finally
     //FreeAndNil(memStream);
   end;
+end;
+
+function TMainForm.LoadFromFileOrUrl(const PathOrUrl: String): Boolean;
+begin
+  if PathOrUrl.StartsWith('http://', true) or PathOrUrl.StartsWith('https://', true) then
+    result := LoadFromUrl(PathOrUrl)
+  else
+    result := LoadFromFile(PathOrUrl);
+end;
+
+function TMainForm.LoadCommandLineParameter: Boolean;
+begin
+  result := (StorySource <> '') and LoadFromFileOrUrl(StorySource); //assuming short-circuit boolean evaluation
 end;
 
 function TMainForm.LoadSavedState: Boolean;
