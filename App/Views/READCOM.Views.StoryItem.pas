@@ -1198,7 +1198,7 @@ begin
     result := 'Item'; //NOTE: don't localize
 end;
 
-{Add}
+{$region 'Add'}
 
 function TStoryItem.GetAddFilesFilter: String;
 begin
@@ -1302,7 +1302,9 @@ begin
     Add(filepath); //Adding all files one by one
 end;
 
-{Load}
+{$endregion}
+
+{$region 'Load'}
 
 function TStoryItem.GetLoadFilesFilter: String;
 begin
@@ -1389,7 +1391,7 @@ end;
 
 function TStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
 begin
-  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
+  var InputFileStream := TFileStream.Create(Filepath, fmOpenRead);
   try
     result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
   finally
@@ -1397,7 +1399,9 @@ begin
   end;
 end;
 
-{Save}
+{$endregion}
+
+{$region 'Save'}
 
 function TStoryItem.GetSaveFilesFilter: String;
 begin
@@ -1465,6 +1469,8 @@ begin
     FreeAndNil(OutputFileStream);
   end;
 end;
+
+{$endregion}
 
 {$endregion}
 
