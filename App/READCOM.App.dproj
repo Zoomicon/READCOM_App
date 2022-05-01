@@ -387,8 +387,8 @@
             <Form>StoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\Options\READCOM.Views.Options.BitmapImageStoryItemOptions.pas">
-            <Form>BitmapImageStoryItemOptions</Form>
+        <DCCReference Include="Views\Options\READCOM.Views.Options.ImageStoryItemOptions.pas">
+            <Form>ImageStoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Views\READCOM.Views.StoryItem.pas">
@@ -397,14 +397,6 @@
         </DCCReference>
         <DCCReference Include="Views\READCOM.Views.ImageStoryItem.pas">
             <Form>ImageStoryItem</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.BitmapImageStoryItem.pas">
-            <Form>BitmapImageStoryItem</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.VectorImageStoryItem.pas">
-            <Form>VectorImageStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Views\READCOM.Views.AudioStoryItem.pas">

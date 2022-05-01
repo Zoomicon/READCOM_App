@@ -1,4 +1,4 @@
-inherited BitmapImageStoryItemOptions: TBitmapImageStoryItemOptions
+inherited ImageStoryItemOptions: TImageStoryItemOptions
   Size.Width = 452.000000000000000000
   inherited layoutButtons: TFlowLayout
     Size.Width = 452.000000000000000000

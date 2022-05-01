@@ -1,3 +1,6 @@
+//Description: READ-COM App startup
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.App.Main;
 
 interface

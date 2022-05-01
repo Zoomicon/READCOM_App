@@ -1,5 +1,13 @@
 inherited ImageStoryItem: TImageStoryItem
-  inherited Glyph: TSVGIconImage
-    SVGText = ''
+  object ImageControl: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Contents
+    HitTest = False
+    Size.Width = 836.000000000000000000
+    Size.Height = 532.000000000000000000
+    Size.PlatformDefault = False
+    WrapMode = Stretch
   end
 end

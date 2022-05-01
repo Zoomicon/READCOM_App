@@ -1,4 +1,7 @@
-unit READCOM.Views.Options.BitmapImageStoryItemOptions;
+//Description: READ-COM ImageStoryItem Options
+//Author: George Birbilis (http://zoomicon.com)
+
+unit READCOM.Views.Options.ImageStoryItemOptions;
 
 interface
 
@@ -14,7 +17,7 @@ uses
   READCOM.App.Models;
 
 type
-  TBitmapImageStoryItemOptions = class(TStoryItemOptions, IBitmapImageStoryItemOptions, IStoryItemOptions)
+  TImageStoryItemOptions = class(TStoryItemOptions, IImageStoryItemOptions, IStoryItemOptions)
     TakePhotoFromCameraAction: TTakePhotoFromCameraAction;
     btnCamera: TSpeedButton;
     //procedure actionCameraExecute(Sender: TObject);
@@ -24,15 +27,15 @@ type
     //procedure DoCameraDidFinish(Image: TBitmap);
     //procedure DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage); //for Android in case app restarted: see https://docwiki.embarcadero.com/Libraries/Sydney/en/FMX.MediaLibrary.TMessageDidFinishTakingImageFromLibrary
 
-    {BitmapImageStoryItem}
-    function GetBitmapImageStoryItem: IBitmapImageStoryItem;
-    procedure SetBitmapImageStoryItem(const Value: IBitmapImageStoryItem);
+    {ImageStoryItem}
+    function GeTImageStoryItem: IImageStoryItem;
+    procedure SeTImageStoryItem(const Value: IImageStoryItem);
 
   public
     constructor Create(AOwner: TComponent); override;
 
   published
-    property BitmapImageStoryItem: IBitmapImageStoryItem read GetBitmapImageStoryItem write SetBitmapImageStoryItem stored false;
+    property ImageStoryItem: IImageStoryItem read GeTImageStoryItem write SeTImageStoryItem stored false;
   end;
 
 implementation
@@ -42,47 +45,47 @@ uses
 
 {$R *.fmx}
 
-constructor TBitmapImageStoryItemOptions.Create(AOwner: TComponent);
+constructor TImageStoryItemOptions.Create(AOwner: TComponent);
 begin
   inherited;
   //TMessageManager.DefaultManager.SubscribeToMessage(TMessageDidFinishTakingImageFromLibrary, DoMessageDidFinishTakingImageFromLibrary); //see region 'TakePhotoViaCameraService'
 end;
 
-{$region 'BitmapImageStoryItem'}
+{$region 'ImageStoryItem'}
 
-function TBitmapImageStoryItemOptions.GetBitmapImageStoryItem: IBitmapImageStoryItem;
+function TImageStoryItemOptions.GeTImageStoryItem: IImageStoryItem;
 begin
-  Supports(FStoryItem, IBitmapImageStoryItem, result);
+  Supports(FStoryItem, IImageStoryItem, result);
 end;
 
-procedure TBitmapImageStoryItemOptions.SetBitmapImageStoryItem(const Value: IBitmapImageStoryItem);
+procedure TImageStoryItemOptions.SeTImageStoryItem(const Value: IImageStoryItem);
 begin
   Supports(Value, IStoryItem, FStoryItem); //interface casting also supports interface implementations using aggregated or nested objects
 end;
 
 {$endregion}
 
-procedure TBitmapImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
+procedure TImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
 begin
   inherited;
-  BitmapImageStoryItem.Image.Bitmap.Assign(Image);
+  ImageStoryItem.Image.Bitmap.Assign(Image);
 end;
 
 {$region 'TakePhotoViaCameraService'}
 //using predefined Camera action instead of FMX platform services (need to implement for Windows) - there's also TCameraComponent
 (*
-procedure TBitmapImageStoryItemOptions.DoCameraDidFinish(Image: TBitmap);
+procedure TImageStoryItemOptions.DoCameraDidFinish(Image: TBitmap);
 begin
-  BitmapImageStoryItem.Image.Bitmap.Assign(Image);
+  ImageStoryItem.Image.Bitmap.Assign(Image);
 end;
 
-procedure TBitmapImageStoryItemOptions.DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage);
+procedure TImageStoryItemOptions.DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage);
 begin
   if M is TMessageDidFinishTakingImageFromLibrary then
-    BitmapImageStoryItem.Image.Bitmap.Assign(TMessageDidFinishTakingImageFromLibrary(M).Value);
+    ImageStoryItem.Image.Bitmap.Assign(TMessageDidFinishTakingImageFromLibrary(M).Value);
 end;
 
-procedure TBitmapImageStoryItemOptions.actionCameraExecute(Sender: TObject);
+procedure TImageStoryItemOptions.actionCameraExecute(Sender: TObject);
 begin
   inherited;
 

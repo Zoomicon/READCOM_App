@@ -66,8 +66,6 @@ type
   IStoryItem = interface;
   IPanelStoryItem = interface;
   IImageStoryItem = interface;
-  IBitmapImageStoryItem = interface;
-  IVectorImageStoryItem = interface;
   IAudioStoryItem = interface;
   IStoryItemOptions = interface;
 
@@ -263,15 +261,15 @@ type
     property StoryItem: IStoryItem read GetStoryItem write SetStoryItem; //stored false
   end;
 
-  IBitmapImageStoryItemOptions = interface(IStoryItemOptions)
+  IImageStoryItemOptions = interface(IStoryItemOptions)
     ['{DA637418-9648-48C7-A0CB-7475CAFECBAE}']
 
-    {BitmapImageStoryItem}
-    function GetBitmapImageStoryItem: IBitmapImageStoryItem;
-    procedure SetBitmapImageStoryItem(const Value: IBitmapImageStoryItem);
+    {ImageStoryItem}
+    function GetImageStoryItem: IImageStoryItem;
+    procedure SetImageStoryItem(const Value: IImageStoryItem);
 
     //-- Properties --
-    property BitmapImageStoryItem: IBitmapImageStoryItem read GetBitmapImageStoryItem write SetBitmapImageStoryItem; //stored false
+    property ImageStoryItem: IImageStoryItem read GetImageStoryItem write SetImageStoryItem; //stored false
   end;
 
 
@@ -286,34 +284,12 @@ type
     {Image}
     function GetImage: TImage;
     procedure SetImage(const Value: TImage);
-
-    //--- Properties ---
-    property Image: TImage read GetImage write SetImage; //stored false //default nil
-  end;
-
-  IBitmapImageStoryItem = interface(IImageStoryItem)
-    ['{97C577C0-5391-4B1D-8EA9-119D35B91523}']
-
-    //--- Methods ---
-    {Image}
-    function GetImage: TImage;
-    procedure SetImage(const Value: TImage);
-
-    //--- Properties ---
-    property Image: TImage read GetImage write SetImage; //stored true //default nil //overrides ancestor's "stored" setting
-  end;
-
-  IVectorImageStoryItem = interface(IImageStoryItem)
-    ['{6A71E9E3-D0AC-452E-9DF9-6DFC25BFB2CD}']
-
-    //--- Methods ---
-    {Image}
     function GetSVGImage: TSVGIconImage;
     procedure SetSVGImage(const Value: TSVGIconImage);
 
     //--- Properties ---
-    property Image: TImage read GetImage; //overrides ancestor's "write" and "stored" settings
-    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage; //default nil
+    property Image: TImage read GetImage write SetImage; //stored StoreBitmap //default nil
+    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage; //default nil //stored false
   end;
 
   IAudioStoryItem = interface(IStoryItem)
