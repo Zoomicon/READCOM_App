@@ -61,12 +61,12 @@ begin
       //make font bigger
       while (ContentBounds.Height + Offset < Height) do //using WordWrap, not checking for Width
         with Font do
-          Size := Size + 0.1;
+          Size := Size + 1;
 
       //make font smaller
       while (ContentBounds.Height + Offset > Height) do //using WordWrap, not checking for Width
         with Font do
-          Size := Size - 0.1;
+          Size := Size - 1;
     end;
   end;
 end;

@@ -83,7 +83,9 @@ type
 
   public
     constructor Create(AOnwer: TComponent); override;
-    procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
+    procedure SetBounds(X, Y, AWidth, AHeight: Single); override; //note this is called also when the control is moved //TODO: see if we can get first display and subsequent resizes instead
+    //procedure Resize; override;
+    //procedure DoResized; override;
 
     {$region 'IStoreable'}
     function GetLoadFilesFilter: String; override;
@@ -120,7 +122,8 @@ implementation
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Text, //for
-    READCOM.Views.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
+    READCOM.Views.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
+    READCOM.App.Debugging; //for Log
 
 {$R *.fmx}
 
@@ -154,18 +157,34 @@ end;
 
 procedure TTextStoryItem.Loaded;
 begin
+  Log('TTextStoryItem.Loaded');
   inherited;
   SetMemoFontSizeToFit(Memo);
 end;
 
-procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single);
+procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single); //Note: also gets called when control is moved
 begin
+  //Log('TTextStoryItem.SetBounds');
   inherited;
   SetMemoFontSizeToFit(Memo);
 end;
+
+(*
+procedure TTextStoryItem.DoResized; //or "Resize" which is called earlier
+begin
+  Log('TTextStoryItem.DoResized');
+  inherited;
+  try
+    SetMemoFontSizeToFit(Memo); //throws exceptions at startup
+  Except
+    //NOP
+  end;
+end;
+*)
 
 procedure TTextStoryItem.MemoChangeTracking(Sender: TObject);
 begin
+  //Log('TTextStoryItem.MemoChangeTracking');
   SetMemoFontSizeToFit(Memo);
 end;
 
