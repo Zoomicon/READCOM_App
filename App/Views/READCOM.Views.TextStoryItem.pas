@@ -142,7 +142,11 @@ constructor TTextStoryItem.Create(AOnwer: TComponent);
       SetMemoZOrder;
       WordWrap := true;
       TextAlign := TTextAlign.Center;
+      DisableMouseWheel := true;
+      EnabledScroll := false;
+      ShowScrollBars := false;
       ReadOnly := true; //since we have Editable property defaulting to false
+      StyledSettings := []; //don't overload any TextSetting with those from Style
       OnChangeTracking := MemoChangeTracking;
     end;
   end;

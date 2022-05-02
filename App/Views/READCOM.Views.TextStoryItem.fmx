@@ -1,16 +1,14 @@
 inherited TextStoryItem: TTextStoryItem
   object Memo: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
-    AutoHide = False
     Caret.Color = claYellow
     DataDetectorTypes = []
     DisableMouseWheel = True
-    KeyboardType = Alphabet
     ShowScrollBars = False
     StyledSettings = []
+    TextSettings.HorzAlign = Center
     TextSettings.WordWrap = True
     Align = Contents
-    Bounces = False
     EnabledScroll = False
     Size.Width = 836.000000000000000000
     Size.Height = 532.000000000000000000
