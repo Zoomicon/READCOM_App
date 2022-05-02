@@ -94,9 +94,11 @@ object StoryHUD: TStoryHUD
       object btnNew: TSpeedButton
         Action = actionNew
         Enabled = True
-        Hint = 'New Story'#13#13'Clears all loaded story contents'
+        Hint = 
+          'Load Default Story'#13#13'Clears current contents and loads the Defaul' +
+          't Story'
         Images = Globals.SVGIconImageList
-        ImageIndex = 12
+        ImageIndex = 24
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -581,12 +583,9 @@ object StoryHUD: TStoryHUD
     object actionNew: TAction
       Category = 'File'
       Text = 'New'
-      Hint = 
-        'New Story'#13#13'<b>Clears all loaded story contents</b>'#13#13'**test**'#13'*te' +
-        'st*'#13'_test_'
-      ImageIndex = 12
+      ImageIndex = 24
       ShortCut = 16462
-      ImageIndex = 12
+      ImageIndex = 24
     end
     object actionLoad: TAction
       Category = 'File'

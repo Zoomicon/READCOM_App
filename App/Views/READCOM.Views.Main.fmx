@@ -39,14 +39,14 @@ object MainForm: TMainForm
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
       inherited layoutButtonsNavigation: TLayout
-        Position.Y = 576.000000000000000000
-        Size.Width = 876.000000000000000000
+        Position.Y = 566.000000000000000000
+        Size.Width = 856.000000000000000000
         inherited btnNext: TSpeedButton
-          Position.X = 820.000000000000000000
+          Position.X = 800.000000000000000000
         end
       end
       inherited layoutButtonsMain: TFlowLayout
-        Size.Height = 576.000000000000000000
+        Size.Height = 566.000000000000000000
         inherited btnToggleStructureVisible: TSpeedButton
           Hint = 
             'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
@@ -60,8 +60,8 @@ object MainForm: TMainForm
         end
       end
       inherited layoutButtonsEdit: TFlowLayout
-        Position.X = 826.000000000000000000
-        Size.Height = 576.000000000000000000
+        Position.X = 816.000000000000000000
+        Size.Height = 566.000000000000000000
         TabOrder = 174
         inherited btnAdd: TSpeedButton
           Hint = 
@@ -176,7 +176,7 @@ object MainForm: TMainForm
       end
       inherited actionNew: TAction
         OnExecute = HUDactionNewExecute
-        ImageIndex = 12
+        ImageIndex = 24
       end
       inherited actionLoad: TAction
         OnExecute = HUDactionLoadExecute
