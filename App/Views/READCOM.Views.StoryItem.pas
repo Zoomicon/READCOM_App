@@ -1393,7 +1393,7 @@ begin
   end;
 end;
 
-function TStoryItem.LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
+function TStoryItem.LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; //TODO: could make this return TObject to support loading any Delphi object stream
 
   procedure RemoveStoryItems; //TODO: add to IStoryItem and implement at TStoryItem level?
   begin
@@ -1412,7 +1412,14 @@ begin
     RemoveStoryItems; //remove existing children
   end;
 
-  result := Stream.ReadComponent(Instance, ReaderError) as IStoryItem; //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties, but that won't work by itself (so passing ErrorHandler here too via TStreamErrorHelper.CreateComponent method) if "CreateNew=true" is used, since we pass nil in that case so ReadState is called on TComponent, not on TStoryItem
+  var obj := Stream.ReadComponent(Instance, ReaderError);
+  if obj is TStoryItem then //at current implementation only supporting TStoryItems
+    result := obj as IStoryItem //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties, but that won't work by itself (so passing ErrorHandler here too via TStreamErrorHelper.CreateComponent method) if "CreateNew=true" is used, since we pass nil in that case so ReadState is called on TComponent, not on TStoryItem
+  else
+  begin
+    FreeAndNil(obj);
+    raise Exception.Create('Object is not a StoryItem');
+  end;
 end;
 
 function TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
