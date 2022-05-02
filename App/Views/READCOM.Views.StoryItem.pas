@@ -21,6 +21,8 @@ uses
 resourcestring
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
 
+//TODO: override EnabledStored maybe to never store Enabled property (which is used in Edit mode - in that case should disable a child after pasting in edit mode)
+
 type
   TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     Border: TRectangle;
@@ -1201,7 +1203,7 @@ begin
     if UnknownProperty then
       Log('Ignored unknown property "%s"', [PropName]);
     if InvalidProperty then
-      Log('Ignored invalid value for property "%s"', [PropName]);
+      Log('Ignored invalid value for property "%s"', [PropName]); //TODO: maybe we somehow need to skip the value of that property in the stream (for event handlers that are missing it seems to work, but when assigning say a string to an integer property it fails to skip the invalid value and tries to read the string contents as a property name)
 
     Handled := RemovedActivationOrderProperty or UnknownProperty or InvalidProperty;
     end;
