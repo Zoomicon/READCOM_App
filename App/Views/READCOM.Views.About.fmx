@@ -18,100 +18,100 @@ object AboutFrame: TAboutFrame
       ImageIndex = 24
       Images = Globals.SVGIconImageList
     end
-  end
-  object PanelTitleVersion: TPanel
-    Anchors = [akLeft, akTop, akRight]
-    Position.X = 125.000000000000000000
-    Position.Y = 8.000000000000000000
-    Size.Width = 275.000000000000000000
-    Size.Height = 109.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 0
-    object lblTitle: TLabel
-      Align = Horizontal
-      StyledSettings = [Family, Size, FontColor]
-      Position.Y = 24.000000000000000000
+    object PanelTitleVersion: TPanel
+      Anchors = [akLeft, akTop, akRight]
+      Position.X = 125.000000000000000000
+      Position.Y = 8.000000000000000000
       Size.Width = 275.000000000000000000
-      Size.Height = 17.000000000000000000
+      Size.Height = 109.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.Font.StyleExt = {00070000000000000004000000}
-      TextSettings.HorzAlign = Center
-      Text = 'READ-COM: Reading Communities'
-      TabOrder = 1
+      TabOrder = 0
+      object lblTitle: TLabel
+        Align = Horizontal
+        StyledSettings = [Family, Size, FontColor]
+        Position.Y = 24.000000000000000000
+        Size.Width = 275.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.HorzAlign = Center
+        Text = 'READ-COM: Reading Communities'
+        TabOrder = 1
+      end
+      object PanelVersion: TPanel
+        Align = Horizontal
+        Position.Y = 49.000000000000000000
+        Size.Width = 275.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        object lblVersion: TLabel
+          Align = Left
+          Position.X = 96.000000000000000000
+          Size.Width = 57.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Version:'
+          TabOrder = 3
+        end
+        object lblVersionValue: TLabel
+          Align = Client
+          Size.Width = 122.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          Text = '0.0.0'
+          TabOrder = 2
+        end
+        object PanelVersionPadding: TPanel
+          Align = MostLeft
+          Anchors = [akLeft, akTop, akRight, akBottom]
+          Opacity = 0.000000000000000000
+          Size.Width = 96.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 5
+        end
+      end
     end
-    object PanelVersion: TPanel
-      Align = Horizontal
-      Position.Y = 49.000000000000000000
-      Size.Width = 275.000000000000000000
+    object MemoInfo: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      Lines.Strings = (
+        'Author:'
+        'George Birbilis / Zoomicon.com'
+        ''
+        'READ-COM Project:'
+        'https://www.read-com-eu.uma.es/'
+        ''
+        'Source code and Wiki:'
+        'https://github.com/zoomicon/READCOM_App'
+        ''
+        'Stories and Assets Gallery:'
+        'https://github.com/zoomicon/READCOM_Gallery'
+        ''
+        'Icons:'
+        'https://openmoji.org/')
+      ReadOnly = True
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Position.X = 8.000000000000000000
+      Position.Y = 125.000000000000000000
+      Size.Width = 392.000000000000000000
+      Size.Height = 243.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 388.000000000000000000
+      Viewport.Height = 239.000000000000000000
+    end
+    object btnClose: TSpeedButton
+      Anchors = [akTop, akRight]
+      Position.X = 374.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 24.000000000000000000
       Size.Height = 24.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 2
-      object lblVersion: TLabel
-        Align = Left
-        Position.X = 96.000000000000000000
-        Size.Width = 57.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        Text = 'Version:'
-        TabOrder = 3
-      end
-      object lblVersionValue: TLabel
-        Align = Client
-        Size.Width = 122.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        Text = '0.0.0'
-        TabOrder = 2
-      end
-      object PanelVersionPadding: TPanel
-        Align = MostLeft
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Opacity = 0.000000000000000000
-        Size.Width = 96.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 5
-      end
+      StyleLookup = 'stoptoolbutton'
+      Text = 'stoptoolbutton'
+      OnClick = btnCloseClick
     end
-  end
-  object MemoInfo: TMemo
-    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
-    DataDetectorTypes = []
-    Lines.Strings = (
-      'Author:'
-      'George Birbilis / Zoomicon.com'
-      ''
-      'READ-COM Project:'
-      'https://www.read-com-eu.uma.es/'
-      ''
-      'Source code and Wiki:'
-      'https://github.com/zoomicon/READCOM_App'
-      ''
-      'Stories and Assets Gallery:'
-      'https://github.com/zoomicon/READCOM_Gallery'
-      ''
-      'Icons:'
-      'https://openmoji.org/')
-    ReadOnly = True
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Position.X = 8.000000000000000000
-    Position.Y = 125.000000000000000000
-    Size.Width = 392.000000000000000000
-    Size.Height = 243.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 1
-    Viewport.Width = 388.000000000000000000
-    Viewport.Height = 239.000000000000000000
-  end
-  object btnClose: TSpeedButton
-    Anchors = [akTop, akRight]
-    Position.X = 374.000000000000000000
-    Position.Y = 8.000000000000000000
-    Size.Width = 24.000000000000000000
-    Size.Height = 24.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'stoptoolbutton'
-    Text = 'stoptoolbutton'
-    OnClick = btnCloseClick
   end
 end

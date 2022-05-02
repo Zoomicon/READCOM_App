@@ -75,8 +75,6 @@ type
 
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
-    procedure PasteText(const Value: String); virtual;
-    procedure PasteImage(const BitmapSurface: TBitmapSurface); virtual;
 
     {Name}
     procedure SetName(const NewName: TComponentName); override;
@@ -198,11 +196,12 @@ type
     procedure Add(const Filepaths: array of string); overload; virtual;
     //
     function GetLoadFilesFilter: String; virtual;
-    function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     class function LoadNew(const Stream: TStream; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
     class function LoadNew(const Filepath: string; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
     function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload; virtual;
+    function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; virtual;
+    function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     //
     function LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
     function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
@@ -1112,38 +1111,62 @@ begin
 end;
 
 procedure TStoryItem.Copy;
+var svc: IFMXExtendedClipboardService;
 begin
- var svc: IFMXExtendedClipboardService;
- if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
- begin
-   Svc.SetText(SaveToString);
- end;
+  if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Svc) then
+    Svc.SetText(SaveToString);
 end;
 
 procedure TStoryItem.Paste;
+var Clipboard: IFMXExtendedClipboardService;
 begin
- var Clipboard: IFMXExtendedClipboardService;
- if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Clipboard) then
-   Paste(Clipboard);
+  if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Clipboard) then
+    Paste(Clipboard);
 end;
 
 procedure TStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);
+var FileExt: String;
 begin
+  //Check clipboard contents format
   if Clipboard.HasText then
-    PasteText(Clipboard.GetText);
-end;
+  begin
+    var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
+    if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem //TODO: add method to check if text contains object
+      FileExt := '.readcom'
+    else
+      FileExt := '.txt'
+  end
+  else if Clipboard.HasImage then
+    FileExt := '.png' //could set to any image file extension the app knows here, clipboard images are not really in PNG format
+  else
+    raise Exception.Create('Unknown Clipboard format');
 
-procedure TStoryItem.PasteText(const Value: String);
-begin
-  if TrimLeft(Value).StartsWith('object') then //ignore if not Delphi serialization format (its text-based form) //Left-trimming since we may have pasted an indented object from a .readcom file
-    AddFromString(Value); //add a new child StoryItem
-  //TODO: if not an object then tell the IStory context to add a new TTextStoryItem (in the current selection or in middle of active storyitem [us]) and populate it with that text (same goes if the clipboard contains an image: however since the main app invokes those shortcuts maybe it could have done so by itself [as long as it checked that text doesn't start with "object"] - asking the component if it can handle the content and only then add as child isn't option, since it would be hard to understand how to paste an image child inside an image [so paste should always add a child])
-end;
+  try
+    FIgnoreActiveStoryItemChanges := true; //ignore changes to ActiveStoryItem while loading children since "Active" is persisted property
 
-procedure TStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
-begin
-  //TODO: should check for JPG factory (see "Add(const Filename: String)" code), add a new BitmapImageStoryItem using that, then call PasteImage into it
-end; //TODO: maybe not have descendents override this behaviour and always paste child content instead of replacing control's image content
+    try
+      var StoryItemFactory := StoryItemFactories.Get(FileExt);
+
+      var StoryItem: TStoryItem;
+      if Assigned(StoryItemFactory) then
+      begin
+        StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
+        StoryItem.Name := 'Clipboard' + IntToStr(Random(maxint)); //TODO: use a GUID
+        StoryItem.Load(Clipboard); //this should also set the Size of the control
+      end
+      else //we are adding a ".readcom" file, don't know beforehand what class of TStoryItem descendent it contains serialized
+        StoryItem := Load(Clipboard, true) as TStoryItem;
+
+      Add(StoryItem); //note: Add does (StoryItem=nil) check and returns, logging it
+    except
+      on EListError do
+        raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [FileExt]);
+    end;
+
+  finally
+    FIgnoreActiveStoryItemChanges := false; //restore value
+  end;
+end;
 
 {$endregion}
 
@@ -1190,7 +1213,7 @@ begin
     for var i := 1 to count do //strings are 1-indexed
     begin
       var c := s[i];
-      if IsValidIdent(result + c) then //keep only characters that don't cause the identifier to be invalid
+      if IsValidIdent(result + c) then //keep only characters that don't cause the identifier to be invalid //TODO: this seems to allow Unicode alphabetic characters instead of just English ones (need to somehow convert maybe to English)
         result := result + c;
     end;
 
@@ -1229,6 +1252,12 @@ end;
 
 procedure TStoryItem.Add(const StoryItem: IStoryItem);
 begin
+  if not Assigned(StoryItem) then
+  begin
+    Log('TStoryItem.Add(nil) called, exiting');
+    exit;
+  end;
+
   //Center the new item...
   var StoryItemView := StoryItem.View;
   Self.InsertComponent(StoryItemView); //make sure we set Self as owner //TODO: need to call a safe method to do this with rename (see constructor above and extract such method)
@@ -1397,6 +1426,18 @@ begin
   finally
     FreeAndNil(InputFileStream);
   end;
+end;
+
+function TStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
+begin
+  if Clipboard.HasText then
+  begin
+    var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
+    if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem
+      result := LoadFromString(LText, CreateNew); //Create new object if we don't know from beforehand what exact type it is
+  end
+  else
+    result := nil;
 end;
 
 {$endregion}

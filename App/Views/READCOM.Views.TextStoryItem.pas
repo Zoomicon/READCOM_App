@@ -14,7 +14,8 @@ uses
   FMX.Objects, FMX.SVGIconImage,
   FMX.ExtCtrls, FMX.Controls.Presentation,
   FMX.ScrollBox,
-  FMX.Memo, FMX.Memo.Types, FMX.Layouts;
+  FMX.Memo, FMX.Memo.Types, FMX.Layouts,
+  FMX.Clipboard; //for IFMXExtendedClipboardService
 
 const
   EXT_TXT = '.txt';
@@ -44,9 +45,6 @@ type
     {Z-Order}
     function GetBackIndex: Integer; override;
     procedure SetMemoZorder;
-
-    {Clipboard}
-    procedure PasteText(const Value: String); override;
 
     {DefaultSize}
     function GetDefaultSize: TSizeF; override;
@@ -91,6 +89,7 @@ type
     function GetLoadFilesFilter: String; override;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
     function LoadTXT(const Stream: TStream): TObject; virtual;
+    function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; override;
     {$endregion}
 
   //--- Properties ---
@@ -212,12 +211,19 @@ end;
 
 {$region 'Clipboard'}
 
-procedure TTextStoryItem.PasteText(const Value: String);
+function TTextStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
 begin
-  if Value.StartsWith('object') then //if Delphi serialization format (its text-based form) then let TStoryItem handle it
-    inherited
-  else
-    Text := Value; //else replace current text
+  if Clipboard.HasText then
+  begin
+    var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
+    if not LText.StartsWith('object ') then //if Delphi serialization format (its text-based form) then don't paste as text (let ancestor TStoryItem handle it)
+    begin
+      Text := LText; //else replace current text
+      Exit(Self);
+    end;
+  end;
+
+  result := inherited; //fallback to ancestor implementation
 end;
 
 {$endregion}

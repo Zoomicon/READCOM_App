@@ -12,6 +12,7 @@ uses
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
   System.UITypes, //for TAlphaColor
+  FMX.Clipboard, //for IFMXExtendedClipboardService
   FMX.Controls, //for TControl
   FMX.Graphics, //for TFont
   FMX.Objects, //for TImage
@@ -49,6 +50,7 @@ type
     function GetLoadFilesFilter: String;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload;
     function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload;
+    function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 
     {Save}

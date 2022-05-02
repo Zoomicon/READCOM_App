@@ -58,13 +58,10 @@ type
     function GetBackIndex: Integer; override;
     procedure SetImageControlZorder; virtual;
 
-    {Clipboard}
-    procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; override;
-    procedure PasteImage(const BitmapSurface: TBitmapSurface); override;
-
     {Image}
     function GetImage: TImage; virtual;
-    procedure SetImage(const Value: TImage); virtual;
+    procedure SetImage(const Value: TImage); overload; virtual;
+    procedure SetImage(const Value: TBitmapSurface); overload; virtual;
 
     {Options}
     function GetOptions: IStoryItemOptions; override;
@@ -93,6 +90,7 @@ type
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
     function LoadSVG(const Stream: TStream): TObject; virtual;
     function LoadBitmap(const Stream: TStream): TObject; virtual;
+    function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; override;
     {$endregion}
 
   //--- Properties ---
@@ -191,34 +189,6 @@ end;
 
 {$endregion}
 
-{$region 'Clipboard'}
-
-procedure TImageStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);
-begin
-  if Clipboard.HasImage then
-  begin
-    var BitmapSurface := Clipboard.GetImage;
-    try
-      PasteImage(BitmapSurface);
-    finally
-      FreeAndNil(BitmapSurface); //must release the TBitmapSurface to not have memory leak
-    end;
-  end
-  else
-    inherited; //fallback to ancestor implementation
-end;
-
-procedure TImageStoryItem.PasteImage(const BitmapSurface: TBitmapSurface);
-begin
-  ImageControl.Bitmap.Assign(BitmapSurface);
-  UpdateGlyphVisibility;
-
-  if FAutoSize then
-    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
-end;
-
-{$endregion}
-
 {$region 'IStorable'}
 
 function TImageStoryItem.GetLoadFilesFilter: String;
@@ -281,6 +251,22 @@ begin
   result := Self;
 end;
 
+function TImageStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
+begin
+  if Clipboard.HasImage then
+  begin
+    var BitmapSurface := Clipboard.GetImage;
+    try
+      SetImage(BitmapSurface);
+      Exit(Self);
+    finally
+      FreeAndNil(BitmapSurface); //must release the TBitmapSurface to not have memory leak
+    end;
+  end;
+
+  result := inherited; //fallback to ancestor implementation
+end;
+
 {$endregion}
 
 {$REGION '--- PROPERTIES ---'}
@@ -309,6 +295,15 @@ begin
   else
     ImageControl.Bitmap.Assign(Value.Bitmap); //can't assign TImage directly
 
+  UpdateGlyphVisibility;
+
+  if FAutoSize then
+    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
+end;
+
+procedure TImageStoryItem.SetImage(const Value: TBitmapSurface);
+begin
+  ImageControl.Bitmap.Assign(Value);
   UpdateGlyphVisibility;
 
   if FAutoSize then
