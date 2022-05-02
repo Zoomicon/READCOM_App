@@ -1446,10 +1446,10 @@ begin
   begin
     var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
     if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem
-      result := LoadFromString(LText, CreateNew); //Create new object if we don't know from beforehand what exact type it is
-  end
-  else
-    result := nil;
+      Exit(LoadFromString(LText, CreateNew)); //Create new object if we don't know from beforehand what exact type it is
+  end;
+
+  result := nil;
 end;
 
 {$endregion}
