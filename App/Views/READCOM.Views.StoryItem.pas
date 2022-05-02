@@ -269,6 +269,7 @@ implementation
     FMX.Platform, //for TPlatformServices
     Zoomicon.Generics.Collections, //for TObjectListEx
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
+    Zoomicon.Helpers.RTL.StreamHelpers, //for TStreamErrorHelper.ReadComponent
     READCOM.App.Debugging, //for Log
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
@@ -1191,14 +1192,18 @@ begin
   with THackReader(Reader) do
     begin
     var RemovedActivationOrderProperty := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
-    var UnknownProperty := Message.StartsWith('Error reading ') and Message.EndsWith(' does not exist'); //Ignores unknown properties //TODO: error starts with 'Error reading XX: ...' (not sure if this is always unlocalized) and also assuming System.RTL.Consts.SUnknownProperty = 'Property %s does not exist' - should have instead a function that can compare a format string with some text and match it (could even extract the format parameters)
+    var ErrorReading := Message.StartsWith('Error reading ');
+    var UnknownProperty := ErrorReading and Message.EndsWith(' does not exist'); //Ignores unknown properties //TODO: error starts with 'Error reading XX: ...' (not sure if this is always unlocalized) and also assuming System.RTL.Consts.SUnknownProperty = 'Property %s does not exist' - should have instead a function that can compare a format string with some text and match it (could even extract the format parameters)
+    var InvalidProperty := ErrorReading and Message.EndsWith('Invalid property value'); //Ignores unloadable properties (e.g. any stored event handlers) //TODO: find related constant in System.RTL.Consts.SUnknownProperty (see previous comment)
 
     if RemovedActivationOrderProperty then
       Log('Ignored deprecated property "ActivationOrder"');
     if UnknownProperty then
       Log('Ignored unknown property "%s"', [PropName]);
+    if InvalidProperty then
+      Log('Ignored invalid value for property "%s"', [PropName]);
 
-    Handled := RemovedActivationOrderProperty or UnknownProperty;
+    Handled := RemovedActivationOrderProperty or UnknownProperty or InvalidProperty;
     end;
 end;
 
@@ -1407,7 +1412,7 @@ begin
     RemoveStoryItems; //remove existing children
   end;
 
-  result := Stream.ReadComponent(Instance) as IStoryItem; //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties
+  result := Stream.ReadComponent(Instance, ReaderError) as IStoryItem; //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties, but that won't work by itself (so passing ErrorHandler here too via TStreamErrorHelper.CreateComponent method) if "CreateNew=true" is used, since we pass nil in that case so ReadState is called on TComponent, not on TStoryItem
 end;
 
 function TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
