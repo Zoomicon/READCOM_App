@@ -1,3 +1,6 @@
+//Description: CustomManipulator (FMX)
+//Author: George Birbilis (http://zoomicon.com)
+
 unit Zoomicon.Manipulation.FMX.CustomManipulator;
 
 interface
@@ -284,7 +287,8 @@ begin
   InsertObject(GetBackIndex - 1, DropTarget);
   EndUpdate;
   *)
-  DropTarget.SendToBack;
+  if Assigned(DropTarget) and DropTarget.Visible then
+    DropTarget.SendToBack;
 end;
 
 procedure TCustomManipulator.BringToFrontElseSendToBack(const Control: TControl);

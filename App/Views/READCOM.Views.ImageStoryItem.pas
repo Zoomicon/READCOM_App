@@ -80,7 +80,7 @@ type
     procedure SetSVGText(const Value: String);
     {$endregion}
 
-    procedure Resize; override;
+    procedure Resize; override; //TODO: remove (see comments in implementation)
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -154,7 +154,9 @@ end;
 
 procedure TImageStoryItem.UpdateGlyphVisibility;
 begin
-  var img := ImageControl.Bitmap.Image;
+  var img: TBitmapImage := nil;
+  if Assigned(ImageControl) and Assigned(ImageControl.Bitmap) then
+    img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
   FStoreSVG := Glyph.Visible;
   SetGlyphZorder; //keep before SetImageControlZorder to show the Glyph above the bitmap image if due to some error it's appearing together with the bitmap
@@ -186,7 +188,8 @@ begin
   InsertObject(GetBackIndex - 1, ImageControl);
   EndUpdate;
   *)
-  ImageControl.SendToBack;
+  if Assigned(ImageControl) and ImageControl.Visible then
+    ImageControl.SendToBack;
 end;
 
 {$endregion}
@@ -358,6 +361,8 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
 
     //var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
     //bitmap.DrawSVGIcon;
+
+    //UpdateGlyphVisibility; //TODO
   end;
 end;
 
@@ -390,6 +395,7 @@ end;
 
 {$ENDREGION PROPERTIES}
 
+//TODO: see why it fails to load/show Bitmap images from saved state if this is removed
 procedure TImageStoryItem.Resize;
 begin
   var tmp := SVGText;

@@ -480,7 +480,8 @@ begin
   InsertObject((inherited GetBackIndex) + 1, Border);
   EndUpdate;
   *)
-  Border.SendToBack;
+  if Assigned(Border) and Border.Visible then
+    Border.SendToBack;
 end;
 
 procedure TStoryItem.SetGlyphZorder;
@@ -491,7 +492,8 @@ begin
   InsertObject((inherited GetBackIndex) + 2, Glyph);
   EndUpdate;
   *)
-  Glyph.SendToBack;
+  if Assigned(Glyph) and Glyph.Visible then
+    Glyph.SendToBack;
 end;
 
 {$endregion}

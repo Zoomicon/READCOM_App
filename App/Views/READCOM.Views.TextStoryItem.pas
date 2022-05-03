@@ -208,7 +208,8 @@ begin
   InsertObject((inherited GetBackIndex) + 1, Memo);
   EndUpdate;
   *)
-  Memo.SendToBack;
+  if Assigned(Memo) and Memo.Visible then
+    Memo.SendToBack;
 end;
 
 {$endregion}
