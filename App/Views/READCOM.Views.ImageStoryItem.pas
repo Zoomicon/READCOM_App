@@ -55,7 +55,7 @@ type
     function GetStoreBitmap: Boolean;
 
     {Z-Order}
-    function GetBackIndex: Integer; override;
+    //function GetBackIndex: Integer; override;
     procedure SetImageControlZorder; virtual;
 
     {Image}
@@ -171,10 +171,12 @@ end;
 
 {$region 'Z-order'}
 
+(* //REMOVED, WE DON'T NEED +1 SINCE WHEN THE IMAGECONTROL IS SHOWN, THE GLYPH IS HIDDEN AND VICE-VERSA
 function TImageStoryItem.GetBackIndex: Integer;
 begin
   result := inherited + 1; //reserve one more place at the bottom for ImageControl
 end;
+*)
 
 procedure TImageStoryItem.SetImageControlZorder;
 begin
