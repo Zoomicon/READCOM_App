@@ -21,9 +21,6 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
     inherited actionSave: TAction
       ImageIndex = 7
     end
-    inherited actionChangeUrlAction: TAction
-      ImageIndex = 9
-    end
     inherited actionAdd: TAction
       ImageIndex = 10
     end

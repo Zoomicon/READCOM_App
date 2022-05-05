@@ -77,6 +77,9 @@ type
     procedure SetGlyphZorder; virtual;
     procedure SetBorderZorder; virtual;
 
+    {Cursor}
+    procedure UpdateCursor;
+
     {Clipboard}
     procedure Paste(const Clipboard: IFMXExtendedClipboardService); overload; virtual;
 
@@ -166,6 +169,10 @@ type
     {UrlAction}
     function GetUrlAction: String; virtual;
     procedure SetUrlAction(const Value: String); virtual;
+
+    {Tags}
+    function GetTags: String;
+    procedure SetTags(const Value: String);
 
     {TargetsVisible}
     function GetTargetsVisible: Boolean; virtual;
@@ -261,7 +268,8 @@ type
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden default false;
     property Anchored: Boolean read IsAnchored write SetAnchored default true;
-    property UrlAction: String read GetUrlAction write SetUrlAction; //default nil //TODO: or is it ''?
+    property UrlAction: String read GetUrlAction write SetUrlAction; //default '' (implied, not allows to use '')
+    property Tags: String read GetTags write SetTags; //default '' (implied, not allows to use '')
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible stored false default false;
   end;
 
@@ -972,6 +980,7 @@ end;
 procedure TStoryItem.SetAnchored(const Value: Boolean);
 begin
   Locked := Value;
+  UpdateCursor;
 end;
 
 {$endregion}
@@ -986,10 +995,21 @@ end;
 procedure TStoryItem.SetUrlAction(const Value: String);
 begin
   FUrlAction := Value;
-  if (Value <> '') then
-    Cursor := crHandPoint
-  else
-    Cursor := crDefault;
+  UpdateCursor;
+end;
+
+{$endregion}
+
+{$region 'Tags'}
+
+function TStoryItem.GetTags: String;
+begin
+  result := TagString;
+end;
+
+procedure TStoryItem.SetTags(const Value: String);
+begin
+  TagString := Value;
 end;
 
 {$endregion}
@@ -1163,6 +1183,16 @@ var Clipboard: IFMXExtendedClipboardService;
 begin
   if TPlatformServices.Current.SupportsPlatformService(IFMXExtendedClipboardService, Clipboard) then
     Paste(Clipboard);
+end;
+
+procedure TStoryItem.UpdateCursor;
+begin
+  if (UrlAction <> '') then
+    Cursor := crHandPoint
+  else if (not Anchored) then
+    Cursor := crDrag
+  else
+    Cursor := crDefault;
 end;
 
 procedure TStoryItem.Paste(const Clipboard: IFMXExtendedClipboardService);

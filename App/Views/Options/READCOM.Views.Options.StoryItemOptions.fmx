@@ -1,5 +1,5 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 400.000000000000000000
+  Size.Width = 472.000000000000000000
   Size.Height = 64.000000000000000000
   Size.PlatformDefault = False
   object AddDialog: TOpenDialog
@@ -14,7 +14,7 @@ object StoryItemOptions: TStoryItemOptions
   end
   object layoutButtons: TFlowLayout
     Align = MostTop
-    Size.Width = 400.000000000000000000
+    Size.Width = 472.000000000000000000
     Size.Height = 60.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 12
@@ -70,10 +70,9 @@ object StoryItemOptions: TStoryItemOptions
       OnClick = actionToggleAnchoredExecute
     end
     object btnToggleActionURL: TSpeedButton
-      Action = actionChangeUrlAction
+      StaysPressed = True
       Align = Client
       Anchors = []
-      Enabled = True
       Hint = 
         'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
         ' Active StoryItem is clicked in non-Edit mode'
@@ -83,6 +82,25 @@ object StoryItemOptions: TStoryItemOptions
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'actiontoolbutton'
+      Text = 'Change URL Action'
+      OnClick = actionChangeUrlActionExecute
+    end
+    object btnToggleTags: TSpeedButton
+      StaysPressed = True
+      Align = Client
+      Anchors = []
+      Hint = 
+        'Set Tags'#13#13'Defines Tags used to match unanchored (moveable) Story' +
+        'Items to anchored (non-moveable) target StoryItems to allow proc' +
+        'eeding to Next StoryPoint'
+      Images = Globals.SVGIconImageList
+      ImageIndex = 27
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Change Tags'
+      OnClick = actionChangeTagsExecute
     end
     object btnLoad: TSpeedButton
       Action = actionLoad
@@ -132,17 +150,10 @@ object StoryItemOptions: TStoryItemOptions
       OnExecute = actionSaveExecute
       ImageIndex = 7
     end
-    object actionChangeUrlAction: TAction
-      Text = 'Change URL Action'
-      ImageIndex = 9
-      OnExecute = actionChangeUrlActionExecute
-      ImageIndex = 9
-    end
     object actionAdd: TAction
       Category = 'File'
       Text = 'Add'
       ImageIndex = 10
-      OnExecute = actionAddExecute
       ImageIndex = 10
     end
   end

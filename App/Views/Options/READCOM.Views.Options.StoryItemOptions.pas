@@ -13,11 +13,14 @@ uses
   FMX.Controls.Presentation, System.ImageList,
   FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit;
 
+resourcestring
+  STR_URL = 'URL';
+  STR_TAGS = 'Tags';
+
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
     layoutButtons: TFlowLayout;
     ActionList: TActionList;
-    actionChangeUrlAction: TAction;
     actionLoad: TAction;
     actionSave: TAction;
     actionAdd: TAction;
@@ -30,13 +33,14 @@ type
     btnToggleActionURL: TSpeedButton;
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
+    btnToggleTags: TSpeedButton;
     procedure actionToggleHomeExecute(Sender: TObject);
     procedure actionToggleStoryPointExecute(Sender: TObject);
     procedure actionToggleAnchoredExecute(Sender: TObject);
     procedure actionChangeUrlActionExecute(Sender: TObject);
+    procedure actionChangeTagsExecute(Sender: TObject);
     procedure actionLoadExecute(Sender: TObject);
     procedure actionSaveExecute(Sender: TObject);
-    procedure actionAddExecute(Sender: TObject);
 
   protected
     FStoryItem: IStoryItem;
@@ -61,6 +65,7 @@ type
     function ActLoad: Boolean;
     function ActSave: Boolean;
     procedure ActChangeUrl;
+    procedure ActChangeTags;
 
     property Popup: TPopup read FPopup write FPopup stored false;
 
@@ -104,6 +109,7 @@ begin
     btnToggleStoryPoint.IsPressed := StoryPoint;
     btnToggleAnchored.IsPressed := Anchored;
     btnToggleActionURL.IsPressed := (UrlAction <> '');
+    btnToggleTags.IsPressed := (Tags <> '');
   end;
 end;
 
@@ -171,12 +177,32 @@ end;
 
 procedure TStoryItemOptions.ActChangeUrl;
 begin
-  TDialogServiceAsync.InputQuery('URL', ['URL'], [StoryItem.GetUrlAction], procedure(const AResult: TModalResult; const AValues: array of string)
+  TDialogServiceAsync.InputQuery(STR_URL, [STR_URL], [StoryItem.GetUrlAction],
+    procedure(const AResult: TModalResult; const AValues: array of string)
     begin
-    if (AResult = mrOk) then
+      if (AResult = mrOk) then
       begin
-      StoryItem.SetUrlAction(AValues[0]);
-      //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
+        var LUrl := Trim(AValues[0]);
+        StoryItem.SetUrlAction(LUrl);
+        btnToggleActionURL.IsPressed := (LUrl <> '');
+        //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
+      end;
+    end
+  );
+  ShowPopup;
+end;
+
+procedure TStoryItemOptions.ActChangeTags;
+begin
+  TDialogServiceAsync.InputQuery(STR_TAGS, [STR_TAGS], [StoryItem.GetTags],
+    procedure(const AResult: TModalResult; const AValues: array of string)
+    begin
+      if (AResult = mrOk) then
+      begin
+        var LTags := Trim(AValues[0]);
+        StoryItem.Tags := LTags;
+        btnToggleTags.IsPressed := (LTags <> '');
+        //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
       end;
     end
   );
@@ -203,9 +229,14 @@ begin
   ShowPopup; //show popup again to make the toggle evident
 end;
 
-procedure TStoryItemOptions.actionAddExecute(Sender: TObject);
+procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);
 begin
-  actAdd;
+  actChangeUrl;
+end;
+
+procedure TStoryItemOptions.actionChangeTagsExecute(Sender: TObject);
+begin
+  actChangeTags;
 end;
 
 procedure TStoryItemOptions.actionLoadExecute(Sender: TObject);
@@ -216,11 +247,6 @@ end;
 procedure TStoryItemOptions.actionSaveExecute(Sender: TObject);
 begin
   actSave;
-end;
-
-procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);
-begin
-  actChangeUrl;
 end;
 
 {$endregion}
