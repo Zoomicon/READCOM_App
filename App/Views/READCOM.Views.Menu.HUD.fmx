@@ -198,13 +198,14 @@ object StoryHUD: TStoryHUD
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
-        Position.X = 3.000000000000000000
-        Position.Y = 276.000000000000000000
+        Position.X = 49.000000000000000000
+        Position.Y = 230.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
         Text = 'Targets'
+        Visible = False
         OnClick = btnToggleTargetsVisibleClick
       end
       object btnToggleUseStoryTimer: TSpeedButton
@@ -219,7 +220,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 325.000000000000000000
+        Position.Y = 276.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -238,7 +239,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 374.000000000000000000
+        Position.Y = 325.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -254,7 +255,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 420.000000000000000000
+        Position.Y = 371.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -271,7 +272,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 466.000000000000000000
+        Position.Y = 417.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -473,13 +474,12 @@ object StoryHUD: TStoryHUD
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 6.000000000000000000
-        Position.X = 52.000000000000000000
-        Position.Y = 374.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 413.000000000000000000
         Size.Width = 43.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 4
-        Visible = False
       end
     end
   end

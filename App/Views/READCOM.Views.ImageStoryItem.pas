@@ -146,10 +146,10 @@ constructor TImageStoryItem.Create(AOwner: TComponent);
 begin
   inherited;
 
-  InitImageControl;
-
   Glyph.Visible := true;
   SetGlyphZorder;
+
+  InitImageControl; //must do after SetGlyphZorder
 end;
 
 procedure TImageStoryItem.UpdateGlyphVisibility;
@@ -159,8 +159,11 @@ begin
     img := ImageControl.Bitmap.Image;
   Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
   FStoreSVG := Glyph.Visible;
+
+  //no need to call SetBorderZorder since it will stay on top (under the DropTarget), the SetXXZorder takes something to the back of Z-order
   SetGlyphZorder; //keep before SetImageControlZorder to show the Glyph above the bitmap image if due to some error it's appearing together with the bitmap
   SetImageControlZorder;
+  SetBackgroundZorder; //keep at bottom
 end;
 
 procedure TImageStoryItem.Loaded;

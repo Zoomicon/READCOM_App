@@ -27,6 +27,7 @@ type
   TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     Border: TRectangle;
     Glyph: TSVGIconImage;
+    Background: TRectangle;
 
   //-- Fields ---
 
@@ -72,6 +73,7 @@ type
 
     {Z-Order}
     function GetBackIndex: Integer; override;
+    procedure SetBackgroundZorder; virtual;
     procedure SetGlyphZorder; virtual;
     procedure SetBorderZorder; virtual;
 
@@ -282,6 +284,19 @@ implementation
 
 constructor TStoryItem.Create(AOwner: TComponent);
 
+  procedure InitBackground;
+  begin
+    with Background do
+    begin
+      Stored := false; //don't store state, should use state from designed .FMX resource
+      SetSubComponent(true);
+      Align := TAlignLayout.Contents;
+      SetBackgroundZorder;
+      Stroke.Kind := TBrushKind.None; //no borderline for the background (there exists separate Border subcomponent that is above glyphs/bitmaps)
+      HitTest := false;
+    end;
+  end;
+
   procedure InitGlyph;
   begin
     with Glyph do
@@ -289,10 +304,10 @@ constructor TStoryItem.Create(AOwner: TComponent);
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      WrapMode := TImageWrapMode.Stretch;
+      WrapMode := TImageWrapMode.Stretch; //stretch the Glyph SVG
       SetGlyphZorder;
       HitTest := false;
-    end; //TODO: see how we can tell TSVGIconImage to stretch the SVG to fit its size instead of placing it so that it fits without distortion
+    end;
   end;
 
   procedure InitBorder;
@@ -333,9 +348,10 @@ begin
 
   //FID := TGUID.NewGuid; //Generate new statistically unique ID
 
-  InitDropTarget;
-  InitGlyph;
+  InitDropTarget; //will end up at the top
   InitBorder;
+  InitGlyph;
+  InitBackground; //will end up at the bottom
 
   //DragMode := TDragMode.dmManual; //no automatic drag (it's the default)
   Anchored := true;
@@ -472,16 +488,16 @@ begin
   result := inherited + 2; //reserve two more places at the bottom for Glyph and Border
 end;
 
-procedure TStoryItem.SetBorderZorder;
+procedure TStoryItem.SetBackgroundZorder;
 begin
   (* //NOT WORKING
   BeginUpdate;
-  RemoveObject(Border);
-  InsertObject((inherited GetBackIndex) + 1, Border);
+  RemoveObject(Background);
+  InsertObject((inherited GetBackIndex) + 3, Background);
   EndUpdate;
   *)
-  if Assigned(Border) and Border.Visible then
-    Border.SendToBack;
+  if Assigned(Background) and Background.Visible then
+    Background.SendToBack;
 end;
 
 procedure TStoryItem.SetGlyphZorder;
@@ -494,6 +510,18 @@ begin
   *)
   if Assigned(Glyph) and Glyph.Visible then
     Glyph.SendToBack;
+end;
+
+procedure TStoryItem.SetBorderZorder;
+begin
+  (* //NOT WORKING
+  BeginUpdate;
+  RemoveObject(Border);
+  InsertObject((inherited GetBackIndex) + 1, Border);
+  EndUpdate;
+  *)
+  if Assigned(Border) and Border.Visible then
+    Border.SendToBack;
 end;
 
 {$endregion}
@@ -532,7 +560,9 @@ begin
     with Border do
     begin
       Visible := Value;
-      SetBorderZorder;
+      SetBorderZorder; //will end up on top
+      SetGlyphZorder;
+      SetBackgroundZorder; //will end up at the bottom
     end;
 end;
 
@@ -647,8 +677,10 @@ procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited; //call ancestor implementation
 
-  SetGlyphZorder; //send the glyph even more below the DropTarget ("inherited SetEditMode" sent it to the back)
-  SetBorderZorder; //set the border even more below the DropTarget and the Glyph
+  //send the glyph etc. even more below the DropTarget ("inherited SetEditMode" sent it to the back) //TODO: make this helper method (also done at SetBorderVisible)
+  SetBorderZorder; //will end up on top
+  SetGlyphZorder;
+  SetBackgroundZorder; //will end up at the bottom
 
   for var StoryItem in FStoryItems do
     ApplyParentEditMode(StoryItem);
@@ -867,19 +899,20 @@ end;
 
 function TStoryItem.GetBackgroundColor: TAlphaColor;
 begin
-  if Assigned(Border) then
-    result := Border.Fill.Color
+  if Assigned(Background) then
+    result := Background.Fill.Color
   else
     result := TAlphaColorRec.Null;
 end;
 
 procedure TStoryItem.SetBackgroundColor(const Value: TAlphaColor);
 begin
-  if Assigned(Border) then
-  begin
-    //Border.Fill.Kind := TBrushKind.Solid; //TODO
-    Border.Fill.Color := Value;
-  end;
+  if Assigned(Background) then
+    with Background do
+    begin
+      Fill.Kind := TBrushKind.Solid;
+      Fill.Color := Value;
+    end;
 end;
 
 {$endregion}
@@ -1040,7 +1073,7 @@ begin
   if EditMode or (not FDragging) then exit;
 
   var LParent := ParentStoryItem;
-  if Assigned(LParent) and ParentStoryItem.Active then //only when ParentStoryItem is the ActiveStoryItem
+  if Assigned(LParent) and LParent.Active then //only when ParentStoryItem is the ActiveStoryItem //Note: never moving the RootStoryItem
   begin
     var LParentView := LParent.View;
     var newPos := PointF(X, Y) - FDragStart;
@@ -1058,7 +1091,10 @@ begin
 
   if not EditMode then
     begin
-      if (FUrlAction <> '') then
+      var LParent := ParentStoryItem;
+      if ((FUrlAction <> '') {and //TODO: should have URLs clickable only for children of ActiveStoryItem (and for itself if it's the RootStoryItem maybe) //in non-EditMode should disable HitTest though at everything that isn't the current StoryItem or direct child of the ActiveStoryItem apart from the TextStoryItems maybe (could maybe just disble HitTest at all siblings of ActiveStoryItem and have everything under ActiveStoryItem HitTest-enabled)
+          ((Assigned(LParent) and LParent.Active) or
+          ((not Assigned(LParent)) and Active))}) then //only when ParentStoryItem is the ActiveStoryItem //assuming short-circuit evaluation //if no LParent then it's the RootStoryItem, allowing it to have URLAction too
         FStory.OpenUrl(FUrlAction);
     end
 

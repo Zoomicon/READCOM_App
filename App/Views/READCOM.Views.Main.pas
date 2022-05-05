@@ -214,10 +214,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  var StrAppVersion := '(' + Application.AppVersion + ')';
   if not GlobalUseDX then //GlobalUseDX10 (not using that, using fallback to plain GDI)
-    Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE
+    Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE + ' ' + StrAppVersion
   else
-    Caption := STR_APP_TITLE;
+    Caption := STR_APP_TITLE + ' ' + StrAppVersion;
 
   TStoryItem.Story := Self; //provide a way to StoryItems to influence the Story context
 
