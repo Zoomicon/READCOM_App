@@ -1,6 +1,6 @@
 # Privacy Policy
 
-This privacy policy sets out how we use and protect any information that you give READ-COM when you use this app.
+This privacy policy sets out how we use and protect any information that you may give when you use this app.
 
 [READ-COM consortium](https://www.read-com-eu.uma.es/the-partners/) is committed to ensuring that your privacy is protected. Should we ask you to provide certain information by which you can be identified when using this app, then you can be assured that it will only be used in accordance with this privacy statement.
 
