@@ -26,6 +26,9 @@
 #*.obj
 #
 
+# Windows Store deployment package
+*.msix
+
 # Delphi compiler-generated binaries (safe to delete)
 *.exe
 *.dll
