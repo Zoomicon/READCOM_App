@@ -1,19 +1,19 @@
 object AboutFrame: TAboutFrame
-  Size.Width = 408.000000000000000000
-  Size.Height = 376.000000000000000000
+  Size.Width = 396.000000000000000000
+  Size.Height = 396.000000000000000000
   Size.PlatformDefault = False
   object rectBackground: TRectangle
     Align = Contents
-    Size.Width = 408.000000000000000000
-    Size.Height = 376.000000000000000000
+    Size.Width = 396.000000000000000000
+    Size.Height = 396.000000000000000000
     Size.PlatformDefault = False
     object GlyphLogo: TGlyph
       OnTap = GlyphLogoTap
       Align = Scale
-      Position.X = 8.000000000000000000
-      Position.Y = 8.000000000000000000
-      Size.Width = 109.000000000000000000
-      Size.Height = 109.000000000000000000
+      Position.X = 7.764706611633301000
+      Position.Y = 8.425530433654785000
+      Size.Width = 105.794105529785200000
+      Size.Height = 114.797874450683600000
       Size.PlatformDefault = False
       ImageIndex = 24
       Images = Globals.SVGIconImageList
@@ -22,7 +22,7 @@ object AboutFrame: TAboutFrame
       Anchors = [akLeft, akTop, akRight]
       Position.X = 125.000000000000000000
       Position.Y = 8.000000000000000000
-      Size.Width = 275.000000000000000000
+      Size.Width = 263.000000000000000000
       Size.Height = 109.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -30,7 +30,7 @@ object AboutFrame: TAboutFrame
         Align = Horizontal
         StyledSettings = [Family, Size, FontColor]
         Position.Y = 24.000000000000000000
-        Size.Width = 275.000000000000000000
+        Size.Width = 263.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.StyleExt = {00070000000000000004000000}
@@ -41,13 +41,13 @@ object AboutFrame: TAboutFrame
       object PanelVersion: TPanel
         Align = Horizontal
         Position.Y = 49.000000000000000000
-        Size.Width = 275.000000000000000000
+        Size.Width = 263.000000000000000000
         Size.Height = 24.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
         object lblVersion: TLabel
           Align = Left
-          Position.X = 96.000000000000000000
+          Position.X = 84.000000000000000000
           Size.Width = 57.000000000000000000
           Size.Height = 24.000000000000000000
           Size.PlatformDefault = False
@@ -66,7 +66,7 @@ object AboutFrame: TAboutFrame
           Align = MostLeft
           Anchors = [akLeft, akTop, akRight, akBottom]
           Opacity = 0.000000000000000000
-          Size.Width = 96.000000000000000000
+          Size.Width = 84.000000000000000000
           Size.Height = 24.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 5
@@ -90,21 +90,22 @@ object AboutFrame: TAboutFrame
         'https://github.com/zoomicon/READCOM_Gallery'
         ''
         'Icons:'
-        'https://openmoji.org/')
+        'https://openmoji.org'
+        'https://oNlineWebFonts.com')
       ReadOnly = True
       Anchors = [akLeft, akTop, akRight, akBottom]
       Position.X = 8.000000000000000000
       Position.Y = 125.000000000000000000
-      Size.Width = 392.000000000000000000
-      Size.Height = 243.000000000000000000
+      Size.Width = 380.000000000000000000
+      Size.Height = 263.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 388.000000000000000000
-      Viewport.Height = 239.000000000000000000
+      Viewport.Width = 376.000000000000000000
+      Viewport.Height = 259.000000000000000000
     end
     object btnClose: TSpeedButton
       Anchors = [akTop, akRight]
-      Position.X = 374.000000000000000000
+      Position.X = 362.000000000000000000
       Position.Y = 8.000000000000000000
       Size.Width = 24.000000000000000000
       Size.Height = 24.000000000000000000
