@@ -394,7 +394,6 @@
         <DCCReference Include="..\Zoomicon.Downloader\Zoomicon.Downloader.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
         <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
         <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
@@ -445,6 +444,12 @@
         </DCCReference>
         <DCCReference Include="READCOM.App.Main.pas"/>
         <DCCReference Include="READCOM.App.Debugging.pas"/>
+        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
+        <DCCReference Include="Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas">
+            <Form>TextStoryItemOptions</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

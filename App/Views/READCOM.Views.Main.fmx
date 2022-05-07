@@ -197,6 +197,10 @@ object MainForm: TMainForm
         OnExecute = HUDactionNextThemeExecute
         ImageIndex = 26
       end
+      inherited actionOptions: TAction
+        OnExecute = HUDactionOptionsExecute
+        ImageIndex = 29
+      end
     end
     inherited MultiViewFrameStand: TFrameStand
       Left = 432

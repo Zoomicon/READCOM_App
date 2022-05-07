@@ -69,6 +69,7 @@ type
   IPanelStoryItem = interface;
   IImageStoryItem = interface;
   IAudioStoryItem = interface;
+  ITextStoryItem = interface;
   IStoryItemOptions = interface;
 
   TIStoryItemList = TListEx<IStoryItem>;
@@ -277,6 +278,17 @@ type
 
     //-- Properties --
     property ImageStoryItem: IImageStoryItem read GetImageStoryItem write SetImageStoryItem; //stored false
+  end;
+
+  ITextStoryItemOptions = interface(IStoryItemOptions)
+    ['{EF0EF86E-7050-435F-81DC-4828A9FD8101}']
+
+    {TextStoryItem}
+    function GetTextStoryItem: ITextStoryItem;
+    procedure SetTextStoryItem(const Value: ITextStoryItem);
+
+    //-- Properties --
+    property TextStoryItem: ITextStoryItem read GetTextStoryItem write SetTextStoryItem; //stored false
   end;
 
 

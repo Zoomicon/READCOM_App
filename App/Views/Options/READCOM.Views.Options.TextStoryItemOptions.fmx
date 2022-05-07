@@ -1,17 +1,20 @@
-inherited ImageStoryItemOptions: TImageStoryItemOptions
+inherited TextStoryItemOptions: TTextStoryItemOptions
   Size.Width = 520.000000000000000000
   inherited layoutButtons: TFlowLayout
     Size.Width = 520.000000000000000000
-    object btnCamera: TSpeedButton
-      Action = TakePhotoFromCameraAction
+    object btnToggleEditable: TSpeedButton
+      StaysPressed = True
       Align = Client
-      Enabled = True
+      Anchors = []
+      Hint = 'Toggle Editable'#13#13'Enable/Disable text editing in non-Edit mode.'
       Images = Globals.SVGIconImageList
-      ImageIndex = 11
+      ImageIndex = 28
       Size.Width = 64.000000000000000000
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'actiontoolbutton'
+      Text = 'Change URL Action'
+      OnClick = actionToggleEditableExecute
     end
   end
   inherited ActionList: TActionList
@@ -23,12 +26,6 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
     end
     inherited actionAdd: TAction
       ImageIndex = 10
-    end
-    object TakePhotoFromCameraAction: TTakePhotoFromCameraAction
-      Category = 'Media Library'
-      ImageIndex = 11
-      OnDidFinishTaking = TakePhotoFromCameraActionDidFinishTaking
-      ImageIndex = 11
     end
   end
 end

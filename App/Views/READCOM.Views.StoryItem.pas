@@ -1054,11 +1054,11 @@ procedure TStoryItem.HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouse
 begin
   inherited; //make sure we call this since it does the bring to front / send to back with double click
 
-  if (ssCtrl in Shift) then
+  if (ssCtrl in Shift) or (ssRight in Shift) then //either Ctrl+LeftClick or just RightClick
   begin
     var LObj := ObjectAtLocalPoint(PointF(X, Y) + AreaSelector.Position.Point, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
     if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-      TStoryItem(LObj.GetObject).Active := true;
+      TStoryItem(LObj.GetObject).Active := true; //make the ActiveStoryItem
   end;
 end;
 
@@ -1120,14 +1120,12 @@ begin
 
   else //EditMode //TODO: if the StoryItem is not in EditMode but the Story is in EditMode, then make the StoryItem active (else do like below)
 
-    if (ssCtrl in Shift) then
+    if (ssCtrl in Shift) or (ssRight in Shift) then //either Ctrl+LeftClick or just RightClick
     begin
       var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
       if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-        TStoryItem(LObj.GetObject).Active := true;
-    end
-    else if (ssRight in Shift) then
-      Options.ShowPopup //this will create options and assign to FOptions if it's unassigned
+        TStoryItem(LObj.GetObject).Active := true; //make the ActiveStoryItem
+    end;
 end;
 
 {$endregion}
@@ -1149,8 +1147,11 @@ end;
 procedure TStoryItem.Tap(const Point: TPointF);
 begin
   inherited; //fire event handlers
+  (* //don't use, shows popup too often, should just select maybe (like Click)
   if EditMode then
     Options.ShowPopup; //this will create options and assign to FOptions if it's unassigned
+  *)
+  //TODO: should we call MouseClick here or is a Tap mapped automatically to a MouseClick? (try on a touch device - also see if active [magnetic] Windows pen has difference from passive [capacitive] pen or finger touch)
 end;
 
 {$endregion}

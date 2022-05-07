@@ -11,7 +11,8 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Layouts,
   FMX.Controls.Presentation, System.ImageList,
-  FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit;
+  FMX.ImgList, FMX.SVGIconImageList, System.Actions, FMX.ActnList, FMX.Edit,
+  FMX.Objects;
 
 resourcestring
   STR_URL = 'URL';
@@ -34,6 +35,7 @@ type
     btnLoad: TSpeedButton;
     btnSave: TSpeedButton;
     btnToggleTags: TSpeedButton;
+    Background: TRectangle;
     procedure actionToggleHomeExecute(Sender: TObject);
     procedure actionToggleStoryPointExecute(Sender: TObject);
     procedure actionToggleAnchoredExecute(Sender: TObject);
@@ -49,7 +51,7 @@ type
 
     {StoryItem}
     function GetStoryItem: IStoryItem;
-    procedure SetStoryItem(const Value: IStoryItem);
+    procedure SetStoryItem(const Value: IStoryItem); virtual;
 
     {View}
     function GetView: TControl;
@@ -82,6 +84,8 @@ implementation
 
 {TStoryItemOptions}
 
+{$REGION 'LIFETIME MANAGEMENT'}
+
 destructor TStoryItemOptions.Destroy;
 begin
   if Assigned(FPopup) then
@@ -91,6 +95,10 @@ begin
 
   inherited; //do last
 end;
+
+{$ENDREGION}
+
+{$REGION 'PROPERTIES'}
 
 {$region 'StoryItem'}
 
@@ -124,7 +132,7 @@ end;
 
 {$endregion}
 
-{$endregion}
+{$ENDREGION PROPERTIES}
 
 {$region 'Actions'}
 
@@ -185,11 +193,11 @@ begin
         var LUrl := Trim(AValues[0]);
         StoryItem.SetUrlAction(LUrl);
         btnToggleActionURL.IsPressed := (LUrl <> '');
-        //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
       end;
+      //ShowPopup; //TODO: doesn't work (popup gets hidden after OK/Cancel). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
     end
   );
-  ShowPopup;
+  //ShowPopup; //see comment above //doesn't work either (popup shown in the background but closes after OK/Cancel at input prompt)
 end;
 
 procedure TStoryItemOptions.ActChangeTags;
@@ -202,11 +210,11 @@ begin
         var LTags := Trim(AValues[0]);
         StoryItem.Tags := LTags;
         btnToggleTags.IsPressed := (LTags <> '');
-        //ShowPopup; //doesn't work (popup gets hidden after OK). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
       end;
+      //ShowPopup; //TODO: doesn't work (popup gets hidden after OK/Cancel). Probably it is executed at other thread (and ignore), haven't tried telling it to do from the UI thread, or try else with a timeout to do it a moment later
     end
   );
-  ShowPopup;
+  //ShowPopup; //see comment above //doesn't work either (popup shown in the background but closes after OK/Cancel at input prompt)
 end;
 
 ///
@@ -214,19 +222,19 @@ end;
 procedure TStoryItemOptions.actionToggleHomeExecute(Sender: TObject);
 begin
   StoryItem.SetHome(btnToggleHome.IsPressed);
-  ShowPopup; //show popup again to make the toggle evident
+  //ShowPopup; //show popup again to make the toggle evident
 end;
 
 procedure TStoryItemOptions.actionToggleStoryPointExecute(Sender: TObject);
 begin
   StoryItem.SetStoryPoint(btnToggleStoryPoint.IsPressed);
-  ShowPopup; //show popup again to make the toggle evident
+  //ShowPopup; //show popup again to make the toggle evident
 end;
 
 procedure TStoryItemOptions.actionToggleAnchoredExecute(Sender: TObject);
 begin
   StoryItem.SetAnchored(btnToggleAnchored.IsPressed);
-  ShowPopup; //show popup again to make the toggle evident
+  //ShowPopup; //show popup again to make the toggle evident
 end;
 
 procedure TStoryItemOptions.actionChangeUrlActionExecute(Sender: TObject);
@@ -265,7 +273,8 @@ begin
       Height := options.Height;
       options.Align := TAlignLayout.Client;
       AddObject(options);
-      Placement:=TPlacement.MouseCenter;
+      PlacementTarget := FStoryItem.View;
+      Placement := TPlacement.Center; //show to center of form
       //DragWithParent := true; //don't use, will move with cursor (at Delphi 11)
       //PlacementTarget := (component as TControl);
       //PlacementRectangle:= TBounds.Create(RectF(0, 0, Width, Height));

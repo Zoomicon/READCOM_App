@@ -53,8 +53,7 @@ const
 begin
   with AMemo do
   begin
-    //set default font size
-    Font.Size := 12;
+    //Font.Size := 12; //Don't set initial font size, use the current one (which may be from a previous calculation - this speeds up when resizing and also fixes glitches when loading saved state if recalculation isn't done for some reason after loading)
 
     if (ContentBounds.Height <> 0) then //must check, else first while will loop for ever since ContentBounds.Height is 0 on load
     begin

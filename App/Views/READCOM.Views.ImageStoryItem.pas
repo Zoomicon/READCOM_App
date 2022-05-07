@@ -63,12 +63,6 @@ type
     procedure SetImage(const Value: TImage); overload; virtual;
     procedure SetImage(const Value: TBitmapSurface); overload; virtual;
 
-    {Options}
-    function GetOptions: IStoryItemOptions; override;
-
-    {EditMode}
-    procedure SetEditMode(const Value: Boolean); override;
-
     {$region 'SVG'}
 
     {SVGImage}
@@ -78,7 +72,14 @@ type
     {SVGText}
     function GetSVGText: String;
     procedure SetSVGText(const Value: String);
+
     {$endregion}
+
+    {EditMode}
+    procedure SetEditMode(const Value: Boolean); override;
+
+    {Options}
+    function GetOptions: IStoryItemOptions; override;
 
     procedure Resize; override; //TODO: remove (see comments in implementation)
 
@@ -320,6 +321,8 @@ end;
 
 {$endregion}
 
+{$region 'SVG'}
+
 {$region 'SVGImage'}
 
 function TImageStoryItem.GetSVGImage: TSVGIconImage;
@@ -371,6 +374,18 @@ end;
 
 {$endregion}
 
+{$endregion}
+
+{$region 'EditMode'}
+
+procedure TImageStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
+end;
+
+{$endregion}
+
 {$region 'Options'}
 
 function TImageStoryItem.GetOptions: IStoryItemOptions;
@@ -382,16 +397,6 @@ begin
     end;
 
   result := FOptions;
-end;
-
-{$endregion}
-
-{$region 'EditMode'}
-
-procedure TImageStoryItem.SetEditMode(const Value: Boolean);
-begin
-  inherited;
-  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
 end;
 
 {$endregion}

@@ -1,7 +1,14 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 472.000000000000000000
+  Size.Width = 396.000000000000000000
   Size.Height = 64.000000000000000000
   Size.PlatformDefault = False
+  object Background: TRectangle
+    Align = Contents
+    Fill.Color = claLightgoldenrodyellow
+    Size.Width = 396.000000000000000000
+    Size.Height = 64.000000000000000000
+    Size.PlatformDefault = False
+  end
   object AddDialog: TOpenDialog
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 152
@@ -13,9 +20,13 @@ object StoryItemOptions: TStoryItemOptions
     Top = 112
   end
   object layoutButtons: TFlowLayout
-    Align = MostTop
-    Size.Width = 472.000000000000000000
-    Size.Height = 60.000000000000000000
+    Align = Contents
+    Margins.Left = 4.000000000000000000
+    Margins.Top = 4.000000000000000000
+    Margins.Right = 4.000000000000000000
+    Margins.Bottom = 4.000000000000000000
+    Size.Width = 388.000000000000000000
+    Size.Height = 56.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 12
     Justify = Left

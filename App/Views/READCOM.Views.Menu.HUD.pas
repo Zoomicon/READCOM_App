@@ -69,6 +69,8 @@ type
     comboBackColor: TComboColorBox;
     btnNextTheme: TSpeedButton;
     actionNextTheme: TAction;
+    actionOptions: TAction;
+    btnOptions: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
     procedure actionHelpExecute(Sender: TObject);

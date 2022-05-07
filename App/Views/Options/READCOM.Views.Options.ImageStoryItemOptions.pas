@@ -28,14 +28,14 @@ type
     //procedure DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage); //for Android in case app restarted: see https://docwiki.embarcadero.com/Libraries/Sydney/en/FMX.MediaLibrary.TMessageDidFinishTakingImageFromLibrary
 
     {ImageStoryItem}
-    function GeTImageStoryItem: IImageStoryItem;
-    procedure SeTImageStoryItem(const Value: IImageStoryItem);
+    function GetImageStoryItem: IImageStoryItem; virtual;
+    procedure SetImageStoryItem(const Value: IImageStoryItem); virtual;
 
   public
     constructor Create(AOwner: TComponent); override;
 
   published
-    property ImageStoryItem: IImageStoryItem read GeTImageStoryItem write SeTImageStoryItem stored false;
+    property ImageStoryItem: IImageStoryItem read GetImageStoryItem write SetImageStoryItem stored false;
   end;
 
 implementation
@@ -53,12 +53,12 @@ end;
 
 {$region 'ImageStoryItem'}
 
-function TImageStoryItemOptions.GeTImageStoryItem: IImageStoryItem;
+function TImageStoryItemOptions.GetImageStoryItem: IImageStoryItem;
 begin
   Supports(FStoryItem, IImageStoryItem, result);
 end;
 
-procedure TImageStoryItemOptions.SeTImageStoryItem(const Value: IImageStoryItem);
+procedure TImageStoryItemOptions.SetImageStoryItem(const Value: IImageStoryItem);
 begin
   Supports(Value, IStoryItem, FStoryItem); //interface casting also supports interface implementations using aggregated or nested objects
 end;

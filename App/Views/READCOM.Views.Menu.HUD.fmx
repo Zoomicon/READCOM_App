@@ -481,6 +481,23 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         TabOrder = 4
       end
+      object btnOptions: TSpeedButton
+        Action = actionOptions
+        Anchors = [akTop, akRight]
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 29
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 455.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
     end
   end
   object MultiView: TMultiView
@@ -620,6 +637,13 @@ object StoryHUD: TStoryHUD
       Text = 'actionNextTheme'
       ImageIndex = 26
       ImageIndex = 26
+    end
+    object actionOptions: TAction
+      Category = 'Edit'
+      Text = 'Options...'
+      Hint = 'Options'#13#13'Shows Options popup for ActiveStoryItem'
+      ImageIndex = 29
+      ImageIndex = 29
     end
   end
   object MultiViewFrameStand: TFrameStand

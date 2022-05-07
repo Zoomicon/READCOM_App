@@ -79,6 +79,9 @@ type
     function GetForegroundColor: TAlphaColor; override;
     procedure SetForegroundColor(const Value: TAlphaColor); override;
 
+    {Options}
+    function GetOptions: IStoryItemOptions; override;
+
   public
     constructor Create(AOnwer: TComponent); override;
     procedure SetBounds(X, Y, AWidth, AHeight: Single); override; //note this is called also when the control is moved //TODO: see if we can get first display and subsequent resizes instead
@@ -121,6 +124,7 @@ implementation
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Text, //for
+    READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
     READCOM.Views.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
     READCOM.App.Debugging; //for Log
 
@@ -233,7 +237,16 @@ end;
 
 {$endregion}
 
-{$REGION '--- PROPERTIES ---'}
+{$region 'Helpers'}
+
+procedure TTextStoryItem.UpdateMemoReadOnly;
+begin
+  Memo.ReadOnly := not (IsEditable or IsEditMode);
+end;
+
+{$endregion}
+
+{$REGION 'PROPERTIES'}
 
 {$region 'DefaultSize'}
 
@@ -348,16 +361,22 @@ end;
 
 {$endregion}
 
-{$region 'Helpers'}
+{$region 'Options'}
 
-procedure TTextStoryItem.UpdateMemoReadOnly;
+function TTextStoryItem.GetOptions: IStoryItemOptions;
 begin
-  Memo.ReadOnly := not (IsEditable or IsEditMode);
+  if not Assigned(FOptions) then
+    begin
+    FOptions := TTextStoryItemOptions.Create(nil); //don't set storyitem as owner, seems to always store it (irrespective of "Stored := false")
+    FOptions.StoryItem := Self;
+    end;
+
+  result := FOptions;
 end;
 
 {$endregion}
 
-{$ENDREGION}
+{$ENDREGION PROPERTIES}
 
 {$region 'IStoreable'}
 

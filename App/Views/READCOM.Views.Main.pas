@@ -73,6 +73,7 @@ type
 
     //Scaling
     procedure FormResize(Sender: TObject);
+    procedure HUDactionOptionsExecute(Sender: TObject);
 
   protected
     FShortcutCut, FShortcutCopy, FShortcutPaste: TShortCut;
@@ -843,6 +844,12 @@ begin
 
   LActive.BackgroundColor := HUD.comboBackColor.Color; //TODO: could check for special interface instead (some IBackgroundColor interface)
   //TODO: doesn't seem to do something (plus the Border is shown only when items are children of edited activestoryitem, whereas we want to always draw background in that case - need extra background control that is)
+end;
+
+procedure TMainForm.HUDactionOptionsExecute(Sender: TObject);
+begin
+  if Assigned(ActiveStoryItem) then
+    ActiveStoryItem.Options.ShowPopup;
 end;
 
 {$endregion}

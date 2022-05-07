@@ -38,7 +38,6 @@ uses
   Zoomicon.Downloader.Models in '..\Zoomicon.Downloader\Zoomicon.Downloader.Models.pas',
   Zoomicon.Media.FMX in '..\Zoomicon.Media\Zoomicon.Media.FMX.pas',
   Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
-  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
@@ -56,7 +55,9 @@ uses
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
   READCOM.Views.About in 'Views\READCOM.Views.About.pas' {AboutFrame: TFrame},
   READCOM.App.Main in 'READCOM.App.Main.pas',
-  READCOM.App.Debugging in 'READCOM.App.Debugging.pas';
+  READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
+  Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
+  READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame};
 
 {$R *.res}
 
