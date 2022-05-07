@@ -6,11 +6,11 @@
   <Identity Name="17029Zoomicon.READ-COMReadingCommunities"
 	ProcessorArchitecture="x86"
 			Publisher="CN=E1504C07-F970-414E-A706-87A64B47C12B"
-			Version="0.5.7.0" />
+			Version="0.5.8.0" />
   <Properties>
     <DisplayName>READ-COM: Reading Communities</DisplayName>
     <PublisherDisplayName>Zoomicon</PublisherDisplayName>
-    <Description>READ-COM: Reading Communities (0.5.7)</Description>
+    <Description>READ-COM: Reading Communities (0.5.8)</Description>
     <Logo>Assets\Logo44x44.png</Logo>
   </Properties>
   <Resources>
@@ -30,7 +30,7 @@
 				DisplayName="READ-COM: Reading Communities"
 				Square150x150Logo="Assets\Logo150x150.png"
 				Square44x44Logo="Assets\Logo44x44.png"
-				Description="READ-COM: Reading Communities (0.5.7)" />
+				Description="READ-COM: Reading Communities (0.5.8)" />
     </Application>
   </Applications>
 </Package>
