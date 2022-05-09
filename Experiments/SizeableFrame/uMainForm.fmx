@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'Form2'
-  ClientHeight = 480
+  ClientHeight = 516
   ClientWidth = 640
   FormFactor.Width = 320
   FormFactor.Height = 480
@@ -12,11 +12,11 @@ object MainForm: TMainForm
     Align = Contents
     Fill.Color = claCadetblue
     Size.Width = 640.000000000000000000
-    Size.Height = 480.000000000000000000
+    Size.Height = 516.000000000000000000
     Size.PlatformDefault = False
     object btnAdd: TButton
       Align = Bottom
-      Position.Y = 400.000000000000000000
+      Position.Y = 436.000000000000000000
       Size.Width = 640.000000000000000000
       Size.Height = 22.000000000000000000
       Size.PlatformDefault = False
@@ -42,7 +42,7 @@ object MainForm: TMainForm
       Margins.Right = 5.000000000000000000
       Margins.Bottom = 5.000000000000000000
       Position.X = 5.000000000000000000
-      Position.Y = 427.000000000000000000
+      Position.Y = 463.000000000000000000
       Size.Width = 630.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False
@@ -58,7 +58,7 @@ object MainForm: TMainForm
       Margins.Right = 5.000000000000000000
       Margins.Bottom = 5.000000000000000000
       Position.X = 5.000000000000000000
-      Position.Y = 456.000000000000000000
+      Position.Y = 492.000000000000000000
       Size.Width = 630.000000000000000000
       Size.Height = 19.000000000000000000
       Size.PlatformDefault = False

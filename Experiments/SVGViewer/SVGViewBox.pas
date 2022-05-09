@@ -45,7 +45,7 @@ end;
 procedure TSVGPaintBox.Paint;
 begin
   FSVG.Grayscale := FGrayScale;
-  //FSVG.PaintTo(Canvas{.Handle}, RectF(0, 0, Width, Height), True);
+  //FSVG.PaintTo(Canvas{.Handle}, RectF(0, 0, Width, Height), True); //respective code not available yet for FMX in TSVGIconImageList package, only VCL
 end;
 
 {$endregion}

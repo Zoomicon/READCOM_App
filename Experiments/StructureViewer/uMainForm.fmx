@@ -62,6 +62,15 @@ object MainForm: TMainForm
                 inherited Rectangle: TRectangle
                   Size.Width = 272.000000000000000000
                   Size.Height = 152.000000000000000000
+                  inherited LabelName: TLabel
+                    Size.Width = 256.000000000000000000
+                  end
+                  inherited cbVisible: TCheckBox
+                    Size.Width = 256.000000000000000000
+                  end
+                  inherited btnShowChildren: TButton
+                    Size.Width = 254.000000000000000000
+                  end
                 end
               end
             end
