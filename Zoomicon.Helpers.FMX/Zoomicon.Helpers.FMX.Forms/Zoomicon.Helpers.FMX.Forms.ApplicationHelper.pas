@@ -23,7 +23,8 @@ implementation
     {$ELSEIF Defined(ANDROID)}
     FMX.Helpers.Android,
     Androidapi.Helpers, //for TAndroidHelper, JStringToString
-    Androidapi.Jni.JavaTypes, //to avoid "H2443 Inline function 'JStringToString' has not been expanded"
+    Androidapi.JNI.GraphicsContentViewText, //to avoid "H2443 Inline function 'SharedActivityContext' has not been expanded"
+    Androidapi.JNI.JavaTypes, //to avoid "H2443 Inline function 'JStringToString' has not been expanded"
     {$ENDIF}
     System.SysUtils, //for LongRec
     System.UITypes, //for TMsgDlgType
@@ -159,7 +160,8 @@ end;
 
 function GetAppVersionStr2: string;
 begin
-  Result := JStringToString(SharedActivityContext.getPackageManager.getPackageInfo(SharedActivityContext.getPackageName, 0).versionName); //Note: can throw JPackageManager_NameNotFoundException, but Delphi should always include a version name
+  with TAndroidHelper.Context do
+    Result := JStringToString(getPackageManager.getPackageInfo(getPackageName, 0).versionName); //Note: can throw JPackageManager_NameNotFoundException, but Delphi should always include a version name
 end;
 
 function GetAppVersionStr3: string;
