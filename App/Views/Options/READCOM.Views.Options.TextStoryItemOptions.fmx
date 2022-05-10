@@ -1,7 +1,10 @@
 inherited TextStoryItemOptions: TTextStoryItemOptions
   Size.Width = 520.000000000000000000
-  inherited layoutButtons: TFlowLayout
+  inherited Background: TRectangle
     Size.Width = 520.000000000000000000
+  end
+  inherited layoutButtons: TFlowLayout
+    Size.Width = 512.000000000000000000
     object btnToggleEditable: TSpeedButton
       StaysPressed = True
       Align = Client

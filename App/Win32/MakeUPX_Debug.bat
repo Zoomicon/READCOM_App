@@ -1,4 +1,4 @@
-copy Debug\READCOM.App.exe .
-del READCOM.App.upx.exe
-upx -9 -o READCOM.App.upx.exe READCOM.App.exe
+copy Debug\READCOM_App.exe .
+del READCOM_App.upx.exe
+upx -9 -o READCOM_App.upx.exe READCOM_App.exe
 @pause

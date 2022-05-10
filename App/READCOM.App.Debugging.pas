@@ -49,23 +49,28 @@ end;
 procedure InitObjectDebugger(const AOwner: TComponent);
 begin
   {$IFDEF DEBUG}
+  {$IF DEFINED(MSWINDOWS)} //Trying to have more than 1 form throws Segmentation Fault exception on Android, probably on iOS too. Not sure about MacOS-X or Linux, probably it works for those
   ObjectDebuggerFMXForm1 := TObjectDebuggerFMXForm.Create(AOwner); //don't Show the object inspector, MainForm shows/hides it at F11 keypress
   MessageForm := TMessageForm.Create(ObjectDebuggerFMXForm1);
+  {$ENDIF}
   {$ENDIF}
 end;
 
 procedure FreeObjectDebugger;
 begin
   {$IFDEF DEBUG}
+  {$IF DEFINED(MSWINDOWS)} //Trying to have more than 1 form throws Segmentation Fault exception on Android, probably on iOS too. Not sure about MacOS-X or Linux, probably it works for those
   FreeAndNil(ObjectDebuggerFMXForm1); //the object debugger anyway seems to be leaking objects (if different objects are selected)
+  {$ENDIF}
   {$ENDIF}
 end;
 
 procedure ToggleObjectDebuggerVisibility;
 begin
   {$IFDEF DEBUG}
-  with ObjectDebuggerFMXForm1 do
-    Visible := not Visible;
+  if Assigned(ObjectDebuggerFMXForm1) then
+    with ObjectDebuggerFMXForm1 do
+      Visible := not Visible;
   {$ENDIF}
 end;
 

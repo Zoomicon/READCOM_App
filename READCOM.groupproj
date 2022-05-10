@@ -48,8 +48,8 @@
         <Projects Include="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj">
             <Dependencies>Zoomicon.GitStore\Zoomicon.GitStore.dproj</Dependencies>
         </Projects>
-        <Projects Include="App\READCOM.App.dproj">
-            <Dependencies/>
+        <Projects Include="App\READCOM_App.dproj">
+            <Dependencies>Zoomicon.Media\Zoomicon.Media.FMX.dproj</Dependencies>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -194,14 +194,14 @@
     <Target Name="Zoomicon_GitStore_Tests:Make" DependsOnTargets="Zoomicon.GitStore:Make">
         <MSBuild Projects="Zoomicon.GitStore\Test\Zoomicon.GitStore.Tests.dproj" Targets="Make"/>
     </Target>
-    <Target Name="READCOM_App">
-        <MSBuild Projects="App\READCOM.App.dproj"/>
+    <Target Name="READCOM_App" DependsOnTargets="Zoomicon.Media.FMX">
+        <MSBuild Projects="App\READCOM_App.dproj"/>
     </Target>
-    <Target Name="READCOM_App:Clean">
-        <MSBuild Projects="App\READCOM.App.dproj" Targets="Clean"/>
+    <Target Name="READCOM_App:Clean" DependsOnTargets="Zoomicon.Media.FMX:Clean">
+        <MSBuild Projects="App\READCOM_App.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="READCOM_App:Make">
-        <MSBuild Projects="App\READCOM.App.dproj" Targets="Make"/>
+    <Target Name="READCOM_App:Make" DependsOnTargets="Zoomicon.Media.FMX:Make">
+        <MSBuild Projects="App\READCOM_App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="Zoomicon_Generics;Zoomicon_Helpers_RTL;Zoomicon_Helpers_FMX;Zoomicon_Zooming_FMX;Zoomicon_Introspection_FMX;Zoomicon_Manipulation_FMX;Zoomicon_Cache;Zoomicon_Downloader;Zoomicon_Media_FMX;Zoomicon_Text;Zoomicon_Puzzler;Zoomicon_GitStore;READCOM_GalleryLib;Zoomicon_Downloader_Tests;Zoomicon_GitStore_Tests;READCOM_App"/>
