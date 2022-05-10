@@ -201,7 +201,7 @@ end;
 
 function TListEx<T>.GetAll(const Predicate: TPredicate<T> = nil): TListEx<T>;
 begin
-  result := {TListEx<T>.}GetAll(self);
+  result := {TListEx<T>.}GetAll(self, Predicate);
 end;
 
 {$endregion}
@@ -220,7 +220,7 @@ end;
 
 function TListEx<T>.GetCount(const Predicate: TPredicate<T> = nil): Integer;
 begin
-  result := {TListEx<T>.}GetCount(self);
+  result := {TListEx<T>.}GetCount(self, Predicate);
 end;
 
 {$endregion}
@@ -241,7 +241,7 @@ end;
 
 function TListEx<T>.GetFirst(const Predicate: TPredicate<T> = nil): T;
 begin
-  result := {TListEx<T>.}GetFirst(self);
+  result := {TListEx<T>.}GetFirst(self, Predicate);
 end;
 
 {$endregion}
@@ -265,7 +265,7 @@ end;
 
 function TListEx<T>.GetLast(const Predicate: TPredicate<T> = nil): T;
 begin
-  result := {TListEx<T>.}GetLast(self);
+  result := {TListEx<T>.}GetLast(self, Predicate);
 end;
 
 {$endregion}
