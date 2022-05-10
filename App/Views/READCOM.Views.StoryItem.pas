@@ -173,6 +173,7 @@ type
     {Tags}
     function GetTags: String;
     procedure SetTags(const Value: String);
+    function AreTagsMatched: Boolean;
 
     {TargetsVisible}
     function GetTargetsVisible: Boolean; virtual;
@@ -243,7 +244,7 @@ type
   //--- Properties ---
 
   public
-    property Options: IStoryItemOptions read GetOptions stored false;
+    property Options: IStoryItemOptions read GetOptions stored false; //TODO: should we make published? (think it was causing side-effects by getting somehow stored)
     property BorderVisible: Boolean read IsBorderVisible write SetBorderVisible stored false default false;
 
     class property Story: IStory read FStory write FStory; //Note: class properties can't be published and are not stored
@@ -270,6 +271,7 @@ type
     property Anchored: Boolean read IsAnchored write SetAnchored default true;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default '' (implied, not allows to use '')
     property Tags: String read GetTags write SetTags; //default '' (implied, not allows to use '')
+    property TagsMatched: Boolean read AreTagsMatched;
     property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible stored false default false;
   end;
 
@@ -938,7 +940,7 @@ begin
     FlipHorizontally;
 end;
 
-{$endregion
+{$endregion}
 
 {$region 'FlippedVertically'}
 
@@ -994,7 +996,7 @@ end;
 
 procedure TStoryItem.SetUrlAction(const Value: String);
 begin
-  FUrlAction := Value;
+  FUrlAction := Trim(Value);
   UpdateCursor;
 end;
 
@@ -1009,12 +1011,63 @@ end;
 
 procedure TStoryItem.SetTags(const Value: String);
 begin
-  TagString := Value;
+  TagString := Trim(Value);
+end;
+
+function TStoryItem.AreTagsMatched: Boolean;
+
+  function GetTagged(const AnchoredValue: Boolean): TIStoryItemList;
+  begin
+    result := StoryItems.GetAll(
+      function(StoryItem: IStoryItem): Boolean
+      begin
+        with StoryItem do
+          result := (Tags <> '') and (Anchored = AnchoredValue);
+      end
+    );
+  end;
+
+begin
+  var MoveablesWithTags := GetTagged(false); //non-anchored with tags
+  Log('MoveablesWithTags.Count=%d', [MoveablesWithTags.Count]);
+  try
+    var TargetsWithTags := GetTagged(true); //anchored with tags (targets)
+    Log('TargetsWithTags.Count=%d', [TargetsWithTags.Count]);
+    try
+
+      result :=
+        TargetsWithTags.All( //looping over all targets, not over moveables since we'll remove every matched moveables (a moveable can be matched to a single target, but a target can be matched to multiple moveables)
+          function(LTarget: IStoryItem): Boolean
+            function CheckMatchingTags(const Tags1, Tags2: String): Boolean;
+            begin
+              result := (Tags1 = Tags2); //TODO: maybe do more complex matching in the future, allowing lists of tags where a Target can define multiple Moveable item Tags it accepts and a Moveable can have multiple identities defined at its Tags
+            end;
+          begin
+            result := false; //consider a Target unmatched initially //Note: must set this here outside of the "for" loop, since no MoveablesWithTags may have been configured (by author's mistake) - else compiler will show warning that function may have undefined result
+            for var i := MoveablesWithTags.Count - 1 downto 0 do //count backwards since we'll remove each matched moveable //TODO: add Remove function to Generics to do this item removal (counting backwards) using an optional (else remove all) predicate
+            begin
+              var LMoveable := MoveablesWithTags[i];
+              if CheckMatchingTags(LTarget.Tags, LMoveable.Tags) and
+                 LTarget.View.BoundsRect.Contains(LMoveable.View.BoundsRect.CenterPoint) then
+              begin
+                MoveablesWithTags.RemoveItem(LMoveable, TDirection.FromEnd);
+                Log('Tag match: "%s" and "%s"', [LTarget.Tags, LMoveable.Tags]);
+                result := true; //a Target has to be matched by at least one Moveable (but need to check and remove all from the MoveablesWithTags list to see when finished if any moveables have been left unmatched to any targets)
+              end;
+            end;
+          end
+        )
+        and (MoveablesWithTags.Count = 0); //check no moveables are left unmatched with targets after the previous action (if we've reached here, we're sure all targets were processed and matched)
+
+    finally
+      FreeAndNil(TargetsWithTags);
+    end;
+  finally
+    FreeAndNil(MoveablesWithTags);
+  end;
 end;
 
 {$endregion}
-
-{$endregion ....................}
 
 {$region 'TargetsVisible'}
 
@@ -1028,6 +1081,8 @@ begin
   FTargetsVisible := Value;
   InvalidateRect(BoundsRect);
 end;
+
+{$endregion}
 
 {$region 'Options'}
 

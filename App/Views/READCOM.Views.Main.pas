@@ -476,7 +476,10 @@ procedure TMainForm.ActivateNextStoryPoint;
 begin
   var activeItem := ActiveStoryItem;
   if Assigned(activeItem) then
-    ActiveStoryItem := activeItem.NextStoryPoint;
+    if activeItem.TagsMatched then //also checking if Tags are matched (all moveables with Tags are over non-moveables with same Tags and vice-versa) to proceed
+      ActiveStoryItem := activeItem.NextStoryPoint
+    else
+      ShowMessage('Please solve the riddle first by moving items to where they need to be'); //TODO: need a better looking prompt (plus shows at titlebar "READCOM_app")
 end;
 
 {$endregion}
