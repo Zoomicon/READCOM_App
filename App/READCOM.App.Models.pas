@@ -66,7 +66,6 @@ type
 
   //forward declarations
   IStoryItem = interface;
-  IPanelStoryItem = interface;
   IImageStoryItem = interface;
   IAudioStoryItem = interface;
   ITextStoryItem = interface;
@@ -289,11 +288,6 @@ type
 
     //-- Properties --
     property TextStoryItem: ITextStoryItem read GetTextStoryItem write SetTextStoryItem; //stored false
-  end;
-
-
-  IPanelStoryItem = interface(IStoryItem)
-    ['{61292D80-36A5-4330-B52B-685D538C1E52}']
   end;
 
   IImageStoryItem = interface(IStoryItem)

@@ -103,9 +103,13 @@ type
     property AutoSize default true;
   end;
 
+  {$region 'Backwards compatibility'}
+
   TVectorImageStoryItem = class(TImageStoryItem); //for backwards compatibility (note we can't just do "= TImageStoryItem", RegisterFmxClasses doesn't seem to register as separate class names in that case)
   TBitmapImageStoryItem = class(TImageStoryItem); //for backwards compatibility (note we can't just do "= TImageStoryItem", RegisterFmxClasses doesn't seem to register as separate class names in that case)
+  TPanelStoryItem = class(TImageStoryItem); //for backwards compatibility (note we can't just do "= TImageStoryItem", RegisterFmxClasses doesn't seem to register as separate class names in that case)
 
+  {$endregion}
 
   {$ENDREGION}
 
@@ -429,7 +433,8 @@ begin
   RegisterFmxClasses([
     TImageStoryItem,
     TVectorImageStoryItem, //for backwards compatibility
-    TBitmapImageStoryItem //for backwards compatibility
+    TBitmapImageStoryItem, //for backwards compatibility
+    TPanelStoryItem //for backwards compatibility
   ]);
 end;
 

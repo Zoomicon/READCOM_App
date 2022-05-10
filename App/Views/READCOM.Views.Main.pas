@@ -71,9 +71,13 @@ type
     procedure HUDcomboForeColorChange(Sender: TObject);
     procedure HUDcomboBackColorChange(Sender: TObject);
 
+    //Options action
+    procedure HUDactionOptionsExecute(Sender: TObject);
+
     //Scaling
     procedure FormResize(Sender: TObject);
-    procedure HUDactionOptionsExecute(Sender: TObject);
+
+    procedure FormShow(Sender: TObject);
 
   protected
     FShortcutCut, FShortcutCopy, FShortcutPaste: TShortCut;
@@ -177,17 +181,14 @@ implementation
     READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
-    READCOM.Views.PanelStoryItem, //TODO: are the following needed to be used here (for deserialization)?
-    READCOM.Views.AudioStoryItem,
-    READCOM.Views.ImageStoryItem,
-    READCOM.Views.TextStoryItem;
+    READCOM.Views.ImageStoryItem, //for TBitmapImageStoryItem
+    READCOM.Views.TextStoryItem; //for TTextStoryItem
 
 {$R *.fmx}
 
 {$REGION 'Init / Destroy'}
 
 procedure TMainForm.FormCreate(Sender: TObject);
-
   procedure InitHUD;
   begin
     with HUD do
@@ -215,18 +216,25 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  var StrAppVersion := '(' + Application.AppVersion + ')';
+  const StrAppVersion = '(' + Application.AppVersion + ')';
+  Caption := STR_APP_TITLE + ' ' + StrAppVersion;
+
+  {$IF DEFINED(MSWINDOWS)}
   if not GlobalUseDX then //GlobalUseDX10 (not using that, using fallback to plain GDI)
-    Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE + ' ' + StrAppVersion
-  else
-    Caption := STR_APP_TITLE + ' ' + StrAppVersion;
+    Caption := STR_APP_TITLE + ' ' + STR_COMPATIBILITY_MODE;
+  {$ENDIF}
 
   TStoryItem.Story := Self; //provide a way to StoryItems to influence the Story context
-
   FTimerStarted := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
+
   LoadAtStartup;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  //NOP
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -306,6 +314,8 @@ begin
       EndUpdate;
 
       Parent := ZoomFrame.ScaledLayout; //don't use ZoomFrame as direct parent
+
+      //ClipChildren := true; //Note: not doing here, since if RootStoryItem always clip its children and we load a Template (say a rabbit with its speech bubble), then children of that template will be clipped and when saved the top object in that template will get the ClipChildren=true which is unwanted
     end;
 
     if not Assigned(HomeStoryItem) then
@@ -320,7 +330,8 @@ end;
 
 procedure TMainForm.RootStoryItemViewResized(Sender: TObject); //TODO: this doesn't seem to get called (needed for AutoSize of RootStoryItemView to work)
 begin
-  RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size
+  RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size (this keeps the zoom to fit the new size of the RootStoryItem, plus updates StructureView if open)
+  //ZoomTo; //Zoom to the root //doesn't seem to do it
 end;
 
 {$endregion}
@@ -564,9 +575,12 @@ end;
 procedure TMainForm.ZoomToActiveStoryPointOrHome;
 begin
   var Value := ActiveStoryItem;
-  if not (Value.StoryPoint or Value.Home) then //not zooming down to items that are not StoryPoints or Home //must do last before the ZoomTo since we change the "Value" local variable
-    Value := Value.GetAncestorStoryPoint; //if it returns nil it will result in zooming to the RootStoryPoint
-  ZoomTo(Value);
+  if Assigned(Value) then
+  begin
+    if not (Value.StoryPoint or Value.Home) then //not zooming down to items that are not StoryPoints or Home //must do last before the ZoomTo since we change the "Value" local variable
+      Value := Value.GetAncestorStoryPoint; //if it returns nil it will result in zooming to the RootStoryPoint
+    ZoomTo(Value);
+  end;
 end;
 
 {$endregion}
@@ -694,7 +708,7 @@ begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
 
   AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView //using TBitmapImageStoryItem instead of TImageStoryItem for forward compatibility (let older app versions load documents saved with newer version)
-  //TODO: could show those blank images instead of TPanelStoryItem: problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like PanelStoryItem and get rid of that
+  //problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like older PanelStoryItem
 end;
 
 procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
@@ -709,9 +723,10 @@ end;
 procedure TMainForm.NewRootStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
 begin
   RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
-  var newRootStoryItemView := TPanelStoryItem.Create(Self);
+  var newRootStoryItemView := TBitmapImageStoryItem.Create(Self); //using TBitmapImageStoryItem instead of TImageStoryItem for forward-compatibility regarding older versions where TImageStoryItem was limited (now TBitmapImageStoryItem is just a dummy descendent of it) //not using TPanelStoryItem
   with newRootStoryItemView do
     begin
+    //ClipChildren := true; //Empty RootStoryItem should maybe clip its children (not doing at SetRootStoryItem since we may have loaded a template there - anyway commenting out here too in case one wants to design a template from scratch)
     Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
     EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
     end;
@@ -977,9 +992,11 @@ end;
 
 procedure TMainForm.LoadAtStartup;
 begin
+{$IF NOT DEFINED(ANDROID)} //TODO - TEST
   if (not LoadCommandLineParameter) and
      (not LoadSavedState) and
      (not LoadDefaultDocument) then //Note: if it keeps on failing at load comment out the if check for one run of NewRootStoryItem //TODO: shouldn't need to do that
+{$ENDIF}
     NewRootStoryItem;
 end;
 

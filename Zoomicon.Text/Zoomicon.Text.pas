@@ -51,6 +51,7 @@ procedure SetMemoFontSizeToFit(const AMemo: TMemo);
 const
   Offset = 4; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
 begin
+  {$IF NOT DEFINED(ANDROID)} //TODO: TEST - SEEMS CHANGING FONTSIZE IN ANDROID THROWS CHANGETRACKING EVENT WHICH SETS AGAIN FONTSIZE VIA THIS METHOD AND KEEPS ON LOOPING
   with AMemo do
   begin
     //Font.Size := 12; //Don't set initial font size, use the current one (which may be from a previous calculation - this speeds up when resizing and also fixes glitches when loading saved state if recalculation isn't done for some reason after loading)
@@ -68,6 +69,7 @@ begin
           Size := Size - 1;
     end;
   end;
+  {$ENDIF}
 end;
 
 function ReadAllBytes(const Stream: TStream): TBytes;

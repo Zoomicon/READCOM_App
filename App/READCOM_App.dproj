@@ -426,10 +426,6 @@
             <Form>TextStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.PanelStoryItem.pas">
-            <Form>PanelStoryItem</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="Views\READCOM.Views.StoryItemFactory.pas"/>
         <DCCReference Include="Views\READCOM.Views.Menu.HUD.pas">
             <Form>StoryHUD</Form>

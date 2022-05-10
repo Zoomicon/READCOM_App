@@ -1,6 +1,0 @@
-inherited PanelStoryItem: TPanelStoryItem
-  ClipChildren = True
-  inherited Glyph: TSVGIconImage
-    SVGText = ''
-  end
-end

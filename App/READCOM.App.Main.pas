@@ -38,6 +38,9 @@ begin
   Application.Initialize;
 
   Application.CreateForm(TGlobals, Globals);
+  //TODO: Note: maybe TGlobals creation has to be done AFTER creating the TMainForm, else on Android it won't glue to the MainForm to show it (will keep showing splash screen in debug mode and in messages pane it mentions unloading modules)
+  //this is not sure, anyway changing order on Windows doesn't seem to cause issue (maybe with TLang?)
+
   Application.CreateForm(TMainForm, MainForm);
 
   InitObjectDebugger(MainForm);
