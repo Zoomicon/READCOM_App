@@ -292,7 +292,6 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Release>10</VerInfo_Release>
         <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.5.10);FileVersion=0.5.10.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.5.10.0;Comments=</VerInfo_Keys>
-        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -338,7 +337,7 @@
         <PF_UWPPackageName>17029Zoomicon.READ-COMReadingCommunities</PF_UWPPackageName>
         <PF_UWPPackageDisplayName>READ-COM: Reading Communities</PF_UWPPackageDisplayName>
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
-        <PF_UWPDistributionType>AdHoc</PF_UWPDistributionType>
+        <PF_UWPDistributionType>Store</PF_UWPDistributionType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
