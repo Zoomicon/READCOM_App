@@ -9,7 +9,8 @@ uses
   FMX.Layouts, System.Actions, FMX.ActnList,
   FMX.MultiView, SubjectStand, FrameStand,
   READCOM.Views.About, //for TAboutFrame
-  READCOM.App.Globals, FMX.Colors;
+  READCOM.App.Globals, //for Globals.SVGIconImageList
+  FMX.Colors;
 
 type
 

@@ -10,7 +10,7 @@ uses
   Zoomicon.Generics.Collections, //for TObjectListEx
   Zoomicon.Introspection.FMX.StructureView, //for TStructureView
   Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
-  READCOM.App.Globals, //for SVGIconImageList
+  READCOM.App.Globals, //for Globals.SVGIconImageList
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
@@ -178,6 +178,7 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
+    Zoomicon.Text, //for SafeTextToShortcut
     READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
@@ -424,9 +425,10 @@ begin
     //Cut-Copy-Paste shortcut keys variation for TextStoryItem //TODO: should maybe disable respective actions in non-Edit mode, even though they do check it to do nothing when not in edit mode
     if isTextStoryItem then
     begin
-      HUD.actionCut.ShortCut := TextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
-      HUD.actionCopy.ShortCut := TextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
-      HUD.actionPaste.ShortCut := TextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited
+      //Note: don't use plain TextToShortcut, returns -1 on Android at Delphi 11.1, which gives Range Check Error since TCustomAction.Shortcut doesn't accept values <0
+      HUD.actionCut.ShortCut := SafeTextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
+      HUD.actionCopy.ShortCut := SafeTextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
+      HUD.actionPaste.ShortCut := SafeTextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited
     end
     else
     begin
@@ -672,6 +674,8 @@ end;
 
 procedure TMainForm.HUDactionNextThemeExecute(Sender: TObject);
 begin
+  if not Assigned(Globals) then exit; //Note: safety check (useful when debugging with loading of Globals data module commented-out [had some issues loading the main form on Android when that was loaded too])
+
   var switchToLightMode: Boolean;
   with Globals do
   begin

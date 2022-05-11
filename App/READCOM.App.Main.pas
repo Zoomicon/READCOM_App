@@ -19,7 +19,7 @@ implementation
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
     READCOM.Views.Main,
     READCOM.App.Debugging,
-    READCOM.App.Globals;
+    READCOM.App.Globals; //for TGlobals
 
 procedure ParseCommandLine;
 begin

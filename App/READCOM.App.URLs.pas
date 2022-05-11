@@ -29,7 +29,6 @@ implementation
    System.Net.URLClient, //for TURI
    Zoomicon.Cache.Classes, //for TFileCache
    Zoomicon.Downloader.Classes, //for TFileDownloader
-   READCOM.App.Globals, //for FileCache
   {$IF Defined(IOS)}
    macapi.helpers, iOSapi.Foundation, FMX.Helpers.iOS;
   {$ELSEIF Defined(ANDROID)}

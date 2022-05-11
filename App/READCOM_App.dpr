@@ -56,8 +56,7 @@ uses
   READCOM.App.Main in 'READCOM.App.Main.pas',
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
-  READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame},
-  Test in 'Test.pas' {Form1};
+  READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame};
 
 {$R *.res}
 

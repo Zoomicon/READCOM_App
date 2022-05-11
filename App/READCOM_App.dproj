@@ -5,7 +5,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Android64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>168979</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>READCOM_App.dpr</MainSource>
@@ -446,10 +446,6 @@
             <Form>TextStoryItemOptions</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Test.pas">
-            <Form>Form1</Form>
-            <FormType>fmx</FormType>
         </DCCReference>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>

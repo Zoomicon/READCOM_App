@@ -3,7 +3,7 @@ unit READCOM.Views.About;
 interface
 
 uses
-  READCOM.App.Globals, //for SVGIconImageList
+  READCOM.App.Globals, //for Globals.SVGIconImageList
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
