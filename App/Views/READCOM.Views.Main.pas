@@ -995,11 +995,9 @@ end;
 
 procedure TMainForm.LoadAtStartup;
 begin
-{$IF NOT DEFINED(ANDROID)} //TODO - TEST
   if (not LoadCommandLineParameter) and
      (not LoadSavedState) and
      (not LoadDefaultDocument) then //Note: if it keeps on failing at load comment out the if check for one run of NewRootStoryItem //TODO: shouldn't need to do that
-{$ENDIF}
     NewRootStoryItem;
 end;
 
