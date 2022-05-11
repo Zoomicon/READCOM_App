@@ -17,6 +17,8 @@ uses
   FMX.SVGIconImage; //for TSVGIconImage
 
 
+{$REGION 'CONSTANTS'}
+
 const
   EXT_SVG = '.svg';
   FILTER_VECTOR_IMAGE_TITLE = 'Vector images (*.svg)';
@@ -33,6 +35,8 @@ const
   FILTER_IMAGE_TITLE = 'Images (*.svg, *.png, *.jpg, *.jpeg)';
   FILTER_IMAGE_EXTS = FILTER_VECTOR_IMAGE_EXTS + ';' + FILTER_BITMAP_IMAGE_EXTS;
   FILTER_IMAGE = FILTER_IMAGE_TITLE + '|' + FILTER_IMAGE_EXTS;
+
+{$ENDREGION CONSTANTS}
 
 type
 
