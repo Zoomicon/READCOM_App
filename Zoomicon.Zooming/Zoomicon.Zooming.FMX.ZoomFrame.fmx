@@ -3,6 +3,7 @@ object ZoomFrame: TZoomFrame
   Size.Height = 556.000000000000000000
   Size.PlatformDefault = False
   object ScrollBox: TScrollBox
+    Touch.InteractiveGestures = [Zoom]
     Align = Client
     Size.Width = 712.000000000000000000
     Size.Height = 556.000000000000000000
