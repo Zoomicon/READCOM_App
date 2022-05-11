@@ -12,7 +12,6 @@ interface
 
 implementation
   uses
-    Test,
     FMX.Dialogs, //for ShowMessage
     FMX.Forms, //for Application
     System.SysUtils, //for FreeAndNil
