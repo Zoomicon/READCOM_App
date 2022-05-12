@@ -1,11 +1,11 @@
 object StoryItemOptions: TStoryItemOptions
-  Size.Width = 396.000000000000000000
+  Size.Width = 520.000000000000000000
   Size.Height = 64.000000000000000000
   Size.PlatformDefault = False
   object Background: TRectangle
     Align = Contents
     Fill.Color = claLightgoldenrodyellow
-    Size.Width = 396.000000000000000000
+    Size.Width = 520.000000000000000000
     Size.Height = 64.000000000000000000
     Size.PlatformDefault = False
   end
@@ -25,7 +25,7 @@ object StoryItemOptions: TStoryItemOptions
     Margins.Top = 4.000000000000000000
     Margins.Right = 4.000000000000000000
     Margins.Bottom = 4.000000000000000000
-    Size.Width = 388.000000000000000000
+    Size.Width = 512.000000000000000000
     Size.Height = 56.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 12
@@ -64,6 +64,22 @@ object StoryItemOptions: TStoryItemOptions
       Text = 'Is StoryPoint'
       OnClick = actionToggleStoryPointExecute
     end
+    object btnToggleSnapping: TSpeedButton
+      StaysPressed = True
+      Align = Client
+      Anchors = []
+      Hint = 
+        'Toggle Snapping'#13#13'Enables/Disables snapping of dropped StoryItems' +
+        ' to the center of this StoryItem when in non-Edit mode'
+      Images = Globals.SVGIconImageList
+      ImageIndex = 30
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Is Anchored'
+      OnClick = actionToggleSnappingExecute
+    end
     object btnToggleAnchored: TSpeedButton
       StaysPressed = True
       Align = Client
@@ -79,22 +95,6 @@ object StoryItemOptions: TStoryItemOptions
       StyleLookup = 'actiontoolbutton'
       Text = 'Is Anchored'
       OnClick = actionToggleAnchoredExecute
-    end
-    object btnToggleActionURL: TSpeedButton
-      StaysPressed = True
-      Align = Client
-      Anchors = []
-      Hint = 
-        'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
-        ' Active StoryItem is clicked in non-Edit mode'
-      Images = Globals.SVGIconImageList
-      ImageIndex = 9
-      Size.Width = 64.000000000000000000
-      Size.Height = 57.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'actiontoolbutton'
-      Text = 'Change URL Action'
-      OnClick = actionChangeUrlActionExecute
     end
     object btnToggleTags: TSpeedButton
       StaysPressed = True
@@ -112,6 +112,22 @@ object StoryItemOptions: TStoryItemOptions
       StyleLookup = 'actiontoolbutton'
       Text = 'Change Tags'
       OnClick = actionChangeTagsExecute
+    end
+    object btnToggleActionURL: TSpeedButton
+      StaysPressed = True
+      Align = Client
+      Anchors = []
+      Hint = 
+        'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
+        ' Active StoryItem is clicked in non-Edit mode'
+      Images = Globals.SVGIconImageList
+      ImageIndex = 9
+      Size.Width = 64.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'actiontoolbutton'
+      Text = 'Change URL Action'
+      OnClick = actionChangeUrlActionExecute
     end
     object btnLoad: TSpeedButton
       Action = actionLoad

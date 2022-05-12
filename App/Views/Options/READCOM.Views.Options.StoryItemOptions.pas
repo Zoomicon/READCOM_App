@@ -36,8 +36,10 @@ type
     btnSave: TSpeedButton;
     btnToggleTags: TSpeedButton;
     Background: TRectangle;
+    btnToggleSnapping: TSpeedButton;
     procedure actionToggleHomeExecute(Sender: TObject);
     procedure actionToggleStoryPointExecute(Sender: TObject);
+    procedure actionToggleSnappingExecute(Sender: TObject);
     procedure actionToggleAnchoredExecute(Sender: TObject);
     procedure actionChangeUrlActionExecute(Sender: TObject);
     procedure actionChangeTagsExecute(Sender: TObject);
@@ -115,6 +117,7 @@ begin
   begin
     btnToggleHome.IsPressed := Home;
     btnToggleStoryPoint.IsPressed := StoryPoint;
+    btnToggleSnapping.IsPressed := Snapping;
     btnToggleAnchored.IsPressed := Anchored;
     btnToggleActionURL.IsPressed := (UrlAction <> '');
     btnToggleTags.IsPressed := (Tags <> '');
@@ -228,6 +231,12 @@ end;
 procedure TStoryItemOptions.actionToggleStoryPointExecute(Sender: TObject);
 begin
   StoryItem.SetStoryPoint(btnToggleStoryPoint.IsPressed);
+  //ShowPopup; //show popup again to make the toggle evident
+end;
+
+procedure TStoryItemOptions.actionToggleSnappingExecute(Sender: TObject);
+begin
+  StoryItem.SetSnapping(btnToggleSnapping.IsPressed);
   //ShowPopup; //show popup again to make the toggle evident
 end;
 

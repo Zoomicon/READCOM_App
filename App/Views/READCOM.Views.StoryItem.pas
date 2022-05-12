@@ -35,6 +35,7 @@ type
     //FID: TGUID;
     FStoryPoint: Boolean;
     FHidden: Boolean;
+    FSnapping: Boolean;
     FUrlAction: String;
     FOptions: IStoryItemOptions;
     FTargetsVisible: Boolean;
@@ -162,6 +163,10 @@ type
     function IsHidden: Boolean; virtual;
     procedure SetHidden(const Value: Boolean); virtual;
 
+    {Snapping}
+    function IsSnapping: Boolean; virtual;
+    procedure SetSnapping(const Value: Boolean); virtual;
+
     {Anchored}
     function IsAnchored: Boolean; virtual;
     procedure SetAnchored(const Value: Boolean); virtual;
@@ -268,6 +273,7 @@ type
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default false; //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden default false;
+    property Snapping: Boolean read IsSnapping write SetSnapping default false;
     property Anchored: Boolean read IsAnchored write SetAnchored default true;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default '' (implied, not allows to use '')
     property Tags: String read GetTags write SetTags; //default '' (implied, not allows to use '')
@@ -968,6 +974,21 @@ procedure TStoryItem.SetHidden(const Value: Boolean);
 begin
   FHidden := Value;
   Visible := (not Hidden) or (Assigned(ParentStoryItem) and (ParentStoryItem.EditMode)); //always reapply this (logic in SetEditMode depends on it), not only if value changed
+end;
+
+{$endregion}
+
+{$region 'Snapping'}
+
+function TStoryItem.IsSnapping: Boolean;
+begin
+  result := FSnapping;
+end;
+
+procedure TStoryItem.SetSnapping(const Value: Boolean);
+begin
+  FSnapping := Value;
+  //don't apply snapping at this point, it is supposed to be applied when user drags and drops an unanchored StoryItem into the area of a snapping StoryItem which are both children of the ActiveStoryItem. So we need to know what was dropped to check if there's a snapping sibling's area containing the drop point (comparing in absolute coordinates)
 end;
 
 {$endregion}

@@ -192,6 +192,10 @@ type
     function IsHidden: Boolean;
     procedure SetHidden(const Value: Boolean);
 
+    {Snapping}
+    function IsSnapping: Boolean;
+    procedure SetSnapping(const Value: Boolean);
+
     {Anchored}
     function IsAnchored: Boolean;
     procedure SetAnchored(const Value: Boolean);
@@ -236,6 +240,7 @@ type
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info
     property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically; //stored false //default false //Scale.Y stores related info
     property Hidden: Boolean read IsHidden write SetHidden; //default false
+    property Snapping: Boolean read IsSnapping write SetSnapping; //default false
     property Anchored: Boolean read IsAnchored write SetAnchored; //default true
     property UrlAction: String read GetUrlAction write SetUrlAction; //default ''
     property Tags: String read GetTags write SetTags; //default ''
