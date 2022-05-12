@@ -6,7 +6,7 @@ unit READCOM.Views.Options.ImageStoryItemOptions;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants, 
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   System.Messaging, //for TMessage
   System.Actions, FMX.ActnList,
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, FMX.Edit,
@@ -46,11 +46,17 @@ uses
 
 {$R *.fmx}
 
+{$REGION 'LIFETIME MANAGEMENT'}
+
 constructor TImageStoryItemOptions.Create(AOwner: TComponent);
 begin
   inherited;
   //TMessageManager.DefaultManager.SubscribeToMessage(TMessageDidFinishTakingImageFromLibrary, DoMessageDidFinishTakingImageFromLibrary); //see region 'TakePhotoViaCameraService'
 end;
+
+{$ENDREGION}
+
+{$REGION 'PROPERTIES'}
 
 {$region 'ImageStoryItem'}
 
@@ -65,6 +71,8 @@ begin
 end;
 
 {$endregion}
+
+{$ENDREGION}
 
 procedure TImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
 begin
