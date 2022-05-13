@@ -276,7 +276,8 @@ end;
 
 function TCustomManipulator.GetBackIndex: Integer;
 begin
-  result := inherited + 1; //reserve one more place at the bottom for DropTarget
+  result := inherited;
+  if DropTarget.Visible then inc(result); //reserve one more place at the bottom for DropTarget (if visible)
 end;
 
 procedure TCustomManipulator.SetDropTargetZorder;

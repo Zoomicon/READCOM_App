@@ -195,6 +195,7 @@ type
     {Snapping}
     function IsSnapping: Boolean;
     procedure SetSnapping(const Value: Boolean);
+    procedure DoSnapping;
 
     {Anchored}
     function IsAnchored: Boolean;

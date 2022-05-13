@@ -47,7 +47,7 @@ type
 
     FOnActiveChanged: TNotifyEvent;
 
-    //Global IStory (context) //TODO: talk to that so that we could tell it to open hyperlinks (e.g. http:/...) but also special hyperlinks like story:next, story:previous etc. that can invoke methods to navigate in the story (actually could pass the "verb" to the story itself via special method and it would know how to handle the hyperlinks and the special ones [not have any download and url opening code in the StoryItem])
+    //Global IStory (context) //TODO: talk to that so that we could tell it to open hyperlinks (e.g. http://...) but also special hyperlinks like story:next, story:previous etc. that can invoke methods to navigate in the story (actually could pass the "verb" to the story itself via special method and it would know how to handle the hyperlinks and the special ones [not have any download and url opening code in the StoryItem])
     class var
       FStory: IStory;
 
@@ -166,6 +166,7 @@ type
     {Snapping}
     function IsSnapping: Boolean; virtual;
     procedure SetSnapping(const Value: Boolean); virtual;
+    procedure DoSnapping; virtual;
 
     {Anchored}
     function IsAnchored: Boolean; virtual;
@@ -501,7 +502,8 @@ end;
 
 function TStoryItem.GetBackIndex: Integer;
 begin
-  result := inherited + 2; //reserve two more places at the bottom for Glyph and Border
+  result := inherited + 2; //reserve two more places at the bottom for Background, Glyph
+  if Border.Visible then inc(result); //reserve one more for Border (if visible)
 end;
 
 procedure TStoryItem.SetBackgroundZorder;
@@ -991,6 +993,26 @@ begin
   //don't apply snapping at this point, it is supposed to be applied when user drags and drops an unanchored StoryItem into the area of a snapping StoryItem which are both children of the ActiveStoryItem. So we need to know what was dropped to check if there's a snapping sibling's area containing the drop point (comparing in absolute coordinates)
 end;
 
+procedure TStoryItem.DoSnapping;
+begin
+  var LParent := ParentStoryItem;
+  if not Assigned(LParent) then exit;
+
+  try
+    Enabled := false; //disable temporarily
+    //Check if our CenterPoint lies inside the bounds of a sibling that has Snapping on
+    var LObj := LParent.View.ObjectAtLocalPoint(BoundsRect.CenterPoint, false, false, false, false); //only checking the immediate children (ignoring SubComponents) of our ParentStoryPoint, not checking the disabled ones since we make ourself temporarily disabled to exclude us
+    if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
+    begin
+      var LStoryItemUnderneath := TStoryItem(LObj.GetObject);
+      if LStoryItemUnderneath.Snapping then
+        Position.Point := LStoryItemUnderneath.BoundsRect.CenterPoint - PointF(Width/2, Height/2); //use same center as the Snapping sibling //Note: should be must faster than BoundsRect := BoundsRect.CenterAt(LStoryItemUnderneath.BoundsRect), at least in Delphi 11.1, where CenterAt calls RectCenter which doesn't seem to be optimized (does 3 OffsetRect operations)
+    end;
+  finally
+    Enabled := true; //make sure we always enable again
+  end;
+end;
+
 {$endregion}
 
 {$region 'Anchored'}
@@ -1132,11 +1154,12 @@ begin
 
   if (ssCtrl in Shift) or (ssRight in Shift) then //either Ctrl+LeftClick or just RightClick
   begin
-    var LObj := ObjectAtLocalPoint(PointF(X, Y) + AreaSelector.Position.Point, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
+    var LPoint := PointF(X, Y) + AreaSelector.Position.Point;
+    var LObj := ObjectAtLocalPoint(LPoint, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
     if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
       TStoryItem(LObj.GetObject).Active := true; //make the ActiveStoryItem
   end;
-end;
+end; //TODO: should also do the extra logic from TStoryPoint.MouseDown that can make the parent storyitem active (maybe make reusable methods)
 
 procedure TStoryItem.MouseDown(Button: TMouseButton; Shift: TShiftState;  X, Y: single);
 begin
@@ -1159,6 +1182,8 @@ begin
   FDragging := false;
   FDragStart := TPointF.Zero;
 
+  DoSnapping;
+
   ReleaseCapture; //Release capture of mouse actions
 end;
 
@@ -1180,28 +1205,48 @@ begin
 end;
 
 procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+
+  function HasActiveChildStoryItem: Boolean;
+  begin
+    result := (StoryItems.GetFirst( //Note: don't use Contains(ActiveStoryItem), can't compare interfaces for equality (they may both point to same object but be different instances)
+      function(StoryItem: IStoryItem):Boolean
+      begin
+        result := StoryItem.Active;
+      end
+    ) <> nil);
+  end;
+
 begin
   Shift := FMouseShift; //TODO: remove if Delphi fixes related bug (more at FMouseShift definition)
 
   inherited; //fire event handlers
 
-  if not EditMode then
+  if EditMode then //don't use check (Story.StoryMode = TStoryMode.EditMode) aka Global EditMode, in that case would have issue working at a given nesting level (grandchidlren would get in our way, getting activated by accident)
+  begin
+    if (ssCtrl in Shift) or (ssRight in Shift) then //either Ctrl+LeftClick or just RightClick
+    begin
+      var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
+      if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
+        TStoryItem(LObj.GetObject).Active := true //make the child under mouse cursor the ActiveStoryItem
+    end;
+  end
+
+  else
+
+  begin
+    if ((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick
+       HasActiveChildStoryItem then //and one of our children is the ActiveStoryItem...
+      Active := true //...make us (the parent of the ActiveStoryItem) the Active one (so that we can go back to the parent level by right-clicking it without using the keyboard's ESC key)
+    else
     begin
       var LParent := ParentStoryItem;
       if ((FUrlAction <> '') {and //TODO: should have URLs clickable only for children of ActiveStoryItem (and for itself if it's the RootStoryItem maybe) //in non-EditMode should disable HitTest though at everything that isn't the current StoryItem or direct child of the ActiveStoryItem apart from the TextStoryItems maybe (could maybe just disble HitTest at all siblings of ActiveStoryItem and have everything under ActiveStoryItem HitTest-enabled)
           ((Assigned(LParent) and LParent.Active) or
           ((not Assigned(LParent)) and Active))}) then //only when ParentStoryItem is the ActiveStoryItem //assuming short-circuit evaluation //if no LParent then it's the RootStoryItem, allowing it to have URLAction too
         FStory.OpenUrl(FUrlAction);
-    end
-
-  else //EditMode //TODO: if the StoryItem is not in EditMode but the Story is in EditMode, then make the StoryItem active (else do like below)
-
-    if (ssCtrl in Shift) or (ssRight in Shift) then //either Ctrl+LeftClick or just RightClick
-    begin
-      var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
-      if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-        TStoryItem(LObj.GetObject).Active := true; //make the ActiveStoryItem
     end;
+  end;
+
 end;
 
 {$endregion}
