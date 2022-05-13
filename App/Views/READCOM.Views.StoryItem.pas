@@ -1208,12 +1208,22 @@ procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: 
 
   function HasActiveChildStoryItem: Boolean;
   begin
-    result := (StoryItems.GetFirst( //Note: don't use Contains(ActiveStoryItem), can't compare interfaces for equality (they may both point to same object but be different instances)
-      function(StoryItem: IStoryItem):Boolean
-      begin
-        result := StoryItem.Active;
-      end
-    ) <> nil);
+    if not Assigned(ActiveStoryItem) then exit(false); //no ActiveStoryItem
+
+    var LActiveStoryItemParent := ActiveStoryItem.ParentStoryItem;
+    if not Assigned(LActiveStoryItemParent) then exit(false); //ActiveStoryItem is the RootStoryItem, so we can't be its ParentStoryItem
+
+    result := (LActiveStoryItemParent.View = Self); //check if we're the parent of the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
+  end;
+
+  function HasActiveSiblingStoryItem: Boolean;
+  begin
+    if not Assigned(ActiveStoryItem) then exit(false); //no ActiveStoryItem
+
+    var LActiveStoryItemParent := ActiveStoryItem.ParentStoryItem;
+    if not Assigned(LActiveStoryItemParent) then exit(false); //ActiveStoryItem is the RootStoryItem, so we can't be its Sibling
+
+    result := (LActiveStoryItemParent.View = ParentStoryItem.View); //check if we have the same parent as the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
   end;
 
 begin
@@ -1235,7 +1245,7 @@ begin
 
   begin
     if ((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick
-       HasActiveChildStoryItem then //and one of our children is the ActiveStoryItem...
+       HasActiveChildStoryItem or HasActiveSiblingStoryItem then //and one of our children is the ActiveStoryItem...
       Active := true //...make us (the parent of the ActiveStoryItem) the Active one (so that we can go back to the parent level by right-clicking it without using the keyboard's ESC key)
     else
     begin
