@@ -7,20 +7,23 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
-  FMX.Objects, FMX.SVGIconImage, FMX.ImgList;
+  FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts;
 
 type
   TAboutFrame = class(TFrame)
     PanelTitleVersion: TPanel;
     lblTitle: TLabel;
-    PanelVersion: TPanel;
     lblVersion: TLabel;
     lblVersionValue: TLabel;
-    PanelVersionPadding: TPanel;
     MemoInfo: TMemo;
     rectBackground: TRectangle;
     btnClose: TSpeedButton;
     GlyphLogo: TGlyph;
+    FlowLayout1: TFlowLayout;
+    FlowLayout2: TFlowLayout;
+    FlowLayoutBreak1: TFlowLayoutBreak;
+    lblBlankRow: TLabel;
+    FlowLayoutBreak2: TFlowLayoutBreak;
     procedure btnCloseClick(Sender: TObject);
     procedure GlyphLogoTap(Sender: TObject; const Point: TPointF);
   private
