@@ -100,8 +100,8 @@ object AboutFrame: TAboutFrame
       Size.Height = 263.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 376.000000000000000000
-      Viewport.Height = 259.000000000000000000
+      Viewport.Width = 380.000000000000000000
+      Viewport.Height = 263.000000000000000000
     end
     object btnClose: TSpeedButton
       Anchors = [akTop, akRight]

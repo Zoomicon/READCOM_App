@@ -37,11 +37,7 @@ begin
 
   Application.Initialize; //FMX app template has this before creation of form(s) - probably the order plays some role
 
-  {$IF NOT DEFINED(ANDROID)}
-  Application.CreateForm(TGlobals, Globals);
-  //Globals := TGlobals.Create(Application);
-  {$ENDIF} //TODO: see what can be done about this, the MainForm is shown greyed out if this is used, in either format and irrespectively of whether it's done before or after creation of MainForm
-
+  Application.CreateForm(TGlobals, Globals); //create before MainForm, it's a DataModule it uses
   Application.CreateForm(TMainForm, MainForm);
 
   InitObjectDebugger(MainForm);

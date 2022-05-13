@@ -174,7 +174,6 @@ implementation
     System.Contnrs, //for TClassList
     System.Math, //for Max
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
-    FMX.Styles, //for TStyleManager
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
@@ -217,6 +216,12 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
+  StyleBook := nil; //TODO: can we make a style platform agnostic?
+  {$ELSE}
+  StyleBook := Globals.LightTheme;
+  {$ENDIF}
+
   const StrAppVersion = '(' + Application.AppVersion + ')';
   Caption := STR_APP_TITLE + ' ' + StrAppVersion;
 
@@ -638,8 +643,13 @@ end;
 
 procedure TMainForm.HUDactionNewExecute(Sender: TObject);
 begin
-  if TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY) and (not LoadDefaultDocument) then //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper
-    NewRootStoryItem;
+  TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
+    procedure(Confirmed: Boolean)
+    begin
+      if Confirmed and (not LoadDefaultDocument) then
+        NewRootStoryItem;
+    end
+  );
 end;
 
 procedure TMainForm.HUDactionLoadExecute(Sender: TObject);
@@ -704,7 +714,7 @@ end;
 
 procedure TMainForm.HUDactionAddExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   ActiveStoryItem.Options.ActAdd;
   UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
@@ -712,7 +722,7 @@ end;
 
 procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView //using TBitmapImageStoryItem instead of TImageStoryItem for forward compatibility (let older app versions load documents saved with newer version)
   //problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like older PanelStoryItem
@@ -720,7 +730,7 @@ end;
 
 procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   AddChildStoryItem(TTextStoryItem, 'TextStoryItem'); //will also update the StructureView
 end;
@@ -742,7 +752,7 @@ end;
 
 procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   var OwnerAndParent := ActiveStoryItem.View;
 
@@ -777,7 +787,7 @@ procedure TMainForm.DeleteActiveStoryItem; //Note: make sure any keyboard action
 begin
   if not Assigned(ActiveStoryItem) then exit;
 
-  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then
+  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then //Note: don't compare IStoryItem interfaces with "=", compare the TStoryItem components they correspond to (getting their "View")
     ActiveStoryItem.Delete //this makes ParentStoryItem active (which updates StructureView)
   else //note: confirmation is only done at "HUDactionCutExecute"
     NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
@@ -800,33 +810,39 @@ end;
 
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not HUD.EditMode then exit; //only in Edit mode
 
-  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) or
-     TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY)
-  then
-    DeleteActiveStoryItem;
+  TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
+    procedure(Confirmed: Boolean)
+    begin
+      if Confirmed then
+       DeleteActiveStoryItem;
+    end
+  );
 end;
 
 procedure TMainForm.HUDactionCutExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not HUD.EditMode then exit; //only in Edit mode
 
-  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) or
-     TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY)
-  then
-    CutActiveStoryItem;
+  TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
+    procedure(Confirmed: Boolean)
+    begin
+      if Confirmed then
+        CutActiveStoryItem;
+    end
+  );
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
   ActiveStoryItem.Copy;
 end;
 
 procedure TMainForm.HUDactionPasteExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   ActiveStoryItem.Paste;
   UpdateStructureView; //TODO: should do similar to deletion by somehow notifying from inside the StoryItem itself the StructureView that items have been added
@@ -834,7 +850,7 @@ end;
 
 procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   ActiveStoryItem.FlippedHorizontally := not ActiveStoryItem.FlippedHorizontally;
   UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
@@ -842,7 +858,7 @@ end;
 
 procedure TMainForm.HUDactionFlipVerticallyExecute(Sender: TObject);
 begin
-  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit;
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
   ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
   UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed

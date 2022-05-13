@@ -13,6 +13,7 @@ resourcestring
   STR_COMPATIBILITY_MODE = '[Compatibility mode]';
 
 type
+
   TGlobals = class(TDataModule)
     Lang: TLang;
     LightTheme: TStyleBook;

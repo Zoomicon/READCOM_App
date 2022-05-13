@@ -164,7 +164,7 @@ end;
 
 procedure TTextStoryItem.Loaded;
 begin
-  Log('TTextStoryItem.Loaded');
+  //Log('TTextStoryItem.Loaded');
   inherited;
   SetMemoFontSizeToFit(Memo);
 end;

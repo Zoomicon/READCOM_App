@@ -2,6 +2,7 @@ unit Zoomicon.Helpers.FMX.Forms.ApplicationHelper;
 
 interface
 uses
+  System.SysUtils, //for TProc, LongRec
   FMX.Forms; //for TApplication
 
 type
@@ -9,24 +10,23 @@ type
   public
     function ExeName: String; //TODO: make Property?
     function AppVersion: String; //TODO: make Property?
-    class function Confirm(Prompt: String): Boolean;
+    class procedure Confirm(const Prompt: String; const SetConfirmationResult: TProc<Boolean>);
   end;
 
 implementation
   uses
-    {$IF Defined(MSWINDOWS)}
+    {$IF DEFINED(MSWINDOWS)}
     Windows,
-    {$ELSEIF Defined(MACOS)}
+    {$ELSEIF DEFINED(MACOS)}
     Macapi.CoreFoundation,
     {$ELSEIF Defined(IOS)}
     iOSapi.Foundation, Macapi.ObjectiveC,
-    {$ELSEIF Defined(ANDROID)}
+    {$ELSEIF DEFINED(ANDROID)}
     FMX.Helpers.Android,
     Androidapi.Helpers, //for TAndroidHelper, JStringToString
     Androidapi.JNI.GraphicsContentViewText, //to avoid "H2443 Inline function 'SharedActivityContext' has not been expanded"
     Androidapi.JNI.JavaTypes, //to avoid "H2443 Inline function 'JStringToString' has not been expanded"
     {$ENDIF}
-    System.SysUtils, //for LongRec
     System.UITypes, //for TMsgDlgType
     FMX.DialogService, //for TDialogService
     FMX.Dialogs; //for mbYesNo
@@ -49,24 +49,22 @@ end;
 
 {$region 'Confirm'}
 
-class function TApplicationHelper.Confirm(Prompt: String): Boolean; //based on https://stackoverflow.com/questions/42852945/delphi-correctly-displaying-a-message-dialog-in-firemonkey-and-returning-the-m
+class procedure TApplicationHelper.Confirm(const Prompt: String; const SetConfirmationResult: TProc<Boolean>); //based on https://stackoverflow.com/questions/42852945/delphi-correctly-displaying-a-message-dialog-in-firemonkey-and-returning-the-m
 begin
-  var LResult := False;
   with TDialogService do
   begin
     PreferredMode := TPreferredMode.Platform;
     MessageDialog(Prompt, TMsgDlgType.mtConfirmation, mbYesNo, TMsgDlgBtn.mbNo, 0,
       procedure(const AResult: TModalResult)
       begin
+        //Note: assuming this is executed on the main/UI thread later on, so we just call the "SetResult" callback procedure passing it the dialog result value
         case AResult of
-          mrYes: LResult := True;
-          mrNo:  LResult := False;
+          mrYes: SetConfirmationResult(true);
+          mrNo:  SetConfirmationResult(false);
         end;
       end
     );
   end;
-
-  result := LResult;
 end;
 
 {$endregion}

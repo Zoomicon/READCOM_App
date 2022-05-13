@@ -121,6 +121,11 @@ begin
     btnToggleAnchored.IsPressed := Anchored;
     btnToggleActionURL.IsPressed := (UrlAction <> '');
     btnToggleTags.IsPressed := (Tags <> '');
+
+    {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
+    btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
+    btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists)
+    {$ENDIF}
   end;
 end;
 

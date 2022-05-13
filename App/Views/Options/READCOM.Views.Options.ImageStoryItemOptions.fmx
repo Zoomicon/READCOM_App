@@ -1,10 +1,5 @@
 inherited ImageStoryItemOptions: TImageStoryItemOptions
-  Size.Width = 520.000000000000000000
-  inherited Background: TRectangle
-    Size.Width = 520.000000000000000000
-  end
   inherited layoutButtons: TFlowLayout
-    Size.Width = 512.000000000000000000
     object btnCamera: TSpeedButton
       Action = TakePhotoFromCameraAction
       Align = Client
@@ -15,6 +10,7 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
       Size.Height = 57.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = 'actiontoolbutton'
+      Visible = False
     end
   end
   inherited ActionList: TActionList

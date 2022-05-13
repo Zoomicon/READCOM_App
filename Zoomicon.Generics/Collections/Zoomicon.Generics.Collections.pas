@@ -5,7 +5,7 @@ unit Zoomicon.Generics.Collections;
 
 interface
   uses
-    SysUtils, //for TPredicate, TProc
+    System.SysUtils, //for TPredicate, TProc
     System.Generics.Collections; //for TList
 
 type

@@ -134,7 +134,8 @@ begin
   {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
   btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists)
-  btnNextTheme.Visible := false; //TODO: after themes are restored show this again
+  btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
+  btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   {$ENDIF}
 
   FEditMode := false;
@@ -153,11 +154,7 @@ begin
   FEditMode := Value;
   btnToggleEditMode.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
-  layoutButtonsEdit.Visible := false; //show Edit-related buttons //TODO: Show this when SVG icons are available for the edit sidebar
-  {$ELSE}
   layoutButtonsEdit.Visible := Value;
-  {$ENDIF}
 
   if Assigned(FEditModeChanged) then
     FEditModeChanged(Self, Value);
