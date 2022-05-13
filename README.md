@@ -4,7 +4,7 @@
 Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
-Under development, can try early releases here:
+Under development, can find releases here:
 * https://github.com/Zoomicon/READCOM_App/releases
 * https://apps.microsoft.com/store/detail/readcom-reading-communities/9NVM0CHRN7PH
 
