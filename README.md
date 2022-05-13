@@ -9,7 +9,7 @@ Under development, can find releases here:
 * https://apps.microsoft.com/store/detail/readcom-reading-communities/9NVM0CHRN7PH
 
 Walk-through video:
-https://www.youtube.com/watch?v=0vXp5jUf8cU
+https://www.youtube.com/watch?v=0vXp5jUf8cU (older)
 
 ## HowTo: enable SVG previews for File Add/Open Dialogs on Windows
 
