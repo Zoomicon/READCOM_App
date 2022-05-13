@@ -6,6 +6,7 @@ https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
 Under development, can try early releases here:
 https://github.com/Zoomicon/READCOM_App/releases
+https://apps.microsoft.com/store/detail/readcom-reading-communities/9NVM0CHRN7PH
 
 Walk-through video:
 https://www.youtube.com/watch?v=0vXp5jUf8cU
