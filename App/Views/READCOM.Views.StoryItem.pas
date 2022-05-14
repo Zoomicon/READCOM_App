@@ -122,10 +122,11 @@ type
     function IsActive: Boolean; virtual;
     procedure SetActive(const Value: Boolean); virtual;
 
-    {HomeStoryItem}
-    class procedure SetHomeStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
+    {Root}
+    function IsRoot: Boolean;
 
     {Home}
+    class procedure SetHomeStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
     function IsHome: Boolean; virtual;
     procedure SetHome(const Value: Boolean); virtual;
 
@@ -669,6 +670,11 @@ begin
   ActiveChanged;
 
   PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
+end;
+
+function TStoryItem.IsRoot: Boolean;
+begin
+  result := not Assigned(ParentStoryItem);
 end;
 
 procedure TStoryItem.ActivateParentStoryItem;
@@ -1223,7 +1229,10 @@ procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: 
     var LActiveStoryItemParent := ActiveStoryItem.ParentStoryItem;
     if not Assigned(LActiveStoryItemParent) then exit(false); //ActiveStoryItem is the RootStoryItem, so we can't be its Sibling
 
-    result := (LActiveStoryItemParent.View = ParentStoryItem.View); //check if we have the same parent as the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
+    var LParent := ParentStoryItem;
+    if not Assigned(LParent) then exit(false); //we're the RootStoryItem, so we can't have Siblings
+
+    result := (LActiveStoryItemParent.View = LParent.View); //check if we have the same parent as the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
   end;
 
 begin
@@ -1244,8 +1253,8 @@ begin
   else
 
   begin
-    if ((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick
-       HasActiveChildStoryItem or HasActiveSiblingStoryItem then //and one of our children is the ActiveStoryItem...
+    if (((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick
+        (HasActiveChildStoryItem or HasActiveSiblingStoryItem)) then //and (one of our children is the ActiveStoryItem or we're its Sibling)...
       Active := true //...make us (the parent of the ActiveStoryItem) the Active one (so that we can go back to the parent level by right-clicking it without using the keyboard's ESC key)
     else
     begin

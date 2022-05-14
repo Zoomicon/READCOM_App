@@ -154,6 +154,9 @@ type
     function IsBorderVisible: Boolean;
     procedure SetBorderVisible(const Value: Boolean);
 
+    {Root}
+    function IsRoot: Boolean;
+
     {Home}
     function IsHome: Boolean; //note: a Home StoryItem doesn't have to be StoryPoint, could be just the startup instructions that are shown once and not when looping through the StoryPoints
     procedure SetHome(const Value: Boolean);

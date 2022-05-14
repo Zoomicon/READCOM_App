@@ -167,7 +167,8 @@ var
   MainForm: TMainForm;
 
 resourcestring
-  MSG_CONFIRM_CLEAR_STORY = 'Clearing story: are you sure?';
+  MSG_CONFIRM_CLEAR_STORY = 'Clearing Story: are you sure?';
+  MSG_CONFIRM_DELETION = 'Deleting ActiveStoryItem: are you sure?';
 
 implementation
   uses
@@ -787,32 +788,39 @@ procedure TMainForm.DeleteActiveStoryItem; //Note: make sure any keyboard action
 begin
   if not Assigned(ActiveStoryItem) then exit;
 
-  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then //Note: don't compare IStoryItem interfaces with "=", compare the TStoryItem components they correspond to (getting their "View")
-    ActiveStoryItem.Delete //this makes ParentStoryItem active (which updates StructureView)
-  else //note: confirmation is only done at "HUDactionCutExecute"
-    NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
+  if ActiveStoryItem.IsRoot then
+    NewRootStoryItem //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView //note: confirmation is only done at "HUDactionCutExecute"
+  else
+    ActiveStoryItem.Delete; //this makes ParentStoryItem active (which updates StructureView)
 end;
 
 procedure TMainForm.CutActiveStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
 begin
   if not Assigned(ActiveStoryItem) then exit;
 
-  if (Assigned(RootStoryItem) and (ActiveStoryItem.View <> RootStoryItem.View)) then
-    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
-  else //note: confirmation is only done at "HUDactionCutExecute"
+  if ActiveStoryItem.IsRoot then
     begin
       ActiveStoryItem.Copy; //needed to simulate "Cut"
-      NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView
-    end;
+      NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView //note: confirmation is only done at "HUDactionCutExecute"
+    end
+  else
+    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
 end;
 
 {$endregion}
 
 procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
 begin
-  if not HUD.EditMode then exit; //only in Edit mode
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode (plus safety check for ActiveStoryItem)
 
-  TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
+  var msg: String;
+  if ActiveStoryItem.IsRoot then
+    msg := MSG_CONFIRM_CLEAR_STORY
+  else
+    msg := MSG_CONFIRM_DELETION;
+
+  //Always confirming for destructive actions like deletion
+  TApplication.Confirm(msg, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
     procedure(Confirmed: Boolean)
     begin
       if Confirmed then
@@ -823,15 +831,19 @@ end;
 
 procedure TMainForm.HUDactionCutExecute(Sender: TObject);
 begin
-  if not HUD.EditMode then exit; //only in Edit mode
+  if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode (plus safety check for ActiveStoryItem)
 
-  TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
-    procedure(Confirmed: Boolean)
-    begin
-      if Confirmed then
-        CutActiveStoryItem;
-    end
-  );
+  //Not considering Cut a destructive action since one can Paste back. However when cutting the RootStoryItem, since it has no parent to be activated and a new RootStoryItem will be created, paste back means it will become a child of the new RootStoryItem, so asking for confirmation only when cutting the RootStoryItem
+  if ActiveStoryItem.IsRoot then
+    TApplication.Confirm(MSG_CONFIRM_CLEAR_STORY, //confirmation done only at the action level //Note: could also use Application.Confirm since Confirm is defined as a class function in ApplicationHelper (and those can be called on object instances of the respective class too)
+      procedure(Confirmed: Boolean)
+      begin
+        if Confirmed then
+          CutActiveStoryItem;
+      end
+    )
+  else
+    CutActiveStoryItem; //no confirmation for cutting non-Root StoryItems
 end;
 
 procedure TMainForm.HUDactionCopyExecute(Sender: TObject);
