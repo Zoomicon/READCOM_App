@@ -37,6 +37,8 @@
 *.dcp
 *.so
 *.apk
+*.apks
+*.aab
 *.drc
 *.map
 *.dres
