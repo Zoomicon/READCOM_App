@@ -4,8 +4,8 @@
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <PropertyGroup>
-        <DeviceId Condition="'$(Platform)'=='Android'">HGAJGEJN</DeviceId>
-        <DeviceId Condition="'$(Platform)'=='Android64'">HGAJGEJN</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android'">emulator-5554</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android64'">emulator-5554</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'"/>
@@ -161,6 +161,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Android64\Release\colors.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\values\</RemoteDir>
+            <RemoteName>colors.xml</RemoteName>
+            <DeployClass>Android_Colors</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Android64\Debug\libREADCOM_App.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>libREADCOM_App.so</RemoteName>
@@ -171,29 +180,20 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <DeployClass>AndroidSplashImageDef</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android64\Release\colors.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\values\</RemoteDir>
-            <RemoteName>colors.xml</RemoteName>
-            <DeployClass>Android_Colors</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android64\Release\READCOM_App.classes" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\classes\</RemoteDir>
             <RemoteName>READCOM_App.classes</RemoteName>
             <DeployClass>AndroidClasses</DeployClass>
             <Operation>64</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -207,7 +207,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon48</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon96</DeployClass>
@@ -234,25 +252,16 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon48.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon48</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon96</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon192</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon192</DeployClass>
@@ -265,15 +274,6 @@
             <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon192</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -432,19 +432,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon24</DeployClass>
+        <DeployFile Include="Android64\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\</RemoteDir>
+            <RemoteName>AndroidManifest.xml</RemoteName>
+            <DeployClass>ProjectAndroidManifest</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\</RemoteDir>
-            <RemoteName>AndroidManifest.xml</RemoteName>
-            <DeployClass>ProjectAndroidManifest</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon24</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -522,15 +522,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libREADCOM_App.so</RemoteName>
-            <DeployClass>ProjectOutput_Android32</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android64\Debug\strings.xml" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\values\</RemoteDir>
             <RemoteName>strings.xml</RemoteName>
@@ -567,15 +558,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage960</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android64\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>libREADCOM_App.so</RemoteName>
@@ -585,6 +567,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
             <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage960</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
@@ -597,16 +588,16 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Android'">
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage640.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon24</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon24</DeployClass>
@@ -625,6 +616,15 @@
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage470</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage470</DeployClass>
@@ -678,15 +678,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon72.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon72</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon48.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -723,19 +714,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon48.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon48</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage640.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage960</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon48.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon48</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -760,6 +751,15 @@
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon96</DeployClass>
@@ -814,15 +814,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon36.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon36</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Release\colors.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\values\</RemoteDir>
             <RemoteName>colors.xml</RemoteName>
@@ -850,10 +841,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon96.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon96</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon72.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -877,15 +868,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon192</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\library\lib\armeabi\</RemoteDir>
             <RemoteName>libREADCOM_App.so</RemoteName>
@@ -904,28 +886,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage426.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-small\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage426</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage470</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon72.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon72</DeployClass>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon192</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -940,7 +904,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon144.png" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage426.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-small\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage426</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage426.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-small\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage426</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon144.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon144</DeployClass>
@@ -949,16 +931,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon96.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon96</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon144.png" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon144.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon144</DeployClass>
@@ -1003,19 +976,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\library\lib\mips\</RemoteDir>
-            <RemoteName>libREADCOM_App.so</RemoteName>
-            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon24.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon72.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon24</DeployClass>
+            <DeployClass>Android_NotificationIcon72</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -1030,16 +994,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage426.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-small\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage426</DeployClass>
+        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\library\lib\mips\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage960</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage960.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-xlarge\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage960</DeployClass>
@@ -1094,7 +1067,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon96.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon36.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon36</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon36.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon36</DeployClass>
