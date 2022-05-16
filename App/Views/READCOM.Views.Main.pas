@@ -632,7 +632,7 @@ begin
 
   ActivateNextStoryPoint;
 
-  if ActiveStoryItem.Home then
+  if Assigned(ActiveStoryItem) and ActiveStoryItem.Home then
     HUD.UseStoryTimer := false; //TODO: should instead define EndStoryPoint(s) and stop the timer once the end is reached
 end;
 
