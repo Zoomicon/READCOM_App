@@ -229,6 +229,7 @@ type
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
+    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200); virtual;
     //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
@@ -1731,6 +1732,16 @@ begin
     Save(OutputFileStream, ExtractFileExt(Filepath));
   finally
     FreeAndNil(OutputFileStream);
+  end;
+end;
+
+procedure TStoryItem.SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200);
+begin
+  var thumb := MakeThumbnail(MaxWidth, MaxHeight);
+  try
+    thumb.SaveToFile(Filepath); //Max thumb size 200x200
+  finally
+    FreeAndNil(thumb);
   end;
 end;
 

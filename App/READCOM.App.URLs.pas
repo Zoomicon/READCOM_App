@@ -1,4 +1,5 @@
-//Based on: https://github.com/DeveloppeurPascal/librairies/blob/master/u_urlOpen.pas that is MIT Licensed (https://github.com/DeveloppeurPascal/librairies/blob/master/LICENSE)
+//Description: READ-COM StoryItem Factory
+//Author: George Birbilis (http://zoomicon.com)
 
 unit READCOM.App.URLs;
 
@@ -9,6 +10,8 @@ interface
 
   const
     DOWNLOAD_TIMEOUT: Cardinal = 10000; //10 sec (can also use INFINITE)
+
+  function IsURI(const Value: String): Boolean;
 
   /// <summary>Open URL on default browser</summary>
   /// <param name="url">Absolute address of the website to open in the web browser</param>
@@ -42,7 +45,14 @@ implementation
    Winapi.ShellAPI, Winapi.Windows;
   {$ENDIF}
 
-procedure OpenURLinBrowser(const url: string);
+function IsURI(const Value: String): Boolean;
+begin
+  result := Value.StartsWith('http://', true) or Value.StartsWith('https://', true);
+end;
+
+{$region 'OpenURLinBrowser'}
+
+procedure OpenURLinBrowser(const url: string); //Based on: https://github.com/DeveloppeurPascal/librairies/blob/master/u_urlOpen.pas that is MIT Licensed (https://github.com/DeveloppeurPascal/librairies/blob/master/LICENSE)
 {$IF Defined(ANDROID)}
 var
  Intent: JIntent;
@@ -62,6 +72,8 @@ begin
   _system(PAnsiChar('open ' + AnsiString(URL)));
 {$ENDIF}
 end;
+
+{$endregion}
 
 function DownloadFileWithFallbackCache(const url: string): TMemoryStream;
 begin

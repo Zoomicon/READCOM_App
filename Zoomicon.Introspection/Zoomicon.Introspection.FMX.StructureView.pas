@@ -279,16 +279,19 @@ procedure TStructureView.LoadTreeView;
         //...add screenshot of TheControl to ImageList
         var ThumbnailSize := TSizeF.Create(W*(IconHeight/H), IconHeight);
         var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //don't use TheControl.MakeScreenshot, generates a big image wasting resources
-        var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
-        FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+        try
+          var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
 
-        //...set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
-        ImageIndex := imgIndex; //if -1 then won't show image
-        if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
-        begin
-          //var img := ImageList.Source.Items[imgIndex].MultiResBitmap; //don't need to get this to ask for Size, have already calculated ThumbnailSize above
-          StylesData['glyphstyle.Size.Size'] := TValue.From(ThumbnailSize);
-                                                //TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+          //...set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
+          ImageIndex := imgIndex; //if -1 then won't show image
+          if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
+          begin
+            //var img := ImageList.Source.Items[imgIndex].MultiResBitmap; //don't need to get this to ask for Size, have already calculated ThumbnailSize above
+            StylesData['glyphstyle.Size.Size'] := TValue.From(ThumbnailSize);
+                                                  //TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+          end;
+        finally
+          FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
         end;
       end;
 

@@ -57,6 +57,7 @@ type
     function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
+    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200); //TODO: should make constants
     function SaveToString: string; overload;
   end;
 

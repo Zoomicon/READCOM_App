@@ -97,6 +97,7 @@ type
     function LoadDefaultDocument: Boolean;
     function LoadSavedState: Boolean;
     procedure SaveCurrentState;
+    procedure CheckSaveActiveStoryItemThumbnail;
 
     {RootStoryItemStoryView}
     function GetRootStoryItemView: TStoryItem;
@@ -627,6 +628,10 @@ begin
 
     ZoomTo; //TODO: temp fix, else showing some undrawn text when loading from temp state and till one [un]zooms or resizes (seems 0.3.1 didn't have the issue this fixes, but 0.3.0 and 0.3.2+ had it)
     ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
+
+    //ActivateHomeStoryItem; //apply the home //TODO: text doesn't render yet at this point
+    CheckSaveActiveStoryItemThumbnail;
+
     exit;
   end;
 
@@ -663,7 +668,7 @@ begin
     if (Filename <> '') then
       begin
       if LoadFromFile(Filename) then //Note: just doing RootStoryItemView := TStoryItem.LoadNew(Filename) wouldn't work do font resizing since that won't do StartInitialZoomTimer
-        ActiveStoryItem := HomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+        ActivateHomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
 
       //TODO: OLD-CODE-LINE-REMOVE? //RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
       end;
@@ -1096,7 +1101,7 @@ end;
 
 function TMainForm.LoadFromFileOrUrl(const PathOrUrl: String): Boolean;
 begin
-  if PathOrUrl.StartsWith('http://', true) or PathOrUrl.StartsWith('https://', true) then
+  if IsURI(PathOrUrl) then
     result := LoadFromUrl(PathOrUrl)
   else
     result := LoadFromFile(PathOrUrl);
@@ -1168,6 +1173,21 @@ procedure TMainForm.FormSaveState(Sender: TObject);
 begin
   HUD.EditMode := false; //make sure we exit EditMode, else child items of ActiveStoryItem are saved as disabled
   SaveCurrentState;
+end;
+
+procedure TMainForm.CheckSaveActiveStoryItemThumbnail;
+begin
+  if SaveThumbnail and (StorySource <> '') then
+  begin
+    var ThumbPath: String;
+    if IsURI(StorySource) then
+      ThumbPath := 'Thumb.png' //save in current folder
+    else
+      ThumbPath := StorySource + '.png';
+
+    ActiveStoryItem.SaveThumbnail(ThumbPath);
+    Application.Terminate; //close the app after saving the thumb
+  end;
 end;
 
 {$endregion}

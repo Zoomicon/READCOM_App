@@ -9,6 +9,7 @@ interface
 
   var
     StorySource: String;
+    SaveThumbnail: Boolean; //=false
 
 implementation
   uses
@@ -23,7 +24,17 @@ implementation
 procedure ParseCommandLine;
 begin
   if (ParamCount <> 0) then
-    StorySource := ParamStr(1); //TODO: add optional -thumb switch to save screenshot (after having loaded any given story or last state or default document) and close again
+  begin
+    var param1 := ParamStr(1);
+
+    if (param1 = '-thumb') and (ParamCount > 1) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+    begin
+      SaveThumbnail := true;
+      StorySource := ParamStr(2);
+    end
+    else
+      StorySource := ParamStr(1);
+  end
 end;
 
 procedure Main;
