@@ -4,8 +4,8 @@
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <PropertyGroup>
-        <DeviceId Condition="'$(Platform)'=='Android'"/>
-        <DeviceId Condition="'$(Platform)'=='Android64'"/>
+        <DeviceId Condition="'$(Platform)'=='Android'">HGAJGEJN</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android64'">HGAJGEJN</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
@@ -37,19 +37,19 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="OSX64\Debug\READCOM_App.dSYM" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
-            <RemoteName>READCOM_App</RemoteName>
-            <DeployClass>ProjectOSXDebug</DeployClass>
+        <DeployFile Include="OSX64\Debug\READCOM_App.entitlements" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App.app\..\</RemoteDir>
+            <RemoteName>READCOM_App.entitlements</RemoteName>
+            <DeployClass>ProjectOSXEntitlements</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="OSX64\Debug\READCOM_App.entitlements" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App.app\..\</RemoteDir>
-            <RemoteName>READCOM_App.entitlements</RemoteName>
-            <DeployClass>ProjectOSXEntitlements</DeployClass>
+        <DeployFile Include="OSX64\Debug\READCOM_App.dSYM" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
+            <RemoteName>READCOM_App</RemoteName>
+            <DeployClass>ProjectOSXDebug</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -299,15 +299,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage470</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -339,6 +330,15 @@
             <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage470</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -573,15 +573,6 @@
             <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libREADCOM_App.so</RemoteName>
-            <DeployClass>ProjectOutput_Android32</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>

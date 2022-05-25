@@ -565,6 +565,7 @@
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -830,12 +831,6 @@
                 </DeployFile>
                 <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Android">
-                        <RemoteName>libREADCOM_App.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput_Android32">
-                    <Platform Name="Android64">
                         <RemoteName>libREADCOM_App.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

@@ -134,8 +134,11 @@ begin
   {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
   btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists)
-  btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
   btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
+  {$ENDIF}
+
+  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR Defined(MACOS)}
+  btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
   {$ENDIF}
 
   FEditMode := false;

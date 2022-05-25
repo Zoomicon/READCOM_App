@@ -218,7 +218,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
+  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR Defined(MACOS)}
   StyleBook := nil; //TODO: can we make a style platform agnostic?
   {$ELSE}
   StyleBook := Globals.LightTheme;
