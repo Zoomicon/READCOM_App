@@ -57,7 +57,8 @@ uses
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame},
-  FMX.Image32SVG in '..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas';
+  FMX.Image32SVG in '..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas',
+  Img32.SVG.Core in '..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas';
 
 {$R *.res}
 

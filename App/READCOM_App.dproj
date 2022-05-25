@@ -566,6 +566,7 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas"/>
+        <DCCReference Include="..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
