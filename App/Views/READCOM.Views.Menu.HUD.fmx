@@ -37,9 +37,9 @@ object StoryHUD: TStoryHUD
       Margins.Right = 10.000000000000000000
       Margins.Bottom = 10.000000000000000000
       Position.X = 10.000000000000000000
-      Position.Y = 522.000000000000000000
+      Position.Y = 520.000000000000000000
       Size.Width = 642.000000000000000000
-      Size.Height = 40.000000000000000000
+      Size.Height = 42.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object btnNext: TSpeedButton
@@ -51,7 +51,7 @@ object StoryHUD: TStoryHUD
         ImageIndex = 2
         Position.X = 586.000000000000000000
         Size.Width = 56.000000000000000000
-        Size.Height = 40.000000000000000000
+        Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'arrowrighttoolbutton'
       end
@@ -63,7 +63,7 @@ object StoryHUD: TStoryHUD
         Images = Globals.SVGIconImageList
         ImageIndex = 1
         Size.Width = 41.000000000000000000
-        Size.Height = 40.000000000000000000
+        Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'arrowlefttoolbutton'
       end
@@ -85,7 +85,7 @@ object StoryHUD: TStoryHUD
       HitTest = False
       Padding.Top = 40.000000000000000000
       Size.Width = 50.000000000000000000
-      Size.Height = 522.000000000000000000
+      Size.Height = 520.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 2
       Justify = Left
@@ -228,23 +228,6 @@ object StoryHUD: TStoryHUD
         Text = 'Story Timer'
         OnClick = btnToggleUseStoryTimerClick
       end
-      object btnHelp: TSpeedButton
-        Action = actionHelp
-        Enabled = True
-        Hint = 'Show Help'#13#13'Opens web browser to application'#39's wiki pages'
-        Images = Globals.SVGIconImageList
-        ImageIndex = 16
-        Margins.Left = 3.000000000000000000
-        Margins.Top = 3.000000000000000000
-        Margins.Right = 3.000000000000000000
-        Margins.Bottom = 3.000000000000000000
-        Position.X = 3.000000000000000000
-        Position.Y = 325.000000000000000000
-        Size.Width = 40.000000000000000000
-        Size.Height = 40.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'searchtoolbutton'
-      end
       object btnNextTheme: TSpeedButton
         Action = actionNextTheme
         Enabled = True
@@ -255,7 +238,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 371.000000000000000000
+        Position.Y = 325.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -272,7 +255,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 417.000000000000000000
+        Position.Y = 371.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
@@ -285,7 +268,7 @@ object StoryHUD: TStoryHUD
       Margins.Right = 10.000000000000000000
       Position.X = 602.000000000000000000
       Size.Width = 50.000000000000000000
-      Size.Height = 522.000000000000000000
+      Size.Height = 520.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
       Justify = Left
@@ -617,14 +600,6 @@ object StoryHUD: TStoryHUD
       ImageIndex = 7
       ShortCut = 16467
       ImageIndex = 7
-    end
-    object actionHelp: TAction
-      Category = 'Help'
-      Text = 'Help'
-      ImageIndex = 16
-      ShortCut = 112
-      OnExecute = actionHelpExecute
-      ImageIndex = 16
     end
     object actionAddBitmapImageStoryItem: TAction
       Category = 'Edit'

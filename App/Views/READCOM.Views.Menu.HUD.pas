@@ -50,8 +50,6 @@ type
     btnNew: TSpeedButton;
     actionHome: TAction;
     btnHome: TSpeedButton;
-    actionHelp: TAction;
-    btnHelp: TSpeedButton;
     btnAbout: TSpeedButton;
     actionCopy: TAction;
     actionPaste: TAction;
@@ -77,7 +75,6 @@ type
     btnOptions: TSpeedButton;
     procedure actionAboutExecute(Sender: TObject);
     procedure actionMenuExecute(Sender: TObject);
-    procedure actionHelpExecute(Sender: TObject);
     procedure btnToggleStructureVisibleClick(Sender: TObject);
     procedure btnToggleEditModeClick(Sender: TObject);
     procedure btnToggleTargetsVisibleClick(Sender: TObject);
@@ -247,11 +244,6 @@ end;
 {$endregion}
 
 {$region 'Help actions'}
-
-procedure TStoryHUD.actionHelpExecute(Sender: TObject);
-begin
-  OpenURLinBrowser(URL_HELP);
-end;
 
 procedure TStoryHUD.actionAboutExecute(Sender: TObject);
 begin

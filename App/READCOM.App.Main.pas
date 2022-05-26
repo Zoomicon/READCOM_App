@@ -6,6 +6,7 @@ unit READCOM.App.Main;
 interface
 
   procedure Main;
+  procedure ShowHelp;
 
   var
     StorySource: String;
@@ -19,7 +20,8 @@ implementation
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
     READCOM.Views.Main,
     READCOM.App.Debugging,
-    READCOM.App.Globals; //for TGlobals
+    READCOM.App.Globals, //for TGlobals
+    READCOM.App.URLs; //for OpenURLinBrowser
 
 procedure ParseCommandLine;
 begin
@@ -35,6 +37,11 @@ begin
     else
       StorySource := ParamStr(1);
   end
+end;
+
+procedure ShowHelp;
+begin
+  OpenURLinBrowser(URL_HELP);
 end;
 
 procedure Main;

@@ -39,15 +39,8 @@ object MainForm: TMainForm
     inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
-      inherited layoutButtonsNavigation: TLayout
-        Position.Y = 566.000000000000000000
-        Size.Width = 856.000000000000000000
-        inherited btnNext: TSpeedButton
-          Position.X = 800.000000000000000000
-        end
-      end
-      inherited layoutButtonsMain: TFlowLayout
-        Size.Height = 566.000000000000000000
+      inherited layoutButtonsMain: TFlowLayout [0]
+        Size.Height = 564.000000000000000000
         inherited btnToggleStructureVisible: TSpeedButton
           Hint = 
             'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
@@ -60,9 +53,9 @@ object MainForm: TMainForm
             'e. Light and dark mode ones are available.'
         end
       end
-      inherited layoutButtonsEdit: TFlowLayout
+      inherited layoutButtonsEdit: TFlowLayout [1]
         Position.X = 816.000000000000000000
-        Size.Height = 566.000000000000000000
+        Size.Height = 564.000000000000000000
         TabOrder = 174
         inherited btnAdd: TSpeedButton
           Hint = 
@@ -114,12 +107,19 @@ object MainForm: TMainForm
           OnChange = HUDcomboBackColorChange
         end
       end
-      object StoryTimer: TTimer
+      object StoryTimer: TTimer [2]
         Enabled = False
         Interval = 100
         OnTimer = StoryTimerTimer
         Left = 86
         Top = 24
+      end
+      inherited layoutButtonsNavigation: TLayout [3]
+        Position.Y = 564.000000000000000000
+        Size.Width = 856.000000000000000000
+        inherited btnNext: TSpeedButton
+          Position.X = 800.000000000000000000
+        end
       end
     end
     inherited MultiView: TMultiView
@@ -186,9 +186,6 @@ object MainForm: TMainForm
       inherited actionSave: TAction
         OnExecute = HUDactionSaveExecute
         ImageIndex = 7
-      end
-      inherited actionHelp: TAction
-        ImageIndex = 16
       end
       inherited actionAddBitmapImageStoryItem: TAction
         OnExecute = HUDactionAddBitmapImageStoryItemExecute
