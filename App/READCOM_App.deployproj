@@ -27,6 +27,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="$(BDS)\bin\delphi_PROJECTICNS.icns" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\Contents\Resources\</RemoteDir>
+            <RemoteName>READCOM_App.icns</RemoteName>
+            <DeployClass>ProjectOSXResource</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="OSX64\Debug\READCOM_App" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\MacOS\</RemoteDir>
             <RemoteName>READCOM_App</RemoteName>
@@ -37,7 +46,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="OSX64\Debug\READCOM_App.entitlements" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="OSX64\Release\READCOM_App.entitlements" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\..\</RemoteDir>
             <RemoteName>READCOM_App.entitlements</RemoteName>
             <DeployClass>ProjectOSXEntitlements</DeployClass>
@@ -46,10 +55,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="OSX64\Debug\READCOM_App.dSYM" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
-            <RemoteName>READCOM_App</RemoteName>
-            <DeployClass>ProjectOSXDebug</DeployClass>
+        <DeployFile Include="OSX64\Debug\READCOM_App.entitlements" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App.app\..\</RemoteDir>
+            <RemoteName>READCOM_App.entitlements</RemoteName>
+            <DeployClass>ProjectOSXEntitlements</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -63,6 +72,34 @@
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\Contents\Resources\StartUp\</RemoteDir>
+            <RemoteName>Default.readcom</RemoteName>
+            <DeployClass>ProjectFile</DeployClass>
+            <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="OSX64\Release\READCOM_App.info.plist" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\Contents\</RemoteDir>
+            <RemoteName>Info.plist</RemoteName>
+            <DeployClass>ProjectOSXInfoPList</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="OSX64\Release\READCOM_App" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>READCOM_App</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
