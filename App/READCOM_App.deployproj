@@ -8,6 +8,9 @@
         <DeviceId Condition="'$(Platform)'=='Android64'"/>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
     </PropertyGroup>
+    <PropertyGroup>
+        <OSX64_OutputDir Condition="'$(Platform)'=='OSXARM64'">OSX64\Release\</OSX64_OutputDir>
+    </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
         <DeployFile Include="OSX64\Debug\READCOM_App.info.plist" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\</RemoteDir>
