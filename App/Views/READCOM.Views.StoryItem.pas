@@ -1343,9 +1343,11 @@ begin
   //Check clipboard contents format
   if Clipboard.HasText then
   begin
-    var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
+    var LText := Trim(Clipboard.GetText); //Trimming since we may have pasted an indented object from a .readcom file or some SVG markup with extra spaces before and after
     if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem //TODO: add method to check if text contains object
       FileExt := '.readcom'
+    else if LText.StartsWith('<svg ') and LText.EndsWith('</svg>') then
+      FileExt := '.svg'
     else
       FileExt := '.txt'
   end

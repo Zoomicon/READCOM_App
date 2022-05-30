@@ -270,6 +270,7 @@ end;
 
 function TImageStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
 begin
+  //check for Bitmap image
   if Clipboard.HasImage then
   begin
     var BitmapSurface := Clipboard.GetImage;
@@ -278,6 +279,17 @@ begin
       Exit(Self);
     finally
       FreeAndNil(BitmapSurface); //must release the TBitmapSurface to not have memory leak
+    end;
+  end
+
+  //check for SVG markup
+  else if Clipboard.HasText then
+  begin
+    var LText := TrimLeft(Clipboard.GetText); //Trimming since we may have pasted some SVG markup with extra spaces before and after
+    if LText.StartsWith('<svg ') and LText.EndsWith('</svg>') then
+    begin
+      SVGText := LText;
+      Exit(Self);
     end;
   end;
 
