@@ -183,8 +183,10 @@ implementation
     READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
+    READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TBitmapImageStoryItem
-    READCOM.Views.TextStoryItem; //for TTextStoryItem
+    READCOM.Views.TextStoryItem, //for TTextStoryItem
+    READCOM.Views.Wait; //for TWaitFrame
 
 {$R *.fmx}
 
@@ -1078,27 +1080,29 @@ end;
 
 function TMainForm.LoadFromUrl(const Url: String): Boolean; //TODO: should add LoadFromUrl and AddFromUrl to TStoryItem too
 begin
-  //var memStream := DownloadFileWithFallbackCache(Url); //TODO: this seems to bring empty file
   try
-    //result := LoadFromStream(memStream); //tell app to open the fetched memstream as new RootStoryItem, can create .readcom story files that serve as galleries that point to other readcom files via thumbnails - and can use that at the Default.readcom file too that gets loaded on 1st run //TODO: maybe make global RootStoryItem like ActiveStoryItem with change event and app can listen to that
+    TWaitFrame.ShowModal(MainForm);
 
-    var loaded := false;
-    Log('Before call to TURLStream');
-    TURLStream.Create(Url, //TODO: try to fix the downloader (but do check on mobiles too) since this is Delphi 11.1, else make a version of the downloader that can use that to also have caching
+    TURLStream.Create(Url,
       procedure(AStream: TStream)
       begin
         Log('Started download');
-        loaded := LoadFromStream(AStream); //probably it can start loading while the content is coming
+        LoadFromStream(AStream); //probably it can start loading while the content is coming
         Log('Finished download');
+        TWaitFrame.ShowModal(MainForm, false);
       end,
       true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (it not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
       true //free on completion
-    ).AsyncResult.AsyncWaitEvent.WaitFor; //TODO: check if this works properly on Android
-    Log('After call to TURLStream'); //TODO: this should be output after "Finished download" but seems to be output immediately after "Before call..." which means the TURLStream WaitFor doesn't work as expected
-    result := loaded; //TODO: due to WaitFor not working as expected, make sure the result of LoadFromUrl isn't used for now (will be false)
+    );
 
-  finally
-    //FreeAndNil(memStream);
+    result := true; //assuming download will progress fine
+  except
+    on e: Exception do
+    begin
+      TWaitFrame.ShowModal(MainForm, false);
+      ShowMessageFmt(ERR_DOWNLOAD, [e.Message]);
+      result := false; //probably no network connection etc.
+    end;
   end;
 end;
 

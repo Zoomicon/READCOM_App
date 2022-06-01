@@ -75,3 +75,6 @@ modules/
 
 **Debug/
 **Release/
+
+*.app
+*.app.zip

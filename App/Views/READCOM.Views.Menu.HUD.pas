@@ -120,7 +120,7 @@ type
 
 implementation
   uses
-    READCOM.App.URLs; //for url_Open_In_Browser
+    READCOM.App.URLs, READCOM.Views.Main; //for url_Open_In_Browser
 
 {$R *.fmx}
 
@@ -247,14 +247,7 @@ end;
 
 procedure TStoryHUD.actionAboutExecute(Sender: TObject);
 begin
-  if not Assigned(FAboutFrame) then
-  begin
-    FAboutFrame := TAboutFrame.Create(Self);
-    FAboutFrame.Align := TAlignLayout.Center;
-  end;
-
-  FAboutFrame.Parent := Self;
-  FAboutFrame.Visible := true;
+  TAboutFrame.ShowModal(MainForm); //has [X] button to close itself
 end;
 
 {$endregion}

@@ -21,6 +21,7 @@ implementation
     READCOM.Views.Main,
     READCOM.App.Debugging,
     READCOM.App.Globals, //for TGlobals
+    READCOM.App.Messages,
     READCOM.App.URLs; //for OpenURLinBrowser
 
 procedure ParseCommandLine;

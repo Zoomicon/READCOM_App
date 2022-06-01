@@ -39,7 +39,14 @@ object MainForm: TMainForm
     inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
-      inherited layoutButtonsMain: TFlowLayout [0]
+      inherited layoutButtonsNavigation: TLayout
+        Position.Y = 564.000000000000000000
+        Size.Width = 856.000000000000000000
+        inherited btnNext: TSpeedButton
+          Position.X = 800.000000000000000000
+        end
+      end
+      inherited layoutButtonsMain: TFlowLayout
         Size.Height = 564.000000000000000000
         inherited btnToggleStructureVisible: TSpeedButton
           Hint = 
@@ -53,7 +60,7 @@ object MainForm: TMainForm
             'e. Light and dark mode ones are available.'
         end
       end
-      inherited layoutButtonsEdit: TFlowLayout [1]
+      inherited layoutButtonsEdit: TFlowLayout
         Position.X = 816.000000000000000000
         Size.Height = 564.000000000000000000
         TabOrder = 174
@@ -107,19 +114,12 @@ object MainForm: TMainForm
           OnChange = HUDcomboBackColorChange
         end
       end
-      object StoryTimer: TTimer [2]
+      object StoryTimer: TTimer
         Enabled = False
         Interval = 100
         OnTimer = StoryTimerTimer
         Left = 86
         Top = 24
-      end
-      inherited layoutButtonsNavigation: TLayout [3]
-        Position.Y = 564.000000000000000000
-        Size.Width = 856.000000000000000000
-        inherited btnNext: TSpeedButton
-          Position.X = 800.000000000000000000
-        end
       end
     end
     inherited MultiView: TMultiView

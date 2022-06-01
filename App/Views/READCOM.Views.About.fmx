@@ -1,161 +1,170 @@
 object AboutFrame: TAboutFrame
-  Size.Width = 476.000000000000000000
-  Size.Height = 396.000000000000000000
+  Align = Contents
+  Size.Width = 508.000000000000000000
+  Size.Height = 320.000000000000000000
   Size.PlatformDefault = False
   object rectBackground: TRectangle
     Align = Contents
-    Size.Width = 476.000000000000000000
-    Size.Height = 396.000000000000000000
+    Fill.Color = xBBE0E0E0
+    Size.Width = 508.000000000000000000
+    Size.Height = 320.000000000000000000
     Size.PlatformDefault = False
-    object GlyphLogo: TGlyph
-      OnTap = GlyphLogoTap
-      Align = Scale
-      Position.X = 9.333336830139160000
-      Position.Y = 8.425530433654785000
-      Size.Width = 127.166633605957000000
-      Size.Height = 114.797874450683600000
+    Stroke.Thickness = 0.000000000000000000
+    object rectBorder: TRectangle
+      Align = Center
+      Size.Width = 508.000000000000000000
+      Size.Height = 320.000000000000000000
       Size.PlatformDefault = False
-      ImageIndex = 24
-      Images = Globals.SVGIconImageList
-    end
-    object PanelTitleVersion: TPanel
-      Anchors = [akLeft, akTop, akRight]
-      Position.X = 125.000000000000000000
-      Position.Y = 8.000000000000000000
-      Size.Width = 343.000000000000000000
-      Size.Height = 109.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 0
-      object FlowLayout1: TFlowLayout
-        Align = Contents
-        Padding.Top = 20.000000000000000000
-        Size.Width = 343.000000000000000000
+      object MemoInfo: TMemo
+        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+        DataDetectorTypes = []
+        Lines.Strings = (
+          'Author:'
+          'George Birbilis / Zoomicon.com'
+          ''
+          'READ-COM Project:'
+          'https://www.read-com-eu.uma.es/'
+          ''
+          'Source code and Wiki:'
+          'https://github.com/zoomicon/READCOM_App'
+          ''
+          'Stories and Assets Gallery:'
+          'https://github.com/zoomicon/READCOM_Gallery'
+          ''
+          'Icons:'
+          'https://openmoji.org'
+          'https://oNlineWebFonts.com')
+        ReadOnly = True
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Position.X = 8.000000000000000000
+        Position.Y = 125.000000000000000000
+        Size.Width = 492.000000000000000000
+        Size.Height = 187.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Viewport.Width = 472.000000000000000000
+        Viewport.Height = 183.000000000000000000
+      end
+      object btnHelp: TSpeedButton
+        Action = actionHelp
+        Anchors = [akRight, akBottom]
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 16
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 3.000000000000000000
+        Position.X = 440.000000000000000000
+        Position.Y = 260.000000000000000000
+        Size.Width = 45.000000000000000000
+        Size.Height = 53.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'searchtoolbutton'
+      end
+      object GlyphLogo: TGlyph
+        OnTap = GlyphLogoTap
+        Align = Scale
+        Position.X = 9.960789680480957000
+        Position.Y = 6.808507442474365000
+        Size.Width = 135.715652465820300000
+        Size.Height = 92.765899658203130000
+        Size.PlatformDefault = False
+        ImageIndex = 24
+        Images = Globals.SVGIconImageList
+      end
+      object PanelTitleVersion: TPanel
+        Anchors = [akLeft, akTop, akRight]
+        Position.X = 125.000000000000000000
+        Position.Y = 8.000000000000000000
+        Size.Width = 375.000000000000000000
         Size.Height = 109.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 2
-        Justify = Center
-        JustifyLastLine = Center
-        FlowDirection = LeftToRight
-        object lblTitle: TLabel
-          Align = Horizontal
-          StyledSettings = [Family, Size, FontColor]
-          Position.X = 9.500000000000000000
-          Position.Y = 20.000000000000000000
-          Size.Width = 324.000000000000000000
-          Size.Height = 16.000000000000000000
-          Size.PlatformDefault = False
-          TextSettings.Font.StyleExt = {00070000000000000004000000}
-          TextSettings.HorzAlign = Center
-          Text = 'READ-COM: Reading Communities'
-          TabOrder = 1
-        end
-        object FlowLayoutBreak1: TFlowLayoutBreak
-          ChangesRules = False
-          Justify = Left
-          JustifyLastLine = Left
-          FlowDirection = LeftToRight
-        end
-        object lblBlankRow: TLabel
-          Position.X = 111.500000000000000000
-          Position.Y = 36.000000000000000000
-          TabOrder = 3
-        end
-        object FlowLayoutBreak2: TFlowLayoutBreak
-          ChangesRules = False
-          Justify = Left
-          JustifyLastLine = Left
-          FlowDirection = LeftToRight
-        end
-        object FlowLayout2: TFlowLayout
-          Align = Horizontal
-          Padding.Left = 20.000000000000000000
-          Position.X = 6.500000000000000000
-          Position.Y = 53.000000000000000000
-          Size.Width = 330.000000000000000000
-          Size.Height = 25.000000000000000000
+        TabOrder = 0
+        object TitleAndVersionLayout: TFlowLayout
+          Align = Contents
+          Padding.Top = 20.000000000000000000
+          Size.Width = 375.000000000000000000
+          Size.Height = 109.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
           Justify = Center
           JustifyLastLine = Center
           FlowDirection = LeftToRight
-          object lblVersion: TLabel
-            Align = MostLeft
-            Position.X = 93.399993896484380000
-            Size.Width = 87.200004577636720000
+          object lblTitle: TLabel
+            Align = Horizontal
+            StyledSettings = [Family, Size, FontColor]
+            Position.X = 25.500000000000000000
+            Position.Y = 20.000000000000000000
+            Size.Width = 324.000000000000000000
             Size.Height = 16.000000000000000000
             Size.PlatformDefault = False
-            Text = 'Version:'
+            TextSettings.Font.StyleExt = {00070000000000000004000000}
+            TextSettings.HorzAlign = Center
+            Text = 'READ-COM: Reading Communities'
+            TabOrder = 1
+          end
+          object NewLine1: TFlowLayoutBreak
+            ChangesRules = False
+            Justify = Left
+            JustifyLastLine = Left
+            FlowDirection = LeftToRight
+          end
+          object lblBlankRow: TLabel
+            Position.X = 127.500000000000000000
+            Position.Y = 36.000000000000000000
             TabOrder = 3
           end
-          object lblVersionValue: TLabel
-            Align = MostLeft
-            Position.X = 180.600006103515600000
-            Size.Width = 76.000000000000000000
-            Size.Height = 16.000000000000000000
+          object NewLine2: TFlowLayoutBreak
+            ChangesRules = False
+            Justify = Left
+            JustifyLastLine = Left
+            FlowDirection = LeftToRight
+          end
+          object VersionLayout: TFlowLayout
+            Align = Horizontal
+            Padding.Left = 20.000000000000000000
+            Position.X = 22.500000000000000000
+            Position.Y = 53.000000000000000000
+            Size.Width = 330.000000000000000000
+            Size.Height = 25.000000000000000000
             Size.PlatformDefault = False
-            Text = '0.0.0'
             TabOrder = 2
+            Justify = Center
+            JustifyLastLine = Center
+            FlowDirection = LeftToRight
+            object lblVersion: TLabel
+              Align = MostLeft
+              Position.X = 93.399993896484380000
+              Size.Width = 87.200004577636720000
+              Size.Height = 16.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Version:'
+              TabOrder = 3
+            end
+            object lblVersionValue: TLabel
+              Align = MostLeft
+              Position.X = 180.600006103515600000
+              Size.Width = 76.000000000000000000
+              Size.Height = 16.000000000000000000
+              Size.PlatformDefault = False
+              Text = '0.0.0'
+              TabOrder = 2
+            end
           end
         end
-      end
-      object btnClose: TSpeedButton
-        Anchors = [akTop, akRight]
-        Position.X = -125.000000000000000000
-        Position.Y = -8.000000000000000000
-        Size.Width = 24.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'stoptoolbutton'
-        Text = 'stoptoolbutton'
-        OnClick = btnCloseClick
+        object btnClose: TSpeedButton
+          Position.X = -117.000000000000000000
+          Position.Y = -1.000000000000000000
+          Size.Width = 24.000000000000000000
+          Size.Height = 24.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'stoptoolbutton'
+          Text = 'stoptoolbutton'
+          OnClick = btnCloseClick
+        end
       end
     end
-    object MemoInfo: TMemo
-      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
-      DataDetectorTypes = []
-      Lines.Strings = (
-        'Author:'
-        'George Birbilis / Zoomicon.com'
-        ''
-        'READ-COM Project:'
-        'https://www.read-com-eu.uma.es/'
-        ''
-        'Source code and Wiki:'
-        'https://github.com/zoomicon/READCOM_App'
-        ''
-        'Stories and Assets Gallery:'
-        'https://github.com/zoomicon/READCOM_Gallery'
-        ''
-        'Icons:'
-        'https://openmoji.org'
-        'https://oNlineWebFonts.com')
-      ReadOnly = True
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Position.X = 8.000000000000000000
-      Position.Y = 125.000000000000000000
-      Size.Width = 460.000000000000000000
-      Size.Height = 263.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
-      Viewport.Width = 456.000000000000000000
-      Viewport.Height = 259.000000000000000000
-    end
-  end
-  object btnHelp: TSpeedButton
-    Action = actionHelp
-    Enabled = True
-    Images = Globals.SVGIconImageList
-    ImageIndex = 16
-    Margins.Left = 3.000000000000000000
-    Margins.Top = 3.000000000000000000
-    Margins.Right = 3.000000000000000000
-    Margins.Bottom = 3.000000000000000000
-    Position.X = 424.000000000000000000
-    Position.Y = 336.000000000000000000
-    Size.Width = 45.000000000000000000
-    Size.Height = 53.000000000000000000
-    Size.PlatformDefault = False
-    StyleLookup = 'searchtoolbutton'
   end
   object ActionList: TActionList
     Images = Globals.SVGIconImageList

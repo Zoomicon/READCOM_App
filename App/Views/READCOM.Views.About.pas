@@ -1,3 +1,6 @@
+//Description: READ-COM About dialog
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.Views.About;
 
 interface
@@ -20,28 +23,33 @@ type
     rectBackground: TRectangle;
     btnClose: TSpeedButton;
     GlyphLogo: TGlyph;
-    FlowLayout1: TFlowLayout;
-    FlowLayout2: TFlowLayout;
-    FlowLayoutBreak1: TFlowLayoutBreak;
+    TitleAndVersionLayout: TFlowLayout;
+    VersionLayout: TFlowLayout;
+    NewLine1: TFlowLayoutBreak;
     lblBlankRow: TLabel;
-    FlowLayoutBreak2: TFlowLayoutBreak;
+    NewLine2: TFlowLayoutBreak;
     ActionList: TActionList;
     actionHelp: TAction;
     btnHelp: TSpeedButton;
+    rectBorder: TRectangle;
     procedure btnCloseClick(Sender: TObject);
     procedure GlyphLogoTap(Sender: TObject; const Point: TPointF);
     procedure actionHelpExecute(Sender: TObject);
-  private
-    {Private declarations}
+
+  protected
+    class var
+      Frame: TFrame;
   public
-    {Public declarations}
     constructor Create(AOwner: TComponent); override;
+    class procedure ShowModal(const TheParent: TFmxObject; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
+
   end;
 
 implementation
   uses
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for AppVersion
     READCOM.App.Main,
+    READCOM.App.Messages,
     READCOM.App.URLs; //for OpenURLinBrowser
 
 {$R *.fmx}
@@ -59,6 +67,23 @@ end;
 
 {$endregion}
 
+class procedure TAboutFrame.ShowModal(const TheParent: TFmxObject; const VisibleFlag: Boolean = true);
+begin
+  if not Assigned(Frame) then
+  begin
+    Frame := Create(Application); //use Application as the Owner since we reuse the same WaitFrame instance
+    //Frame.Align := TAlignLayout.Content; //already set at frame designer (could be a property [Content, Center, Scale etc.])
+  end;
+
+  with Frame do
+  begin
+    Parent := TheParent;
+
+    //Visible := VisibleFlag;
+    if not VisibleFlag then FreeAndNil(Frame); //destroy instead of hiding to save memory
+  end;
+end;
+
 {$region 'Events'}
 
 procedure TAboutFrame.GlyphLogoTap(Sender: TObject; const Point: TPointF); //TODO: use some custom TGlyph descendent that surfaces MouseClick event and Cursor properties instead so that we can handle Click event too
@@ -73,8 +98,7 @@ end;
 
 procedure TAboutFrame.btnCloseClick(Sender: TObject);
 begin
-  Parent := nil;
-  Visible := false;
+  TAboutFrame.ShowModal(Parent, false);
 end;
 
 {$endregion}
