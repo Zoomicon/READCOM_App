@@ -8,9 +8,6 @@
         <DeviceId Condition="'$(Platform)'=='Android64'"/>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
     </PropertyGroup>
-    <PropertyGroup>
-        <OSX64_OutputDir Condition="'$(Platform)'=='OSXARM64'">OSX64\Release\</OSX64_OutputDir>
-    </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
         <DeployFile Include="OSX64\Debug\READCOM_App.info.plist" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\</RemoteDir>
@@ -49,7 +46,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App_Icns.icns" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="READCOM_App_Icns.icns" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\Resources\</RemoteDir>
             <RemoteName>READCOM_App.icns</RemoteName>
             <DeployClass>ProjectOSXResource</DeployClass>
@@ -58,7 +55,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App_Icns.icns" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="READCOM_App_Icns.icns" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\Contents\Resources\</RemoteDir>
             <RemoteName>READCOM_App.icns</RemoteName>
             <DeployClass>ProjectOSXResource</DeployClass>
@@ -274,7 +271,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>Default.readcom</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
@@ -283,7 +280,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\Contents\Resources\StartUp\</RemoteDir>
             <RemoteName>Default.readcom</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
@@ -376,15 +373,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage470</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_LauncherIcon192.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -416,6 +404,15 @@
             <RemoteDir>READCOM_App\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Android_SplashImage470.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\res\drawable-normal\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage470</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -659,6 +656,15 @@
             <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>ProjectOutput_Android32</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -1414,6 +1420,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\iPad_LaunchDark2x.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset\</RemoteDir>
+            <RemoteName>FM_LaunchScreenImage_iPadDark@2x.png</RemoteName>
+            <DeployClass>iPad_LaunchDark2x</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\iPad_Setting58.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset\</RemoteDir>
             <RemoteName>iPad_Setting58.png</RemoteName>
@@ -1427,15 +1442,6 @@
             <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset\</RemoteDir>
             <RemoteName>iPhone_AppIcon120.png</RemoteName>
             <DeployClass>iPhone_AppIcon120</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\iPad_LaunchDark2x.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset\</RemoteDir>
-            <RemoteName>FM_LaunchScreenImage_iPadDark@2x.png</RemoteName>
-            <DeployClass>iPad_LaunchDark2x</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -1477,6 +1483,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\iPad_Launch2x.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset\</RemoteDir>
+            <RemoteName>FM_LaunchScreenImage_iPad@2x.png</RemoteName>
+            <DeployClass>iPad_Launch2x</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\iPhone_LaunchDark2x.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset\</RemoteDir>
             <RemoteName>FM_LaunchScreenImage_iPhoneDark@2x.png</RemoteName>
@@ -1490,15 +1505,6 @@
             <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset\</RemoteDir>
             <RemoteName>iPad_SpotLight80.png</RemoteName>
             <DeployClass>iPad_SpotLight80</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="READCOM_App\LaunchGen\iPad_Launch2x.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset\</RemoteDir>
-            <RemoteName>FM_LaunchScreenImage_iPad@2x.png</RemoteName>
-            <DeployClass>iPad_Launch2x</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
