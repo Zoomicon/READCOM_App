@@ -234,6 +234,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="OSXARM64\Debug\READCOM_App.dSYM" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
+            <RemoteName>READCOM_App</RemoteName>
+            <DeployClass>ProjectOSXDebug</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="OSXARM64\Debug\READCOM_App.info.plist" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App.app\Contents\</RemoteDir>
             <RemoteName>Info.plist</RemoteName>
