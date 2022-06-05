@@ -174,6 +174,7 @@ resourcestring
 implementation
   uses
     System.Contnrs, //for TClassList
+    System.IOUtils, //for TPath
     System.Math, //for Max
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
@@ -1121,9 +1122,12 @@ end;
 
 function TMainForm.LoadSavedState: Boolean;
 begin
+  Log('LoadSavedState');
+
   With SaveState do
   begin
-    //StoragePath := ... //TODO: default is transient, change to make permanent
+    Name := 'SavedState.readcom';
+    StoragePath := TPath.GetHomePath;
     result := LoadFromStream(Stream, false); //don't ActivateHome, keep last Active one (needed in case the OS brought down the app and need to continue from where we were from saved state)
   end;
 end;
@@ -1157,13 +1161,17 @@ end;
 
 procedure TMainForm.SaveCurrentState;
 begin
-  Log('SaveState');
-  //StoragePath := ... //TODO: default is transient, change to make permanent
-  SaveState.Stream.Clear;
+  Log('SaveCurrentState');
 
-  var TheRootStoryItemView := RootStoryItemView;
-  if Assigned(TheRootStoryItemView) then
-    with SaveState do
+  with SaveState do
+  begin
+    Name := 'SavedState.readcom';
+    StoragePath := TPath.GetHomePath;
+
+    Stream.Clear;
+
+    var TheRootStoryItemView := RootStoryItemView;
+    if Assigned(TheRootStoryItemView) then
       try
         TheRootStoryItemView.Save(Stream); //default file format is EXT_READCOM
       except
@@ -1173,7 +1181,8 @@ begin
           Log(E);
           ShowException(E, @TMainForm.SaveCurrentState);
           end;
-    end;
+      end;
+  end;
 end;
 
 procedure TMainForm.FormSaveState(Sender: TObject);
