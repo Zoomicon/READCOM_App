@@ -32,6 +32,8 @@ Alternatively:
 
 ## Screenshots
 
+![READ-COM Application v0.6.0 showing The Tortoise and the Hare story in non-Edit mode](https://user-images.githubusercontent.com/3461504/172428202-baf8aa71-a125-48d4-9521-f211645a9446.png)
+
 ![READ-COM Application v0.6.0 showing The Tortoise and the Hare story in Edit mode](https://user-images.githubusercontent.com/3461504/172427727-8aeea65c-b8ee-4e76-a376-fc1a802f8fe8.png)
 
 Older screenshots:
