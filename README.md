@@ -32,9 +32,11 @@ Alternatively:
 
 ## Screenshots
 
-![image](https://user-images.githubusercontent.com/3461504/164836697-5d1b6d1e-e665-446b-a8f9-21fc8bfe8bce.png)
+![READ-COM Application v0.6.0 showing The Tortoise and the Hare story in Edit mode](https://user-images.githubusercontent.com/3461504/172427727-8aeea65c-b8ee-4e76-a376-fc1a802f8fe8.png)
 
 Older screenshots:
+
+![image](https://user-images.githubusercontent.com/3461504/164836697-5d1b6d1e-e665-446b-a8f9-21fc8bfe8bce.png)
 
 ![image](https://user-images.githubusercontent.com/3461504/159692204-c61e2f77-61c6-4afe-860b-5d4e9acf840c.png)
 
