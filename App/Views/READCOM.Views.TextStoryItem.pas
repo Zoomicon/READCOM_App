@@ -243,6 +243,7 @@ procedure TTextStoryItem.UpdateMemoReadOnly;
 begin
   Memo.ReadOnly := not (IsEditable or IsEditMode);
   Memo.HitTest := not Memo.ReadOnly; //TODO: should maybe have a mode that swiches between Editable, Selectable and Read-Only/Inactive (so that it's draggable)
+  //Memo.Enabled := not Memo.ReadOnly; //this greys out the item, don't use
 end;
 
 {$endregion}

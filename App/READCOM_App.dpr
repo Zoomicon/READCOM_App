@@ -1,4 +1,5 @@
 //Description: READ-COM App
+//Source: https://github.com/zoomicon/READCOM_App
 //Author: George Birbilis (http://zoomicon.com)
 
 program READCOM_App;

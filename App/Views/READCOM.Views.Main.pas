@@ -367,10 +367,16 @@ end;
 
 procedure TMainForm.OpenUrl(const Url: String);
 begin
-  if Url.EndsWith(EXT_READCOM, True) then //if it's a URL to a .readcom file (case-insensitive comparison)
-    LoadFromUrl(Url)
-  else
-    OpenURLinBrowser(Url); //else open in system browser
+  if Url = '-' then ActivatePreviousStoryPoint
+  else if Url = '+' then ActivateNextStoryPoint
+
+  else if Url = '0' then ActivateHomeStoryItem
+  //TODO: check for other StoryPoint reference to Activate that, needed to be able to make Stories with alternative flows
+  //(e.g. "1.3" [if root is storypoint] or "3" in the flattened StructureView tree of non-Edit mode)
+
+  else if Url.EndsWith(EXT_READCOM, True) then LoadFromUrl(Url) //if it's a URL to a .readcom file (case-insensitive comparison)
+
+  else OpenURLinBrowser(Url); //else open in system browser
 end;
 
 {$endregion}

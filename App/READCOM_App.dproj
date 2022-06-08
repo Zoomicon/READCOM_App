@@ -329,6 +329,9 @@
         <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=4;versionName=0.6.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
+        <PF_AliasKey>readcom</PF_AliasKey>
+        <PF_AliasKeyPass>851D47CC5F96078ECF72E53AA45C7B88E44308587EF6ECF897E40FA78E273CF6DB5EA3DEE3551C63C1A4572EFACFC36ABAB3361C046522D316204584E58822A2C958F35CD507FA8FBFBAAF0007301D44921D3E131DF90939</PF_AliasKeyPass>
+        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_iOSDevice64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -422,8 +425,12 @@
         <VerInfo_MinorVer>6</VerInfo_MinorVer>
         <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.6.0;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
         <Icon_MainIcon>READCOM_App_Icon.ico</Icon_MainIcon>
-        <BT_BuildType>DeveloperID</BT_BuildType>
         <Icns_MainIcns>READCOM_App_Icns.icns</Icns_MainIcns>
+        <PF_AppleID>birbilis@zoomicon.com</PF_AppleID>
+        <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
+        <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
+        <PF_StapleTicket>true</PF_StapleTicket>
+        <BT_BuildType>DeveloperID</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_OSXARM64)'!=''">
         <Debugger_Launcher>/usr/X11/bin/xterm -e &quot;%debuggee%&quot;</Debugger_Launcher>
@@ -437,6 +444,8 @@
         <PF_AppleID>birbilis@zoomicon.com</PF_AppleID>
         <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
         <PF_StapleTicket>true</PF_StapleTicket>
+        <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
+        <BT_BuildType>DeveloperID</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -853,6 +862,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput_Android32">
+                    <Platform Name="Android64">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Android\Release\READCOM_App.classes" Configuration="Release" Class="AndroidClasses">
                     <Platform Name="Android">
                         <Operation>64</Operation>
@@ -1011,12 +1026,6 @@
                 </DeployFile>
                 <DeployFile LocalName="OSX64\Release\READCOM_App" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="OSX64">
-                        <RemoteName>READCOM_App</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="OSXARM64\Debug\READCOM_App.dSYM" Configuration="Debug" Class="ProjectOSXDebug">
-                    <Platform Name="OSXARM64">
                         <RemoteName>READCOM_App</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
