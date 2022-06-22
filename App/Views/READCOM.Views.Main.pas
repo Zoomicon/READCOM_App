@@ -939,22 +939,24 @@ end;
 procedure TMainForm.UpdateStructureView;
 begin
   Log('UpdateStructureView');
+  StartTiming; //doing nothing in non-Debug mode
 
   if not HUD.StructureVisible then
+    Log('Ignoring UpdateStructureView, currently hidden')
+  else
   begin
-    Log('Ignoring UpdateStructureView, currently hidden');
-    exit;
+    if (StoryMode <> EditMode) then
+      StructureView.FilterMode := tfFlatten
+    else
+      StructureView.FilterMode := tfPrune;
+
+    StructureView.GUIRoot := RootStoryItemView;
+
+    if Assigned(ActiveStoryItem) then
+      StructureView.SelectedObject := ActiveStoryItem.View;
   end;
 
-  if (StoryMode <> EditMode) then
-    StructureView.FilterMode := tfFlatten
-  else
-    StructureView.FilterMode := tfPrune;
-
-  StructureView.GUIRoot := RootStoryItemView;
-
-  if Assigned(ActiveStoryItem) then
-    StructureView.SelectedObject := ActiveStoryItem.View;
+  StopTiming_msec; //this will Log elapsed msec when in Debug mode
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);

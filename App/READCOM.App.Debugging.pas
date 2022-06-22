@@ -3,6 +3,7 @@ unit READCOM.App.Debugging;
 interface
   uses
     System.Classes, //for TComponent
+    System.Diagnostics, //for TStopWatch
     System.SysUtils; //for Exception, FreeAndNil, Format
 
   procedure CheckSafeMode;
@@ -14,6 +15,11 @@ interface
   procedure Log(const Format: String; const Args: array of const); overload;
   procedure Log(const Msg: String); overload;
   procedure Log(const E: Exception); overload;
+
+  function StartTiming: TStopWatch;
+  procedure StopTiming;
+  function StopTiming_msec: Int64;
+  function StopTiming_Ticks: Int64;
 
 implementation
   uses
@@ -28,6 +34,10 @@ implementation
   {$ENDIF}
   FMX.Forms, //for Application
   FMX.Types; //for GlobalUseDX
+
+resourcestring
+ STR_ELAPSED_MSEC = 'Elapsed msec: %d';
+ STR_ELAPSED_TICKS = 'Elapsed Ticks: %d';
 
 {$region 'Graphics SafeMode'}
 
@@ -133,13 +143,56 @@ end;
 
 {$endregion}
 
+{$region 'Profiling'}
+
+var profilingTimer: TStopWatch;
+
+function StartTiming: TStopWatch;
+begin
+  {$IFDEF DEBUG}
+  profilingTimer.Stop;
+  profilingTimer := TStopWatch.StartNew;
+  {$ENDIF}
+end;
+
+procedure StopTiming;
+begin
+  {$IFDEF DEBUG}
+  profilingTimer.Stop;
+  {$ENDIF}
+end;
+
+function StopTiming_msec: Int64;
+begin
+  {$IFDEF DEBUG}
+  StopTiming;
+  result := profilingTimer.ElapsedMilliseconds;
+  Log(STR_ELAPSED_MSEC, [result]);
+  {$ELSE}
+  result := 0;
+  {$ENDIF}
+end;
+
+function StopTiming_Ticks: Int64;
+begin
+  {$IFDEF DEBUG}
+  StopTiming;
+  result := profilingTimer.ElapsedTicks;
+  Log(STR_ELAPSED_TICKS, [result]);
+  {$ELSE}
+  result := 0;
+  {$ENDIF}
+end;
+
+{$endregion}
+
 initialization
 
   {$IFDEF DEBUG}
   {$IF Defined(MSWINDOWS)}EnableCodeSite;{$ENDIF} //TODO: is CodeSite indeed only for Windows? Couldn't compile for other platforms
   ReportMemoryLeaksOnShutdown := True;
   {$ELSE}
-  //CodeSite.Enabled := False; //we've removed CodeSite with compiler defines in production version so we can't use that here
+  //{$IF Defined(MSWINDOWS)}CodeSite.Enabled := False;{$ENDIF} //we've removed CodeSite with compiler defines in production version so we can't use that here
   {$ENDIF}
 
 end.
