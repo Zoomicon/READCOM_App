@@ -116,7 +116,7 @@ interface
 implementation
 uses
   {$IFDEF DEBUG}
-    {$IF Defined(MSWINDOWS)}
+    {$IF DEFINED(MSWINDOWS)}
     Winapi.Windows, //for OutputDebugString
     {$endif}
   {$ENDIF}
@@ -278,7 +278,7 @@ begin
       FPaused := False;
       result := Download(FLastSessionReadCount, FEndPosition);
       {$IFDEF DEBUG}
-        {$IF Defined(MSWINDOWS)}
+        {$IF DEFINED(MSWINDOWS)}
         //var msg := IntToStr(result);
         //OutputDebugString(@msg); //TODO, doesn't seem to work, better use CodeSite instead
         {$ENDIF}

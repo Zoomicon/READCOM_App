@@ -32,16 +32,16 @@ implementation
    System.Net.URLClient, //for TURI
    Zoomicon.Cache.Classes, //for TFileCache
    Zoomicon.Downloader.Classes, //for TFileDownloader
-  {$IF Defined(IOS)}
+  {$IF DEFINED(IOS)}
    macapi.helpers, iOSapi.Foundation, FMX.Helpers.iOS;
-  {$ELSEIF Defined(ANDROID)}
+  {$ELSEIF DEFINED(ANDROID)}
    Androidapi.Jni.App, //to avoid "H2443 Inline function 'TAndroidHelper.GetJActivity' has not been expanded"
    Androidapi.Jni.NET, //to avoid "H2443 Inline function 'StrToJURI' has not been expanded"
    Androidapi.JNI.GraphicsContentViewText,
    Androidapi.Helpers;
-  {$ELSEIF Defined(MACOS)}
+  {$ELSEIF DEFINED(MACOS)}
    Posix.Stdlib;
-  {$ELSEIF Defined(MSWINDOWS)}
+  {$ELSEIF DEFINED(MSWINDOWS)}
    Winapi.ShellAPI, Winapi.Windows;
   {$ENDIF}
 
@@ -53,22 +53,22 @@ end;
 {$region 'OpenURLinBrowser'}
 
 procedure OpenURLinBrowser(const url: string); //Based on: https://github.com/DeveloppeurPascal/librairies/blob/master/u_urlOpen.pas that is MIT Licensed (https://github.com/DeveloppeurPascal/librairies/blob/master/LICENSE)
-{$IF Defined(ANDROID)}
+{$IF DEFINED(ANDROID)}
 var
  Intent: JIntent;
 {$ENDIF}
 begin
-{$IF Defined(ANDROID)}
+{$IF DEFINED(ANDROID)}
  Intent := TJIntent.Create;
  Intent.setAction(TJIntent.JavaClass.ACTION_VIEW);
  Intent.setData(StrToJURI(URL));
  // SharedActivity.startActivity(Intent);
  tandroidhelper.Activity.startActivity(Intent);
-{$ELSEIF Defined(MSWINDOWS)}
+{$ELSEIF DEFINED(MSWINDOWS)}
  ShellExecute(0, 'OPEN', PWideChar(URL), nil, nil, SW_SHOWNORMAL);
-{$ELSEIF Defined(IOS)}
+{$ELSEIF DEFINED(IOS)}
  SharedApplication.OpenURL(StrToNSUrl(Url));
-{$ELSEIF Defined(MACOS)}
+{$ELSEIF DEFINED(MACOS)}
   _system(PAnsiChar('open ' + AnsiString(URL)));
 {$ENDIF}
 end;

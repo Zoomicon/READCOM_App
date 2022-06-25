@@ -134,7 +134,7 @@ begin
   btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   {$ENDIF}
 
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR Defined(MACOS)}
+  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(MACOS)}
   btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
   {$ENDIF}
 

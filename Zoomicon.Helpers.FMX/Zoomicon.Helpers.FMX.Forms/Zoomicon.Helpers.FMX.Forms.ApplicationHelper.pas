@@ -19,7 +19,7 @@ implementation
     Windows,
     {$ELSEIF DEFINED(MACOS)}
     Macapi.CoreFoundation,
-    {$ELSEIF Defined(IOS)}
+    {$ELSEIF DEFINED(IOS)}
     iOSapi.Foundation, Macapi.ObjectiveC,
     {$ELSEIF DEFINED(ANDROID)}
     FMX.Helpers.Android,
@@ -39,7 +39,7 @@ function TApplicationHelper.ExeName: String; //from https://gist.github.com/free
 begin
   Result := ParamStr(0);
 
-  {$IF Defined(ANDROID)}
+  {$IF DEFINED(ANDROID)}
   if (Result.IsEmpty) then
     Result := JStringToString(TAndroidHelper.Context.getPackageCodePath);
   {$ENDIF}
@@ -71,7 +71,7 @@ end;
 
 {$region 'Application Version'} //see https://docwiki.embarcadero.com/RADStudio/Alexandria/en/Version_Info
 
-{$IF Defined(MSWINDOWS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
+{$IF DEFINED(MSWINDOWS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
 
 function GetAppVersionStr2: string;
 var
@@ -126,7 +126,7 @@ begin
      LongRec(FixedPtr.dwFileVersionLS).Lo]); //build
 end;
 
-{$ELSEIF Defined(MACOS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
+{$ELSEIF DEFINED(MACOS)} //based on https://delphihaven.wordpress.com/2012/12/08/retrieving-the-applications-version-string/
 
 function GetAppVersionStr3: string;
 var
@@ -140,7 +140,7 @@ begin
   CFStringGetCharacters(CFStr, Range, PChar(Result));
 end;
 
-{$ELSEIF Defined(IOS)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
+{$ELSEIF DEFINED(IOS)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
 
 function GetAppVersionStr4: string;
 var
@@ -154,7 +154,7 @@ begin
    Result := UTF8ToString(BuildStr.UTF8String);
 end;
 
-{$ELSEIF Defined(ANDROID)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
+{$ELSEIF DEFINED(ANDROID)} //based on https://codeverge.com/embarcadero.delphi.firemonkey/getting-application-version-and/1050163
 
 function GetAppVersionStr2: string;
 begin
@@ -167,7 +167,7 @@ begin
   result := GetAppVersionStr2 + '.0';
 end;
 
-{$ELSEIF Defined(LINUX)}
+{$ELSEIF DEFINED(LINUX)}
 
 //see https://stackoverflow.com/questions/44600597/delphi-linux64-how-to-retrieve-the-version-information-set-by-project-options-v and https://wiki.freepascal.org/Show_Application_Title,_Version,_and_Company#Linux
 
