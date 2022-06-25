@@ -221,7 +221,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR Defined(MACOS)}
+  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(MACOS)}
   StyleBook := nil; //TODO: can we make a style platform agnostic?
   {$ELSE}
   StyleBook := Globals.LightTheme;
@@ -939,7 +939,7 @@ end;
 procedure TMainForm.UpdateStructureView;
 begin
   Log('UpdateStructureView');
-  StartTiming; //doing nothing in non-Debug mode
+  StartTiming; //doing nothing in non-DEBUG builds
 
   if not HUD.StructureVisible then
     Log('Ignoring UpdateStructureView, currently hidden')
@@ -956,7 +956,7 @@ begin
       StructureView.SelectedObject := ActiveStoryItem.View;
   end;
 
-  StopTiming_msec; //this will Log elapsed msec when in Debug mode
+  StopTiming_msec; //this will Log elapsed msec at DEBUG builds
 end;
 
 procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
@@ -1033,8 +1033,20 @@ begin
     vkF1:
       ShowHelp; //needed since the Help key was moved into About box (that has F1 key accelerator) to save toolbar space on small screens
 
+    vkF2:
+      HUD.EditMode := not HUD.EditMode; //toggle EditMode
+
+    vkF3:
+      HUD.UseStoryTimer := not HUD.UseStoryTimer; //toggle StoryTimer
+
+    vkF10:
+      HUD.BtnMenu.Action.Execute; //toggle buttons visibility
+
     vkF11:
-      ToggleObjectDebuggerVisibility;
+      ToggleObjectDebuggerVisibility; //only available for DEBUG builds
+
+    vkF12:
+      HUD.StructureVisible := not HUD.StructureVisible; //toggle StructureView visibility
   end;
 end;
 

@@ -23,9 +23,9 @@ interface
 
 implementation
   uses
-  {$IF Defined(MSWINDOWS)}Windows,{$ENDIF} //for GetKeyState
+  {$IF DEFINED(MSWINDOWS)}Windows,{$ENDIF} //for GetKeyState
   {$IFDEF DEBUG}
-    {$IF Defined(MSWINDOWS)}
+    {$IF DEFINED(MSWINDOWS)}
     CodeSiteLogging,
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
     {$ENDIF }
@@ -43,7 +43,7 @@ resourcestring
 
 procedure CheckSafeMode;
 begin
-  {$IF Defined(MSWINDOWS)}
+  {$IF DEFINED(MSWINDOWS)}
   if (GetKeyState(VK_SHIFT) < 0) then
   begin
     //GlobalUseDX10 := False; //must do before Application.Initialize //use DX9 instead of DX10
@@ -88,7 +88,7 @@ end;
 
 {$region 'Logging'}
 
-{$IFDEF DEBUG}{$IF Defined(MSWINDOWS)}
+{$IFDEF DEBUG}{$IF DEFINED(MSWINDOWS)}
 procedure EnableCodeSite;
 begin
   CodeSite.Enabled := CodeSite.Installed;
@@ -189,10 +189,10 @@ end;
 initialization
 
   {$IFDEF DEBUG}
-  {$IF Defined(MSWINDOWS)}EnableCodeSite;{$ENDIF} //TODO: is CodeSite indeed only for Windows? Couldn't compile for other platforms
+  {$IF DEFINED(MSWINDOWS)}EnableCodeSite;{$ENDIF} //TODO: is CodeSite indeed only for Windows? Couldn't compile for other platforms
   ReportMemoryLeaksOnShutdown := True;
   {$ELSE}
-  //{$IF Defined(MSWINDOWS)}CodeSite.Enabled := False;{$ENDIF} //we've removed CodeSite with compiler defines in production version so we can't use that here
+  //{$IF DEFINED(MSWINDOWS)}CodeSite.Enabled := False;{$ENDIF} //we've removed CodeSite with compiler defines in production version so we can't use that here
   {$ENDIF}
 
 end.
