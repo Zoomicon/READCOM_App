@@ -55,14 +55,14 @@ type
     actionPaste: TAction;
     actionDelete: TAction;
     btnToggleUseStoryTimer: TSpeedButton;
-    actionAddBitmapImageStoryItem: TAction;
+    actionAddImageStoryItem: TAction;
     btnAddTextStoryItem: TSpeedButton;
     btnCopy: TSpeedButton;
     btnDelete: TSpeedButton;
     btnFlipHorizontally: TSpeedButton;
     btnFlipVertically: TSpeedButton;
     btnPaste: TSpeedButton;
-    btnAddBitmapImageStoryItem: TSpeedButton;
+    btnAddImageStoryItem: TSpeedButton;
     btnCut: TSpeedButton;
     actionCut: TAction;
     btnAdd: TSpeedButton;

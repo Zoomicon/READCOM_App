@@ -263,25 +263,38 @@ type
     class property HomeStoryItem: IStoryItem read FHomeStoryItem write SetHomeStoryItem;
 
   published
+    const
+      DEFAULT_ACTIVE = false;
+      DEFAULT_HOME = false;
+      DEFAULT_STORYPOINT = false;
+      DEFAULT_FOREGROUND_COLOR = TAlphaColorRec.Null; //claNull
+      DEFAULT_BACKGROUND_COLOR = TAlphaColorRec.Null; //claNull
+      DEFAULT_SNAPPING = false;
+      DEFAULT_ANCHORED = true;
+      DEFAULT_FLIPPED_HORIZONTALLY = false;
+      DEFAULT_FLIPPED_VERTICALLY = false;
+      DEFAULT_HIDDEN = false;
+      DEFAULT_TARGETS_VISIBLE = false;
+
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
-    property Active: Boolean read IsActive write SetActive default false;
-    property Home: Boolean read IsHome write SetHome default false;
-    property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default false;
+    property Active: Boolean read IsActive write SetActive default DEFAULT_ACTIVE;
+    property Home: Boolean read IsHome write SetHome default DEFAULT_HOME;
+    property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default DEFAULT_STORYPOINT;
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
     property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
-    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default TAlphaColorRec.Null; //claNull
-    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default TAlphaColorRec.Null; //claNull
-    property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default false; //Scale.X stores related info
-    property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default false; //Scale.Y stores related info
-    property Hidden: Boolean read IsHidden write SetHidden default false;
-    property Snapping: Boolean read IsSnapping write SetSnapping default false;
-    property Anchored: Boolean read IsAnchored write SetAnchored default true;
+    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR;
+    property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default DEFAULT_BACKGROUND_COLOR;
+    property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default DEFAULT_FLIPPED_HORIZONTALLY; //Scale.X stores related info //Note: default isn't really needed when using stored false
+    property FlippedVertically: Boolean read IsFlippedVertically write setFlippedVertically stored false default DEFAULT_FLIPPED_VERTICALLY; //Scale.Y stores related info //Note: default isn't really needed when using stored false
+    property Hidden: Boolean read IsHidden write SetHidden default DEFAULT_HIDDEN;
+    property Snapping: Boolean read IsSnapping write SetSnapping default DEFAULT_SNAPPING;
+    property Anchored: Boolean read IsAnchored write SetAnchored default DEFAULT_ANCHORED;
     property UrlAction: String read GetUrlAction write SetUrlAction; //default '' (implied, not allows to use '')
     property Tags: String read GetTags write SetTags; //default '' (implied, not allows to use '')
     property TagsMatched: Boolean read AreTagsMatched;
-    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible stored false default false;
+    property TargetsVisible: Boolean read GetTargetsVisible write SetTargetsVisible stored false default DEFAULT_TARGETS_VISIBLE; //TODO: not using concept of explicit targets now, but since anchored items with Tags serve as targets could use that property to highlight them (as hint for user). Maybe in that case add the Targets visible toggle button again
   end;
 
   TStoryItemClass = class of TStoryItem;
@@ -702,22 +715,32 @@ procedure TStoryItem.SetEditMode(const Value: Boolean);
 begin
   inherited; //call ancestor implementation
 
-  //send the glyph etc. even more below the DropTarget ("inherited SetEditMode" sent it to the back) //TODO: make this helper method (also done at SetBorderVisible)
-  SetBorderZorder; //will end up on top
-  SetGlyphZorder;
-  SetBackgroundZorder; //will end up at the bottom
+  try
+    //BeginUpdate; //TODO: see if it helps or causes text drawing issues
 
-  for var StoryItem in FStoryItems do
-    ApplyParentEditMode(StoryItem);
+    //send the glyph etc. even more below the DropTarget ("inherited SetEditMode" sent it to the back) //TODO: make this helper method (also done at SetBorderVisible)
+    SetBorderZorder; //will end up on top
+    SetGlyphZorder;
+    SetBackgroundZorder; //will end up at the bottom
+
+    for var StoryItem in FStoryItems do
+      ApplyParentEditMode(StoryItem);
+
+  finally
+    //EndUpdate;
+  end;
 end;
 
 procedure TStoryItem.ApplyParentEditMode(const StoryItem: IStoryItem);
 begin
   var ParentEditMode := EditMode;
   with StoryItem do
-  begin
+  try
+    //View.BeginUpdate; //TODO: see if it helps or causes text drawing issues
     BorderVisible := ParentEditMode;
     Hidden := Hidden; //reapply logic for child StoryItems' Hidden since it's related to StoryItemParent's EditMode
+  finally
+    //View.EndUpdate;
   end;
 end;
 

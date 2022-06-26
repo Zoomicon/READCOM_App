@@ -291,8 +291,8 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'additembutton'
       end
-      object btnAddBitmapImageStoryItem: TSpeedButton
-        Action = actionAddBitmapImageStoryItem
+      object btnAddImageStoryItem: TSpeedButton
+        Action = actionAddImageStoryItem
         Anchors = [akTop, akRight]
         Enabled = True
         Hint = 
@@ -601,9 +601,9 @@ object StoryHUD: TStoryHUD
       ShortCut = 16467
       ImageIndex = 7
     end
-    object actionAddBitmapImageStoryItem: TAction
+    object actionAddImageStoryItem: TAction
       Category = 'Edit'
-      Text = 'Add BitmapImageStoryItem'
+      Text = 'Add ImageStoryItem'
       ImageIndex = 23
       ImageIndex = 23
     end

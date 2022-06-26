@@ -54,7 +54,7 @@ type
 
     //Add actions
     procedure HUDactionAddExecute(Sender: TObject);
-    procedure HUDactionAddBitmapImageStoryItemExecute(Sender: TObject);
+    procedure HUDactionAddImageStoryItemExecute(Sender: TObject);
     procedure HUDactionAddTextStoryItemExecute(Sender: TObject);
 
     //Edit actions
@@ -185,7 +185,7 @@ implementation
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.App.Messages,
-    READCOM.Views.ImageStoryItem, //for TBitmapImageStoryItem
+    READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
     READCOM.Views.Wait; //for TWaitFrame
 
@@ -429,17 +429,12 @@ begin
       //AreaSelector := RootStoryItemView.AreaSelector; //re-use RootStoryItem's AreaSelector (so that we don't get drawing artifacts when resizing area selector and is always on top of everything when extending outside of ActiveStoryItem's bounds - since that can have children that are not inside its area, like a speech bubble for a character) //TODO: not working correctly
     end;
 
-    var isTextStoryItem := (StoryItem is TTextStoryItem);
-
-    //Update Foreground color picker
-    HUD.comboForeColor.Enabled := isTextStoryItem; //TODO: if we use ITextStoryItem interface instead at that combo's chane event, do similar check here //TODO: also check for other types that may support forecolor (say SVG images could allow to change dominant color) //TODO: Visible doesn't work (keeps combo hidden), using Enabled instead for now
-    if isTextStoryItem then HUD.comboForeColor.Color := TTextStoryItem(StoryItem).TextColor; //TODO: if other items support fore color move to some interface based check and cast (and/or add Foreground color to IStoryItem)
-
-    //Update Background color picker
+    //Update color pickers
+    HUD.comboForeColor.Color := StoryItem.ForegroundColor;
     HUD.comboBackColor.Color := StoryItem.BackgroundColor;
 
     //Cut-Copy-Paste shortcut keys variation for TextStoryItem //TODO: should maybe disable respective actions in non-Edit mode, even though they do check it to do nothing when not in edit mode
-    if isTextStoryItem then
+    if (StoryItem is TTextStoryItem) then
     begin
       //Note: don't use plain TextToShortcut, returns -1 on Android at Delphi 11.1, which gives Range Check Error since TCustomAction.Shortcut doesn't accept values <0
       HUD.actionCut.ShortCut := SafeTextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
@@ -735,11 +730,11 @@ begin
   UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
 end;
 
-procedure TMainForm.HUDactionAddBitmapImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
+procedure TMainForm.HUDactionAddImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
 begin
   if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
 
-  AddChildStoryItem(TBitmapImageStoryItem, 'BitmapImageStoryItem'); //will also update the StructureView //using TBitmapImageStoryItem instead of TImageStoryItem for forward compatibility (let older app versions load documents saved with newer version)
+  AddChildStoryItem(TImageStoryItem, 'ImageStoryItem'); //will also update the StructureView //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
   //problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like older PanelStoryItem
 end;
 
@@ -755,7 +750,7 @@ end;
 procedure TMainForm.NewRootStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
 begin
   RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
-  var newRootStoryItemView := TBitmapImageStoryItem.Create(Self); //using TBitmapImageStoryItem instead of TImageStoryItem for forward-compatibility regarding older versions where TImageStoryItem was limited (now TBitmapImageStoryItem is just a dummy descendent of it) //not using TPanelStoryItem
+  var newRootStoryItemView := TImageStoryItem.Create(Self); //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
   with newRootStoryItemView do
     begin
     //ClipChildren := true; //Empty RootStoryItem should maybe clip its children (not doing at SetRootStoryItem since we may have loaded a template there - anyway commenting out here too in case one wants to design a template from scratch)
@@ -895,10 +890,7 @@ begin
   var LActive := ActiveStoryItem;
   if not Assigned(LActive) then exit;
 
-  if LActive is TTextStoryItem then //TODO: could use interfaces instead (ITextStoryItem or some IForegroundColor interface)
-    TTextStoryItem(LActive).TextColor := HUD.comboForeColor.Color;
-
-  //TODO: for Vector images could replace dominant color if supported
+  LActive.ForegroundColor := HUD.comboForeColor.Color; //TODO: could check for some interface (IForegroundColor interface)
 end;
 
 procedure TMainForm.HUDcomboBackColorChange(Sender: TObject);
@@ -906,8 +898,7 @@ begin
   var LActive := ActiveStoryItem;
   if not Assigned(LActive) then exit;
 
-  LActive.BackgroundColor := HUD.comboBackColor.Color; //TODO: could check for special interface instead (some IBackgroundColor interface)
-  //TODO: doesn't seem to do something (plus the Border is shown only when items are children of edited activestoryitem, whereas we want to always draw background in that case - need extra background control that is)
+  LActive.BackgroundColor := HUD.comboBackColor.Color; //TODO: could check for some interface (IBackgroundColor interface)
 end;
 
 procedure TMainForm.HUDactionOptionsExecute(Sender: TObject);

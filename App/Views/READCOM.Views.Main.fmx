@@ -71,7 +71,7 @@ object MainForm: TMainForm
             'yItems are added as children of the ActiveStoryItem at the selec' +
             'ted area or in the middle'
         end
-        inherited btnAddBitmapImageStoryItem: TSpeedButton
+        inherited btnAddImageStoryItem: TSpeedButton
           Hint = 
             'Add Image'#13#13'Adds an ImageStoryItem placeholder into the ActiveSto' +
             'ryItem at the selected area or in the middle'
@@ -187,8 +187,8 @@ object MainForm: TMainForm
         OnExecute = HUDactionSaveExecute
         ImageIndex = 7
       end
-      inherited actionAddBitmapImageStoryItem: TAction
-        OnExecute = HUDactionAddBitmapImageStoryItemExecute
+      inherited actionAddImageStoryItem: TAction
+        OnExecute = HUDactionAddImageStoryItemExecute
         ImageIndex = 23
       end
       inherited actionNextTheme: TAction
