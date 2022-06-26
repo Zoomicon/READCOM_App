@@ -224,121 +224,6 @@ begin
   LoadTreeView;
 end;
 
-procedure TStructureView.LoadTreeView;
-
-  procedure LoadTreeItemChild(const TheControl: TControl; const TheParent: TFmxObject; const IconHeight: Single);
-  begin
-    if not Assigned(TheControl) then exit;
-
-    var FilterOut :=
-      (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
-      (FShowOnlyVisible and (not TheControl.Visible)) or
-      (FShowOnlyNamed and (TheControl.Name = '')); //helps ignore style-related controls (unnamed), including their children
-
-    if (not FilterOut) and Assigned(FOnShowFilter) then //do custom filtering if TheControl is not filtered out already
-    begin
-      var ShowControl := true;
-      FOnShowFilter(Self, TheControl, ShowControl);
-      FilterOut := not ShowControl;
-    end;
-
-    if FilterOut then
-    begin
-      if (FFilterMode = tfFlatten) then
-      begin
-        BeginUpdate;
-        //Load items recursively (depth-first)//
-        for var ChildControl in TheControl.Controls do
-          LoadTreeItemChild(ChildControl, TheParent, IconHeight); //skip the item but add its children to the parent (Flatten subtree)
-        EndUpdate;
-      end;
-
-      exit; //for (FilterMode = tfPrune) we just need to skip this subtree
-    end;
-
-    var TreeItem := TTreeViewItem.Create(TheParent); //use Parent tree node as the Owner too
-    with TreeItem do
-    begin
-      //Keep a reference to TheControl at the TreeViewItem
-      TagObject := TheControl;
-
-      //Listen for freeing of TheControl to remove from the tree
-      TheControl.AddFreeNotify(Self);
-
-      //Graphics-related code:
-
-      BeginUpdate;
-
-      //Nest the TreeStoryItem as needed
-      Parent := TheParent;
-
-      var W := TheControl.Width;
-      var H := TheControl.Height;
-      if (W <> 0) and (H <> 0) then //If TheControl has non-zero dimensions...
-      begin
-        //...add screenshot of TheControl to ImageList
-        var ThumbnailSize := TSizeF.Create(W*(IconHeight/H), IconHeight);
-        var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //don't use TheControl.MakeScreenshot, generates a big image wasting resources
-        try
-          var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
-
-          //...set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
-          ImageIndex := imgIndex; //if -1 then won't show image
-          if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
-          begin
-            //var img := ImageList.Source.Items[imgIndex].MultiResBitmap; //don't need to get this to ask for Size, have already calculated ThumbnailSize above
-            StylesData['glyphstyle.Size.Size'] := TValue.From(ThumbnailSize);
-                                                  //TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
-          end;
-        finally
-          FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
-        end;
-      end;
-
-      //Titles//
-      if FShowNames then Text := TheControl.Name;
-      if FShowTypes then Text := Text + ': ' + TheControl.ClassName;
-
-      //Hints//
-      if FShowHintNames then Hint := TheControl.Name;
-      if FShowHintTypes then Hint := Hint + ': ' + TheControl.ClassName;
-      ShowHint := true; //always show hint if such has been set (as a result of FShowHintNames or FShowHintTypes)
-
-      //Load items recursively (depth-first)//
-      for var ChildControl in TheControl.Controls do
-        try
-          LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
-        except
-          on E: Exception do
-            ShowException(E, @TStructureView.LoadTreeView); //TODO: maybe should do one try-catch for the whole for loop to avoid multiple error messages?
-        end;
-
-      EndUpdate;
-    end;
-  end;
-
-begin
-  BeginUpdate;
-
-  TreeView.Clear;
-
-  ImageList.ClearCache; //TODO: does this remove all contents from the ImageList?
-  ImageList.Dormant := true;
-
-  if Assigned(FGUIRoot) then
-    begin
-    TreeView.BeginUpdate;
-    LoadTreeItemChild(FGUIRoot, TreeView, TreeView.ItemHeight);
-
-    //TreeView.CollapseAll; //try if new images don't show up
-
-    TreeView.ExpandAll;
-
-    TreeView.EndUpdate;
-    end;
-  EndUpdate;
-end;
-
 {$endregion}
 
 {$region 'ItemSize'}
@@ -447,6 +332,130 @@ begin
 end;
 
 {$endregion}
+
+{$endregion .............................................................}
+
+{$region 'Methods' ------------------------------------------------------}
+
+procedure TStructureView.LoadTreeView;
+
+  procedure LoadTreeItemChild(const TheControl: TControl; const TheParent: TFmxObject; const IconHeight: Single);
+  begin
+    if not Assigned(TheControl) then exit;
+
+    var FilterOut :=
+      (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
+      (FShowOnlyVisible and (not TheControl.Visible)) or
+      (FShowOnlyNamed and (TheControl.Name = '')); //helps ignore style-related controls (unnamed), including their children
+
+    if (not FilterOut) and Assigned(FOnShowFilter) then //do custom filtering if TheControl is not filtered out already
+    begin
+      var ShowControl := true;
+      FOnShowFilter(Self, TheControl, ShowControl);
+      FilterOut := not ShowControl;
+    end;
+
+    if FilterOut then
+    begin
+      if (FFilterMode = tfFlatten) then
+      begin
+        BeginUpdate;
+        //Load items recursively (depth-first)//
+        for var ChildControl in TheControl.Controls do
+          LoadTreeItemChild(ChildControl, TheParent, IconHeight); //skip the item but add its children to the parent (Flatten subtree)
+        EndUpdate;
+      end;
+
+      exit; //for (FilterMode = tfPrune) we just need to skip this subtree
+    end;
+
+    var TreeItem := TTreeViewItem.Create(TheParent); //use Parent tree node as the Owner too
+    with TreeItem do
+    begin
+      //Keep a reference to TheControl at the TreeViewItem
+      TagObject := TheControl;
+
+      //Listen for freeing of TheControl to remove from the tree
+      TheControl.AddFreeNotify(Self);
+
+      //Graphics-related code:
+
+      BeginUpdate;
+
+      //Nest the TreeStoryItem as needed
+      Parent := TheParent;
+
+      var W := TheControl.Width;
+      var H := TheControl.Height;
+      if (W <> 0) and (H <> 0) then //If TheControl has non-zero dimensions...
+      begin
+        //...add screenshot of TheControl to ImageList
+        var ThumbnailSize := TSizeF.Create(W*(IconHeight/H), IconHeight);
+
+        //var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //could use instead of TheControl.MakeScreenshot, to not make a big image even temporarily (however if drawing code caches settings that are lost when changing drawing size it has higher cost and my persist wrong values [say FontSize if Font AutoFitting algorithm is used] if called last)
+
+        var ControlThumbnail := TheControl.MakeScreenshot; //this wastes more memory, but if drawing code costs when drawing resized, then its better to grab a screenshot and existing size...
+        ControlThumbnail.Resize(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //...and then resize so that ImageList doesn't copy the big image and waste memory //Note: there's also CreateThumbnail function, but would need to FreeAndNil the result of MakeScreenshot separately
+
+        try
+          var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
+
+          //...set the TreeViewItem's image from the ImageList, and scale the glyph appropriately
+          ImageIndex := imgIndex; //if -1 then won't show image
+          if (imgIndex <> -1) then //see note above, items with 0 width or height won't have thumb added to the ImageList
+          begin
+            //var img := ImageList.Source.Items[imgIndex].MultiResBitmap; //don't need to get this to ask for Size, have already calculated ThumbnailSize above
+            StylesData['glyphstyle.Size.Size'] := TValue.From(ThumbnailSize);
+                                                  //TValue.From(TSizeF.Create(img.Width*(IconHeight/img.Height), IconHeight));
+          end;
+        finally
+          FreeAndNil(ControlThumbnail); //MUST FREE THE BITMAP ELSE WE HAVE VARIOUS MEMORY LEAKS
+        end;
+      end;
+
+      //Titles//
+      if FShowNames then Text := TheControl.Name;
+      if FShowTypes then Text := Text + ': ' + TheControl.ClassName;
+
+      //Hints//
+      if FShowHintNames then Hint := TheControl.Name;
+      if FShowHintTypes then Hint := Hint + ': ' + TheControl.ClassName;
+      ShowHint := true; //always show hint if such has been set (as a result of FShowHintNames or FShowHintTypes)
+
+      //Load items recursively (depth-first)//
+      for var ChildControl in TheControl.Controls do
+        try
+          LoadTreeItemChild(ChildControl, TreeItem, IconHeight);
+        except
+          on E: Exception do
+            ShowException(E, @TStructureView.LoadTreeView); //TODO: maybe should do one try-catch for the whole for loop to avoid multiple error messages?
+        end;
+
+      EndUpdate;
+    end;
+  end;
+
+begin
+  BeginUpdate;
+
+  TreeView.Clear;
+
+  ImageList.ClearCache; //TODO: does this remove all contents from the ImageList?
+  ImageList.Dormant := true;
+
+  if Assigned(FGUIRoot) then
+    begin
+    TreeView.BeginUpdate;
+    LoadTreeItemChild(FGUIRoot, TreeView, TreeView.ItemHeight);
+
+    //TreeView.CollapseAll; //try if new images don't show up
+
+    TreeView.ExpandAll;
+
+    TreeView.EndUpdate;
+    end;
+  EndUpdate;
+end;
 
 {$endregion .............................................................}
 
