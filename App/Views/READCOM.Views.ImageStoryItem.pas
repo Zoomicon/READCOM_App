@@ -49,6 +49,7 @@ type
 
   protected
     FStoreSVG: Boolean;
+    FForegroundColor: TAlphaColor;
 
 
   //--- Methods ---
@@ -58,32 +59,34 @@ type
     procedure UpdateGlyphVisibility;
     function GetStoreBitmap: Boolean;
 
-    {Z-Order}
-    //function GetBackIndex: Integer; override;
-    procedure SetImageControlZorder; virtual;
-
-    {Image}
-    function GetImage: TImage; virtual;
-    procedure SetImage(const Value: TImage); overload; virtual;
-    procedure SetImage(const Value: TBitmapSurface); overload; virtual;
-
-    {$region 'SVG'}
-
-    {SVGImage}
-    function GetSVGImage: TSVGIconImage; virtual;
-    procedure SetSVGImage(const Value: TSVGIconImage); virtual;
-
-    {SVGText}
-    function GetSVGText: String;
-    procedure SetSVGText(const Value: String);
-
-    {$endregion}
+    {$region 'Overrides'}
 
     {EditMode}
     procedure SetEditMode(const Value: Boolean); override;
 
     {Options}
     function GetOptions: IStoryItemOptions; override;
+
+    {Z-Order}
+    //function GetBackIndex: Integer; override;
+    procedure SetImageControlZorder; virtual;
+
+    {ForegroundColor}
+    function GetForegroundColor: TAlphaColor; override;
+    procedure SetForegroundColor(const Value: TAlphaColor); override;
+
+    {$endregion}
+
+    {Image}
+    function GetImage: TImage; virtual;
+    procedure SetImage(const Value: TImage); overload; virtual;
+    procedure SetImage(const Value: TBitmapSurface); overload; virtual;
+    {SVGImage}
+    function GetSVGImage: TSVGIconImage; virtual;
+    procedure SetSVGImage(const Value: TSVGIconImage); virtual;
+    {SVGText}
+    function GetSVGText: String;
+    procedure SetSVGText(const Value: String);
 
     procedure Resize; override; //TODO: remove (see comments in implementation)
 
@@ -133,6 +136,9 @@ implementation
 
 {$R *.fmx}
 
+const
+  SVG_BLANK = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+
 {$REGION 'TImageStoryItem'}
 
 {$region 'Lifetime management'}
@@ -163,6 +169,8 @@ end;
 
 procedure TImageStoryItem.UpdateGlyphVisibility;
 begin
+  SetForegroundColor(ForegroundColor); //apply foreground color again
+
   var img: TBitmapImage := nil;
   if Assigned(ImageControl) and Assigned(ImageControl.Bitmap) then
     img := ImageControl.Bitmap.Image;
@@ -179,29 +187,6 @@ procedure TImageStoryItem.Loaded;
 begin
   inherited;
   UpdateGlyphVisibility;
-end;
-
-{$endregion}
-
-{$region 'Z-order'}
-
-(* //REMOVED, WE DON'T NEED +1 SINCE WHEN THE IMAGECONTROL IS SHOWN, THE GLYPH IS HIDDEN AND VICE-VERSA
-function TImageStoryItem.GetBackIndex: Integer;
-begin
-  result := inherited + 1; //reserve one more place at the bottom for ImageControl
-end;
-*)
-
-procedure TImageStoryItem.SetImageControlZorder;
-begin
-  (* //NOT WORKING
-  BeginUpdate;
-  RemoveObject(ImageControl);
-  InsertObject(GetBackIndex - 1, ImageControl);
-  EndUpdate;
-  *)
-  if Assigned(ImageControl) and ImageControl.Visible then
-    ImageControl.SendToBack;
 end;
 
 {$endregion}
@@ -300,6 +285,78 @@ end;
 
 {$REGION '--- PROPERTIES ---'}
 
+{$region 'Overrides'}
+
+{$region 'EditMode'}
+
+procedure TImageStoryItem.SetEditMode(const Value: Boolean);
+begin
+  inherited;
+  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
+end;
+
+{$endregion}
+
+{$region 'Options'}
+
+function TImageStoryItem.GetOptions: IStoryItemOptions;
+begin
+  if not Assigned(FOptions) then
+    begin
+    FOptions := TImageStoryItemOptions.Create(nil); //don't set storyitem as owner, seems to always store it (irrespective of "Stored := false")
+    FOptions.StoryItem := Self;
+    end;
+
+  result := FOptions;
+end;
+
+{$endregion}
+
+{$region 'Z-order'}
+
+(* //REMOVED, WE DON'T NEED +1 SINCE WHEN THE IMAGECONTROL IS SHOWN, THE GLYPH IS HIDDEN AND VICE-VERSA
+function TImageStoryItem.GetBackIndex: Integer;
+begin
+  result := inherited + 1; //reserve one more place at the bottom for ImageControl
+end;
+*)
+
+procedure TImageStoryItem.SetImageControlZorder;
+begin
+  (* //NOT WORKING
+  BeginUpdate;
+  RemoveObject(ImageControl);
+  InsertObject(GetBackIndex - 1, ImageControl);
+  EndUpdate;
+  *)
+  if Assigned(ImageControl) and ImageControl.Visible then
+    ImageControl.SendToBack;
+end;
+
+{$endregion}
+
+{$region 'ForegroundColor'}
+
+function TImageStoryItem.GetForegroundColor: TAlphaColor;
+begin
+  result := FForegroundColor;
+end;
+
+procedure TImageStoryItem.SetForegroundColor(const Value: TAlphaColor);
+begin
+  FForegroundColor := Value; //keep the foreground color (StoryItem ancestor isn't keeping it)
+
+  if (Value = TAlphaColorRec.Null) then
+    exit; //never apply the null color as foreground, using it to mark no color replacement mode (the default)
+
+  Glyph.FixedColor := Value;
+  ImageControl.Bitmap.ReplaceOpaqueColor(Value); //TODO: this doesn't seem to work
+end;
+
+{$endregion}
+
+{$endregion}
+
 {$region 'Image'}
 
 function TImageStoryItem.GetStoreBitmap: Boolean;
@@ -362,7 +419,11 @@ end;
 function TImageStoryItem.GetSVGText: String;
 begin
   if Assigned(Glyph) then
-    result := SVGImage.SVGText
+  begin
+    result := SVGImage.SVGText;
+    if (result = SVG_BLANK) then
+      result := '';
+  end
   else
     result := '';
 end;
@@ -371,10 +432,14 @@ procedure TImageStoryItem.SetSVGText(const Value: String);
 begin //TODO: should restore default Glyph (keep it to some global/static var once?) if SVGText is set to ''
   if Assigned(Glyph) then
   begin
+    var SVGText := Value;
+    if (SVGText = SVG_BLANK) then
+      SVGText := '';
+
     if FAutoSize then
       Glyph.Align := TAlignLayout.None;
 
-    SVGImage.SVGText := Value;
+    SVGImage.SVGText := SVGText;
 
     if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
       begin
@@ -383,7 +448,7 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
       Glyph.Align := TAlignLayout.Contents;
       end;
 
-    FStoreSVG := (Value <> '') and (Value <> '<svg xmlns="http://www.w3.org/2000/svg"></svg>'); //mark that we loaded custom SVG
+    FStoreSVG := (SVGText <> ''); //mark that we loaded custom SVG
 
     //var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
     //bitmap.DrawSVGIcon;
@@ -393,31 +458,6 @@ begin //TODO: should restore default Glyph (keep it to some global/static var on
 end;
 
 {$endregion}
-
-{$endregion}
-
-{$region 'EditMode'}
-
-procedure TImageStoryItem.SetEditMode(const Value: Boolean);
-begin
-  inherited;
-  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
-end;
-
-{$endregion}
-
-{$region 'Options'}
-
-function TImageStoryItem.GetOptions: IStoryItemOptions;
-begin
-  if not Assigned(FOptions) then
-    begin
-    FOptions := TImageStoryItemOptions.Create(nil); //don't set storyitem as owner, seems to always store it (irrespective of "Stored := false")
-    FOptions.StoryItem := Self;
-    end;
-
-  result := FOptions;
-end;
 
 {$endregion}
 
@@ -437,7 +477,7 @@ end;
 
 function TImageStoryItemFactory.New(const AOwner: TComponent = nil): IStoryItem;
 begin
-  result := TBitmapImageStoryItem.Create(AOwner); //using TBitmapImageStoryItem instead of TImageStoryItem for forward compatibility (let older app versions load documents saved with newer version)
+  result := TImageStoryItem.Create(AOwner); //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
 end;
 
 {$ENDREGION}
