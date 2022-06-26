@@ -704,19 +704,26 @@ procedure TCustomManipulator.SetEditMode(const Value: Boolean);
 begin
   FEditMode := Value; //must do before calling ApplyEditModeToChild
 
-  if Assigned(FAreaSelector) then
-    with FAreaSelector do
-    begin
-      Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
-      BringToFront; //always on top (need to do after setting Visible)
-    end;
+  try
+    //BeginUpdate; //TODO: see if it helps or causes text drawing issues
 
-  DropTargetVisible := Value;
+    if Assigned(FAreaSelector) then
+      with FAreaSelector do
+      begin
+        Visible := Value; //Show or Hide selection UI (this will also hide the move control point)
+        BringToFront; //always on top (need to do after setting Visible)
+      end;
 
-  TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
-    Controls,
-    ApplyEditModeToChild
-  );
+    DropTargetVisible := Value;
+
+    TListEx<TControl>.ForEach( //TODO: should also do this action when adding new controls (so move the inner proc payload to separate method and call both here and after adding new control [have some InitControl that calls such sub-procs])
+      Controls,
+      ApplyEditModeToChild
+    );
+
+  finally
+    //EndUpdate;
+  end;
 end;
 
 {$endregion}
