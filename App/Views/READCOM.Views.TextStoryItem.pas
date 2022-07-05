@@ -38,6 +38,7 @@ type
 
   protected
     FEditable: Boolean;
+    FLastMemoSize: TSizeF;
 
     procedure Loaded; override;
     procedure MemoChangeTracking(Sender: TObject);
@@ -84,7 +85,8 @@ type
 
   public
     constructor Create(AOnwer: TComponent); override;
-    procedure SetBounds(X, Y, AWidth, AHeight: Single); override; //note this is called also when the control is moved //TODO: see if we can get first display and subsequent resizes instead
+    //procedure SetBounds(X, Y, AWidth, AHeight: Single); override; //note this is called also when the control is moved //TODO: see if we can get first display and subsequent resizes instead
+    procedure Painting; override;
     //procedure Resize; override;
     //procedure DoResized; override;
 
@@ -98,13 +100,16 @@ type
   //--- Properties ---
 
   published
+    const
+      DEFAULT_FOREGROUND_COLOR = TAlphaColorRec.Black;
+
     property Text: String read GetText write SetText;
     property SelectedText: String read GetSelectedText stored false;
     property Editable: Boolean read IsEditable write SetEditable default false;
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
     property TextColor: TAlphaColor read GetForegroundColor write SetForegroundColor stored false; //DEPRECATED, remaped to and storing ForegroundColor instead
-    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default TAlphaColorRec.Black; //redefining default to claBlack instead of claNull that was in TStoryItem
+    property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR; //redefining default instead of claNull that was in TStoryItem
   end;
 
   {$ENDREGION ........................................................................}
@@ -159,21 +164,30 @@ begin
   inherited;
   InitMemo;
   Text := DEFAULT_TEXT;
-  TextColor := TAlphaColorRec.Black;
+  ForegroundColor := DEFAULT_FOREGROUND_COLOR;
 end;
 
 procedure TTextStoryItem.Loaded;
 begin
-  //Log('TTextStoryItem.Loaded');
+  {//}Log('TTextStoryItem.Loaded %p', [@Self]);
   inherited;
-  SetMemoFontSizeToFit(Memo);
+  SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
 
-procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single); //Note: also gets called when control is moved
+(*
+procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single); //Note: also gets called when control is moved //TODO: add Logging, this seems to be called too many times (7 - see stack trace of each case and how they differ, also try to group multiple changes)
 begin
-  //Log('TTextStoryItem.SetBounds');
+  {//}Log('TTextStoryItem.SetBounds %p', [@Self]);
   inherited;
-  SetMemoFontSizeToFit(Memo);
+  SetMemoFontSizeToFit(Memo, FLastMemoSize);
+end;
+*)
+
+procedure TTextStoryItem.Painting;
+begin
+  {//}Log('TTextStoryItem.Painting %p', [@Self]);
+  inherited;
+  SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
 
 (*
@@ -182,7 +196,7 @@ begin
   Log('TTextStoryItem.DoResized');
   inherited;
   try
-    SetMemoFontSizeToFit(Memo); //throws exceptions at startup
+    SetMemoFontSizeToFit(Memo, FLastMemoSize); //throws exceptions at startup
   Except
     //NOP
   end;
@@ -191,8 +205,8 @@ end;
 
 procedure TTextStoryItem.MemoChangeTracking(Sender: TObject);
 begin
-  //Log('TTextStoryItem.MemoChangeTracking');
-  SetMemoFontSizeToFit(Memo);
+  {//}Log('TTextStoryItem.MemoChangeTracking %p', [@Self]);
+  SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
 
 {$endregion}
@@ -358,7 +372,10 @@ end;
 
 procedure TTextStoryItem.SetForegroundColor(const Value: TAlphaColor);
 begin
-  Memo.FontColor := Value;
+  if (Value = TAlphaColorRec.Null) then //never apply the null color as foreground, keep the default TextStoryItem ForegroundColor instead
+    Memo.FontColor := DEFAULT_FOREGROUND_COLOR
+  else
+    Memo.FontColor := Value;
 end;
 
 {$endregion}

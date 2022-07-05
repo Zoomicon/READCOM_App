@@ -7,6 +7,7 @@ interface
   uses
     System.Classes, //for TStream
     System.SysUtils, //for TBytes
+    System.Types, //for RectF, TSizeF
     FMX.Memo; //for TMemo
 
 type
@@ -15,7 +16,7 @@ type
     procedure ApplyStyle; override;
   end;
 
-procedure SetMemoFontSizeToFit(const AMemo: TMemo);
+procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
 
 function ReadAllBytes(const Stream: TStream): TBytes;
 function ReadAllText(const Stream: TStream; const DefaultEncoding: TEncoding = nil; const ForceDefaultEncoding: Boolean = false): string;
@@ -25,7 +26,6 @@ function SafeTextToShortCut(Text: string): Integer; //the Delphi 11.1 TextToShor
 implementation
   uses
     RTLConsts, //for SFileTooLong
-    System.Types, //for RectF
     System.UIConsts, //for claXX
     FMX.ActnList, //for TextToShortcut
     FMX.Controls, //for TControl
@@ -53,29 +53,54 @@ begin
    end;
 end;
 
-procedure SetMemoFontSizeToFit(const AMemo: TMemo);
-const
-  Offset = 4; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
+procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF); //TODO: add logging
+//const
+  //Offset = 0; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
 begin
-  {$IF NOT DEFINED(ANDROID)} //TODO: Seems changing Font.Size doesn't affect ContentBounds in Android implementation so we get an infinite loop (Heigh is never reached)
-  with AMemo do
+  var Offset := 10 {* AMemo.AbsoluteScale.Y}; //TODO: not very good
+  var LHeight := AMemo.Height;
+  if (LHeight = 0) {or (AMemo.Size.Size = LastFontFitSize)} then
+    exit; //don't calculate font autofit based on probably not yet available height information, nor when AMemo.Height didn't change from last calculation
+
+  //AMemo.Font.Size := 12; //Don't set initial font size, use the current one (which may be from a previous calculation - this speeds up when resizing and also fixes glitches when loading saved state if recalculation isn't done for some reason after loading)
+
+  var LContentBoundsHeight := AMemo.ContentBounds.Height;
+  if (LContentBoundsHeight = 0) then //must check, else first while will loop for ever since ContentBounds.Height is 0 on load
+    exit;
+
+  var LFontSize := AMemo.Font.Size;
+  LastFontFitSize := AMemo.Size.Size;
+
+  //make font bigger
+  while (LContentBoundsHeight + Offset < LHeight) do //using WordWrap, not checking for Width
   begin
-    //Font.Size := 12; //Don't set initial font size, use the current one (which may be from a previous calculation - this speeds up when resizing and also fixes glitches when loading saved state if recalculation isn't done for some reason after loading)
+    LFontSize := LFontSize + 1;
+    AMemo.Font.Size := LFontSize;
 
-    if (ContentBounds.Height <> 0) then //must check, else first while will loop for ever since ContentBounds.Height is 0 on load
+    var LContentBoundsNewHeight := AMemo.ContentBounds.Height;
+    if LContentBoundsNewHeight = LContentBoundsHeight then
     begin
-      //make font bigger
-      while (ContentBounds.Height + Offset < Height) do //using WordWrap, not checking for Width
-        with Font do
-          Size := Size + 1;
-
-      //make font smaller
-      while (ContentBounds.Height + Offset > Height) do //using WordWrap, not checking for Width
-        with Font do
-          Size := Size - 1;
+      AMemo.Font.Size := LFontSize - 1; //undo font size increase since it had no effect
+      exit; //TODO: See why changing Font.Size doesn't affect ContentBounds in Android implementation so we get an infinite loop (Height is never reached)
     end;
+    LContentBoundsHeight := LContentBoundsNewHeight;
   end;
-  {$ENDIF}
+
+  //make font smaller
+  while (LContentBoundsHeight + Offset > LHeight) do //using WordWrap, not checking for Width
+  begin
+    LFontSize := LFontSize - 1;
+    AMemo.Font.Size := LFontSize;
+
+    var LContentBoundsNewHeight := AMemo.ContentBounds.Height;
+    if LContentBoundsNewHeight = LContentBoundsHeight then
+    begin
+      AMemo.Font.Size := LFontSize + 1; //undo font size decrease since it had no effect
+      exit; //TODO: See why changing Font.Size doesn't affect ContentBounds in Android implementation so we get an infinite loop (Height is never reached)
+    end;
+    LContentBoundsHeight := LContentBoundsNewHeight;
+  end;
+
 end;
 
 function ReadAllBytes(const Stream: TStream): TBytes;
