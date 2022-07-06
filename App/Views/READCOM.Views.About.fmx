@@ -153,16 +153,16 @@ object AboutFrame: TAboutFrame
             end
           end
         end
-        object btnClose: TSpeedButton
-          Position.X = -117.000000000000000000
-          Position.Y = -1.000000000000000000
-          Size.Width = 24.000000000000000000
-          Size.Height = 24.000000000000000000
-          Size.PlatformDefault = False
-          StyleLookup = 'stoptoolbutton'
-          Text = 'stoptoolbutton'
-          OnClick = btnCloseClick
-        end
+      end
+      object btnClose: TSpeedButton
+        Position.X = 8.000000000000000000
+        Position.Y = 8.000000000000000000
+        Size.Width = 24.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'stoptoolbutton'
+        Text = 'stoptoolbutton'
+        OnClick = btnCloseClick
       end
     end
   end
