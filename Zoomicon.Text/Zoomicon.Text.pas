@@ -57,6 +57,9 @@ procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
 //const
   //Offset = 0; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
 begin
+  //AMemo.AutoCalculateContentSize := true; //don't use
+  //AMemo.UpdateContentSize; //Recalculates content bounds of a scroll box. Does not calculate content bounds if AutoCalculateContentSize is False or if the state of the scroll box is csLoading or csDestroying
+
   var Offset := 10 {* AMemo.AbsoluteScale.Y}; //TODO: not very good
   var LHeight := AMemo.Height;
   if (LHeight = 0) {or (AMemo.Size.Size = LastFontFitSize)} then
