@@ -579,8 +579,20 @@
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.Modal.pas">
+            <Form>ModalFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="Views\READCOM.Views.Wait.pas">
             <Form>WaitFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.Rotate.pas">
+            <Form>RotateFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Views\READCOM.Views.Lock.pas">
+            <Form>LockFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Main.pas"/>

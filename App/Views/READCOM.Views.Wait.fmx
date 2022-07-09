@@ -1,21 +1,7 @@
-object WaitFrame: TWaitFrame
-  Align = Contents
-  Size.Width = 240.000000000000000000
-  Size.Height = 216.000000000000000000
-  Size.PlatformDefault = False
-  object rectBackground: TRectangle
-    Align = Contents
-    Fill.Color = xBBE0E0E0
-    Size.Width = 240.000000000000000000
-    Size.Height = 216.000000000000000000
-    Size.PlatformDefault = False
-    object GlyphLogo: TGlyph
-      Align = Scale
-      Size.Width = 240.000000000000000000
-      Size.Height = 216.000000000000000000
-      Size.PlatformDefault = False
+inherited WaitFrame: TWaitFrame
+  inherited rectBackground: TRectangle
+    inherited GlyphLogo: TGlyph
       ImageIndex = 31
-      Images = Globals.SVGIconImageList
     end
   end
 end

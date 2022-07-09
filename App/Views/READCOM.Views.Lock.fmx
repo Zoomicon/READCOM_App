@@ -1,0 +1,7 @@
+inherited LockFrame: TLockFrame
+  inherited rectBackground: TRectangle
+    inherited GlyphLogo: TGlyph
+      ImageIndex = 32
+    end
+  end
+end

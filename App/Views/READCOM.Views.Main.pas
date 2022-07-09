@@ -187,7 +187,8 @@ implementation
     READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
-    READCOM.Views.Wait; //for TWaitFrame
+    READCOM.Views.Wait, //for TWaitFrame
+    READCOM.Views.Lock; //for TLockFrame
 
 {$R *.fmx}
 
@@ -492,7 +493,7 @@ begin
     if activeItem.TagsMatched then //also checking if Tags are matched (all moveables with Tags are over non-moveables with same Tags and vice-versa) to proceed
       ActiveStoryItem := activeItem.NextStoryPoint
     else
-      ShowMessage('Please solve the riddle first by moving items to where they need to be'); //TODO: need a better looking prompt (plus shows at titlebar "READCOM_app")
+      TLockFrame.ShowModal(MainForm);
 end;
 
 {$endregion}

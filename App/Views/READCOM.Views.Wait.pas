@@ -6,31 +6,20 @@ unit READCOM.Views.Wait;
 interface
 
 uses
-  READCOM.App.Globals, //for Globals.SVGIconImageList
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
   FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts,
-  FMX.ActnList;
+  FMX.ActnList,
+  READCOM.Views.Modal; //for TModalFrame
 
 type
-  TWaitFrame = class(TFrame)
-    rectBackground: TRectangle;
-    GlyphLogo: TGlyph;
-
-  protected
-    class var
-      Frame: TFrame;
-
+  TWaitFrame = class(TModalFrame)
   public
     constructor Create(AOwner: TComponent); override;
-    class procedure ShowModal(const TheParent: TFmxObject; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TAboutFrame too)
-
   end;
 
 implementation
-  uses
-    READCOM.App.Main;
 
 {$R *.fmx}
 
@@ -39,26 +28,13 @@ implementation
 constructor TWaitFrame.Create(AOwner: TComponent);
 begin
   inherited;
-  GlyphLogo.Cursor := crHourGlass;
+
+  CanClose := false; //this will do "rectBackground.Cursor := crDefault", so do this before setting to crHourGlass
+
+  //Note: the following will practically also function as "CanClose := false", since "GetCanClose" checks if "rectBackground.Cursor = crHandPoint"
+  rectBackground.Cursor := crHourGlass; //don't set the Glyph's Cursor, it has HitTest=false as default (and don't want to change it since we are handling Click event at the rectBackground since TGlyph doesn't expose the Mouse events at Delphi 11.1's FMX)
 end;
 
 {$endregion}
-
-class procedure TWaitFrame.ShowModal(const TheParent: TFmxObject; const VisibleFlag: Boolean = true);
-begin
-  if not Assigned(Frame) then
-  begin
-    Frame := Create(Application); //use Application as the Owner since we reuse the same WaitFrame instance
-    //Frame.Align := TAlignLayout.Content; //already set at frame designer (could be a property [Content, Center, Scale etc.])
-  end;
-
-  with Frame do
-  begin
-    Parent := TheParent;
-
-    //Visible := VisibleFlag;
-    if not VisibleFlag then FreeAndNil(Frame); //destroy instead of hiding to save memory
-  end;
-end;
 
 end.
