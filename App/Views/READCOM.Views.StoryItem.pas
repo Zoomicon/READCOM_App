@@ -15,7 +15,7 @@ uses
   READCOM.App.Models, //for IStoryItem
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlFocusHelper.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
+  Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
   Zoomicon.Puzzler.Classes; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
 
 resourcestring

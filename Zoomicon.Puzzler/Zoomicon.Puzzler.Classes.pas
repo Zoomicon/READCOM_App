@@ -8,12 +8,12 @@ interface
     FMX.Objects, //for TLine, TCircle
     FMX.Controls, //for TControl
     FMX.Graphics, //for TStrokeBrush
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers; //to keep helper chain (Delphi compiler only sees last helper used for specific class if we don't define inheritance chain)
+    Zoomicon.Helpers.FMX.Controls.ControlHelper; //to keep helper chain (Delphi compiler only sees last helper used for specific class if we don't define inheritance chain)
 
 {$REGION 'Shuffler'}
 
 type
-  TControlShufflerHelper = class helper(TControlFocusHelper{, IShuffler}) for TControl //MUST DESCEND FROM THE LAST HELPER DEFINED AT "CONTROLHELPERS" CLASS
+  TControlShufflerHelper = class helper(TControlHelper{, IShuffler}) for TControl //MUST DESCEND FROM THE LAST HELPER DEFINED AT "CONTROLHELPERS" CLASS
     //procedure IShuffler.ShuffleItems = ShufflePositions;
     procedure ShuffleItems;
     procedure ShufflePositions;

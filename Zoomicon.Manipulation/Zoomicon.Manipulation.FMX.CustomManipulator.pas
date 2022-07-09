@@ -152,7 +152,7 @@ procedure Register;
 implementation
 
 uses
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlObjectAtHelper, TControlConvertLocalRectHelper, TControlSubComponentHelper
+  Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.ObjectAtXX, TControl.ConvertLocalRectXX, TControl.SubComponent
   Zoomicon.Generics.Functors, //for TF
   Zoomicon.Generics.Collections, //for TListEx
   System.SysUtils, //for Supports

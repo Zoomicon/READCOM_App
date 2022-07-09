@@ -499,7 +499,7 @@
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelper.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
@@ -600,6 +600,7 @@
         <DCCReference Include="READCOM.App.Messages.pas"/>
         <DCCReference Include="..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas"/>
         <DCCReference Include="..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas"/>
+        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

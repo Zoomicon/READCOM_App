@@ -20,7 +20,7 @@ uses
   Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
   Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
   Zoomicon.Helpers.RTL.StreamHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
-  Zoomicon.Helpers.FMX.Controls.ControlHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelpers.pas',
+  Zoomicon.Helpers.FMX.Controls.ControlHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelper.pas',
   Zoomicon.Helpers.FMX.Forms.ApplicationHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas',
   Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
   Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
@@ -64,7 +64,8 @@ uses
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
   FMX.Image32SVG in '..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas',
-  Img32.SVG.Core in '..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas';
+  Img32.SVG.Core in '..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas',
+  Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas';
 
 {$R *.res}
 

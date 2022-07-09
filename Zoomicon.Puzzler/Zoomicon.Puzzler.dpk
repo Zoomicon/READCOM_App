@@ -26,6 +26,7 @@ package Zoomicon.Puzzler;
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
 
+{$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires

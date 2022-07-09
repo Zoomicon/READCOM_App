@@ -143,7 +143,7 @@ implementation
     System.UITypes, //for TDragMode
     System.Rtti, //for TValue
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.FindClassOf
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlMakeThumbnailHelper.MakeThumbnail
+    Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.MakeThumbnail
     Zoomicon.Helpers.FMX.ImgList.ImageListHelpers, //for TImageListAddBitmapHelper
     Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers; //for TTreeViewItemSearchHelper
 

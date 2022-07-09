@@ -85,7 +85,7 @@ implementation
   uses
     Zoomicon.Generics.Functors, //for TF
     Zoomicon.Generics.Collections, //for TListEx
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControlSubComponentHelper
+    Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.SubComponent
     FMX.Ani,
     FMX.Effects,
     FMX.Types, //for RegisterFmxClasses

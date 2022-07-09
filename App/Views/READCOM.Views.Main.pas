@@ -127,6 +127,13 @@ type
     procedure ActivatePreviousStoryPoint;
     procedure ActivateNextStoryPoint;
 
+    {Orientation}
+    procedure CheckProperOrientation;
+
+    {Zooming}
+    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
+    procedure ZoomToActiveStoryPointOrHome;
+
     {StoryMode}
     function GetStoryMode: TStoryMode;
     procedure SetStoryMode(const Value: TStoryMode);
@@ -147,8 +154,6 @@ type
 
   public
     property StructureView: TStructureView read GetStructureView stored false;
-    procedure ZoomTo(const StoryItem: IStoryItem = nil); //ZoomTo(nil) zooms to all content
-    procedure ZoomToActiveStoryPointOrHome;
 
     {Edit actions}
     procedure NewRootStoryItem;
@@ -178,8 +183,9 @@ implementation
     System.Math, //for Max
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
-    Zoomicon.Helpers.FMX.Controls.ControlHelpers, //for TControl.FlipHorizontally, TControl.FlipVertically
+    Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
+    Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
     Zoomicon.Text, //for SafeTextToShortcut
     READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
@@ -188,7 +194,8 @@ implementation
     READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
     READCOM.Views.Wait, //for TWaitFrame
-    READCOM.Views.Lock; //for TLockFrame
+    READCOM.Views.Lock, //for TLockFrame
+    READCOM.Views.Rotate; //for TRotateFrame
 
 {$R *.fmx}
 
@@ -257,6 +264,7 @@ end;
 procedure TMainForm.FormResize(Sender: TObject);
 begin
   ZoomToActiveStoryPointOrHome; //keep the Active StoryPoint or Home in view
+  CheckProperOrientation;
 end;
 
 {$ENDREGION}
@@ -335,6 +343,8 @@ begin
 
     if not Assigned(ActiveStoryItem) then
       ActiveStoryItem := RootStoryItem; //set RootStoryItem as the ActiveStoryItem if no such is set (e.g. from loaded state). Note this will also try to ZoomTo it
+
+    CheckProperOrientation; //checking proper orientation based on the StoryItem that is active upon the loading of the story (usually it's the HomeStoryItem, but could be the RootStoryItem if there's no Home set, or be other StoryItem if loading from saved state)
   end;
 
   UpdateStructureView;
@@ -394,7 +404,6 @@ begin
   TStoryItem.ActiveStoryItem := nil; //this will make sure the assignment to Value will then trigger "ActiveStoryItemChanged" class event
   TStoryItem.ActiveStoryItem := Value;
 end;
-
 
 procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
 
@@ -458,6 +467,15 @@ begin
   //HUD.actionDelete.Visible := (ActiveStoryItem.View <> RootStoryItem.View); //doesn't seem to work (neither HUD.btnDelete.Visible does), but have implemented delete of RootStoryItem as a call to actionNew.Execute instead
 
   ZoomToActiveStoryPointOrHome;
+
+  //CheckProperOrientation; //don't do here, it gets annoying to show rotation modal popup upon navigation, plus some Stories may have StoryItems that are designed to be partially appear side-by-side to appear as books
+end;
+
+procedure TMainForm.CheckProperOrientation;
+begin
+  var activeItem := ActiveStoryItem;
+  if Assigned(activeItem) then
+    TRotateFrame.ShowModal(Self, (Orientation <> activeItem.View.Orientation)); //Show or Hide rotation prompt based on orientation difference of MainForm and ActiveStoryItem.View
 end;
 
 {$endregion}
@@ -493,7 +511,7 @@ begin
     if activeItem.TagsMatched then //also checking if Tags are matched (all moveables with Tags are over non-moveables with same Tags and vice-versa) to proceed
       ActiveStoryItem := activeItem.NextStoryPoint
     else
-      TLockFrame.ShowModal(MainForm);
+      TLockFrame.ShowModal(Self);
 end;
 
 {$endregion}
@@ -1094,7 +1112,7 @@ end;
 function TMainForm.LoadFromUrl(const Url: String): Boolean; //TODO: should add LoadFromUrl and AddFromUrl to TStoryItem too
 begin
   try
-    TWaitFrame.ShowModal(MainForm);
+    TWaitFrame.ShowModal(Self);
 
     TURLStream.Create(Url,
       procedure(AStream: TStream)
@@ -1102,7 +1120,7 @@ begin
         Log('Started download');
         LoadFromStream(AStream); //probably it can start loading while the content is coming
         Log('Finished download');
-        TWaitFrame.ShowModal(MainForm, false);
+        TWaitFrame.ShowModal(Self, false);
       end,
       true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (it not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
       true //free on completion
@@ -1112,7 +1130,7 @@ begin
   except
     on e: Exception do
     begin
-      TWaitFrame.ShowModal(MainForm, false);
+      TWaitFrame.ShowModal(Self, false);
       ShowMessageFmt(ERR_DOWNLOAD, [e.Message]);
       result := false; //probably no network connection etc.
     end;
