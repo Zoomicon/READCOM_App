@@ -40,7 +40,7 @@ type
     FEditable: Boolean;
     FLastMemoSize: TSizeF;
 
-    procedure Loaded; override;
+    //procedure Loaded; override;
     procedure MemoChangeTracking(Sender: TObject);
 
     {Z-Order}
@@ -167,12 +167,14 @@ begin
   ForegroundColor := DEFAULT_FOREGROUND_COLOR;
 end;
 
-procedure TTextStoryItem.Loaded;
+(*
+procedure TTextStoryItem.Loaded; //this gets called multiple times when you have and inherited frame, maybe use SetParent instead
 begin
   {//}Log('TTextStoryItem.Loaded %p', [@Self]);
   inherited;
   SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
+*)
 
 (*
 procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single); //Note: also gets called when control is moved //TODO: add Logging, this seems to be called too many times (7 - see stack trace of each case and how they differ, also try to group multiple changes)
@@ -215,7 +217,9 @@ end;
 
 function TTextStoryItem.GetBackIndex: Integer;
 begin
-  result := inherited + 1; //reserve one more place at the bottom for Memo
+  result := inherited;
+  if Assigned(Memo) and Memo.Visible then
+    inc(result); //reserve one more place at the bottom for Memo
 end;
 
 procedure TTextStoryItem.SetMemoZorder;
