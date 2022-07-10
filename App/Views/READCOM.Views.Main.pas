@@ -832,7 +832,7 @@ begin
       NewRootStoryItem; //deleting the RootStoryItem via "NewRootStoryItem", but not via "HUD.actionNew.Execute" since that also tries "LoadDefaultDocument" first //RootStoryItem change updates StructureView //note: confirmation is only done at "HUDactionCutExecute"
     end
   else
-    ActiveStoryItem.Cut //this makes ParentStoryItem active (which updates StructureView)
+    ActiveStoryItem.Cut; //this makes ParentStoryItem active (which updates StructureView)
 end;
 
 {$endregion}

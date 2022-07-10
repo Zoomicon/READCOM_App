@@ -56,7 +56,6 @@ type
     ImageList: TImageList;
     procedure TreeViewChange(Sender: TObject);
     procedure TreeViewDragChange(SourceItem, DestItem: TTreeViewItem; var Allow: Boolean);
-
   protected
     FGUIRoot: TControl;
     {ShowXX}
@@ -343,6 +342,8 @@ procedure TStructureView.LoadTreeView;
   begin
     if not Assigned(TheControl) then exit;
 
+    var LStructureView := Self;
+
     var FilterOut :=
       (Assigned(FShowOnlyClasses) and (FShowOnlyClasses.Count > 0) and (FShowOnlyClasses.FindClassOf(TheControl, false) < 0)) or //if FShowOnlyClasses is empty ignore it
       (FShowOnlyVisible and (not TheControl.Visible)) or
@@ -351,7 +352,7 @@ procedure TStructureView.LoadTreeView;
     if (not FilterOut) and Assigned(FOnShowFilter) then //do custom filtering if TheControl is not filtered out already
     begin
       var ShowControl := true;
-      FOnShowFilter(Self, TheControl, ShowControl);
+      FOnShowFilter(LStructureView, TheControl, ShowControl);
       FilterOut := not ShowControl;
     end;
 
@@ -376,7 +377,10 @@ procedure TStructureView.LoadTreeView;
       TagObject := TheControl;
 
       //Listen for freeing of TheControl to remove from the tree
-      TheControl.AddFreeNotify(Self);
+      //TheControl.RemoveFreeNotify(LStructureView); //make sure we remove if we were previously set as listener (won't throw error if not found as such), else we'll get added multiple times which delays more and more everytime the tree is repopulated
+      //TheControl.AddFreeNotify(LStructureView);
+      TheControl.RemoveFreeNotification(LStructureView);
+      TComponent(TheControl).FreeNotification(LStructureView);
 
       //Graphics-related code:
 
@@ -392,10 +396,10 @@ procedure TStructureView.LoadTreeView;
         //...add screenshot of TheControl to ImageList
         var ThumbnailSize := TSizeF.Create(W*(IconHeight/H), IconHeight);
 
-        //var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //could use instead of TheControl.MakeScreenshot, to not make a big image even temporarily (however if drawing code caches settings that are lost when changing drawing size it has higher cost and my persist wrong values [say FontSize if Font AutoFitting algorithm is used] if called last)
+        var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //could use instead of TheControl.MakeScreenshot, to not make a big image even temporarily (however if drawing code caches settings that are lost when changing drawing size it has higher cost and my persist wrong values [say FontSize if Font AutoFitting algorithm is used] if called last)
 
-        var ControlThumbnail := TheControl.MakeScreenshot; //this wastes more memory, but if drawing code costs when drawing resized, then its better to grab a screenshot and existing size...
-        ControlThumbnail.Resize(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //...and then resize so that ImageList doesn't copy the big image and waste memory //Note: there's also CreateThumbnail function, but would need to FreeAndNil the result of MakeScreenshot separately
+        //var ControlThumbnail := TheControl.MakeScreenshot; //this wastes more memory, but if drawing code costs when drawing resized, then its better to grab a screenshot and existing size...
+        //ControlThumbnail.Resize(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //...and then resize so that ImageList doesn't copy the big image and waste memory //Note: there's also CreateThumbnail function, but would need to FreeAndNil the result of MakeScreenshot separately
 
         try
           var imgIndex := ImageList.Add(ControlThumbnail); //this will copy from the bitmap //Note: this returns -1 if BitmapWith or BitmapHeight is 0
@@ -440,8 +444,16 @@ begin
 
   TreeView.Clear;
 
-  ImageList.ClearCache; //TODO: does this remove all contents from the ImageList?
-  ImageList.Dormant := true;
+  with ImageList do
+  begin
+    Dormant := false; //this is the default
+
+    ClearCache;
+    CacheSize := 100; //doesn't allow to set CacheSize to 0
+
+    Source.ClearAndResetID;
+    Destination.ClearAndResetID;
+  end;
 
   if Assigned(FGUIRoot) then
     begin
@@ -477,7 +489,7 @@ begin
       if (csDestroying in ComponentState) then exit; //must check if the component is getting destroyed, else TreeView will fail in FindObject when it tries to read any of its properties (even TreeView.ComponentState fails)
       var treeViewItem := TreeView.FindObject(AComponent);
       if Assigned(treeViewItem) then
-        treeViewItem.Parent := nil; //TODO: does this Free the TreeViewItem too? (immediately and not when the TreeView is destroyed)
+        FreeAndNil(treeViewItem); //don't just do "treeViewItem.Parent := nil", we have to also delete the TTreeViewItem instance
     end;
 
   end;

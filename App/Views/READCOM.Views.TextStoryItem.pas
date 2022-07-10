@@ -185,7 +185,7 @@ end;
 
 procedure TTextStoryItem.Painting;
 begin
-  {//}Log('TTextStoryItem.Painting %p', [@Self]);
+  //Log('TTextStoryItem.Painting %p', [@Self]);
   inherited;
   SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
