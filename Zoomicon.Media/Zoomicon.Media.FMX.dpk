@@ -25,16 +25,18 @@ package Zoomicon.Media.FMX;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  fmx;
+  fmx,
+  SVGImage32Package,
+  SVGIconImageListFMX;
 
 contains
-  Zoomicon.Media.FMX in 'Zoomicon.Media.FMX.pas',
-  Zoomicon.Media.Models in 'Zoomicon.Media.Models.pas';
+  Zoomicon.Media.FMX.MediaPlayerEx in 'Zoomicon.Media.FMX.MediaPlayerEx.pas',
+  Zoomicon.Media.FMX.Models in 'Zoomicon.Media.FMX.Models.pas',
+  Zoomicon.Media.FMX.MediaDisplay in 'Zoomicon.Media.FMX.MediaDisplay.pas';
 
 {$Description 'Zoomicon Media FMX Controls'}
 

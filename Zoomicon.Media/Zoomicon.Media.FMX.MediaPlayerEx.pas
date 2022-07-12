@@ -1,9 +1,9 @@
-unit Zoomicon.Media.FMX;
+unit Zoomicon.Media.FMX.MediaPlayerEx;
 
 interface
 
 uses
-  Zoomicon.Media.Models, //for IMediaPlayer
+  Zoomicon.Media.FMX.Models, //for IMediaPlayer
   FMX.Media, //for TMediaPlayer
   FMX.Types, //for TTimer, RegisterFmxClasses
   System.Classes; //for GroupDescendentsWith, RegisterComponents
@@ -12,6 +12,9 @@ const
   TIMER_INTERVAL = 10; //ms
 
 type
+
+{$REGION 'TMediaPlayerEx'}
+
   TMediaPlayerEx = class(TMediaPlayer, IMediaPlayer)
 
   //-- Fields
@@ -101,6 +104,8 @@ type
     property OnAtEnd: TOnAtEnd read FOnAtEnd write FOnAtEnd;
     property OnCurrentTimeChange: TCurrentTimeChange read FOnCurrentTimeChange write FOnCurrentTimeChange;
   end;
+
+{$ENDREGION}
 
 procedure Register;
 

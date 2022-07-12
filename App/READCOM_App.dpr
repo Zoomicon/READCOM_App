@@ -37,8 +37,8 @@ uses
   Zoomicon.Cache.Models in '..\Zoomicon.Cache\Zoomicon.Cache.Models.pas',
   Zoomicon.Downloader.Classes in '..\Zoomicon.Downloader\Zoomicon.Downloader.Classes.pas',
   Zoomicon.Downloader.Models in '..\Zoomicon.Downloader\Zoomicon.Downloader.Models.pas',
-  Zoomicon.Media.FMX in '..\Zoomicon.Media\Zoomicon.Media.FMX.pas',
-  Zoomicon.Media.Models in '..\Zoomicon.Media\Zoomicon.Media.Models.pas',
+  Zoomicon.Media.FMX.MediaPlayerEx in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas',
+  Zoomicon.Media.FMX.Models in '..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas',
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
   Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
@@ -65,7 +65,8 @@ uses
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
   FMX.Image32SVG in '..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas',
   Img32.SVG.Core in '..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas',
-  Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas';
+  Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas',
+  Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas';
 
 {$R *.res}
 

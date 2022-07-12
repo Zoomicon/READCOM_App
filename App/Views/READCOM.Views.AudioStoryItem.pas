@@ -6,12 +6,14 @@ unit READCOM.Views.AudioStoryItem;
 interface
 
 uses
-  Zoomicon.Media.FMX, //for TMediaPlayerEx
-  READCOM.App.Models, //for TStoryItem, IAudioStoryItem, IStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  READCOM.Views.StoryItem, FMX.ExtCtrls, FMX.Objects,
-  FMX.SVGIconImage, FMX.Media;
+  FMX.ExtCtrls, FMX.Objects,
+  FMX.SVGIconImage, FMX.Media,
+  READCOM.Views.StoryItem, //for TStoryItem
+  Zoomicon.Media.FMX.Models, //for IMediaPlayer
+  Zoomicon.Media.FMX.MediaPlayerEx, //for TMediaPlayerEx
+  READCOM.App.Models, FMX.Layouts, Zoomicon.Media.FMX.MediaDisplay; //for TStoryItem, IAudioStoryItem, IStoryItem
 
 const
   EXT_MP3 = '.mp3';
@@ -73,8 +75,8 @@ type
     procedure SetPlayOnce(const Value: Boolean);
 
     {Audio}
-    function GetAudio: TMediaPlayerEx;
-    procedure SetAudio(const Value: TMediaPlayerEx);
+    function GetAudio: IMediaPlayer;
+    procedure SetAudio(const Value: IMediaPlayer);
 
   //--- Events ---
 
@@ -89,7 +91,7 @@ type
     property Muted: Boolean read IsMuted write SetMuted stored false; //shouldn't store this so that interacting with the story won't store it disabled
     property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayerEx read GetAudio write SetAudio stored false; //TODO: make the MediaPlayerEx a subcomponent and persist its content together with the AudioStoryItem's so that audio data are also persisted)
+    property Audio: IMediaPlayer read GetAudio write SetAudio stored false; //TODO: make the MediaPlayerEx a subcomponent and persist its content together with the AudioStoryItem's so that audio data are also persisted)
   end;
 
   {$ENDREGION .......................................................................}
@@ -270,12 +272,12 @@ end;
 
 {$region 'Audio'}
 
-function TAudioStoryItem.GetAudio: TMediaPlayerEx;
+function TAudioStoryItem.GetAudio: IMediaPlayer;
 begin
   result := MediaPlayer;
 end;
 
-procedure TAudioStoryItem.SetAudio(const Value: TMediaPlayerEx);
+procedure TAudioStoryItem.SetAudio(const Value: IMediaPlayer);
 begin
   MediaPlayer.FileName := Value.FileName;
 end;

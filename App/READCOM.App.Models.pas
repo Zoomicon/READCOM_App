@@ -8,7 +8,7 @@ interface
 uses
   Zoomicon.Generics.Collections, //for TListEx
   Zoomicon.Generics.Factories, //for IFactory, IFactoryRegistry
-  Zoomicon.Media.FMX, //for TMediaPlayerEx
+  Zoomicon.Media.FMX.Models, //for TMediaPlayerEx
   System.Classes, //for TStream
   System.Generics.Collections, //for TList
   System.UITypes, //for TAlphaColor
@@ -16,8 +16,7 @@ uses
   FMX.Controls, //for TControl
   FMX.Graphics, //for TFont
   FMX.Objects, //for TImage
-  FMX.SVGIconImage, //for TSVGIconImage
-  FMX.Media; //for TMediaPlayer
+  FMX.Surfaces; //for TBitmapSurface
 
 {$region 'Storage' ------------------------------------------------------------}
 
@@ -308,13 +307,16 @@ type
     //--- Methods ---
     {Image}
     function GetImage: TImage;
-    procedure SetImage(const Value: TImage);
-    function GetSVGImage: TSVGIconImage;
-    procedure SetSVGImage(const Value: TSVGIconImage);
+    procedure SetImage(const Value: TImage); overload;
+    procedure SetImage(const Value: TBitmapSurface); overload;
+
+    {SVGText}
+    function GetSVGText: String;
+    procedure SetSVGText(const Value: String);
 
     //--- Properties ---
     property Image: TImage read GetImage write SetImage; //stored StoreBitmap //default nil
-    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage; //default nil //stored false
+    property SVGText: String read GetSVGText write SetSVGText; //stored FStoreSVG;
   end;
 
   IAudioStoryItem = interface(IStoryItem)
@@ -340,14 +342,14 @@ type
     procedure SetPlayOnce(const Value: Boolean);
 
     {Audio}
-    function GetAudio: TMediaPlayerEx;
-    procedure SetAudio(const Value: TMediaPlayerEx);
+    function GetAudio: IMediaPlayer;
+    procedure SetAudio(const Value: IMediaPlayer);
 
     //--- Properties ---
     property Muted: Boolean read IsMuted write SetMuted;
     property AutoPlay: Boolean read IsAutoPlaying write SetAutoPlaying;
     property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
-    property Audio: TMediaPlayerEx read GetAudio write SetAudio; //stored false
+    property Audio: IMediaPlayer read GetAudio write SetAudio; //stored false
   end;
 
   ITextStoryItem = interface(IStoryItem)

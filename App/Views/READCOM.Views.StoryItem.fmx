@@ -18,17 +18,7 @@ inherited StoryItem: TStoryItem
     Size.Height = 532.000000000000000000
     Size.PlatformDefault = False
   end
-  object Glyph: TSVGIconImage
-    MultiResBitmap = <
-      item
-      end>
-    Align = Contents
-    DisableInterpolation = True
-    HitTest = False
-    Size.Width = 836.000000000000000000
-    Size.Height = 532.000000000000000000
-    Size.PlatformDefault = False
-    WrapMode = Stretch
-    SVGText = '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+  object Glyph: TMediaDisplay
+    WrapMode = Original
   end
 end

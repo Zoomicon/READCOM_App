@@ -16,7 +16,7 @@ uses
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
   Zoomicon.Puzzler.Models, //for IHasTarget
   Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
-  Zoomicon.Puzzler.Classes; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
+  Zoomicon.Puzzler.Classes, Zoomicon.Media.FMX.MediaDisplay, FMX.Layouts; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
 
 resourcestring
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
@@ -26,8 +26,8 @@ resourcestring
 type
   TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
     Border: TRectangle;
-    Glyph: TSVGIconImage;
     Background: TRectangle;
+    Glyph: TMediaDisplay;
 
   //-- Fields ---
 
@@ -336,7 +336,7 @@ constructor TStoryItem.Create(AOwner: TComponent);
       Stored := false; //don't store state, should use state from designed .FMX resource
       SetSubComponent(true);
       Align := TAlignLayout.Contents;
-      WrapMode := TImageWrapMode.Stretch; //stretch the Glyph SVG
+      WrapMode := TImageWrapMode.Stretch; //stretch the content //TODO: add property WrapMode to TMediaDisplay
       SetGlyphZorder;
       HitTest := false;
     end;
@@ -517,8 +517,13 @@ end;
 
 function TStoryItem.GetBackIndex: Integer;
 begin
-  result := inherited + 2; //reserve two more places at the bottom for Background, Glyph
-  if Border.Visible then inc(result); //reserve one more for Border (if visible)
+  result := inherited;
+  if Assigned(Background) and Background.Visible then
+    inc(result); //reserve one more place at the bottom for Background
+  if Assigned(Glyph) and Glyph.Visible then
+    inc(result); //reserve one more from Glyph
+  if Assigned(Border) and Border.Visible then
+    inc(result); //reserve one more for Border (if visible)
 end;
 
 procedure TStoryItem.SetBackgroundZorder;
@@ -933,12 +938,12 @@ end;
 
 function TStoryItem.GetForegroundColor: TAlphaColor;
 begin
-  result := TAlphaColorRec.Null; //return the default value of the ForegroundColor property so that it's not stored. To override (including the default value of the property) at descendents
+  result := Glyph.ForegroundColor;
 end;
 
 procedure TStoryItem.SetForegroundColor(const Value: TAlphaColor);
 begin
-  //NOP
+  Glyph.ForegroundColor := Value;
 end;
 
 {$endregion}
@@ -1187,7 +1192,9 @@ begin
     var LPoint := PointF(X, Y) + AreaSelector.Position.Point;
     var LObj := ObjectAtLocalPoint(LPoint, false, true, false, false); //only checking the immediate children (ignoring SubComponents) //TODO: this won't work if we reuse an AreaSelector that belongs to other parent
     if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-      TStoryItem(LObj.GetObject).Active := true; //make the ActiveStoryItem
+      TStoryItem(LObj.GetObject).Active := true //make CTRL or RIGHT clicked child the ActiveStoryItem
+    else
+      Options.ShowPopup; //if no child at this position show options popup
   end;
 end; //TODO: should also do the extra logic from TStoryPoint.MouseDown that can make the parent storyitem active (maybe make reusable methods)
 
@@ -1270,14 +1277,16 @@ begin
     begin
       var LObj := ObjectAtLocalPoint(PointF(X, Y), false, true, false, false); //only checking the immediate children (ignoring SubComponents)
       if Assigned(LObj) and (LObj.GetObject is TStoryItem) then
-        TStoryItem(LObj.GetObject).Active := true //make the child under mouse cursor the ActiveStoryItem
+        TStoryItem(LObj.GetObject).Active := true //make CTRL or RIGHT clicked child the ActiveStoryItem
+      else
+        Options.ShowPopup; //if no child at this position show options popup
     end;
   end
 
-  else
+  else //non-Edit mode
 
   begin
-    if (((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick
+    if (((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick //TODO: this allows to bypass riddles, maybe remove? (however selecting from StructureView also allows to bypass a riddle check as done by ActivateNextStoryPoint, could keep as a feature)
         (HasActiveChildStoryItem or HasActiveSiblingStoryItem)) then //and (one of our children is the ActiveStoryItem or we're its Sibling)...
       Active := true //...make us (the parent of the ActiveStoryItem) the Active one (so that we can go back to the parent level by right-clicking it without using the keyboard's ESC key)
     else

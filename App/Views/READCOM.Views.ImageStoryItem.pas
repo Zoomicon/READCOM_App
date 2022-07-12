@@ -6,28 +6,24 @@ unit READCOM.Views.ImageStoryItem;
 interface
 
 uses
-  READCOM.App.Models, //for IImageStoryItem
-  READCOM.Views.StoryItem, //for TStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.ExtCtrls,
   FMX.Clipboard, //for IFMXExtendedClipboardService
   FMX.Objects, //for TImage
   FMX.Surfaces, //for TBitmapSurface
-  FMX.SVGIconImage; //for TSVGIconImage
-
+  FMX.SVGIconImage, //for TSVGIconImage
+  Zoomicon.Media.FMX.Models, //for EXT_XX constants
+  READCOM.App.Models, //for IImageStoryItem
+  READCOM.Views.StoryItem, Zoomicon.Media.FMX.MediaDisplay, FMX.Layouts; //for TStoryItem
 
 {$REGION 'CONSTANTS'}
 
 const
-  EXT_SVG = '.svg';
   FILTER_VECTOR_IMAGE_TITLE = 'Vector images (*.svg)';
   FILTER_VECTOR_IMAGE_EXTS = '*' + EXT_SVG;
   FILTER_VECTOR_IMAGE = FILTER_VECTOR_IMAGE_TITLE + '|' + FILTER_VECTOR_IMAGE_EXTS;
 
-  EXT_PNG = '.png';
-  EXT_JPG = '.jpg';
-  EXT_JPEG = '.jpeg';
   FILTER_BITMAP_IMAGE_TITLE = 'Bitmap images (*.png, *.jpg, *.jpeg)';
   FILTER_BITMAP_IMAGE_EXTS = '*' + EXT_PNG + ';*' + EXT_JPG + ';*' + EXT_JPEG;
   FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
@@ -43,37 +39,20 @@ type
   {$REGION 'TImageStoryItem'}
 
   TImageStoryItem = class abstract(TStoryItem, IImageStoryItem, IStoryItem, IStoreable)
-    ImageControl: TImage;
-
-  //--- Fields ---
-
-  protected
-    FStoreSVG: Boolean;
-    FForegroundColor: TAlphaColor;
-
+  private
+    FDummyImage: TImage;
 
   //--- Methods ---
 
   protected
-    procedure Loaded; override;
-    procedure UpdateGlyphVisibility;
     function GetStoreBitmap: Boolean;
 
     {$region 'Overrides'}
 
-    {EditMode}
-    procedure SetEditMode(const Value: Boolean); override;
+    procedure Loaded; override;
 
     {Options}
     function GetOptions: IStoryItemOptions; override;
-
-    {Z-Order}
-    //function GetBackIndex: Integer; override;
-    procedure SetImageControlZorder; virtual;
-
-    {ForegroundColor}
-    function GetForegroundColor: TAlphaColor; override;
-    procedure SetForegroundColor(const Value: TAlphaColor); override;
 
     {$endregion}
 
@@ -81,14 +60,12 @@ type
     function GetImage: TImage; virtual;
     procedure SetImage(const Value: TImage); overload; virtual;
     procedure SetImage(const Value: TBitmapSurface); overload; virtual;
-    {SVGImage}
-    function GetSVGImage: TSVGIconImage; virtual;
-    procedure SetSVGImage(const Value: TSVGIconImage); virtual;
+
     {SVGText}
     function GetSVGText: String;
     procedure SetSVGText(const Value: String);
 
-    procedure Resize; override; //TODO: remove (see comments in implementation)
+    //procedure Resize; override; //TODO: remove (see comments in implementation)
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -97,7 +74,7 @@ type
     function GetLoadFilesFilter: String; override;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
     function LoadSVG(const Stream: TStream): TObject; virtual;
-    function LoadBitmap(const Stream: TStream): TObject; virtual;
+    function LoadBitmap(const Stream: TStream; Const ContentFormat: String): TObject; virtual;
     function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; override;
     {$endregion}
 
@@ -105,8 +82,7 @@ type
 
   published
     property Image: TImage read GetImage write SetImage stored GetStoreBitmap default nil;
-    property SVGImage: TSVGIconImage read GetSVGImage write SetSVGImage stored false default nil;
-    property SVGText: String read GetSVGText write SetSVGText stored FStoreSVG;
+    property SVGText: String read GetSVGText write SetSVGText;
     property AutoSize default true;
   end;
 
@@ -136,57 +112,17 @@ implementation
 
 {$R *.fmx}
 
-const
-  SVG_BLANK = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
-
 {$REGION 'TImageStoryItem'}
 
 {$region 'Lifetime management'}
 
 constructor TImageStoryItem.Create(AOwner: TComponent);
-
-  procedure InitImageControl;
-  begin
-    with ImageControl do
-    begin
-      Stored := false; //don't store state, should use state from designed .FMX resource
-      SetSubComponent(true);
-      Align := TAlignLayout.Contents;
-      WrapMode := TImageWrapMode.Stretch;
-      SetImageControlZorder;
-      HitTest := false;
-    end;
-  end;
-
 begin
   inherited;
-
   Glyph.Visible := true;
   SetGlyphZorder;
 
-  InitImageControl; //must do after SetGlyphZorder
-end;
-
-procedure TImageStoryItem.UpdateGlyphVisibility;
-begin
-  SetForegroundColor(ForegroundColor); //apply foreground color again
-
-  var img: TBitmapImage := nil;
-  if Assigned(ImageControl) and Assigned(ImageControl.Bitmap) then
-    img := ImageControl.Bitmap.Image;
-  Glyph.Visible := not (Assigned(img) and (img.Width <> 0) and (img.Height <> 0)); //hide default Glyph if we have a non-empty bitmap image
-  FStoreSVG := Glyph.Visible;
-
-  //no need to call SetBorderZorder since it will stay on top (under the DropTarget), the SetXXZorder takes something to the back of Z-order
-  SetGlyphZorder; //keep before SetImageControlZorder to show the Glyph above the bitmap image if due to some error it's appearing together with the bitmap
-  SetImageControlZorder;
-  SetBackgroundZorder; //keep at bottom
-end;
-
-procedure TImageStoryItem.Loaded;
-begin
-  inherited;
-  UpdateGlyphVisibility;
+  FDummyImage := TImage.Create(Self);
 end;
 
 {$endregion}
@@ -202,54 +138,24 @@ begin
 end;
 
 function TImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
-begin
+begin //TODO: maybe honor CreateNew by making and returning a new instance if true
   if (ContentFormat = EXT_SVG) then //load EXT_SVG
     result := LoadSVG(Stream)
   else if (ContentFormat = EXT_PNG) or (ContentFormat = EXT_JPG) or (ContentFormat = EXT_JPEG) then //load EXT_PNG, EXT_JPG, EXT_JPEG
-    result := LoadBitmap(Stream)
+    result := LoadBitmap(Stream, ContentFormat)
   else
     result := inherited; //load formats supported by ancestor (e.g. EXT_READCOM)
 end;
 
 function TImageStoryItem.LoadSVG(const Stream: TStream): TObject;
 begin
-  if FAutoSize then
-    Glyph.Align := TAlignLayout.None;
-
-  //SVGImage.LoadFromStream(Stream); //TODO: should fix to read size info from SVG
-  //SVGImage.SVGText := ReadAllText(Stream); //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore //TODO: see why it fails (stack pointer corruption?)
-
-  var s := TStringList.Create(#0, #13);
-  try
-    s.LoadFromStream(Stream);
-    var txt := s.DelimitedText;
-    SVGImage.SVGText := txt; //TODO: using this as workaround since LoadFromStream doesn't seem to be compilable anymore
-  finally
-    FreeAndNil(s);
-  end;
-
-  //SVGImage.FixedColor := TAlphaColorRec.Red;
-
-  FStoreSVG := true; //mark that we loaded custom SVG
-
-  if FAutoSize then
-    begin
-    //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
-    SetSize(100,100); //TODO: fix this
-    Glyph.Align := TAlignLayout.Contents;
-    end;
-
+  Glyph.LoadSVG(Stream);
   result := Self;
 end;
 
-function TImageStoryItem.LoadBitmap(const Stream: TStream): TObject;
+function TImageStoryItem.LoadBitmap(const Stream: TStream; Const ContentFormat: String): TObject;
 begin
-  ImageControl.Bitmap.LoadFromStream(Stream); //TODO: does it detect PNG and JPEG automatically?
-  UpdateGlyphVisibility;
-
-  if FAutoSize then
-    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
-
+  Glyph.LoadBitmap(Stream, ContentFormat);
   result := Self;
 end;
 
@@ -287,15 +193,17 @@ end;
 
 {$region 'Overrides'}
 
-{$region 'EditMode'}
-
-procedure TImageStoryItem.SetEditMode(const Value: Boolean);
+procedure TImageStoryItem.Loaded;
 begin
   inherited;
-  ImageControl.SendToBack; //make the bitmap image show under the DropTarget
-end;
 
-{$endregion}
+  if Assigned(FDummyImage) then
+  begin
+    if Assigned(FDummyImage.Bitmap.Image) and (FDummyImage.Bitmap.Image.Width <> 0) and (FDummyImage.Bitmap.Height <> 0) then
+      SetImage(FDummyImage); //this should copy the bitmap
+    FreeAndNil(FDummyImage);
+  end;
+end;
 
 {$region 'Options'}
 
@@ -312,104 +220,43 @@ end;
 
 {$endregion}
 
-{$region 'Z-order'}
-
-(* //REMOVED, WE DON'T NEED +1 SINCE WHEN THE IMAGECONTROL IS SHOWN, THE GLYPH IS HIDDEN AND VICE-VERSA
-function TImageStoryItem.GetBackIndex: Integer;
-begin
-  result := inherited + 1; //reserve one more place at the bottom for ImageControl
-end;
-*)
-
-procedure TImageStoryItem.SetImageControlZorder;
-begin
-  (* //NOT WORKING
-  BeginUpdate;
-  RemoveObject(ImageControl);
-  InsertObject(GetBackIndex - 1, ImageControl);
-  EndUpdate;
-  *)
-  if Assigned(ImageControl) and ImageControl.Visible then
-    ImageControl.SendToBack;
-end;
-
-{$endregion}
-
-{$region 'ForegroundColor'}
-
-function TImageStoryItem.GetForegroundColor: TAlphaColor;
-begin
-  result := FForegroundColor;
-end;
-
-procedure TImageStoryItem.SetForegroundColor(const Value: TAlphaColor);
-begin
-  FForegroundColor := Value; //keep the foreground color (StoryItem ancestor isn't keeping it)
-
-  if (Value = TAlphaColorRec.Null) then
-    exit; //never apply the null color as foreground, using it to mark no color replacement mode (the default)
-
-  Glyph.FixedColor := Value;
-  ImageControl.Bitmap.ReplaceOpaqueColor(Value); //TODO: this doesn't seem to work
-end;
-
-{$endregion}
-
 {$endregion}
 
 {$region 'Image'}
 
 function TImageStoryItem.GetStoreBitmap: Boolean;
 begin
-  result := not FStoreSVG;
+  result := Glyph.HasNonEmptyBitmap;
 end;
 
 function TImageStoryItem.GetImage: TImage;
 begin
-  if FStoreSVG then
-    result := Glyph
+  if (Glyph.Presenter is TImage) then
+    result := (Glyph.Presenter as TImage)
   else
-    result := ImageControl;
+    result := FDummyImage; //TODO: ideally should return "nil" but is needed to load old content which has "Image.MultiResBitmap" properties in it
 end;
 
 procedure TImageStoryItem.SetImage(const Value: TImage);
 begin
-  if not Assigned(Value) then exit;
+  if not Assigned(Value) then
+  begin
+    Glyph.Bitmap := nil;
+    exit;
+  end;
 
-  if Value is TSVGIconImage then
-    SVGImage := Value As TSVGIconImage
+  if Value is TSVGIconImage then //special case
+    SVGText := (Value as TSVGIconImage).SVGText
   else
-    ImageControl.Bitmap.Assign(Value.Bitmap); //can't assign TImage directly
-
-  UpdateGlyphVisibility;
-
-  if FAutoSize then
-    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
+    Glyph.Bitmap := Value.Bitmap; //this calls "Assign" internally and copies the bitmap
 end;
 
 procedure TImageStoryItem.SetImage(const Value: TBitmapSurface);
 begin
-  ImageControl.Bitmap.Assign(Value);
-  UpdateGlyphVisibility;
+  var LBitmap := Glyph.Bitmap;
+  LBitmap.Assign(Value);
 
-  if FAutoSize then
-    SetSize(ImageControl.Bitmap.Width, ImageControl.Bitmap.Height); //TODO: probably not needed
-end;
-
-{$endregion}
-
-{$region 'SVG'}
-
-{$region 'SVGImage'}
-
-function TImageStoryItem.GetSVGImage: TSVGIconImage;
-begin
-  result := Glyph;
-end;
-
-procedure TImageStoryItem.SetSVGImage(const Value: TSVGIconImage);
-begin
-  SVGText := Value.SVGText; //this will also set Size
+  Glyph.Bitmap := LBitmap; //TODO: does this work? (check image pasting from clipboard)
 end;
 
 {$endregion}
@@ -418,58 +265,28 @@ end;
 
 function TImageStoryItem.GetSVGText: String;
 begin
-  if Assigned(Glyph) then
-  begin
-    result := SVGImage.SVGText;
-    if (result = SVG_BLANK) then
-      result := '';
-  end
-  else
-    result := '';
+  result := Glyph.SVGText;
 end;
 
 procedure TImageStoryItem.SetSVGText(const Value: String);
-begin //TODO: should restore default Glyph (keep it to some global/static var once?) if SVGText is set to ''
-  if Assigned(Glyph) then
-  begin
-    var SVGText := Value;
-    if (SVGText = SVG_BLANK) then
-      SVGText := '';
-
-    if FAutoSize then
-      Glyph.Align := TAlignLayout.None;
-
-    SVGImage.SVGText := SVGText;
-
-    if FAutoSize then //TODO: shouldn't hardcode any size here, item should keep its Width/Height when loading this property
-      begin
-      //SetSize(bitmap.Width, bitmap.Height); //TODO: seems SVG size doesn't get loaded
-      //SetSize(100,100);
-      Glyph.Align := TAlignLayout.Contents;
-      end;
-
-    FStoreSVG := (SVGText <> ''); //mark that we loaded custom SVG
-
-    //var bitmap := Glyph.MultiResBitmap[0] as TSVGIconFixedBitmapItem;
-    //bitmap.DrawSVGIcon;
-
-    //UpdateGlyphVisibility; //TODO
-  end;
+begin
+  Glyph.SVGText := Value;
 end;
-
-{$endregion}
 
 {$endregion}
 
 {$ENDREGION PROPERTIES}
 
+(*
 //TODO: see why it fails to load/show Bitmap images from saved state if this is removed
 procedure TImageStoryItem.Resize;
 begin
+  inherited;
   var tmp := SVGText;
   SVGText := '';
   SVGText := tmp; //recalculate bitmap from the SVG //TODO: not sure if the "tmp" step is needed, or if it recalculates the buffer at all (probably doesn't have the new size at this point?)
 end;
+*)
 
 {$endregion}
 

@@ -1,10 +1,12 @@
-unit Zoomicon.Media.Models;
+unit Zoomicon.Media.FMX.Models;
 
 interface
 
 uses
   FMX.Media, //for TMediaTime
   System.Classes; //for TStream
+
+{$REGION 'IMediaPlayer'}
 
 type
   TOnPlay = procedure of object;
@@ -56,6 +58,33 @@ type
     property Filename: String read GetFilename write SetFilename;
     property Stream: TStream read GetStream write SetStream; //stored false
   end;
+
+{$ENDREGION}
+
+{$REGION 'IMediaDisplay'}
+
+const
+  {$IF DEFINED(MSWINDOWS)}
+  EXT_BMP = '.bmp';
+  {$ENDIF}
+  EXT_SVG = '.svg';
+  EXT_PNG = '.png';
+  EXT_JPG = '.jpg';
+  EXT_JPEG = '.jpeg';
+  //TODO: add more using Skia4Delphi
+
+  SVG_BLANK = '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
+
+type
+  IMediaDisplay = interface
+    procedure Load(const Stream: TStream; const ContentFormat: String);
+    //
+    procedure LoadBitmap(const Stream: TStream; const ContentFormat: String);
+    procedure LoadSVG(const Stream: TStream);
+    //TODO: add more using Skia4Delphi
+  end;
+
+{$ENDREGION}
 
 implementation
 
