@@ -59,7 +59,7 @@ type
     procedure SetAreaSelector(const Value: TAreaSelector);
 
     {AutoSize}
-    procedure SetAutoSize(const Value: Boolean);
+    procedure SetAutoSize(const Value: Boolean); virtual;
 
     {DropTargetVisible}
     function IsDropTargetVisible: Boolean; virtual;
@@ -277,7 +277,8 @@ end;
 function TCustomManipulator.GetBackIndex: Integer;
 begin
   result := inherited;
-  if DropTarget.Visible then inc(result); //reserve one more place at the bottom for DropTarget (if visible)
+  if Assigned(DropTarget) and DropTarget.Visible then
+    inc(result); //reserve one more place at the bottom for DropTarget (if visible)
 end;
 
 procedure TCustomManipulator.SetDropTargetZorder;
