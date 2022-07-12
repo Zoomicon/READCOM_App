@@ -6,16 +6,17 @@ unit READCOM.Views.TextStoryItem;
 interface
 
 uses
-  READCOM.App.Models,
-  READCOM.Views.StoryItem, //for TStoryItem
-  READCOM.Views.ImageStoryItem, //for TImageStoryItem
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.SVGIconImage,
   FMX.ExtCtrls, FMX.Controls.Presentation,
   FMX.ScrollBox,
   FMX.Memo, FMX.Memo.Types, FMX.Layouts,
-  FMX.Clipboard; //for IFMXExtendedClipboardService
+  FMX.Clipboard, //for IFMXExtendedClipboardService
+  Zoomicon.Media.FMX.MediaDisplay, //for TMediaDisplay
+  READCOM.App.Models, //for IStoryItem
+  READCOM.Views.StoryItem, //for TStoryItem
+  READCOM.Views.ImageStoryItem; //for TImageStoryItem
 
 const
   EXT_TXT = '.txt';
@@ -207,7 +208,7 @@ end;
 
 procedure TTextStoryItem.MemoChangeTracking(Sender: TObject);
 begin
-  {//}Log('TTextStoryItem.MemoChangeTracking %p', [@Self]);
+  //Log('TTextStoryItem.MemoChangeTracking %p', [@Self]);
   SetMemoFontSizeToFit(Memo, FLastMemoSize);
 end;
 

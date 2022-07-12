@@ -9,7 +9,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.ExtCtrls, FMX.Objects,
-  FMX.SVGIconImage, FMX.Media,
+  FMX.Media,
   READCOM.Views.StoryItem, //for TStoryItem
   Zoomicon.Media.FMX.Models, //for IMediaPlayer
   Zoomicon.Media.FMX.MediaPlayerEx, //for TMediaPlayerEx
