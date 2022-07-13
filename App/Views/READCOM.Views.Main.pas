@@ -1,6 +1,8 @@
 //Description: READ-COM Main (Story) View
 //Author: George Birbilis (http://zoomicon.com)
 
+{-$DEFINE NOSTYLE}
+
 unit READCOM.Views.Main;
 
 interface
@@ -229,7 +231,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(MACOS)}
+  {$IFDEF NOSTYLE}
   StyleBook := nil; //TODO: can we make a style platform agnostic?
   {$ELSE}
   StyleBook := Globals.LightTheme;

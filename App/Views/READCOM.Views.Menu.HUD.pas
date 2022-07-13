@@ -1,6 +1,8 @@
 //Description: READ-COM HUD (Heads-Up-Display) View
 //Author: George Birbilis (http://zoomicon.com)
 
+{-$DEFINE NOSTYLE}
+
 unit READCOM.Views.Menu.HUD;
 
 interface
@@ -134,7 +136,7 @@ begin
   btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   {$ENDIF}
 
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(MACOS)}
+  {$IFDEF NOSTYLE}
   btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
   {$ENDIF}
 

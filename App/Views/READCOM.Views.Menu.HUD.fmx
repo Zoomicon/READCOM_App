@@ -31,55 +31,6 @@ object StoryHUD: TStoryHUD
     Size.Height = 572.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 4
-    object layoutButtonsNavigation: TLayout
-      Align = MostBottom
-      Margins.Left = 10.000000000000000000
-      Margins.Right = 10.000000000000000000
-      Margins.Bottom = 10.000000000000000000
-      Position.X = 10.000000000000000000
-      Position.Y = 520.000000000000000000
-      Size.Width = 642.000000000000000000
-      Size.Height = 42.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 1
-      object btnNext: TSpeedButton
-        Action = actionNext
-        Align = MostRight
-        Enabled = True
-        Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
-        Images = Globals.SVGIconImageList
-        ImageIndex = 2
-        Position.X = 586.000000000000000000
-        Size.Width = 56.000000000000000000
-        Size.Height = 42.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'arrowrighttoolbutton'
-      end
-      object btnPrevious: TSpeedButton
-        Action = actionPrevious
-        Align = MostLeft
-        Enabled = True
-        Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
-        Images = Globals.SVGIconImageList
-        ImageIndex = 1
-        Size.Width = 41.000000000000000000
-        Size.Height = 42.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'arrowlefttoolbutton'
-      end
-      object btnHome: TSpeedButton
-        Action = actionHome
-        Align = Center
-        Enabled = True
-        Hint = 'Home'#13#13'Activates Home StoryItem'
-        Images = Globals.SVGIconImageList
-        ImageIndex = 13
-        Size.Width = 41.000000000000000000
-        Size.Height = 40.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'refreshtoolbutton'
-      end
-    end
     object layoutButtonsMain: TFlowLayout
       Align = MostLeft
       HitTest = False
@@ -480,6 +431,55 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+      end
+    end
+    object layoutButtonsNavigation: TLayout
+      Align = MostBottom
+      Margins.Left = 10.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Margins.Bottom = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 520.000000000000000000
+      Size.Width = 642.000000000000000000
+      Size.Height = 42.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object btnNext: TSpeedButton
+        Action = actionNext
+        Align = MostRight
+        Enabled = True
+        Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 2
+        Position.X = 586.000000000000000000
+        Size.Width = 56.000000000000000000
+        Size.Height = 42.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'arrowrighttoolbutton'
+      end
+      object btnPrevious: TSpeedButton
+        Action = actionPrevious
+        Align = MostLeft
+        Enabled = True
+        Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 1
+        Size.Width = 41.000000000000000000
+        Size.Height = 42.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'arrowlefttoolbutton'
+      end
+      object btnHome: TSpeedButton
+        Action = actionHome
+        Align = Center
+        Enabled = True
+        Hint = 'Home'#13#13'Activates Home StoryItem'
+        Images = Globals.SVGIconImageList
+        ImageIndex = 13
+        Size.Width = 41.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'refreshtoolbutton'
       end
     end
   end
