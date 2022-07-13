@@ -145,7 +145,9 @@ end;
 
 {$region 'Profiling'}
 
+{$IFDEF DEBUG}
 var profilingTimer: TStopWatch;
+{$ENDIF}
 
 function StartTiming: TStopWatch;
 begin
