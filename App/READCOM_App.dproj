@@ -387,8 +387,8 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android)'!=''">
-        <VerInfo_Build>4</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=4;versionName=0.7.1;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+        <VerInfo_Build>5</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=5;versionName=0.7.1;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
@@ -396,8 +396,8 @@
         <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android64)'!=''">
-        <VerInfo_Build>4</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=4;versionName=0.7.1;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+        <VerInfo_Build>5</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=5;versionName=0.7.1;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
@@ -461,6 +461,7 @@
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
         <VerInfo_Release>1</VerInfo_Release>
         <PF_UWPDistributionType>Store</PF_UWPDistributionType>
+        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -871,6 +872,12 @@
                 </DeployFile>
                 <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Android">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput_Android32">
+                    <Platform Name="Android64">
                         <RemoteName>libREADCOM_App.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
@@ -1439,6 +1446,12 @@
                 </DeployFile>
                 <DeployFile LocalName="READCOM_App\LaunchGen\Icon_MainIcon.icns" Configuration="Release" Class="ProjectOSXResource">
                     <Platform Name="OSX64">
+                        <RemoteName>READCOM_App.icns</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="READCOM_App\LaunchGen\Icon_MainIcon.icns" Configuration="Release" Class="ProjectOSXResource">
+                    <Platform Name="OSXARM64">
                         <RemoteName>READCOM_App.icns</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

@@ -243,6 +243,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\Icon_MainIcon.icns" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App.app\Contents\Resources\</RemoteDir>
+            <RemoteName>READCOM_App.icns</RemoteName>
+            <DeployClass>ProjectOSXResource</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="OSXARM64\Release\READCOM_App" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App.app\Contents\MacOS\</RemoteDir>
             <RemoteName>READCOM_App</RemoteName>
@@ -638,6 +647,15 @@
             <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>ProjectOutput_Android32</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
