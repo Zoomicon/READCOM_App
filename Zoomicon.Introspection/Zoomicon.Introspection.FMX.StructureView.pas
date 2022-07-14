@@ -398,6 +398,8 @@ procedure TStructureView.LoadTreeView;
 
         var ControlThumbnail := TheControl.MakeThumbnail(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //could use instead of TheControl.MakeScreenshot, to not make a big image even temporarily (however if drawing code caches settings that are lost when changing drawing size it has higher cost and my persist wrong values [say FontSize if Font AutoFitting algorithm is used] if called last)
 
+        //TODO: check which of these two strategies is better (since TextStoryItem caches the last height for which its autofontfit was calculated, it may causing extra autofontfit calculations)
+
         //var ControlThumbnail := TheControl.MakeScreenshot; //this wastes more memory, but if drawing code costs when drawing resized, then its better to grab a screenshot and existing size...
         //ControlThumbnail.Resize(Round(ThumbnailSize.Width), Round(ThumbnailSize.Height)); //...and then resize so that ImageList doesn't copy the big image and waste memory //Note: there's also CreateThumbnail function, but would need to FreeAndNil the result of MakeScreenshot separately
 
