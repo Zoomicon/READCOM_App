@@ -36,7 +36,7 @@ object StoryHUD: TStoryHUD
       HitTest = False
       Padding.Top = 40.000000000000000000
       Size.Width = 50.000000000000000000
-      Size.Height = 520.000000000000000000
+      Size.Height = 572.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 2
       Justify = Left
@@ -219,7 +219,7 @@ object StoryHUD: TStoryHUD
       Margins.Right = 10.000000000000000000
       Position.X = 602.000000000000000000
       Size.Width = 50.000000000000000000
-      Size.Height = 520.000000000000000000
+      Size.Height = 572.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
       Justify = Left
@@ -434,13 +434,13 @@ object StoryHUD: TStoryHUD
       end
     end
     object layoutButtonsNavigation: TLayout
-      Align = MostBottom
+      Align = Bottom
       Margins.Left = 10.000000000000000000
       Margins.Right = 10.000000000000000000
-      Margins.Bottom = 10.000000000000000000
-      Position.X = 10.000000000000000000
-      Position.Y = 520.000000000000000000
-      Size.Width = 642.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 60.000000000000000000
+      Position.Y = 525.000000000000000000
+      Size.Width = 532.000000000000000000
       Size.Height = 42.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
@@ -451,7 +451,7 @@ object StoryHUD: TStoryHUD
         Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
         Images = Globals.SVGIconImageList
         ImageIndex = 2
-        Position.X = 586.000000000000000000
+        Position.X = 476.000000000000000000
         Size.Width = 56.000000000000000000
         Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
