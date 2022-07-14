@@ -155,6 +155,8 @@ object AboutFrame: TAboutFrame
         end
       end
       object btnClose: TSpeedButton
+        Images = Globals.SVGIconImageList
+        ImageIndex = 36
         Position.X = 8.000000000000000000
         Position.Y = 8.000000000000000000
         Size.Width = 24.000000000000000000
