@@ -1,0 +1,127 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Caption = 'Form2'
+  ClientHeight = 265
+  ClientWidth = 669
+  Padding.Left = 5.000000000000000000
+  Padding.Top = 5.000000000000000000
+  Padding.Right = 5.000000000000000000
+  Padding.Bottom = 5.000000000000000000
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object MemoFrom: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    Align = MostLeft
+    Position.X = 5.000000000000000000
+    Position.Y = 5.000000000000000000
+    Size.Width = 249.000000000000000000
+    Size.Height = 255.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Viewport.Width = 245.000000000000000000
+    Viewport.Height = 251.000000000000000000
+  end
+  object MemoTo: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    ReadOnly = True
+    Align = MostRight
+    Position.X = 416.000000000000000000
+    Position.Y = 5.000000000000000000
+    Size.Width = 248.000000000000000000
+    Size.Height = 255.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Viewport.Width = 244.000000000000000000
+    Viewport.Height = 251.000000000000000000
+  end
+  object LayoutControls: TLayout
+    Align = Client
+    Padding.Left = 5.000000000000000000
+    Padding.Right = 5.000000000000000000
+    Size.Width = 162.000000000000000000
+    Size.Height = 255.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    object btnTranslate: TButton
+      Align = Top
+      Margins.Top = 10.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 185.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Translate'
+      OnClick = btnTranslateClick
+    end
+    object edFrom: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Top
+      TabOrder = 2
+      Position.X = 5.000000000000000000
+      Position.Y = 17.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object lblFrom: TLabel
+      Align = Top
+      Position.X = 5.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'From:'
+      TabOrder = 5
+    end
+    object lblTo: TLabel
+      Align = Top
+      Margins.Top = 5.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 44.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'To:'
+      TabOrder = 4
+    end
+    object edTo: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Top
+      TabOrder = 1
+      Position.X = 5.000000000000000000
+      Position.Y = 61.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+    end
+    object memoAPIkey: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      Align = Top
+      Position.X = 5.000000000000000000
+      Position.Y = 105.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 70.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 6
+      Viewport.Width = 148.000000000000000000
+      Viewport.Height = 66.000000000000000000
+    end
+    object lblAPIkey: TLabel
+      Align = Top
+      Margins.Top = 5.000000000000000000
+      Position.X = 5.000000000000000000
+      Position.Y = 88.000000000000000000
+      Size.Width = 152.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'API key:'
+      TabOrder = 3
+    end
+  end
+end
