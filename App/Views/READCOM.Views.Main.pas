@@ -100,6 +100,7 @@ type
     function LoadSavedState: Boolean;
     procedure SaveCurrentState;
     procedure CheckSaveActiveStoryItemThumbnail;
+    procedure CheckReplaceStoryAllText;
 
     {RootStoryItemStoryView}
     function GetRootStoryItemView: TStoryItem;
@@ -345,6 +346,8 @@ begin
 
     if not Assigned(ActiveStoryItem) then
       ActiveStoryItem := RootStoryItem; //set RootStoryItem as the ActiveStoryItem if no such is set (e.g. from loaded state). Note this will also try to ZoomTo it
+
+    CheckReplaceStoryAllText;
 
     CheckProperOrientation; //checking proper orientation based on the StoryItem that is active upon the loading of the story (usually it's the HomeStoryItem, but could be the RootStoryItem if there's no Home set, or be other StoryItem if loading from saved state)
   end;
@@ -1236,6 +1239,26 @@ begin
     ActiveStoryItem.SaveThumbnail(ThumbPath);
     Application.Terminate; //close the app after saving the thumb
   end;
+end;
+
+procedure TMainForm.CheckReplaceStoryAllText;
+begin
+  (* //TODO
+  if LoadAllText or SaveAllText and (StorySource <> '') then
+  begin
+    var CaptionsPath: String;
+    if IsURI(StorySource) then
+      CaptionsPath := 'Captions.txt' //save in current folder
+    else
+      CaptionsPath := StorySource + '.txt';
+
+    if LoadAllText then
+      ActiveStoryItem.LoadAllText(CaptionsPath)
+    else if SaveAllText then
+      ActiveStoryItem.SaveAllText(CaptionsPath);
+    //TODO: add actions and parameters to localize to TARGET language (ideally should autodetect source or allow to define what the SOURCE is)
+  end;
+  *)
 end;
 
 {$endregion}

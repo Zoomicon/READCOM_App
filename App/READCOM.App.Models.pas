@@ -72,7 +72,9 @@ type
   IStoryItemOptions = interface;
 
   TIStoryItemList = TListEx<IStoryItem>;
+  TIImageStoryItemList = TListEx<IImageStoryItem>;
   TIAudioStoryItemList = TListEx<IAudioStoryItem>;
+  TITextStoryItemList = TListEx<ITextStoryItem>;
 
   TStoryMode = (AnimatedStoryMode, InteractiveStoryMode, GuidedInteractiveStoryMode, EditMode);
 
@@ -138,8 +140,14 @@ type
     function GetStoryItems: TIStoryItemList;
     procedure SetStoryItems(const Value: TIStoryItemList);
 
+    {ImageStoryItems}
+    function GetImageStoryItems: TIImageStoryItemList;
+
     {AudioStoryItems}
     function GetAudioStoryItems: TIAudioStoryItemList;
+
+    {TextStoryItems}
+    function GetTextStoryItems: TITextStoryItemList;
 
     {Active}
     function IsActive: Boolean;
@@ -174,6 +182,10 @@ type
     function GetLastChildStoryPoint: IStoryItem;
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
+
+    {AllText}
+    function GetAllText: TStrings;
+    procedure SetAllText(const Value: TStrings);
 
     {ForegroundColor}
     function GetForegroundColor: TAlphaColor;
@@ -231,7 +243,9 @@ type
     property View: TControl read GetView;
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem; //stored false //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems; //default nil
+    property ImageStoryItems: TIImageStoryItemList read GetImageStoryItems; //stored false
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems; //stored false
+    property TextStoryItems: TITextStoryItemList read GetTextStoryItems; //stored false
     property Active: Boolean read IsActive write SetActive; //default false
     property EditMode: Boolean read IsEditMode write SetEditMode; //stored false //default false
     property BorderVisible: Boolean read IsBorderVisible write SetBorderVisible; //stored false default false
@@ -239,6 +253,7 @@ type
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint; //default false
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint; //stored false
     property NextStoryPoint: IStoryItem read GetNextStoryPoint; //stored false
+    property AllText: TStrings read GetAllText write SetAllText; //stored false //Note: used to replace Text at applicable items in StoryItem's whole subtree (to be used recursively)
     property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor; //default TAlphaColorRec.Null
     property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor; //default TAlphaColorRec.Null
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally; //stored false //default false //Scale.X stores related info

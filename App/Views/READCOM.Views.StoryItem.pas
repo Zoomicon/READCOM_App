@@ -112,8 +112,14 @@ type
     function GetStoryItems: TIStoryItemList; inline;
     procedure SetStoryItems(const Value: TIStoryItemList);
 
+    {ImageStoryItems}
+    function GetImageStoryItems: TIImageStoryItemList; inline; //Note: need to free returned object when done, isn't cached by the StoryItem
+
     {AudioStoryItems}
     function GetAudioStoryItems: TIAudioStoryItemList; inline;
+
+    {TextStoryItems}
+    function GetTextStoryItems: TITextStoryItemList; inline; //Note: need to free returned object when done, isn't cached by the StoryItem
 
     {ActiveStoryItem}
     class procedure SetActiveStoryItem(const Value: IStoryItem); static; //static means has no "Self" passed to it, required for "class property" accessors
@@ -143,6 +149,10 @@ type
     function GetLastChildStoryPoint: IStoryItem;
     function GetPreviousSiblingStoryPoint: IStoryItem;
     function GetNextSiblingStoryPoint: IStoryItem;
+
+    {AllText}
+    function GetAllText: TStrings;
+    procedure SetAllText(const Value: TStrings);
 
     {ForegroundColor}
     function GetForegroundColor: TAlphaColor; virtual;
@@ -278,12 +288,15 @@ type
 
     property ParentStoryItem: IStoryItem read GetParentStoryItem write SetParentStoryItem stored false; //default nil
     property StoryItems: TIStoryItemList read GetStoryItems write SetStoryItems stored false; //default nil
+    property ImageStoryItems: TIImageStoryItemList read GetImageStoryItems stored false; //default nil //Note: need to free returned object when done, isn't cached by the StoryItem
     property AudioStoryItems: TIAudioStoryItemList read GetAudioStoryItems stored false; //default nil
+    property TextStoryItems: TITextStoryItemList read GetTextStoryItems stored false; //default nil //Note: need to free returned object when done, isn't cached by the StoryItem
     property Active: Boolean read IsActive write SetActive default DEFAULT_ACTIVE;
     property Home: Boolean read IsHome write SetHome default DEFAULT_HOME;
     property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default DEFAULT_STORYPOINT;
     property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
     property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
+    property AllText: TStrings read GetAllText write SetAllText stored false; //Note: used to replace Text at applicable items in StoryItem's whole subtree (to be used recursively) //Note: need to free returned object when done, isn't cached by the StoryItem
     property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR;
     property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default DEFAULT_BACKGROUND_COLOR;
     property FlippedHorizontally: Boolean read IsFlippedHorizontally write setFlippedHorizontally stored false default DEFAULT_FLIPPED_HORIZONTALLY; //Scale.X stores related info //Note: default isn't really needed when using stored false
@@ -644,11 +657,29 @@ end;
 
 {$endregion}
 
+{$region 'ImageStoryItems'}
+
+function TStoryItem.GetImageStoryItems: TIImageStoryItemList;
+begin
+  result := TObjectListEx<TControl>.GetAllInterface<IImageStoryItem>(Controls);
+end;
+
+{$endregion}
+
 {$region 'AudioStoryItems'}
 
 function TStoryItem.GetAudioStoryItems: TIAudioStoryItemList;
 begin
   result := FAudioStoryItems;
+end;
+
+{$endregion}
+
+{$region 'TextStoryItems'}
+
+function TStoryItem.GetTextStoryItems: TITextStoryItemList;
+begin
+  result := TObjectListEx<TControl>.GetAllInterface<ITextStoryItem>(Controls);
 end;
 
 {$endregion}
@@ -930,6 +961,52 @@ begin
   end;
 
   result := nil;
+end;
+
+{$endregion}
+
+{$region 'AllText'}
+
+function TStoryItem.GetAllText: TStrings; //Note: the output order of the strings may look strange, it's not in StoryPoint-related groups
+begin
+  result := TStringList.Create(false); //set to not own objects
+
+  //Append our own text
+  var LTextStoryItem: ITextStoryItem;
+  if Supports(Self, ITextStoryItem, LTextStoryItem) then
+    result.Append(LTextStoryItem.Text);
+
+  //Append our children's text
+  for var LStoryItem in StoryItems do
+  begin
+    var LStoryItemAllText := LStoryItem.AllText; //does recursion, resulting in a depth-first traversal of the subtree
+    if Assigned(LStoryItemAllText) then
+      result.AddStrings(LStoryItemAllText); //append strings from child
+  end;
+end;
+
+procedure TStoryItem.SetAllText(const Value: TStrings); //expecting the same order of strings as returned by GetAllText
+begin
+  if (Value.Count = 0) then //no more items
+    exit;
+
+  //Append our own text
+  var LTextStoryItem: ITextStoryItem;
+  if Supports(Self, ITextStoryItem, LTextStoryItem) then
+  begin
+    var LText := Value.Strings[0];
+    Value.Delete(0);
+    LTextStoryItem.Text := LText;
+  end;
+
+  //Set our children's text
+  for var LStoryItem in StoryItems do
+  begin
+    if (Value.Count = 0) then //no more items (optimization check to avoid looping through any more StoryItems, with all of them doing nothing)
+      exit;
+
+    LStoryItem.SetAllText(Value); //Note: even though this is a const parameter, the reference is what is constant, we can still change the contents (aka remove elements) of the TStrings implementation
+  end;
 end;
 
 {$endregion}
