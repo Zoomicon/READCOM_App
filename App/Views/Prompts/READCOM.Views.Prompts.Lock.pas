@@ -1,7 +1,7 @@
 //Description: READ-COM Lock dialog
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.Lock;
+unit READCOM.Views.Prompts.Lock;
 
 interface
 

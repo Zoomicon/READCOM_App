@@ -580,15 +580,15 @@
             <Form>ModalFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.Wait.pas">
+        <DCCReference Include="Views\Prompts\READCOM.Views.Prompts.Wait.pas">
             <Form>WaitFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.Rotate.pas">
+        <DCCReference Include="Views\Prompts\READCOM.Views.Prompts.Rotate.pas">
             <Form>RotateFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.Lock.pas">
+        <DCCReference Include="Views\Prompts\READCOM.Views.Prompts.Lock.pas">
             <Form>LockFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>

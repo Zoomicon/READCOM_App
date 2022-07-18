@@ -1,7 +1,7 @@
 //Description: READ-COM Rotate dialog
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.Rotate;
+unit READCOM.Views.Prompts.Rotate;
 
 interface
 

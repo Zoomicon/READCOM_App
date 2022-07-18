@@ -196,9 +196,9 @@ implementation
     READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
-    READCOM.Views.Wait, //for TWaitFrame
-    READCOM.Views.Lock, //for TLockFrame
-    READCOM.Views.Rotate; //for TRotateFrame
+    READCOM.Views.Prompts.Wait, //for TWaitFrame
+    READCOM.Views.Prompts.Lock, //for TLockFrame
+    READCOM.Views.Prompts.Rotate; //for TRotateFrame
 
 {$R *.fmx}
 

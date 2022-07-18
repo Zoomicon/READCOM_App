@@ -1,7 +1,7 @@
 //Description: READ-COM Wait dialog
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.Wait;
+unit READCOM.Views.Prompts.Wait;
 
 interface
 
