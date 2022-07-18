@@ -17,7 +17,7 @@ To have SVG preview at Add/Open file dialogs (if Preview pane is enabled at Wind
 
 Alternatively try this one which uses the same SVG library as the READ-COM App (however it sometimes freezes Windows Explorer): https://github.com/EtheaDev/SVGShellExtensions/releases
 
-## Build from Source code:
+## Build from Source code
 see https://github.com/Zoomicon/READCOM_App/wiki/Source-code
 
 ## Testing
