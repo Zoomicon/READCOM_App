@@ -4,7 +4,7 @@
 Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
-Under development, can find releases here:
+Under continuous development/evolution, download latest release here:
 * https://github.com/Zoomicon/READCOM_App/releases
 * https://apps.microsoft.com/store/detail/readcom-reading-communities/9NVM0CHRN7PH
 
@@ -17,11 +17,8 @@ To have SVG preview at Add/Open file dialogs (if Preview pane is enabled at Wind
 
 Alternatively try this one which uses the same SVG library as the READ-COM App (however it sometimes freezes Windows Explorer): https://github.com/EtheaDev/SVGShellExtensions/releases
 
-## Requirements: Source-code Dependencies:
-need to install via "Tools/GetIt Package Manager" in Delphi IDE to build the project the (appropriate for your Delphi version) packages:
-* [TFrameStand](https://getitnow.embarcadero.com/?q=tframestand) 
-* [SVGIconImageList](https://getitnow.embarcadero.com/?q=SVGIconImageList)
-* [CodeSite Express](https://getitnow.embarcadero.com/?q=CodeSite)
+## Build from Source code:
+see https://github.com/Zoomicon/READCOM_App/wiki/Source-code
 
 ## Testing
 
