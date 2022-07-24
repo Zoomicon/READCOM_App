@@ -49,6 +49,6 @@ Older screenshots:
 
 ## Attributions
 Icons by:
-https://openmoji.org
-https://oNlineWebFonts.com
+* https://openmoji.org
+* https://oNlineWebFonts.com
 (see respective sites for license info)
