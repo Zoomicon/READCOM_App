@@ -45,3 +45,10 @@ Older screenshots:
 ![image](https://user-images.githubusercontent.com/3461504/152587444-315f557f-55d9-453a-94f1-042d7b76e010.png)
 
 ![image](https://user-images.githubusercontent.com/3461504/150108636-95dbc253-33bc-46ab-b1cb-aa91d1f7a6fb.png)
+
+
+## Attributions
+Icons by:
+https://openmoji.org
+https://oNlineWebFonts.com
+(see respective sites for license info)
