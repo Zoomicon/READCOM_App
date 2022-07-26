@@ -29,22 +29,21 @@ package Zoomicon.Media.FMX;
 
 requires
   rtl,
-  fmx,
-  SVGImage32Package,
-  SVGIconImageListFMX,
   Zoomicon.Generics,
   bindengine,
+  fmx,
   bindcomp,
-  bindcompfmx;
+  bindcompfmx,
+  SVGImage32Package,
+  SVGIconImageListFMX;
 
 contains
-  Zoomicon.Media.FMX.MediaPlayerEx in 'Zoomicon.Media.FMX.MediaPlayerEx.pas',
   Zoomicon.Media.FMX.Models in 'Zoomicon.Media.FMX.Models.pas',
-  Zoomicon.Media.FMX.MediaDisplay in 'Zoomicon.Media.FMX.MediaDisplay.pas',
   Zoomicon.Media.FMX.DataBinding in 'Zoomicon.Media.FMX.DataBinding.pas',
+  Zoomicon.Media.FMX.MediaDisplay in 'Zoomicon.Media.FMX.MediaDisplay.pas',
+  Zoomicon.Media.FMX.MediaPlayerEx in 'Zoomicon.Media.FMX.MediaPlayerEx.pas',
   Zoomicon.Media.FMX.FileChooser in 'Zoomicon.Media.FMX.FileChooser.pas' {FileChooser: TFrame};
 
 {$Description 'Zoomicon Media FMX Controls'}
 
 end.
-
