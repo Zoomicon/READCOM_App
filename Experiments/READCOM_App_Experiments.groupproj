@@ -27,6 +27,12 @@
         <Projects Include="Translation\Translation.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="FileChooser\FileChooser.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -107,14 +113,32 @@
     <Target Name="Translation:Make">
         <MSBuild Projects="Translation\Translation.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Zoomicon_Media_FMX">
+        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Clean">
+        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Make">
+        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FileChooser">
+        <MSBuild Projects="FileChooser\FileChooser.dproj"/>
+    </Target>
+    <Target Name="FileChooser:Clean">
+        <MSBuild Projects="FileChooser\FileChooser.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FileChooser:Make">
+        <MSBuild Projects="FileChooser\FileChooser.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget;SVGViewer;Translation"/>
+        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget;SVGViewer;Translation;Zoomicon_Media_FMX;FileChooser"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean;SVGViewer:Clean;Translation:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean;SVGViewer:Clean;Translation:Clean;Zoomicon_Media_FMX:Clean;FileChooser:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make;SVGViewer:Make;Translation:Make"/>
+        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make;SVGViewer:Make;Translation:Make;Zoomicon_Media_FMX:Make;FileChooser:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

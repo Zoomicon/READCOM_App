@@ -1,5 +1,7 @@
 unit uTranslation;
 
+//TODO: old, probably obsolete code - use code from Azure-Cognitive-Services library from "3rdPartyLibs" folder instead
+
 interface
 
 function Translate(const AAppID: string; const AText: string; const InLanguage: string='en'; const OutLanguage: string='el-GR'): string;

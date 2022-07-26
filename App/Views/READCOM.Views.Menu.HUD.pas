@@ -133,7 +133,7 @@ begin
   {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
   btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists)
-  btnToggleEditMode.Visible := false; //TODO: enable edit again after implementing a Save (and ideally adding Share support too) dialog. Plus need to make the toolbars somehow fit in small screens
+  //btnToggleEditMode.Visible := false; //TODO: enable edit again after implementing a Save (and ideally adding Share support too) dialog. Plus need to make the toolbars somehow fit in small screens
   btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
   {$ENDIF}
 

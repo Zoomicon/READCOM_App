@@ -1,0 +1,86 @@
+object FileChooser: TFileChooser
+  Size.Width = 489.000000000000000000
+  Size.Height = 428.000000000000000000
+  Size.PlatformDefault = False
+  object listFolderContents: TListView
+    ItemAppearanceClassName = 'TImageListItemAppearance'
+    ItemEditAppearanceClassName = 'TImageListItemDeleteAppearance'
+    HeaderAppearanceClassName = 'TListHeaderObjects'
+    FooterAppearanceClassName = 'TListHeaderObjects'
+    Align = Client
+    Size.Width = 489.000000000000000000
+    Size.Height = 388.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+  object cbFolder: TComboEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    Align = Top
+    TabOrder = 1
+    ItemHeight = 19.000000000000000000
+    ItemIndex = -1
+    Size.Width = 489.000000000000000000
+    Size.Height = 40.000000000000000000
+    Size.PlatformDefault = False
+    KillFocusByReturn = True
+    OnChange = cbFolderChange
+  end
+  object AdapterFolders: TLocalFilesystemBindSourceAdapter
+    ShowFiles = False
+    ShowFolders = True
+    Left = 32
+    Top = 120
+  end
+  object AdapterFiles: TLocalFilesystemBindSourceAdapter
+    ShowFiles = True
+    ShowFolders = False
+    Left = 24
+    Top = 176
+  end
+  object AdapterBindSource1: TAdapterBindSource
+    AutoActivate = True
+    Adapter = AdapterFolders
+    ScopeMappings = <>
+    Left = 136
+    Top = 120
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 36
+    Top = 61
+    object LinkFillControlToField: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Control = listFolderContents
+      Track = False
+      FillDataSource = AdapterBindSource2
+      FillDisplayFieldName = 'ItemName'
+      AutoFill = True
+      FillExpressions = <
+        item
+          SourceMemberName = 'Thumbnail'
+          ControlMemberName = 'Bitmap'
+        end>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+    object LinkFillControlToField1: TLinkFillControlToField
+      Category = 'Quick Bindings'
+      Control = cbFolder
+      Track = False
+      FillDataSource = AdapterBindSource1
+      FillDisplayFieldName = 'ItemPath'
+      AutoFill = True
+      FillExpressions = <>
+      FillHeaderExpressions = <>
+      FillBreakGroups = <>
+    end
+  end
+  object AdapterBindSource2: TAdapterBindSource
+    AutoActivate = True
+    Adapter = AdapterFiles
+    ScopeMappings = <>
+    Left = 120
+    Top = 176
+  end
+end
