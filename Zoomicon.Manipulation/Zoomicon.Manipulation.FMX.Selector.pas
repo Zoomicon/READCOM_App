@@ -62,7 +62,12 @@ type
     function GetIntersectedCount: Integer; virtual;
     function GetSelectedCount: Integer; virtual;
 
+  public
+    procedure MouseMove(Shift: TShiftState; X, Y: Single); override; //seems "MouseMove" is exposed as public in TSelection (whereas in TControl it's "protected")
+
   published
+    const STR_FORMAT_HINT = '%f x %f';
+
     property SelectedArea: TRectF read GetSelectedArea;
 
     property Contained: TControlList read GetContained;
@@ -88,8 +93,11 @@ implementation
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.SubComponent
     FMX.Ani,
     FMX.Effects,
+    //FMX.Forms, //for Application
+    //FMX.StdActns, //for THintAction
     FMX.Types, //for RegisterFmxClasses
-    System.Math; //for Min
+    System.Math, //for Min
+    System.SysUtils; //for Format
 
 {$REGION 'TLocationSelector' --------------------------------------------------}
 
@@ -258,6 +266,20 @@ begin
   else
     result := 0;
   end;
+end;
+
+{$endregion}
+
+{$region 'Events'}
+
+procedure TAreaSelector.MouseMove(Shift: TShiftState; X, Y: Single);
+begin
+  inherited;
+
+  Hint := Format(STR_FORMAT_HINT, [Width, Height]); //set area selection size as hint (tooltip) - depends on "ShowHint" property (defaults to true) if it will be displayed
+
+  //TODO: VCL has Application.ActivateHint to force show the hint, but FMX doesn't. There's Application.SetHint private method which uses THintAction, but using similar code doesn't seem to do the job
+  //TODO: There's issue with hint not being displayed when user clicks on same-sized object to wrap AreaSelection around it. Seems they have to resize the AreaSelection first or move the mouse outside and back inside it to show the hint. Tried setting the Hint to empty first or to something dummy (and call Application.ProcessMessages in between), but doesn't work either
 end;
 
 {$endregion}
