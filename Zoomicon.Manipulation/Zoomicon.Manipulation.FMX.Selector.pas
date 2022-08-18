@@ -141,7 +141,8 @@ end;
 function TAreaSelector.DoGetUpdateRect: TRectF; //Fix for TSelection's calculation for the case we have one or more nested TScaledLayout in parent hierarchy
 begin
   Result := inherited;
-  Result.Inflate((GripSize + 1) * AbsoluteScale.X, (GripSize + 1) * AbsoluteScale.Y); //not sure if that is too big, however it works compared to just using Scale as TSelection does
+  with AbsoluteScale do //avoids calling AbsoluteScale property getter method twice (for AbsoluteScale.X and AbsoluteScale.Y). Equivalent to using an LAbsoluteScale local variable
+    Result.Inflate((GripSize + 1) * X, (GripSize + 1) * Y); //not sure if that is too big, however it works compared to just using Scale as TSelection does
 end;
 
 {$region 'Get'}
