@@ -39,8 +39,15 @@ object MainForm: TMainForm
     inherited layoutButtons: TLayout
       Size.Width = 876.000000000000000000
       Size.Height = 616.000000000000000000
+      inherited layoutButtonsNavigation: TLayout
+        Position.Y = 564.000000000000000000
+        Size.Width = 856.000000000000000000
+        inherited btnNext: TSpeedButton
+          Position.X = 800.000000000000000000
+        end
+      end
       inherited layoutButtonsMain: TFlowLayout
-        Size.Height = 616.000000000000000000
+        Size.Height = 564.000000000000000000
         inherited btnToggleStructureVisible: TSpeedButton
           Hint = 
             'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
@@ -55,7 +62,7 @@ object MainForm: TMainForm
       end
       inherited layoutButtonsEdit: TFlowLayout
         Position.X = 816.000000000000000000
-        Size.Height = 616.000000000000000000
+        Size.Height = 564.000000000000000000
         TabOrder = 174
         inherited btnAdd: TSpeedButton
           Hint = 
@@ -105,13 +112,6 @@ object MainForm: TMainForm
             'Set Background Color'#13#13'Sets the background color and its transpar' +
             'ency for the ActiveStoryItem'
           OnChange = HUDcomboBackColorChange
-        end
-      end
-      inherited layoutButtonsNavigation: TLayout
-        Position.Y = 569.000000000000000000
-        Size.Width = 746.000000000000000000
-        inherited btnNext: TSpeedButton
-          Position.X = 690.000000000000000000
         end
       end
       object StoryTimer: TTimer
