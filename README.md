@@ -1,6 +1,10 @@
 # READ-COM: Reading Communities
 [READ-COM](https://www.read-com-eu.uma.es/) Project's Multi-Platform Application
 
+The READ-COM project is about improving the Reading habits at home and at school, so that all the children could have the same opportunities in the future.
+
+Its Reading Communities app is about reading, interacting with, editing / remixing, and authoring shareable Stories.
+
 Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
