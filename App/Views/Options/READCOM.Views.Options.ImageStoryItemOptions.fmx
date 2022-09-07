@@ -1,16 +1,43 @@
 inherited ImageStoryItemOptions: TImageStoryItemOptions
-  inherited layoutButtons: TFlowLayout
-    object btnCamera: TSpeedButton
-      Action = TakePhotoFromCameraAction
-      Align = Client
-      Enabled = True
-      Images = Globals.SVGIconImageList
-      ImageIndex = 11
-      Size.Width = 64.000000000000000000
-      Size.Height = 57.000000000000000000
+  Size.Height = 128.000000000000000000
+  inherited Background: TRectangle
+    Size.Height = 128.000000000000000000
+  end
+  inherited Layout: TFlowLayout
+    Size.Height = 128.000000000000000000
+    inherited LayoutStoryItemButtons: TFlowLayout
+      TabOrder = 13
+    end
+    object LayoutImageStoryItemBreak: TFlowLayoutBreak
+      ChangesRules = False
+      Justify = Left
+      JustifyLastLine = Left
+      FlowDirection = LeftToRight
+    end
+    object LayoutImageStoryItemButtons: TFlowLayout
+      Align = Contents
+      Margins.Left = 4.000000000000000000
+      Margins.Top = 4.000000000000000000
+      Margins.Right = 4.000000000000000000
+      Margins.Bottom = 4.000000000000000000
+      Size.Width = 512.000000000000000000
+      Size.Height = 56.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'actiontoolbutton'
-      Visible = False
+      TabOrder = 12
+      Justify = Left
+      JustifyLastLine = Left
+      FlowDirection = LeftToRight
+      object btnCamera: TSpeedButton
+        Action = TakePhotoFromCameraAction
+        Align = Client
+        Enabled = True
+        Images = Globals.SVGIconImageList
+        ImageIndex = 11
+        Size.Width = 64.000000000000000000
+        Size.Height = 57.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'actiontoolbutton'
+      end
     end
   end
   inherited ActionList: TActionList

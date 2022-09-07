@@ -19,6 +19,8 @@ uses
 type
   TTextStoryItemOptions = class(TStoryItemOptions, ITextStoryItemOptions, IStoryItemOptions)
     btnToggleEditable: TSpeedButton;
+    LayoutTextStoryItemButtons: TFlowLayout;
+    LayoutTextStoryItemBreak: TFlowLayoutBreak;
     procedure actionToggleEditableExecute(Sender: TObject);
 
   protected

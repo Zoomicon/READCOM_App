@@ -21,6 +21,8 @@ type
   TImageStoryItemOptions = class(TStoryItemOptions, IImageStoryItemOptions, IStoryItemOptions)
     TakePhotoFromCameraAction: TTakePhotoFromCameraAction;
     btnCamera: TSpeedButton;
+    LayoutImageStoryItemBreak: TFlowLayoutBreak;
+    LayoutImageStoryItemButtons: TFlowLayout;
     //procedure actionCameraExecute(Sender: TObject);
     procedure TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
 
@@ -52,6 +54,10 @@ constructor TImageStoryItemOptions.Create(AOwner: TComponent);
 begin
   inherited;
   //TMessageManager.DefaultManager.SubscribeToMessage(TMessageDidFinishTakingImageFromLibrary, DoMessageDidFinishTakingImageFromLibrary); //see region 'TakePhotoViaCameraService'
+
+  //Resize to not include LayoutImageStoryItemButtons and its break item if Camera button isn't visible (on platforms that don't support it - currently only mobile ones do), since Camera buttons is the only extra button for ImageStoryItem at this point
+  if not btnCamera.Visible then
+    Height := Height - LayoutImageStoryItemButtons.Height - LayoutImageStoryItemBreak.Height;
 end;
 
 {$ENDREGION}

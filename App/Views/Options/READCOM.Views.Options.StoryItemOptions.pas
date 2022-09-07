@@ -20,7 +20,7 @@ resourcestring
 
 type
   TStoryItemOptions = class(TFrame, IStoryItemOptions)
-    layoutButtons: TFlowLayout;
+    LayoutStoryItemButtons: TFlowLayout;
     ActionList: TActionList;
     actionLoad: TAction;
     actionSave: TAction;
@@ -37,6 +37,8 @@ type
     btnToggleTags: TSpeedButton;
     Background: TRectangle;
     btnToggleSnapping: TSpeedButton;
+    Layout: TFlowLayout;
+    LayoutStoryItemBreak: TFlowLayoutBreak;
     procedure actionToggleHomeExecute(Sender: TObject);
     procedure actionToggleStoryPointExecute(Sender: TObject);
     procedure actionToggleSnappingExecute(Sender: TObject);
