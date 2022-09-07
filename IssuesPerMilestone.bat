@@ -2,7 +2,7 @@
 
 if "%2"=="" goto Syntax
 
-set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f sort=due_on -f direction=desc -f state=all --jq ".[] | .title"
+set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f sort=due_on -f direction=desc -f state=all --jq ".[] | .title | sort -rV"
 ::state=open/closed/all
 
 ::call :ListMilestones %1 %2
