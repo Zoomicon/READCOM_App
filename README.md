@@ -15,6 +15,12 @@ Under continuous development/evolution, download latest release here:
 Walk-through video:
 https://www.youtube.com/watch?v=0vXp5jUf8cU (older)
 
+## Installation
+
+See https://github.com/Zoomicon/READCOM_App/wiki/Installation
+
+(also available: latest internal [debug build](https://github.com/Zoomicon/READCOM_App/tree/master/App/Win32/Debug) for Windows 32-bit)
+
 ## HowTo: enable SVG previews for File Add/Open Dialogs on Windows
 
 To have SVG preview at Add/Open file dialogs (if Preview pane is enabled at Windows Explorer), install Microsoft PowerToys from: https://docs.microsoft.com/en-us/windows/powertoys/install
