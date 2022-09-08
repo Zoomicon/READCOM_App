@@ -16,7 +16,8 @@ uses
   FMX.Controls, //for TControl
   FMX.Graphics, //for TFont
   FMX.Objects, //for TImage
-  FMX.Surfaces; //for TBitmapSurface
+  FMX.Surfaces, //for TBitmapSurface
+  FMX.Types; //for TTextAlign
 
 {$region 'Storage' ------------------------------------------------------------}
 
@@ -390,13 +391,17 @@ type
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
 
+    {HorzAlign}
+    function GetHorzAlign: TTextAlign;
+    procedure SetHorzAlign(const Value: TTextAlign);
+
     //--- Properties ---
     property Text: String read GetText write SetText; //default ''
     property SelectedText: String read GetSelectedText; //stored false
     property Editable: Boolean read IsEditable write SetEditable; //default false
-    property InputPrompt: String read GetInputPrompt write SetInputPrompt;
+    property InputPrompt: String read GetInputPrompt write SetInputPrompt; //TODO: (maybe remove and just add filterchar string like in TEdit) //???
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
-    //TODO:  (maybe remove and just add filterchar string like in TEdit) //???
+    property HorzAlign: TTextAlign read GetHorzAlign write SetHorzAlign; //default TTextAlign.Center
   end;
 
 implementation

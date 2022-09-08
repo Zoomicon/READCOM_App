@@ -77,6 +77,10 @@ type
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
 
+    {HorzAlign}
+    function GetHorzAlign: TTextAlign;
+    procedure SetHorzAlign(const Value: TTextAlign);
+
     {Color}
     function GetForegroundColor: TAlphaColor; override;
     procedure SetForegroundColor(const Value: TAlphaColor); override;
@@ -102,13 +106,16 @@ type
 
   published
     const
+      DEFAULT_EDITABLE = false;
+      DEFAULT_HORZ_ALIGN = TTextAlign.Center;
       DEFAULT_FOREGROUND_COLOR = TAlphaColorRec.Black;
 
     property Text: String read GetText write SetText;
     property SelectedText: String read GetSelectedText stored false;
-    property Editable: Boolean read IsEditable write SetEditable default false;
+    property Editable: Boolean read IsEditable write SetEditable default DEFAULT_EDITABLE;
     property InputPrompt: String read GetInputPrompt write SetInputPrompt;
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
+    property HorzAlign: TTextAlign read GetHorzAlign write SetHorzAlign default DEFAULT_HORZ_ALIGN;
     property TextColor: TAlphaColor read GetForegroundColor write SetForegroundColor stored false; //DEPRECATED, remaped to and storing ForegroundColor instead
     property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR; //redefining default instead of claNull that was in TStoryItem
   end;
@@ -151,11 +158,11 @@ constructor TTextStoryItem.Create(AOnwer: TComponent);
       Align := TAlignLayout.Contents;
       SetMemoZOrder;
       WordWrap := true;
-      TextAlign := TTextAlign.Center;
+      TextAlign := DEFAULT_HORZ_ALIGN;
       DisableMouseWheel := true;
       EnabledScroll := false;
       ShowScrollBars := false;
-      ReadOnly := true; //since we have Editable property defaulting to false
+      ReadOnly := not DEFAULT_EDITABLE;
       StyledSettings := []; //don't overload any TextSetting with those from Style
       OnChangeTracking := MemoChangeTracking;
     end;
@@ -364,6 +371,20 @@ end;
 procedure TTextStoryItem.SetFont(const Value: TFont);
 begin
   Memo.Font := Value;
+end;
+
+{$endregion}
+
+{$region 'HorzAlign'}
+
+function TTextStoryItem.GetHorzAlign: TTextAlign;
+begin
+  result := Memo.TextSettings.HorzAlign;
+end;
+
+procedure TTextStoryItem.SetHorzAlign(const Value: TTextAlign);
+begin
+  Memo.TextSettings.HorzAlign := Value;
 end;
 
 {$endregion}
