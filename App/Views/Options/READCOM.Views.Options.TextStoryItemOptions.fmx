@@ -1,10 +1,19 @@
 inherited TextStoryItemOptions: TTextStoryItemOptions
-  Size.Height = 132.000000000000000000
+  Size.Height = 128.000000000000000000
   inherited Background: TRectangle
-    Size.Height = 132.000000000000000000
+    Size.Height = 128.000000000000000000
+  end
+  inherited AddDialog: TOpenDialog
+    Top = 136
+  end
+  inherited SaveDialog: TSaveDialog
+    Top = 136
+  end
+  inherited OpenDialog: TOpenDialog
+    Top = 136
   end
   inherited Layout: TFlowLayout
-    Size.Height = 132.000000000000000000
+    Size.Height = 128.000000000000000000
     inherited LayoutStoryItemButtons: TFlowLayout
       TabOrder = 13
     end
@@ -35,6 +44,67 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
         Text = 'Change URL Action'
         OnClick = actionToggleEditableExecute
       end
+      object LayoutHorzAlign: TFlowLayout
+        Align = Contents
+        Size.Width = 192.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Justify = Left
+        JustifyLastLine = Left
+        FlowDirection = LeftToRight
+        object btnToggleAlignLeft: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          GroupName = 'HorzAlign'
+          Hint = 
+            'Leading Horizontal Alignment'#13#13'Set horizontal text alignment to t' +
+            'he beginning of the TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 38
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleAlignClick
+        end
+        object btnToggleAlignCenter: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          GroupName = 'HorzAlign'
+          Hint = 
+            'Center Horizontal Alignment'#13#13'Set horizontal text alignment to th' +
+            'e center of the TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 37
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleAlignClick
+        end
+        object btnToggleAlignRight: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          GroupName = 'HorzAlign'
+          Hint = 
+            'Trailing Horizontal Alignment'#13#13'Set horizontal text alignment to ' +
+            'the end of the TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 39
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleAlignClick
+        end
+      end
     end
     object LayoutTextStoryItemBreak: TFlowLayoutBreak
       ChangesRules = False
@@ -44,6 +114,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
     end
   end
   inherited ActionList: TActionList
+    Top = 136
     inherited actionLoad: TAction
       ImageIndex = 6
     end

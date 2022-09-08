@@ -30,6 +30,9 @@ type
     //procedure DoCameraDidFinish(Image: TBitmap);
     //procedure DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage); //for Android in case app restarted: see https://docwiki.embarcadero.com/Libraries/Sydney/en/FMX.MediaLibrary.TMessageDidFinishTakingImageFromLibrary
 
+    {StoryItem}
+    procedure SetStoryItem(const Value: IStoryItem); override;
+
     {ImageStoryItem}
     function GetImageStoryItem: IImageStoryItem; virtual;
     procedure SetImageStoryItem(const Value: IImageStoryItem); virtual;
@@ -57,12 +60,27 @@ begin
 
   //Resize to not include LayoutImageStoryItemButtons and its break item if Camera button isn't visible (on platforms that don't support it - currently only mobile ones do), since Camera buttons is the only extra button for ImageStoryItem at this point
   if not btnCamera.Visible then
-    Height := Height - LayoutImageStoryItemButtons.Height - LayoutImageStoryItemBreak.Height;
+    Height := Height - LayoutImageStoryItemButtons.Height - 5; //note: don't subtract LayoutImageStoryItemBreak.Height
 end;
 
 {$ENDREGION}
 
 {$REGION 'PROPERTIES'}
+
+{$region 'StoryItem'}
+
+procedure TImageStoryItemOptions.SetStoryItem(const Value: IStoryItem);
+begin
+  inherited;
+
+  var LImageStoryItem: IImageStoryItem;
+  if not Supports(Value, IImageStoryItem, LImageStoryItem) then
+    raise EIntfCastError.Create('Expected IImageStoryItem');
+
+  SetImageStoryItem(LImageStoryItem);
+end;
+
+{$endregion}
 
 {$region 'ImageStoryItem'}
 
@@ -73,7 +91,7 @@ end;
 
 procedure TImageStoryItemOptions.SetImageStoryItem(const Value: IImageStoryItem);
 begin
-  Supports(Value, IStoryItem, FStoryItem); //interface casting also supports interface implementations using aggregated or nested objects
+  inherited SetStoryItem(Value); //don't call overriden SetStoryItem, would do infinite loop
 end;
 
 {$endregion}
