@@ -1818,6 +1818,8 @@ end;
 
 procedure TStoryItem.SaveReadComBin(const Stream: TStream); //also called by SaveToString
 begin
+  if Assigned(FOptions) then FOptions.HidePopup; //Must hide options popup else the TCustomPopupForm FMX is using gets serialized with the StoryItem //Note: don't use Options property to avoid constructing popup
+
   var wasActive := Active;
   try
     Active := false; //hide any UI related to being active, enable children etc., but also don't store Active=true so that at Paste it won't cause issues
