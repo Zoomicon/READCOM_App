@@ -1,7 +1,7 @@
 inherited TextStoryItemOptions: TTextStoryItemOptions
-  Size.Height = 128.000000000000000000
+  Size.Height = 132.000000000000000000
   inherited Background: TRectangle
-    Size.Height = 128.000000000000000000
+    Size.Height = 132.000000000000000000
   end
   inherited AddDialog: TOpenDialog
     Top = 136
@@ -13,7 +13,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
     Top = 136
   end
   inherited Layout: TFlowLayout
-    Size.Height = 128.000000000000000000
+    Size.Height = 132.000000000000000000
     inherited LayoutStoryItemButtons: TFlowLayout
       TabOrder = 13
     end
@@ -49,7 +49,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
         Size.Width = 192.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 0
+        TabOrder = 1
         Justify = Left
         JustifyLastLine = Left
         FlowDirection = LeftToRight
@@ -103,6 +103,72 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
           OnClick = btnToggleAlignClick
+        end
+      end
+      object LayoutTextStyle: TFlowLayout
+        Align = Contents
+        Size.Width = 256.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Justify = Left
+        JustifyLastLine = Left
+        FlowDirection = LeftToRight
+        object btnToggleBold: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          Hint = 'Toggle Bold'#13#13'Sets/Unsets bold style to TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 40
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleBoldClick
+        end
+        object btnToggleItalic: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          Hint = 'Toggle Italic'#13#13'Sets/Unsets italic style to TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 41
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleItalicClick
+        end
+        object btnToggleUnderline: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          Hint = 'Toggle Underline'#13#13'Sets/Unsets underline style to TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 42
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleUnderlineClick
+        end
+        object btnToggleStrikeout: TSpeedButton
+          StaysPressed = True
+          Align = Client
+          Anchors = []
+          Hint = 'Toggle Strikeout'#13#13'Sets/Unsets strikeout style to TextStoryItem.'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 43
+          Size.Width = 64.000000000000000000
+          Size.Height = 57.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'actiontoolbutton'
+          Text = 'Change URL Action'
+          OnClick = btnToggleStrikeoutClick
         end
       end
     end
