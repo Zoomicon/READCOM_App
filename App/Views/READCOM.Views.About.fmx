@@ -19,21 +19,25 @@ object AboutFrame: TAboutFrame
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         DataDetectorTypes = []
         Lines.Strings = (
-          'Author:'
-          'George Birbilis / Zoomicon.com'
-          ''
           'READ-COM Project:'
           'https://www.read-com-eu.uma.es/'
           ''
-          'Source code and Wiki:'
+          'Privacy Policy:'
+          'https://github.com/Zoomicon/READCOM_App/blob/master/PRIVACY.md'
+          ''
+          'READ-COM App Author:'
+          'George Birbilis / Zoomicon.com'
+          ''
+          'Source code, Wiki, Discussions:'
           'https://github.com/zoomicon/READCOM_App'
           ''
-          'Stories and Assets Gallery:'
+          'Stories, Activities and Assets Gallery:'
           'https://github.com/zoomicon/READCOM_Gallery'
           ''
-          'Icons:'
+          'Using SVG icons from:'
           'https://openmoji.org'
-          'https://oNlineWebFonts.com')
+          'https://oNlineWebFonts.com'
+          'https://SVGrepo.com')
         ReadOnly = True
         Anchors = [akLeft, akTop, akRight, akBottom]
         Position.X = 8.000000000000000000
