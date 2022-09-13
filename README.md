@@ -5,7 +5,7 @@ The READ-COM project is about improving the Reading habits at home and at school
 
 Its Reading Communities app is about reading, interacting with, editing / remixing, and authoring shareable Stories.
 
-Design:
+Initial Design:
 https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
 
 Under continuous development/evolution, download latest release here:
