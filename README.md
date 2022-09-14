@@ -5,20 +5,13 @@ The READ-COM project is about improving the Reading habits at home and at school
 
 Its Reading Communities app is about reading, interacting with, editing / remixing, and authoring shareable Stories.
 
-Initial Design:
-https://prezi.com/view/a1tJgWgr4pUiLwyM4eiP/
-
-Under continuous development/evolution, download latest release here:
-* https://github.com/Zoomicon/READCOM_App/releases
-* https://apps.microsoft.com/store/detail/readcom-reading-communities/9NVM0CHRN7PH
-
-Walk-through video:
-https://www.youtube.com/watch?v=0vXp5jUf8cU (older)
+## Wiki
+https://github.com/Zoomicon/READCOM_App/wiki
 
 ## Installation
-
-See https://github.com/Zoomicon/READCOM_App/wiki/Installation
-
+Under continuous development/evolution, download latest release here:
+* https://github.com/Zoomicon/READCOM_App/wiki/Installation
+* https://github.com/Zoomicon/READCOM_App/releases
 (also available: latest internal [debug build](https://github.com/Zoomicon/READCOM_App/tree/master/App/Win32/Debug) for Windows 32-bit)
 
 ## HowTo: enable SVG previews for File Add/Open Dialogs on Windows
