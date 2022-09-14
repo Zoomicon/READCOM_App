@@ -2,7 +2,7 @@
 
 if "%2"=="" goto Syntax
 
-set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f sort=number -f direction=desc -f state=all --jq ".[] | .title" 
+set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f state=all -f sort=number -f direction=desc --jq ".[] | .title" 
 ::^| bash -c ^'sort -rV^' ::IF PLACED AT END OF PREVIOUS LINE WOULD NEED WINDOWS SUBSYSTEM FOR LINUX AND A LINUX DISTRO INSTALLED FROM WINDOWS STORE FOR WSL2 TO SORT SEMANTICALLY BASED ON THE MILESTONE TITLE, BUT CAN JUST SORT BY MILESTONE NUMBER IF THEY WERE CREATED IN SAME TEMPORAL ORDER AS THE SEMANTIC SORT
 
 ::sort=due_on (using "number" instead)
