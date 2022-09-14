@@ -2,8 +2,10 @@
 
 if "%2"=="" goto Syntax
 
-set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f sort=due_on -f direction=desc -f state=all --jq ".[] | .title | sort -rV"
-::state=open/closed/all
+set ListMilestones=gh api -X GET /repos/%1/%2/milestones -f sort=due_on -f direction=desc -f state=all --jq ".[] | .title" 
+::^| bash -c sort -rV ::THIS NEEDS WINDOWS SUBSYSTEM FOR LINUX AND A LINUX DISTRO INSTALLED FROM WINDOWS STORE FOR WSL2
+
+::state CAN TAKE THESE VALUES: open/closed/all
 
 ::call :ListMilestones %1 %2
 call :IssuesPerMilestone %1 %2
