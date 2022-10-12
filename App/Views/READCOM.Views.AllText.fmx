@@ -1,0 +1,67 @@
+object AllTextFrame: TAllTextFrame
+  Align = Contents
+  Size.Width = 506.000000000000000000
+  Size.Height = 320.000000000000000000
+  Size.PlatformDefault = False
+  object rectBackground: TRectangle
+    Align = Contents
+    Fill.Color = xBBE0E0E0
+    Size.Width = 506.000000000000000000
+    Size.Height = 320.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Thickness = 0.000000000000000000
+    object rectBorder: TRectangle
+      Align = Center
+      Size.Width = 508.000000000000000000
+      Size.Height = 320.000000000000000000
+      Size.PlatformDefault = False
+      object MemoAllText: TMemo
+        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+        DataDetectorTypes = []
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Position.X = 8.000000000000000000
+        Position.Y = 32.000000000000000000
+        Size.Width = 492.000000000000000000
+        Size.Height = 280.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Viewport.Width = 488.000000000000000000
+        Viewport.Height = 276.000000000000000000
+      end
+      object lblInstructions: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        StyledSettings = [Family, Size, FontColor]
+        Position.X = 32.000000000000000000
+        Position.Y = 7.000000000000000000
+        Size.Width = 468.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        Text = 'Replace text respecting ~ separator and order of text blocks'
+        TabOrder = 1
+        object btnApply: TSpeedButton
+          Align = MostRight
+          Anchors = [akTop, akRight]
+          Hint = 'Apply'
+          Images = Globals.SVGIconImageList
+          ImageIndex = 7
+          Position.X = 443.000000000000000000
+          Size.Width = 25.000000000000000000
+          Size.Height = 17.000000000000000000
+          Size.PlatformDefault = False
+          OnClick = btnApplyClick
+        end
+      end
+      object btnClose: TSpeedButton
+        Images = Globals.SVGIconImageList
+        ImageIndex = 36
+        Size.Width = 24.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'stoptoolbutton'
+        Text = 'stoptoolbutton'
+        OnClick = btnCloseClick
+      end
+    end
+  end
+end

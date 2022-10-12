@@ -196,6 +196,7 @@ implementation
     READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
+    READCOM.Views.AllText, //for TAllTextFrame
     READCOM.Views.Prompts.Wait, //for TWaitFrame
     READCOM.Views.Prompts.Lock, //for TLockFrame
     READCOM.Views.Prompts.Rotate; //for TRotateFrame
@@ -455,6 +456,12 @@ begin
       HUD.actionCut.ShortCut := SafeTextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
       HUD.actionCopy.ShortCut := SafeTextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
       HUD.actionPaste.ShortCut := SafeTextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited
+    end
+    else if TAllTextFrame.Shown then //disable editing shortcuts of app when AllTextFrame is shown
+    begin
+      HUD.actionCut.ShortCut := 0;
+      HUD.actionCopy.ShortCut := 0;
+      HUD.actionPaste.ShortCut := 0;
     end
     else
     begin
@@ -1046,13 +1053,16 @@ begin
     *)
 
     vkF1:
-      ShowHelp; //needed since the Help key was moved into About box (that has F1 key accelerator) to save toolbar space on small screens
+      ShowHelp; //needed since the Help key (that has the F1 key accelerator) was moved into About box to save toolbar space on small screens
 
     vkF2:
       HUD.EditMode := not HUD.EditMode; //toggle EditMode
 
     vkF3:
       HUD.UseStoryTimer := not HUD.UseStoryTimer; //toggle StoryTimer
+
+    vkF9:
+      TAllTextFrame.ShowModal(MainForm, ActiveStoryItem); //has [X] button to close itself //Note: to see all text of the Story can 1st navigate to RootStoryItem in EditMode
 
     vkF10:
       HUD.BtnMenu.Action.Execute; //toggle buttons visibility
@@ -1236,7 +1246,7 @@ begin
     else
       ThumbPath := StorySource + '.png';
 
-    ActiveStoryItem.SaveThumbnail(ThumbPath);
+    ActiveStoryItem.SaveThumbnail(ThumbPath, ThumbnailMaxSize, ThumbnailMaxSize); //bounding box for thumbnail fitting is a square
     Application.Terminate; //close the app after saving the thumb
   end;
 end;

@@ -239,7 +239,7 @@ type
     function SaveToString: string; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: string); overload; virtual;
-    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200); virtual;
+    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); virtual;
     //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
@@ -319,6 +319,7 @@ implementation
     Zoomicon.Generics.Collections, //for TObjectListEx
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStreamErrorHelper.ReadComponent
+    Zoomicon.Text, //for GetLines
     READCOM.App.Debugging, //for Log
     READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
@@ -974,7 +975,10 @@ begin
   //Append our own text
   var LTextStoryItem: ITextStoryItem;
   if Supports(Self, ITextStoryItem, LTextStoryItem) then
+  begin
     result.Append(LTextStoryItem.Text);
+    result.Append(EXPORT_TEXTSTORYITEM_SEPARATOR);
+  end;
 
   //Append our children's text
   for var LStoryItem in StoryItems do
@@ -994,8 +998,13 @@ begin
   var LTextStoryItem: ITextStoryItem;
   if Supports(Self, ITextStoryItem, LTextStoryItem) then
   begin
-    var LText := Value.Strings[0];
-    Value.Delete(0);
+    var LNextSeparatorIndex := Value.IndexOf(EXPORT_TEXTSTORYITEM_SEPARATOR);
+    if (LNextSeparatorIndex < 0) then
+      LNextSeparatorIndex := Value.Count; //if no separator found, assume it's till the end
+
+    var LText := GetLines(Value, 0, LNextSeparatorIndex - 1, false); //skip the separator and don't output a line break for last line
+    for var i := LNextSeparatorIndex downto 0 do //Deleting in reverse order, including the found separator
+      Value.Delete(i); //TODO: Maybe add some helper method to delete ranges like that
     LTextStoryItem.Text := LText;
   end;
 
@@ -1850,7 +1859,7 @@ begin
   end;
 end;
 
-procedure TStoryItem.SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200);
+procedure TStoryItem.SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT);
 begin
   var thumb := MakeThumbnail(MaxWidth, MaxHeight);
   try

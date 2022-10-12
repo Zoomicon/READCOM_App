@@ -26,6 +26,11 @@ const
   FILTER_READCOM_TITLE = 'READ-COM StoryItem (*.readcom)';
   FILTER_READCOM_EXTS = '*' + EXT_READCOM;
   FILTER_READCOM = FILTER_READCOM_TITLE + '|' + FILTER_READCOM_EXTS;
+  //
+  DEFAULT_THUMB_WIDTH = 400;
+  DEFAULT_THUMB_HEIGHT = 400;
+  //
+  EXPORT_TEXTSTORYITEM_SEPARATOR = '~~~~~~~~~~';
 
 type
 
@@ -57,7 +62,7 @@ type
     function GetSaveFilesFilter: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
     procedure Save(const Filepath: string); overload;
-    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = 200; const MaxHeight: Integer = 200); //TODO: should make constants
+    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); //TODO: should make constants
     function SaveToString: string; overload;
   end;
 

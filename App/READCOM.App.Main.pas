@@ -4,6 +4,9 @@
 unit READCOM.App.Main;
 
 interface
+  uses
+    System.Math, //for Min
+    READCOM.App.Models; //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT
 
   procedure Main;
   procedure ShowHelp;
@@ -11,6 +14,7 @@ interface
   var
     StorySource: String;
     SaveThumbnail: Boolean; //=false
+    ThumbnailMaxSize: Integer; //initialized at "ParseCommandLine"
 
 implementation
   uses
@@ -24,15 +28,23 @@ implementation
     READCOM.App.Messages,
     READCOM.App.URLs; //for OpenURLinBrowser
 
-procedure ParseCommandLine;
+procedure ParseCommandLine; //TODO: use https://github.com/gabr42/GpDelphiUnits/blob/master/src/GpCommandLineParser.pas or https://github.com/VSoftTechnologies/VSoft.CommandLineParser instead to parse command-line
+const PARAM_THUMB = '-thumb';
 begin
   if (ParamCount <> 0) then
   begin
     var param1 := ParamStr(1);
 
-    if (param1 = '-thumb') and (ParamCount > 1) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+    if (param1.StartsWith(PARAM_THUMB)) and (ParamCount > 1) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
     begin
       SaveThumbnail := true;
+
+      //Bounding box for thumbnail fitting is a square, using default as min of max thumb width and height if not provided
+      ThumbnailMaxSize := Min(DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT);
+      var LThumbEqLength := PARAM_THUMB.Length + 1;
+      if param1.Length > LThumbEqLength then
+        ThumbnailMaxSize := param1.Substring(LThumbEqLength).ToInteger;
+
       StorySource := ParamStr(2);
     end
     else
