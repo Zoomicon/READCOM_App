@@ -54,7 +54,7 @@ function TFileCache.GetContent(const Key: String): TStream;
 begin
   var Filepath := GetFilepath(Key);
   if FileExists(Filepath) then
-    result := TFileStream.Create(Filepath, fmOpenRead)
+    result := TFileStream.Create(Filepath, fmOpenRead {or fmShareDenyNone}) //TODO: fmShareDenyNote probably needed for Android
   else
     result := nil;
 end;
@@ -65,7 +65,7 @@ begin
 
   TDirectory.CreateDirectory(TPath.GetDirectoryName(Filepath)); //create any missing subdirectories
 
-  var CacheFile := TFileStream.Create(Filepath, fmCreate {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
+  var CacheFile := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
   try
     CacheFile.CopyFrom(Content); //copies from start of stream
   finally

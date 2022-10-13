@@ -100,6 +100,7 @@ type
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
     function LoadTXT(const Stream: TStream): TObject; virtual;
     function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; override;
+    //TODO: add SaveTXT and Save override
     {$endregion}
 
   //--- Properties ---

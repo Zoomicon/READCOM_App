@@ -26,11 +26,20 @@ const
   FILTER_READCOM_TITLE = 'READ-COM StoryItem (*.readcom)';
   FILTER_READCOM_EXTS = '*' + EXT_READCOM;
   FILTER_READCOM = FILTER_READCOM_TITLE + '|' + FILTER_READCOM_EXTS;
-  //
+
+  //for HTML export
+  EXT_HTML = '.html';
+  FILTER_HTML_TITLE = 'HTML (*.html)';
+  FILTER_HTML_EXTS = '*' + EXT_HTML;
+  FILTER_HTML = FILTER_HTML_TITLE + '|' + FILTER_HTML_EXTS;
+
   DEFAULT_THUMB_WIDTH = 400;
   DEFAULT_THUMB_HEIGHT = 400;
-  //
-  EXPORT_TEXTSTORYITEM_SEPARATOR = '~~~~~~~~~~';
+
+  DEFAULT_HTML_IMAGE_WIDTH = 600;
+  DEFAULT_HTML_IMAGE_HEIGHT = 600;
+
+  EXPORT_TEXTSTORYITEM_SEPARATOR = '**********';
 
 type
 
@@ -49,21 +58,22 @@ type
     {Add}
     function GetAddFilesFilter: String;
     procedure Add(const Filepath: String); overload;
-    procedure Add(const Filepaths: array of string); overload;
+    procedure Add(const Filepaths: array of String); overload;
 
     {Load}
     function GetLoadFilesFilter: String;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload;
-    function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload;
+    function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload;
     function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 
     {Save}
     function GetSaveFilesFilter: String;
+    function SaveToString: String;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload;
-    procedure Save(const Filepath: string); overload;
-    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); //TODO: should make constants
-    function SaveToString: string; overload;
+    procedure Save(const Filepath: String); overload;
+    procedure SaveThumbnail(const Filepath: String; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); //TODO: should make constants
+    procedure SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
   end;
 
 {$endregion -------------------------------------------------------------------}
@@ -98,7 +108,7 @@ type
     procedure SetHomeStoryItem(const Value: IStoryItem);
 
     {URLs}
-    procedure OpenUrl(const Url: string);
+    procedure OpenUrl(const Url: String);
 
     {ActiveStoryItem}
     function GetActiveStoryItem: IStoryItem;
@@ -404,7 +414,7 @@ type
     property Text: String read GetText write SetText; //default ''
     property SelectedText: String read GetSelectedText; //stored false
     property Editable: Boolean read IsEditable write SetEditable; //default false
-    property InputPrompt: String read GetInputPrompt write SetInputPrompt; //TODO: (maybe remove and just add filterchar string like in TEdit) //???
+    property InputPrompt: String read GetInputPrompt write SetInputPrompt; //TODO: (maybe remove and just add filterchar String like in TEdit) //???
     property Font: TFont read GetFont write SetFont; //sets font size, font family (typeface), font style (bold, italic, underline, strikeout)
     property HorzAlign: TTextAlign read GetHorzAlign write SetHorzAlign; //default TTextAlign.Center
   end;

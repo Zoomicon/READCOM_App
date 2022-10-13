@@ -417,7 +417,7 @@ procedure TFileDownloader.Start;
 begin
   //only create the output file when download is to be started
   TDirectory.CreateDirectory(ExtractFileDir(FFilepath)); //create any missing subdirectories
-  FData := TFileStream.Create(FFilepath, fmCreate {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
+  FData := TFileStream.Create(FFilepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //overwrite any existing file //TODO: fmShareDenyNote probably needed for Android
   inherited;
 end;
 

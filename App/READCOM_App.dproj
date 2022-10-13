@@ -4,7 +4,7 @@
         <ProjectVersion>19.4</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>168979</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -366,8 +366,8 @@
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.2);FileVersion=0.7.2.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.3);FileVersion=0.7.3.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>3</VerInfo_Release>
         <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -462,13 +462,12 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.2);FileVersion=0.7.2.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.3);FileVersion=0.7.3.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
         <PF_UWPPublisher>CN=E1504C07-F970-414E-A706-87A64B47C12B</PF_UWPPublisher>
         <PF_UWPPackageName>17029Zoomicon.READ-COMReadingCommunities</PF_UWPPackageName>
         <PF_UWPPackageDisplayName>READ-COM: Reading Communities</PF_UWPPackageDisplayName>
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
-        <VerInfo_Release>1</VerInfo_Release>
-        <PF_UWPDistributionType>Store</PF_UWPDistributionType>
+        <VerInfo_Release>3</VerInfo_Release>
         <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
@@ -488,13 +487,6 @@
         </DelphiCompile>
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
             <Form>MessageForm</Form>
-        </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
-            <Form>FMXObjectDebuggerFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
-            <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>
@@ -635,7 +627,10 @@
                 <Source>
                     <Source Name="MainSource">READCOM_App.dpr</Source>
                 </Source>
-                <Excluded_Packages/>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\bin\delphi_PROJECTICNS.icns" Configuration="Debug" Class="ProjectOSXResource">

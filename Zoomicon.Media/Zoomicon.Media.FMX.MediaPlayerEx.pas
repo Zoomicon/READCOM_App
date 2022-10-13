@@ -370,7 +370,7 @@ begin
   if Assigned(Value) then
   begin
     var TempFileName := TPath.GetTempFileName;
-    var F := TFileStream.Create(TempFilename, fmOpenWrite);
+    var F := TFileStream.Create(TempFilename, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
     try
       F.CopyFrom(Value);
     finally

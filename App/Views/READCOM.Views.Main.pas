@@ -1116,7 +1116,7 @@ end;
 
 function TMainForm.LoadFromFile(const Filepath: string): Boolean;
 begin
-  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead);
+  var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
   try
     result := LoadFromStream(InputFileStream);
   finally

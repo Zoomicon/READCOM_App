@@ -201,7 +201,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; const AName: string); reintroduce; overload; virtual; //TODO: see why if we don't define "reintroduce" we're getting message "[dcc32 Warning] READCOM.Views.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
+    constructor Create(AOwner: TComponent; const AName: String); reintroduce; overload; virtual; //TODO: see why if we don't define "reintroduce" we're getting message "[dcc32 Warning] READCOM.Views.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
     destructor Destroy; override;
 
     procedure Paint; override;
@@ -216,19 +216,19 @@ type
 
     {IStoreable}
     procedure ReadState(Reader: TReader); override;
-    procedure ReaderError(Reader: TReader; const Message: string; var Handled: Boolean); virtual;
+    procedure ReaderError(Reader: TReader; const Message: String; var Handled: Boolean); virtual;
     //
     function GetAddFilesFilter: String; virtual;
     procedure Add(const StoryItem: IStoryItem); overload; virtual;
     procedure AddFromString(const Data: String); virtual;
     procedure Add(const Filepath: String); overload; virtual;
-    procedure Add(const Filepaths: array of string); overload; virtual;
+    procedure Add(const Filepaths: array of String); overload; virtual;
     //
     function GetLoadFilesFilter: String; virtual;
     class function LoadNew(const Stream: TStream; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
-    class function LoadNew(const Filepath: string; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
+    class function LoadNew(const Filepath: String; const ContentFormat: String = EXT_READCOM): TStoryItem; overload; virtual;
     function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; virtual;
-    function Load(const Filepath: string; const CreateNew: Boolean = false): TObject; overload; virtual;
+    function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload; virtual;
     function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; virtual;
     function LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject; virtual;
     //
@@ -236,10 +236,11 @@ type
     function LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; virtual;
 
     function GetSaveFilesFilter: String; virtual;
-    function SaveToString: string; virtual;
+    function SaveToString: String; virtual;
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
-    procedure Save(const Filepath: string); overload; virtual;
-    procedure SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); virtual;
+    procedure Save(const Filepath: String); overload; virtual;
+    procedure SaveThumbnail(const Filepath: String; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); virtual;
+    procedure SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
     //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
@@ -251,7 +252,7 @@ type
 
   protected
     procedure ActiveChanged;
-    procedure DropTargetDropped(const Filepaths: array of string); override;
+    procedure DropTargetDropped(const Filepaths: array of String); override;
     procedure HandleAreaSelectorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;  X, Y: single); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;  X, Y: single); override;
@@ -407,7 +408,7 @@ begin
   //Size.Size := DefaultSize; //set the default size (overriden at descendents) //DO NOT DO, CAUSES NON-LOADING OF VECTOR GRAPHICS OF DEFAULT STORY - SEEMS TO BE DONE INTERNALLY BY FMX ANYWAY SINCE WE OVERRIDE GetDefaultSize
 end;
 
-constructor TStoryItem.Create(AOwner: TComponent; const AName: string);
+constructor TStoryItem.Create(AOwner: TComponent; const AName: String);
 begin
   Create(nil); //this may initialize the component from a referenced resource that has a Default name (say a TFrame descendent's design) for the newly created component: to avoid conflict with other component instance with same name under the same owner, not specifying an onwer yet //don't use "inherited" here
 
@@ -1393,7 +1394,7 @@ end;
 
 {$region DragDrop}
 
-procedure TStoryItem.DropTargetDropped(const Filepaths: array of string);
+procedure TStoryItem.DropTargetDropped(const Filepaths: array of String);
 begin
   //inherited;
   Add(Filepaths);
@@ -1521,13 +1522,13 @@ end;
 type
   THackReader = class(TReader); //used to access PropName protected property
 
-procedure TStoryItem.ReaderError(Reader: TReader; const Message: string; var Handled: Boolean);
+procedure TStoryItem.ReaderError(Reader: TReader; const Message: String; var Handled: Boolean);
 begin
   with THackReader(Reader) do
     begin
     var RemovedActivationOrderProperty := AnsiSameText(PropName, 'ActivationOrder'); //Ignores removed ActivationOrder property
     var ErrorReading := Message.StartsWith('Error reading ');
-    var UnknownProperty := ErrorReading and Message.EndsWith(' does not exist'); //Ignores unknown properties //TODO: error starts with 'Error reading XX: ...' (not sure if this is always unlocalized) and also assuming System.RTL.Consts.SUnknownProperty = 'Property %s does not exist' - should have instead a function that can compare a format string with some text and match it (could even extract the format parameters)
+    var UnknownProperty := ErrorReading and Message.EndsWith(' does not exist'); //Ignores unknown properties //TODO: error starts with 'Error reading XX: ...' (not sure if this is always unlocalized) and also assuming System.RTL.Consts.SUnknownProperty = 'Property %s does not exist' - should have instead a function that can compare a format String with some text and match it (could even extract the format parameters)
     var InvalidProperty := ErrorReading and Message.EndsWith('Invalid property value'); //Ignores unloadable properties (e.g. any stored event handlers) //TODO: find related constant in System.RTL.Consts.SUnknownProperty (see previous comment)
 
     if RemovedActivationOrderProperty then
@@ -1535,7 +1536,7 @@ begin
     if UnknownProperty then
       Log('Ignored unknown property "%s"', [PropName]);
     if InvalidProperty then
-      Log('Ignored invalid value for property "%s"', [PropName]); //TODO: maybe we somehow need to skip the value of that property in the stream (for event handlers that are missing it seems to work, but when assigning say a string to an integer property it fails to skip the invalid value and tries to read the string contents as a property name)
+      Log('Ignored invalid value for property "%s"', [PropName]); //TODO: maybe we somehow need to skip the value of that property in the stream (for event handlers that are missing it seems to work, but when assigning say a String to an integer property it fails to skip the invalid value and tries to read the String contents as a property name)
 
     Handled := RemovedActivationOrderProperty or UnknownProperty or InvalidProperty;
     end;
@@ -1580,7 +1581,7 @@ begin
 
   //Insert first an entry for all supported extensions
   listFilters.Insert(0, listExt.DelimitedText);
-  listExt.Delimiter := ','; //There's no way to use ', ' (aka a string separator instead of a char, to also have space after comma), could concatenate with for loop instead, but the entry is long anyway, so skip the extra spaces
+  listExt.Delimiter := ','; //There's no way to use ', ' (aka a String separator instead of a char, to also have space after comma), could concatenate with for loop instead, but the entry is long anyway, so skip the extra spaces
   listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text (' + listExt.DelimitedText + ')'); //TODO: ideally the key should only contain the text (not *.xx too) so that we could concatenate the names (even if in singular) instead of hard-coding known type names here //Seems if we don't add the file extensions in parentheses in the name, Delphi or Win11 adds them with ";" format to the text of the entry (so it would be better if we auto-add them with ", ")
 
   result := listFilters.DelimitedText;
@@ -1620,7 +1621,7 @@ begin
   StoryItemView.BringToFront; //load as front-most
 end;
 
-procedure TStoryItem.AddFromString(const Data: string);
+procedure TStoryItem.AddFromString(const Data: String);
 var StoryItem: IStoryItem;
 begin
   try
@@ -1689,7 +1690,7 @@ begin
   end;
 end;
 
-class function TStoryItem.LoadNew(const Filepath: string; const ContentFormat: String = EXT_READCOM): TStoryItem;
+class function TStoryItem.LoadNew(const Filepath: String; const ContentFormat: String = EXT_READCOM): TStoryItem;
 begin
   var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
   try
@@ -1699,7 +1700,7 @@ begin
   end;
 end;
 
-function TStoryItem.LoadFromString(const Data: string; const CreateNew: Boolean = false): TObject;
+function TStoryItem.LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
 begin
   var StrStream := TStringStream.Create(Data);
   try
@@ -1766,7 +1767,7 @@ end;
 
 function TStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
 begin
-  var InputFileStream := TFileStream.Create(Filepath, fmOpenRead);
+  var InputFileStream := TFileStream.Create(Filepath, fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
   try
     result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
   finally
@@ -1792,10 +1793,11 @@ end;
 
 function TStoryItem.GetSaveFilesFilter: String;
 begin
-  result := FILTER_READCOM;
+  result := FILTER_READCOM + '|' +
+            FILTER_HTML;
 end;
 
-function TStoryItem.SaveToString: string;
+function TStoryItem.SaveToString: String;
 begin
   var BinStream := TMemoryStream.Create;
   var s: String;
@@ -1845,27 +1847,107 @@ procedure TStoryItem.Save(const Stream: TStream; const ContentFormat: String = E
 begin
   if ContentFormat = EXT_READCOM then
     SaveReadCom(Stream)
+  (* //TODO: maybe also support saving to HTML stream (with images encoded inside it). In that case should have separate content filter though for self-contained HTML, since we now check for EXT_HTML at Save(Filepath), since that needs the filepath to save the images externally to the HTML
+  else if ContentFormat = EXT_HTML then
+    SaveHTML(Stream)
+  *)
   else
     raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
 end;
 
-procedure TStoryItem.Save(const Filepath: string);
+procedure TStoryItem.Save(const Filepath: String);
 begin
-  var OutputFileStream := TFileStream.Create(Filepath, fmCreate); //or fmShareDenyNone //TODO: may be needed for Android
+  var OutputFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
   try
-    Save(OutputFileStream, ExtractFileExt(Filepath));
+   var ContentFormat := ExtractFileExt(Filepath);
+
+   if ContentFormat = EXT_HTML then //must check here instead of at Save(Stream, ContentFormat), since saving to HTML requires a filepath (we don't save images encoded inside the HTML for size reasons)
+    SaveHTML(OutputFileStream, Filepath + '_Images')
+   else
+    Save(OutputFileStream, ContentFormat);
   finally
     FreeAndNil(OutputFileStream);
   end;
 end;
 
-procedure TStoryItem.SaveThumbnail(const Filepath: string; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT);
+procedure TStoryItem.SaveThumbnail(const Filepath: String; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT);
 begin
+  const LPreviousActiveStoryItem = ActiveStoryItem; //TODO: remove when thumb generation is fixed and does't need to activate storyitem first
+
+  ActiveStoryItem := Self; //TODO: remove when thumb generation is fixed to not need this
+  //Active := true; //TODO: see why if we use this one instead it skips TextStoryItem rendering for StoryItems that aren't in visible area
+
   var thumb := MakeThumbnail(MaxWidth, MaxHeight);
   try
     thumb.SaveToFile(Filepath); //Max thumb size 200x200
   finally
     FreeAndNil(thumb);
+    LPreviousActiveStoryItem.Active := true; //restore previous ActiveStoryItem //TODO: remove when thumb generation is fixed and does't need to activate storyitem first at SaveHTMLImage
+  end;
+end;
+
+procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
+  var
+    LHTMLWriter: TStreamWriter;
+
+  procedure SaveHTMLImage(const AStoryItem: IStoryItem; const AIndex: Integer);
+  begin
+    const ImageFilename = 'Image' + AIndex.ToString + '.png';
+    const LImagePath = TPath.Combine(ImagesPath, ImageFilename);
+
+    AStoryItem.SaveThumbnail(LImagePath, MaxImageWidth, MaxImageHeight);
+
+    LHTMLWriter.WriteLine('    <img src="%s" alt="%s" /><br />', [ExtractFileName(ImagesPath) + '/' + ImageFilename, '']); //assuming the Images are placed one level deeper [in a subfolder] than the HTML //Note: must use '/' since it's a partial URL, don't use TPath.Combine
+  end;
+
+begin
+  LHTMLWriter := TStreamWriter.Create(Stream, TEncoding.UTF8);
+  try
+
+    with LHTMLWriter do
+    begin
+      WriteLine('<html>');
+      WriteLine('<!--%s-->', ['Generated by READ-COM: Reading Communities app']);
+      WriteLine('  <body>');
+    end;
+
+    if TDirectory.Exists(ImagesPath)
+      then TDirectory.Delete(ImagesPath, true);
+    TDirectory.CreateDirectory(ImagesPath);
+
+    //Export HomeStoryItem (or RootStoryItem if no HomeStoryItem has been set) snapshot
+
+    var LIndex := 1;
+    var LStartingStoryItem := HomeStoryItem;
+    if not Assigned(LStartingStoryItem) then
+      LStartingStoryItem := Story.RootStoryItem;
+
+    SaveHTMLImage(LStartingStoryItem, LIndex);
+
+    //Export StoryPoint snapshots (except HomeStoryItem)
+
+    for var LStoryItem in StoryItems{StoryPoints} do //TODO: need to iterate over StoryPoints //TODO: doesn't go deeper for now, just assumes StoryPoints are children of the RootStoryItem which isn't always the case
+    begin
+      if (not LStoryItem.StoryPoint) then //TODO: temporary, remove when iterating over storypoints (with nesting)
+        continue; //iterates to next StoryItem
+
+      if (LStoryItem.View = LStartingStoryItem.View) then //skip if we already exported this before the loop //Note: must compare the View objects, not the interface pointers
+        continue;
+
+      Inc(LIndex);
+      SaveHTMLImage(LStoryItem, LIndex);
+    end;
+
+    Log('Exported Images: %d', [LIndex]);
+
+    with LHTMLWriter do
+    begin
+      WriteLine('  </body>');
+      WriteLine('</html>');
+    end;
+
+  finally
+    FreeAndNil(LHTMLWriter);
   end;
 end;
 
