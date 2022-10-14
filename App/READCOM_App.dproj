@@ -4,7 +4,7 @@
         <ProjectVersion>19.4</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>168979</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -487,6 +487,13 @@
         </DelphiCompile>
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
             <Form>MessageForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
+            <Form>FMXObjectDebuggerFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
+            <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
         <DCCReference Include="..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas"/>
         <DCCReference Include="..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas"/>

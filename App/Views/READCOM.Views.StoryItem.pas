@@ -240,7 +240,8 @@ type
     procedure Save(const Stream: TStream; const ContentFormat: String = EXT_READCOM); overload; virtual;
     procedure Save(const Filepath: String); overload; virtual;
     procedure SaveThumbnail(const Filepath: String; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT); virtual;
-    procedure SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
+    procedure SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT); overload;
+    procedure SaveHTML(const Filepath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT); overload;
     //
     procedure SaveReadCom(const Stream: TStream); virtual;
     procedure SaveReadComBin(const Stream: TStream); virtual;
@@ -1874,6 +1875,7 @@ procedure TStoryItem.SaveThumbnail(const Filepath: String; const MaxWidth: Integ
 begin
   const LPreviousActiveStoryItem = ActiveStoryItem; //TODO: remove when thumb generation is fixed and does't need to activate storyitem first
 
+  //ActiveStoryItem := Story.RootStoryItem;
   ActiveStoryItem := Self; //TODO: remove when thumb generation is fixed to not need this
   //Active := true; //TODO: see why if we use this one instead it skips TextStoryItem rendering for StoryItems that aren't in visible area
 
@@ -1948,6 +1950,16 @@ begin
 
   finally
     FreeAndNil(LHTMLWriter);
+  end;
+end;
+
+procedure TStoryItem.SaveHTML(const Filepath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
+begin
+  var LHtmlFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
+  try
+    SaveHtml(LHtmlFileStream, Filepath + '_Images', MaxImageWidth, MaxImageHeight);
+  finally
+    FreeAndNil(LHtmlFileStream);
   end;
 end;
 

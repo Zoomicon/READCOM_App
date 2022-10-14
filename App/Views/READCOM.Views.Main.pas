@@ -99,7 +99,7 @@ type
     function LoadDefaultDocument: Boolean;
     function LoadSavedState: Boolean;
     procedure SaveCurrentState;
-    procedure CheckSaveActiveStoryItemThumbnail;
+    procedure CheckCommandLineActions;
     procedure CheckReplaceStoryAllText;
 
     {RootStoryItemStoryView}
@@ -665,7 +665,7 @@ begin
     ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
 
     //ActivateHomeStoryItem; //apply the home //TODO: text doesn't render yet at this point
-    CheckSaveActiveStoryItemThumbnail;
+    CheckCommandLineActions;
 
     exit;
   end;
@@ -1236,19 +1236,41 @@ begin
   SaveCurrentState;
 end;
 
-procedure TMainForm.CheckSaveActiveStoryItemThumbnail;
-begin
-  if SaveThumbnail and (StorySource <> '') then
-  begin
-    var ThumbPath: String;
-    if IsURI(StorySource) then
-      ThumbPath := 'Thumb.png' //save in current folder
-    else
-      ThumbPath := StorySource + '.png';
+procedure TMainForm.CheckCommandLineActions;
 
-    ActiveStoryItem.SaveThumbnail(ThumbPath, ThumbnailMaxSize, ThumbnailMaxSize); //bounding box for thumbnail fitting is a square
-    Application.Terminate; //close the app after saving the thumb
+  procedure CheckSaveThumbnail;
+  begin
+    if SaveThumbnail and (StorySource <> '') then
+    begin
+      var ThumbPath: String;
+      if IsURI(StorySource) then
+        ThumbPath := 'Thumb.png' //save in current folder
+      else
+        ThumbPath := StorySource + '.png';
+
+      ActiveStoryItem.SaveThumbnail(ThumbPath, ThumbnailMaxSize, ThumbnailMaxSize); //bounding box for thumbnail fitting is a square
+      Application.Terminate; //close the app after saving the thumb
+    end;
   end;
+
+  procedure CheckSaveHtml;
+  begin
+    if SaveHtml and (StorySource <> '') then
+    begin
+      var HtmlPath: String;
+      if IsURI(StorySource) then
+        HtmlPath := 'Story.html' //save in current folder
+      else
+        HtmlPath := StorySource + '.html';
+
+      RootStoryItem.SaveHtml(HtmlPath, HtmlImageMaxSize, HtmlImageMaxSize); //bounding box for HTML image fitting is a square
+      Application.Terminate; //close the app after saving the HTML
+    end;
+  end;
+
+begin
+  CheckSaveThumbnail;
+  CheckSaveHtml;
 end;
 
 procedure TMainForm.CheckReplaceStoryAllText;

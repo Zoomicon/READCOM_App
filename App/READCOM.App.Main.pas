@@ -13,8 +13,12 @@ interface
 
   var
     StorySource: String;
+
     SaveThumbnail: Boolean; //=false
     ThumbnailMaxSize: Integer; //initialized at "ParseCommandLine"
+
+    SaveHTML: Boolean; //=false
+    HtmlImageMaxSize: Integer; //initialized at "ParseCommandLine"
 
 implementation
   uses
@@ -29,27 +33,42 @@ implementation
     READCOM.App.URLs; //for OpenURLinBrowser
 
 procedure ParseCommandLine; //TODO: use https://github.com/gabr42/GpDelphiUnits/blob/master/src/GpCommandLineParser.pas or https://github.com/VSoftTechnologies/VSoft.CommandLineParser instead to parse command-line
-const PARAM_THUMB = '-thumb';
+const
+  PARAM_THUMB = '-thumb';
+  PARAM_HTML = '-html';
 begin
   if (ParamCount <> 0) then
   begin
     var param1 := ParamStr(1);
 
-    if (param1.StartsWith(PARAM_THUMB)) and (ParamCount > 1) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+    if (ParamCount > 1) then
     begin
-      SaveThumbnail := true;
 
-      //Bounding box for thumbnail fitting is a square, using default as min of max thumb width and height if not provided
-      ThumbnailMaxSize := Min(DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT);
-      var LThumbEqLength := PARAM_THUMB.Length + 1;
-      if param1.Length > LThumbEqLength then
-        ThumbnailMaxSize := param1.Substring(LThumbEqLength).ToInteger;
+      if (param1.StartsWith(PARAM_THUMB)) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+      begin
+        SaveThumbnail := true;
+
+        //Bounding box for thumbnail fitting is a square, using default as min of max thumb width and height if not provided
+        ThumbnailMaxSize := Min(DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT);
+        var LThumbEqLength := PARAM_THUMB.Length + 1;
+        if param1.Length > LThumbEqLength then
+          ThumbnailMaxSize := param1.Substring(LThumbEqLength).ToInteger;
+      end
+
+      else if (param1.StartsWith(PARAM_HTML)) then
+      begin
+        SaveHTML := true;
+        HtmlImageMaxSize := Min(DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT);
+        var LHtmlEqLength := PARAM_HTML.Length + 1;
+        if param1.Length > LHtmlEqLength then
+          HtmlImageMaxSize := param1.Substring(HtmlImageMaxSize).ToInteger;
+      end;
 
       StorySource := ParamStr(2);
     end
     else
       StorySource := ParamStr(1);
-  end
+  end;
 end;
 
 procedure ShowHelp;
