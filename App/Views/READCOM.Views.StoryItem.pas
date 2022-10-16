@@ -247,6 +247,7 @@ type
     procedure SaveReadComBin(const Stream: TStream); virtual;
 
     {Navigation}
+    procedure ActivateRootStoryItem;
     procedure ActivateParentStoryItem;
 
   //--- Events ---
@@ -728,6 +729,12 @@ end;
 function TStoryItem.IsRoot: Boolean;
 begin
   result := not Assigned(ParentStoryItem);
+end;
+
+procedure TStoryItem.ActivateRootStoryItem;
+begin
+  if Assigned(Story) then
+    Story.ActivateRootStoryItem;
 end;
 
 procedure TStoryItem.ActivateParentStoryItem;
@@ -1874,18 +1881,22 @@ end;
 procedure TStoryItem.SaveThumbnail(const Filepath: String; const MaxWidth: Integer = DEFAULT_THUMB_WIDTH; const MaxHeight: Integer = DEFAULT_THUMB_HEIGHT);
 begin
   const LPreviousActiveStoryItem = ActiveStoryItem; //TODO: remove when thumb generation is fixed and does't need to activate storyitem first
-
-  //ActiveStoryItem := Story.RootStoryItem;
+  //ActivateRootStoryItem;
   ActiveStoryItem := Self; //TODO: remove when thumb generation is fixed to not need this
   //Active := true; //TODO: see why if we use this one instead it skips TextStoryItem rendering for StoryItems that aren't in visible area
 
-  var thumb := MakeThumbnail(MaxWidth, MaxHeight);
-  try
-    thumb.SaveToFile(Filepath); //Max thumb size 200x200
-  finally
-    FreeAndNil(thumb);
-    LPreviousActiveStoryItem.Active := true; //restore previous ActiveStoryItem //TODO: remove when thumb generation is fixed and does't need to activate storyitem first at SaveHTMLImage
-  end;
+  //TThread.Queue(nil, procedure
+    //begin
+      var thumb := MakeThumbnail(MaxWidth, MaxHeight);
+      try
+        thumb.SaveToFile(Filepath); //Max thumb size 200x200
+      finally
+        FreeAndNil(thumb);
+        LPreviousActiveStoryItem.Active := true; //restore previous ActiveStoryItem //TODO: remove when thumb generation is fixed and does't need to activate storyitem first at SaveHTMLImage
+      end;
+
+    //end
+  //);
 end;
 
 procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
@@ -1897,7 +1908,11 @@ procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; c
     const ImageFilename = 'Image' + AIndex.ToString + '.png';
     const LImagePath = TPath.Combine(ImagesPath, ImageFilename);
 
-    AStoryItem.SaveThumbnail(LImagePath, MaxImageWidth, MaxImageHeight);
+    TThread.Queue(nil, procedure
+      begin
+        AStoryItem.SaveThumbnail(LImagePath, MaxImageWidth, MaxImageHeight);
+      end
+    );
 
     LHTMLWriter.WriteLine('    <img src="%s" alt="%s" /><br />', [ExtractFileName(ImagesPath) + '/' + ImageFilename, '']); //assuming the Images are placed one level deeper [in a subfolder] than the HTML //Note: must use '/' since it's a partial URL, don't use TPath.Combine
   end;

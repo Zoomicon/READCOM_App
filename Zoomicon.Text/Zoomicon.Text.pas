@@ -16,6 +16,8 @@ type
     procedure ApplyStyle; override;
   end;
 
+var DisableMemoFontSizeToFit : boolean; //=false
+
 procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
 
 function ReadAllBytes(const Stream: TStream): TBytes;
@@ -60,6 +62,8 @@ procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
 //const
   //Offset = 0; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
 begin
+  if DisableMemoFontSizeToFit then exit;
+
   //AMemo.AutoCalculateContentSize := true; //don't use
 
   {$IF DEFINED(ANDROID) OR DEFINED(IOS)}

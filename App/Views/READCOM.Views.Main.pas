@@ -84,10 +84,14 @@ type
   protected
     FShortcutCut, FShortcutCopy, FShortcutPaste: TShortCut;
     FTimerStarted: Boolean;
+    FCheckedCommandLineActions: Boolean;
     FStoryMode: TStoryMode;
     FStructureViewFrameInfo: FrameStand.TFrameInfo<TStructureView>;
 
     procedure StartInitialZoomTimer(const Delay: Cardinal = 100);
+
+    {Idle}
+    procedure Idle(Sender: TObject; var Done: Boolean);
 
     {Loading / SavedState}
     procedure LoadAtStartup;
@@ -249,9 +253,11 @@ begin
 
   TStoryItem.Story := Self; //provide a way to StoryItems to influence the Story context
   FTimerStarted := false;
+  FCheckedCommandLineActions := false;
   InitHUD;
   //ZoomFrame.ScrollBox.AniCalculations.AutoShowing := true; //fade the toolbars when not active //TODO: doesn't work with direct mouse drags near the bottom and right edges (scrollbars do show when scrolling e.g. with mousewheel) since there's other HUD content above them (the navigation and the edit sidebar panes)
 
+  Application.OnIdle := Idle;
   LoadAtStartup;
 end;
 
@@ -665,7 +671,8 @@ begin
     ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
 
     //ActivateHomeStoryItem; //apply the home //TODO: text doesn't render yet at this point
-    CheckCommandLineActions;
+
+    //CheckCommandLineActions;
 
     exit;
   end;
@@ -702,10 +709,10 @@ begin
     var Filename := TempStoryItem.Options.ActLoad_GetFilename; //assuming this is blocking action
     if (Filename <> '') then
       begin
-      if LoadFromFile(Filename) then //Note: just doing RootStoryItemView := TStoryItem.LoadNew(Filename) wouldn't work do font resizing since that won't do StartInitialZoomTimer
-        ActivateHomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
+        if LoadFromFile(Filename) then //Note: just doing RootStoryItemView := TStoryItem.LoadNew(Filename) wouldn't work do font resizing since that won't do StartInitialZoomTimer
+          ActivateHomeStoryItem; //set the HomeStoryItem (if not any the RootStoryItem will have been set as such by SetRootStoryView) to active (not doing this when loading saved app state)
 
-      //TODO: OLD-CODE-LINE-REMOVE? //RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
+        //TODO: OLD-CODE-LINE-REMOVE? //RootStoryItemView := RootStoryItemView; //repeat calculations to adapt ZoomFrame.ScaledLayout size //TODO: when RootStoryItemViewResized starts working this shouldn't be needed here anymore
       end;
   finally
     FreeAndNil(TempStoryItem);
@@ -1061,6 +1068,18 @@ begin
     vkF3:
       HUD.UseStoryTimer := not HUD.UseStoryTimer; //toggle StoryTimer
 
+    vkF8:
+      begin
+        ActivateRootStoryItem;
+        ShowMessage('Exporting to HTML and exiting'); //this seems to be needed (TThread.Queue doesn't do the trick) to always save TextStoryItem text in exported images
+        TThread.Queue(nil, procedure
+          begin
+            RootStoryItem.SaveHTML(StorySource + '.html');
+            Application.Terminate;
+          end
+        )
+      end;
+
     vkF9:
       TAllTextFrame.ShowModal(MainForm, ActiveStoryItem); //has [X] button to close itself //Note: to see all text of the Story can 1st navigate to RootStoryItem in EditMode
 
@@ -1078,6 +1097,19 @@ end;
 {$endregion}
 
 {$ENDREGION}
+
+{$region 'Idle'}
+
+procedure TMainForm.Idle(Sender: TObject; var Done: Boolean);
+begin
+  if not FCheckedCommandLineActions then
+  begin
+    FCheckedCommandLineActions := true;
+    CheckCommandLineActions;
+  end;
+end;
+
+{$endregion}
 
 {$region 'Loading / SavedState'}
 
@@ -1119,6 +1151,7 @@ begin
   var InputFileStream := TFileStream.Create(Filepath,  fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
   try
     result := LoadFromStream(InputFileStream);
+    StorySource := Filepath;
   finally
     FreeAndNil(InputFileStream);
   end;
@@ -1136,6 +1169,7 @@ begin
         LoadFromStream(AStream); //probably it can start loading while the content is coming
         Log('Finished download');
         TWaitFrame.ShowModal(Self, false);
+        StorySource := Url;
       end,
       true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (it not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
       true //free on completion
@@ -1174,6 +1208,7 @@ begin
     Name := 'SavedState.readcom';
     StoragePath := TPath.GetHomePath;
     result := LoadFromStream(Stream, false); //don't ActivateHome, keep last Active one (needed in case the OS brought down the app and need to continue from where we were from saved state)
+    StorySource := StoragePath;
   end;
 end;
 
@@ -1269,6 +1304,7 @@ procedure TMainForm.CheckCommandLineActions;
   end;
 
 begin
+  DisableMemoFontSizeToFit := true; //don't do font fitting, seems to result in some TextStoryItems not rendering in resulting snapshot images
   CheckSaveThumbnail;
   CheckSaveHtml;
 end;
