@@ -1,0 +1,294 @@
+Milestone 0.8.0
+265	OPEN	Activating a TextStoryItem in Edit mode should give it input focus	enhancement, TextStoryItem	2022-07-22 12:42:30 +0000 UTC
+248	OPEN	Remove OS titlebar on Android	enhancement, platform:Android	2022-07-19 10:26:44 +0000 UTC
+235	OPEN	Add Editable/Selectable/Read-Only toggle option at TextStoryItemOptions	enhancement, TextStoryItem, interactivity	2022-09-08 04:26:41 +0000 UTC
+261	CLOSED	ActionURL shouldn't be actionable in Edit mode	bug, interactivity, EditMode	2022-09-10 21:15:29 +0000 UTC
+271	CLOSED	Add privacy policy URL to About box	enhancement, platform:Android, AboutBox	2022-09-10 03:47:33 +0000 UTC
+272	CLOSED	Add toggle buttons to TextStoryItemOptions for setting Bold/Italic/Underline/Strikeout font style	enhancement, TextStoryItem	2022-09-10 03:46:17 +0000 UTC
+270	CLOSED	Camera button not shown at ImageStoryItemOptions	bug, platform:Android, Options, platform:iOS	2022-09-10 02:26:00 +0000 UTC
+145	CLOSED	Add TextAlign property to TextStoryItem and picker at TextStoryItemOptions	enhancement, TextStoryItem	2022-09-08 04:25:15 +0000 UTC
+204	CLOSED	Show dimensions of area selection	enhancement, AreaSelector	2022-08-18 16:41:01 +0000 UTC
+
+Milestone 0.7.2
+254	CLOSED	Close button image of About box not showing correctly on Android	bug, platform:Android	2022-07-14 03:36:56 +0000 UTC
+230	CLOSED	Move Previous/Next buttons more inside (towards Home) to not be covered by toolbars on mobiles	bug	2022-07-14 01:17:56 +0000 UTC
+
+Milestone 0.7.1
+258	CLOSED	Enable auto font fit for MacOS-X	bug, platform:MacOS-X	2022-07-19 10:26:18 +0000 UTC
+257	CLOSED	Allow to change foreground color of SVG image	enhancement	2022-07-14 04:10:11 +0000 UTC
+259	CLOSED	Use bordered icon with white background to stand out on Dark OS themes	enhancement	2022-07-14 04:07:41 +0000 UTC
+201	CLOSED	Light/Dark theme not switchable on non-Windows platforms	bug, platform:Android, platform:MacOS-X	2022-07-14 04:04:47 +0000 UTC
+256	CLOSED	Add Fx keyboard shortcuts	enhancement, Keyboard	2022-07-14 03:48:13 +0000 UTC
+255	CLOSED	Use special ActionURLs for Navigation	enhancement, interactivity	2022-07-14 03:43:51 +0000 UTC
+154	CLOSED	App icon should be in white background	enhancement	2022-07-12 13:15:14 +0000 UTC
+251	CLOSED	Show Options in Edit mode when CTRL or RIGHT clicking a StoryItem's empty/background area	enhancement, Options	2022-07-12 02:55:39 +0000 UTC
+166	CLOSED	Cannot load an svg image to replace a bitmap image in a BitmapImageStoryItem	bug	2022-07-12 02:51:33 +0000 UTC
+250	CLOSED	StructureView takes increasing time every time it is refreshed	bug, StructureView	2022-07-10 03:13:12 +0000 UTC
+249	CLOSED	Give rotation cue if MainForm and ActiveStoryItem orientation difference on FormResize and RootStoryItem change	enhancement	2022-07-09 22:49:54 +0000 UTC
+208	CLOSED	Please solve the riddle popup shows "0" at titlebar (show lock prompt)	bug, interactivity	2022-07-09 20:30:26 +0000 UTC
+
+Milestone 0.6.0
+241	CLOSED	App not saving state on Android, resuming to default story	bug, platform:Android	2022-06-05 16:08:38 +0000 UTC
+242	CLOSED	Save state to user's persistent/roaming document storage	enhancement	2022-06-05 16:08:15 +0000 UTC
+240	CLOSED	Shouldn't block main UI thread when downloading, esp. on mobiles	bug, platform:Android	2022-06-01 14:52:11 +0000 UTC
+239	CLOSED	Show Wait prompt while downloading remote .readcom file	enhancement	2022-06-01 14:49:38 +0000 UTC
+
+Milestone 0.5.13
+236	CLOSED	Publish MacOS-X version	deployment, platform:MacOS-X	2022-05-31 11:20:18 +0000 UTC
+232	CLOSED	Pasting SVG markup should add an ImageStoryItem for that SVG	enhancement, Clipboard	2022-05-30 09:15:31 +0000 UTC
+237	CLOSED	SVG images showing with blueish tint on non-Windows platforms	bug, platform:Android, platform:MacOS-X	2022-05-30 09:01:24 +0000 UTC
+216	CLOSED	TextStoryItem doesn't allow Right click to activate, only CTRL+Click	enhancement, TextStoryItem	2022-05-30 08:30:18 +0000 UTC
+234	CLOSED	Allow moving a non-Anchored TextStoryItem in non-Edit mode	enhancement, TextStoryItem, interactivity	2022-05-30 08:29:39 +0000 UTC
+226	CLOSED	Add -thumb command-line parameter to generate thumbnail of HomeStoryItem	enhancement	2022-05-17 02:14:51 +0000 UTC
+224	CLOSED	StoryTimer throws error if a new story is getting loaded when it tries to move to next ActiveStoryItem	bug	2022-05-16 09:11:00 +0000 UTC
+
+Milestone 0.5.12
+218	CLOSED	Publish Android version on Google Play Store	deployment, platform:Android	2022-05-30 08:47:49 +0000 UTC
+223	CLOSED	Generate Android universal APK	deployment, platform:Android	2022-05-15 09:45:09 +0000 UTC
+221	CLOSED	Ctrl+Click / Right Click to Activate Parent or Sibling doesn't always work as expected / throws errors	bug	2022-05-14 13:44:16 +0000 UTC
+220	CLOSED	Cut always shows confirmation prompt claiming Story will be cleared	bug, Clipboard	2022-05-14 13:41:12 +0000 UTC
+
+Milestone 0.5.11
+207	CLOSED	Place Tags button next to Anchor button at StoryItemOptions	enhancement, interactivity	2022-05-21 20:56:00 +0000 UTC
+199	CLOSED	Add magnet/snap toggle button to StoryItem options	enhancement, interactivity	2022-05-21 20:53:11 +0000 UTC
+213	CLOSED	Activate Parent StoryItem of the edited ActiveStoryItem with ctrl+click or right click	enhancement	2022-05-14 12:54:52 +0000 UTC
+214	CLOSED	Activate Sibling StoryItem of the edited ActiveStoryItem with ctrl+click or right click	enhancement	2022-05-14 12:54:40 +0000 UTC
+215	CLOSED	Double-click of child item in Edit mode sends it under the parent's glyph	bug	2022-05-13 19:49:42 +0000 UTC
+212	CLOSED	About box not shown layed out correctly on Android	bug, platform:Android	2022-05-13 16:55:59 +0000 UTC
+210	CLOSED	Confirmation dialogs not working on Android	bug, platform:Android	2022-05-13 13:26:25 +0000 UTC
+200	CLOSED	Button Icons not shown on Android	bug, platform:Android	2022-05-13 13:24:58 +0000 UTC
+
+Milestone 0.5.10
+202	CLOSED	Unwanted panning when using Touch to define area selection, move/alter area selection, move unanchored items	bug, Touch	2022-05-11 18:59:33 +0000 UTC
+
+Milestone 0.5.9
+188	CLOSED	Make RootStoryItem a BitmapImageStoryItem (ImageStoryItem) one instead of PanelStoryItem	duplicate, enhancement	2022-05-12 11:27:55 +0000 UTC
+197	CLOSED	Deprecate TPanelStoryItem	enhancement	2022-05-10 17:49:38 +0000 UTC
+196	CLOSED	Require matching moveable and anchored (target) items by tags and location to proceed to NextStoryPoint	enhancement	2022-05-10 17:47:27 +0000 UTC
+
+Milestone 0.5.8
+162	CLOSED	Text not always autosizing at loading of a story	bug, TextStoryItem	2022-05-30 08:17:59 +0000 UTC
+193	CLOSED	Add background color and border to StoryItemOptions popup	enhancement	2022-05-07 19:25:23 +0000 UTC
+192	CLOSED	Show Options popup centered over the StoryItem it refers to	enhancement	2022-05-07 19:23:51 +0000 UTC
+191	CLOSED	Add TextStoryItemOptions popup with toggle button for Editable property	enhancement	2022-05-07 19:22:22 +0000 UTC
+190	CLOSED	Right click to make StoryItem Active	enhancement	2022-05-07 19:20:46 +0000 UTC
+144	CLOSED	Add Options button to Edit sidebar to show ActiveStoryItem's Options popup	enhancement	2022-05-07 19:18:09 +0000 UTC
+
+Milestone 0.5.7
+182	CLOSED	Publish on Windows Store	deployment	2022-06-07 12:37:09 +0000 UTC
+181	CLOSED	Add Tags toggle button to options	enhancement, interactivity	2022-05-21 20:59:10 +0000 UTC
+89	CLOSED	Allow to select a Target for a StoryItem	enhancement, interactivity	2022-05-21 20:55:04 +0000 UTC
+143	CLOSED	ActionURL button should be toggled when it has URL content	bug	2022-05-06 19:38:07 +0000 UTC
+183	CLOSED	Change default document	deployment	2022-05-06 15:27:55 +0000 UTC
+174	CLOSED	Should show move cursor at unanchored (unlocked) StoryItems	enhancement	2022-05-05 23:37:14 +0000 UTC
+
+Milestone 0.5.6
+178	CLOSED	Add Background Color picker	enhancement	2022-05-05 00:25:17 +0000 UTC
+179	CLOSED	Show Version on Title bar	enhancement	2022-05-05 00:25:01 +0000 UTC
+
+Milestone 0.5.5
+153	CLOSED	Change app name from "READCOM.App"	enhancement	2022-05-10 18:37:59 +0000 UTC
+176	CLOSED	ImageStoryItem not showing 1st child in non-Edit mode and active dashed border in edit mode	bug	2022-05-03 00:55:50 +0000 UTC
+175	CLOSED	Change New button to be "Load Default Story" and have READ-COM icon	enhancement	2022-05-03 00:54:37 +0000 UTC
+
+Milestone 0.5.4
+136	CLOSED	Allow to wrap pasted clipboard content (text/image) as StoryItem	enhancement, Clipboard	2022-05-30 08:15:08 +0000 UTC
+172	CLOSED	Ignore loaded/pasted serialized Delphi objects that are not StoryPoints	enhancement	2022-05-02 15:40:22 +0000 UTC
+171	CLOSED	Ignore invalid property values	enhancement	2022-05-02 14:21:03 +0000 UTC
+
+Milestone 0.5.3
+167	CLOSED	Font autosizing to fit TextStoryItem is too slow	bug	2022-05-01 18:33:38 +0000 UTC
+
+Milestone 0.5.2
+163	CLOSED	StructureView thumbnails consume lots of memory by making screenshots of components instead of thumbs	bug	2022-04-29 20:59:26 +0000 UTC
+
+Milestone 0.5.1
+157	CLOSED	Navigation and Edit sidebar controls are overlaping scrollbar	bug	2022-04-29 00:51:06 +0000 UTC
+160	CLOSED	Exception EArgumentOutOfRangeException (Argument out of range) in StructureView	bug	2022-04-29 00:16:55 +0000 UTC
+151	CLOSED	Open .readcom file from relative or full filepath or URL passed as command-line argument	enhancement	2022-04-28 22:29:21 +0000 UTC
+
+Milestone 0.5.0
+148	CLOSED	Loading, Resizing and Typing in a TextStoryItem should change font size to fit text to its size	bug, TextStoryItem	2022-05-30 08:17:38 +0000 UTC
+26	CLOSED	TextStoryItem Font should change when resized	bug, TextStoryItem	2022-05-30 08:16:55 +0000 UTC
+147	CLOSED	Set TextStoryItem text to Centered by default	enhancement, TextStoryItem	2022-05-30 08:14:50 +0000 UTC
+149	CLOSED	On application start some text from last state / story loaded from temp doesn't draw till resize/zoom	bug, TextStoryItem	2022-05-30 08:14:20 +0000 UTC
+146	CLOSED	Ignore unknown properties when loading .readcom files	enhancement	2022-04-23 00:34:11 +0000 UTC
+142	CLOSED	Add ActionURL button to StoryItem options instead of textbox	enhancement	2022-04-23 00:32:37 +0000 UTC
+
+Milestone 0.4.4
+140	CLOSED	Bitmap image not stored when image has been added into a selection area	bug	2022-04-14 20:17:26 +0000 UTC
+
+Milestone 0.4.3
+138	CLOSED	Add thumbs of remote stories and link to reading toolkit page to embedded default story/document	enhancement	2022-04-14 10:09:36 +0000 UTC
+137	CLOSED	HomeStoryItem isn't activated after LoadFromURL action loads remote story	bug	2022-04-14 10:07:06 +0000 UTC
+134	CLOSED	Color pickers show no tooltip/hint on mouseover	bug	2022-04-13 17:38:09 +0000 UTC
+132	CLOSED	ALT+mousewheel to resize the ActiveStoryItem when mouse pointer isn't over child item	enhancement	2022-04-13 16:24:01 +0000 UTC
+
+Milestone 0.4.2
+126	CLOSED	StructureView shouldn't autoclose	enhancement	2022-04-12 10:39:52 +0000 UTC
+125	CLOSED	StructureView not highlighting ActiveStoryItem in non-Edit mode	bug	2022-04-12 10:36:28 +0000 UTC
+124	CLOSED	Show Home in StructureView in non-Edit mode	bug	2022-04-11 23:09:09 +0000 UTC
+
+Milestone 0.4.1
+107	CLOSED	Support loading any .readcom file as a Story	enhancement	2022-04-11 17:48:21 +0000 UTC
+122	CLOSED	Various AV errors occuring later after hagving used URLAction to load a remote .readcom file	bug	2022-04-11 16:59:16 +0000 UTC
+121	CLOSED	Default background color should be Transparent, shouldn't store default color values	bug	2022-04-11 11:25:16 +0000 UTC
+120	CLOSED	Exiting EditMode should activate closest AncestorStoryPoint, and if none activate RootStoryPoint	bug	2022-04-11 10:58:05 +0000 UTC
+119	CLOSED	Show hand cursor over items that have URLAction defined	enhancement	2022-04-11 10:54:44 +0000 UTC
+
+Milestone 0.4.0
+112	CLOSED	Add button to switch between Light/Dark mode	enhancement	2022-04-09 17:44:08 +0000 UTC
+116	CLOSED	Allow to specify a URL ending in .readcom at URLAction to load a remote story	enhancement	2022-04-09 17:40:34 +0000 UTC
+
+Milestone 0.3.6
+110	CLOSED	StructureView is stealing mouse events from the area it occupied before being hidden	bug	2022-04-07 23:44:54 +0000 UTC
+109	CLOSED	StructureView seems to slow down operations even when hidden	enhancement	2022-04-07 23:42:05 +0000 UTC
+
+Milestone 0.3.5
+106	CLOSED	Cannot load a .readcom file with only numbers in its filename	bug	2022-04-07 08:16:04 +0000 UTC
+105	CLOSED	Adding a child StoryItem from File or Clibboard doesn't resize its child items to fit in area selection	bug	2022-04-07 08:14:37 +0000 UTC
+104	CLOSED	Allow holding down SHIFT on launch to use GDI (Compatibility mode)	enhancement	2022-04-07 08:13:25 +0000 UTC
+
+Milestone 0.3.4
+102	CLOSED	Add child items file filter 1st entry shows differently	bug	2022-04-05 23:25:50 +0000 UTC
+101	CLOSED	Image FileFilter needs 1st entry to be for both Vector and Bitmap images	enhancement	2022-04-05 23:22:39 +0000 UTC
+
+Milestone 0.3.3
+99	CLOSED	Use SHIFT key to preserve AreaSelector ratio while resizing from its corners	enhancement	2022-04-04 18:11:27 +0000 UTC
+94	CLOSED	ImageStoryItem should stretch image	enhancement	2022-04-04 18:09:12 +0000 UTC
+98	CLOSED	Resizing via ALT+mousewheel misplaces children	bug	2022-04-04 13:46:07 +0000 UTC
+97	CLOSED	Add shortcut keys for editing actions	enhancement	2022-04-04 12:41:51 +0000 UTC
+
+Milestone 0.3.2
+96	CLOSED	Destructive actions for RootStoryItem should show confirmation dialog	enhancement	2022-04-03 17:54:20 +0000 UTC
+95	CLOSED	Broken saving of bitmap images (also affects Copy)	bug	2022-04-03 17:52:13 +0000 UTC
+
+Milestone 0.3.1
+10	CLOSED	Should allow setting color of TextStoryItem	enhancement, TextStoryItem	2022-05-30 08:16:42 +0000 UTC
+
+Milestone 0.3.0
+93	CLOSED	ImageStoryItem (and descendents) and AutoStoryItem now showing default glyph	bug	2022-04-01 23:36:22 +0000 UTC
+92	CLOSED	Application isn't saving to temporary state current document upon closing	bug	2022-04-01 22:53:25 +0000 UTC
+91	CLOSED	Allow moving (only inside it) non-anchored child items of ActiveStoryItem in non-Edit mode	enhancement	2022-04-01 22:49:48 +0000 UTC
+
+Milestone 0.2.0
+87	CLOSED	Child items of ActiveStoryItem show up disabled upon temp state reloading when exited app in edit mode	bug	2022-03-29 01:33:50 +0000 UTC
+88	CLOSED	Fix cases where auto-zooming to non StoryPoint or Home occurs	bug	2022-03-29 01:33:42 +0000 UTC
+86	CLOSED	BitmapImageStoryItem not showing SVGs	bug	2022-03-29 01:30:41 +0000 UTC
+85	CLOSED	BitmapImageStoryItem not saving bitmaps	bug	2022-03-29 01:29:35 +0000 UTC
+84	CLOSED	CTRL+Click to activate child item in edit mode caught by AreaSelector	enhancement	2022-03-29 01:28:40 +0000 UTC
+83	CLOSED	File selector filter for all known types is empty - allows picking anything	bug	2022-03-29 01:26:59 +0000 UTC
+82	CLOSED	Can't add known file types with non-small letters in file extension	bug	2022-03-29 01:25:38 +0000 UTC
+81	CLOSED	Update READ-COM logo	enhancement	2022-03-29 01:23:40 +0000 UTC
+80	CLOSED	Compilation issue with latest TSVGIconImageList	bug	2022-03-29 01:22:12 +0000 UTC
+34	CLOSED	Drag-drop not working in edit mode	bug	2022-03-29 01:19:29 +0000 UTC
+
+Milestone 0.1.0
+72	CLOSED	After resize via AreaSelector handles, if one drags the AreaSelector it won't always move its children	bug, AreaSelector	2022-05-21 21:08:18 +0000 UTC
+79	CLOSED	Default story should use higher resolution	enhancement	2022-03-24 18:17:11 +0000 UTC
+78	CLOSED	Hide DropTarget down arrow	enhancement	2022-03-24 10:20:19 +0000 UTC
+69	CLOSED	Activating non-StoryPoint StoryItem should zoom to closest ancestor StoryPoint	enhancement	2022-03-24 10:17:44 +0000 UTC
+77	CLOSED	Allow adding visual placeholder that supports both bitmaps and vector images	enhancement	2022-03-23 20:21:15 +0000 UTC
+76	CLOSED	Asset types are not detected when having non-lowercase file extension casing	bug	2022-03-23 20:18:56 +0000 UTC
+75	CLOSED	Move Add (children) button to Edit Sidebar from options popup	enhancement	2022-03-23 19:14:06 +0000 UTC
+74	CLOSED	Paste doesn't update StructureView content	bug	2022-03-23 19:12:25 +0000 UTC
+44	CLOSED	Add child items action for ActiveStoryItem should update StructureView contents	bug	2022-03-23 19:09:24 +0000 UTC
+70	CLOSED	Change Delete action to Cut in Edit sidebar to allow easy undoing via Paste	enhancement	2022-03-23 19:08:05 +0000 UTC
+71	CLOSED	Paste or loading of child item shouldn't make it Active	bug	2022-03-23 16:01:06 +0000 UTC
+68	CLOSED	Paste of StoryItem should keep its size when no selected area to create in	bug	2022-03-23 15:40:35 +0000 UTC
+67	CLOSED	Paste of readcom serialized object not working when text is indented	bug	2022-03-23 12:42:00 +0000 UTC
+
+Milestone 0.0.19
+63	CLOSED	CTRL+click child StoryItem in edit mode to make active	enhancement	2022-03-20 13:31:40 +0000 UTC
+59	CLOSED	Load/Save button hints at Options popup are not accurate	bug	2022-03-20 13:03:08 +0000 UTC
+66	CLOSED	Show READ-COM logo in about box and update version number	bug	2022-03-20 12:56:49 +0000 UTC
+65	CLOSED	Use READ-COM project icon for application binaries and mobile loading screens	bug	2022-03-20 12:55:16 +0000 UTC
+64	CLOSED	Load default embedded story on first startup	enhancement	2022-03-20 12:49:06 +0000 UTC
+62	CLOSED	Should be able to add as child any saved StoryItem via .readcom file	enhancement	2022-03-14 18:04:18 +0000 UTC
+61	CLOSED	Drag-drop of StructureView node onto empty area throws exception	bug	2022-03-14 17:43:13 +0000 UTC
+
+Milestone 0.0.18
+58	CLOSED	Activate ParentStoryItem when deleting ActiveStoryItem	enhancement	2022-02-28 00:48:14 +0000 UTC
+57	CLOSED	Should go to a StoryPoint after exiting edit mode, if not at such	enhancement	2022-02-28 00:40:32 +0000 UTC
+56	CLOSED	StructureView should only show StoryPoints when not in Edit mode	enhancement	2022-02-28 00:36:47 +0000 UTC
+55	CLOSED	Add child item should use AreaSelector bounds if any	enhancement	2022-02-28 00:35:07 +0000 UTC
+4	CLOSED	Double-click in Edit Mode should switch StoryItem child between front and back Z-Order placement	enhancement	2022-02-27 19:09:04 +0000 UTC
+
+Milestone 0.0.17
+54	CLOSED	BitmapImageStoryItem not showing default glyph upon creation	bug	2022-02-25 11:35:01 +0000 UTC
+53	CLOSED	Button to add new child BitmapImageStoryItem in edit mode	enhancement	2022-02-25 11:32:48 +0000 UTC
+
+Milestone 0.0.16
+52	CLOSED	Add UseStoryTimer toggle button to allow automatic progress to NextStoryPoint	enhancement	2022-02-24 23:53:05 +0000 UTC
+51	CLOSED	Should be able to move items by dragging current AreaSelector	enhancement	2022-02-24 23:51:45 +0000 UTC
+50	CLOSED	Select Child StoryItem of ActiveStoryItem in EditMode by clicking it	enhancement	2022-02-24 23:50:01 +0000 UTC
+37	CLOSED	ZoomTo ActiveStoryItem upon entering/exiting EditMode	enhancement	2022-02-24 23:48:26 +0000 UTC
+47	CLOSED	Should be able to resize items by resizing current area selection	enhancement	2022-02-24 23:38:08 +0000 UTC
+
+Milestone 0.0.15
+45	CLOSED	AreaSelector handles should be moveable outsize parent bounds	bug, AreaSelector	2022-05-21 21:09:09 +0000 UTC
+49	CLOSED	Show border for newly added/inserted items of ActiveStoryItem that is being edited	bug	2022-02-23 11:09:37 +0000 UTC
+48	CLOSED	New TextStoryItem should take bounds of AreaSelection, if any	enhancement	2022-02-23 11:08:37 +0000 UTC
+46	CLOSED	ALT+mousewheel based resizing should ignore AreaSelector	bug	2022-02-23 09:58:57 +0000 UTC
+
+Milestone 0.0.14
+14	CLOSED	Change of ActiveStoryItem should update selection in StructureView (if open)	bug	2022-02-22 16:47:32 +0000 UTC
+9	CLOSED	Deletion of items and changing of RootStoryItem should update StructureView pane	bug	2022-02-22 16:44:10 +0000 UTC
+
+Milestone 0.0.13
+42	CLOSED	Provide button to add a TextStoryItem into the ActiveStoryItem	enhancement, TextStoryItem	2022-05-30 08:17:09 +0000 UTC
+41	CLOSED	DropTarget decoration shows under ImageControl at BitmapImageStoryItem	bug	2022-02-11 10:24:18 +0000 UTC
+40	CLOSED	BitmapImageStoryItemOptions not showing	bug	2022-02-11 10:22:29 +0000 UTC
+
+Milestone 0.0.12
+38	CLOSED	TextStoryItem not allowing text entry in EditMode	bug, TextStoryItem	2022-05-30 08:15:39 +0000 UTC
+36	CLOSED	Show Tooltips/Hints for Edit SideBar buttons	enhancement	2022-02-09 15:26:44 +0000 UTC
+35	CLOSED	TextStoryItem Sizing	bug	2022-02-09 15:24:06 +0000 UTC
+33	CLOSED	DropTraget UI too bright	bug, enhancement	2022-02-09 15:05:25 +0000 UTC
+24	CLOSED	Show child StoryItem bounds (via borderline) when parent is Active and in Edit mode	enhancement	2022-02-09 11:43:51 +0000 UTC
+32	CLOSED	AudioStoryItem stack overflow on loading	bug	2022-02-09 09:29:48 +0000 UTC
+31	CLOSED	Pressing Cancel at Load shouldn't do any side-effects	bug	2022-02-09 09:05:05 +0000 UTC
+
+Milestone 0.0.11
+29	CLOSED	Navigation to Previous StoryPoint doesn't work as expected	bug	2022-02-05 15:09:40 +0000 UTC
+17	CLOSED	Activate HomeStoryItem upon loading of story	enhancement	2022-02-05 14:40:08 +0000 UTC
+30	CLOSED	Allow Previous/Next/Home navigation using the keyboard	enhancement	2022-02-05 14:38:28 +0000 UTC
+28	CLOSED	PanelStoryItems are always StoryPoints after loading	bug	2022-02-05 14:31:01 +0000 UTC
+
+Milestone 0.0.10
+25	CLOSED	Set input focus to TextStoryItem's Memo when it becomes Active	enhancement, TextStoryItem	2022-05-30 08:16:15 +0000 UTC
+23	CLOSED	Allow dragging a child StoryItem out of its parent bounds	enhancement	2022-02-04 12:00:29 +0000 UTC
+27	CLOSED	Add buttons to Flip ActiveItem Horizontally/Vertically in EditMode	enhancement	2022-02-02 12:18:13 +0000 UTC
+
+Milestone 0.0.9
+20	CLOSED	Add Copy/Paste functionality	enhancement	2022-01-28 08:17:03 +0000 UTC
+
+Milestone 0.0.8
+19	CLOSED	Toggle buttons for EditMode/StructureVisibility/TargetsVisibility	bug	2022-01-21 18:51:29 +0000 UTC
+
+Milestone 0.0.7
+18	CLOSED	Add Hints to GUI elements	enhancement	2022-01-19 18:29:32 +0000 UTC
+
+Milestone 0.0.6
+16	CLOSED	Allow to set items as StoryPoints, and use Previous/Next buttons to navigate among them	enhancement	2022-01-19 09:31:57 +0000 UTC
+15	CLOSED	Add About button	enhancement	2022-01-19 09:26:50 +0000 UTC
+12	CLOSED	Add Help button to show user manual	enhancement	2022-01-19 09:24:21 +0000 UTC
+3	CLOSED	Should allow setting a StoryItem as Home (Starting point of story)	enhancement	2022-01-19 09:23:27 +0000 UTC
+13	CLOSED	ESC key should activate (navigate to) ParentStoryItem, Shift+ESC to RootStoryItem	enhancement	2022-01-17 08:19:34 +0000 UTC
+
+Milestone 0.0.4
+8	CLOSED	StructureView should autohide in non-Edit mode after item selection	enhancement	2021-12-22 22:32:04 +0000 UTC
+
+Milestone 0.0.3
+5	CLOSED	Move Home button to bottom-middle of screen	enhancement	2021-12-20 10:08:25 +0000 UTC
+2	CLOSED	AudioStoryItem should only show in Edit Mode	bug	2021-12-20 10:05:09 +0000 UTC
+7	CLOSED	In EditMode, allow re-ordering of StoryItems via StructureView (change parent or Z-Order in same parent)	enhancement	2021-12-20 10:04:55 +0000 UTC
+
+Milestone 0.0.2
+274	CLOSED	AreaSelector shouldn't select intersected children, only contained ones	bug, AreaSelector	2022-09-15 10:51:39 +0000 UTC
+273	CLOSED	Fix memory leaks	bug	2022-09-15 10:49:40 +0000 UTC
+
+Milestone 0.0.1
+276	CLOSED	Navigation using StructureViewer and the Home button	enhancement, StructureView, interactivity	2022-09-15 11:01:18 +0000 UTC
+275	CLOSED	Support CTRL+MouseWheel for zoom in/out	enhancement, Zoom	2022-09-15 11:01:01 +0000 UTC
+277	CLOSED	Edit mode functionality	enhancement, EditMode	2022-09-15 11:00:42 +0000 UTC
