@@ -216,6 +216,7 @@ begin
       Inc(Count);
     end,
   Predicate);
+  result := Count;
 end;
 
 function TListEx<T>.GetCount(const Predicate: TPredicate<T> = nil): Integer;
@@ -387,6 +388,7 @@ begin
       Inc(Count);
     end,
   OuterPredicate, InnerPredicate);
+  result := Count;
 end;
 
 function TInterfaceListEx<T>.GetInterfaceCount<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
@@ -536,6 +538,7 @@ begin
       Inc(Count);
     end,
   OuterPredicate, InnerPredicate);
+  result := Count;
 end;
 
 function TObjectListEx<T>.GetInterfaceCount<AInterface>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AInterface> = nil): Integer;
@@ -680,6 +683,7 @@ begin
       Inc(Count);
     end,
   OuterPredicate, InnerPredicate);
+  result := Count;
 end;
 
 function TObjectListEx<T>.GetClassCount<AClass>(const OuterPredicate: TPredicate<T> = nil; const InnerPredicate: TPredicate<AClass> = nil): Integer;
