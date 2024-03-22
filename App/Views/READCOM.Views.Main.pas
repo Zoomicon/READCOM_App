@@ -259,6 +259,8 @@ begin
 
   Application.OnIdle := Idle;
   LoadAtStartup;
+
+  InitObjectDebugger(MainForm);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
