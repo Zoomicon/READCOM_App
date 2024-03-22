@@ -79,3 +79,4 @@ modules/
 *.app.zip
 *.pkg
 *.ipa
+/App/*.old
