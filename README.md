@@ -20,12 +20,9 @@ To have SVG preview at Add/Open file dialogs (if Preview pane is enabled at Wind
 
 Alternatively try this one which uses the same SVG library as the READ-COM App (however it sometimes freezes Windows Explorer): https://github.com/EtheaDev/SVGShellExtensions/releases
 
-## Build from Source code
-see https://github.com/Zoomicon/READCOM_App/wiki/Source-code
-
 ## Testing
 
-The default document shown when app first launches (or with New button) contains a link to the Tortoise and the Hare Aesop fable story to try.
+The default document shown when app first launches (or with New button) contains a link to the Tortoise and the Hare Aesop fable story (among others) to try.
 
 Alternatively:
 * can try downloading manually and opening [that story](https://raw.githubusercontent.com/zoomicon/READCOM_Gallery/master/Gallery/en/3-6/The%20Tortoise%20and%20the%20Hare.readcom) for testing (right click the link and select to Save As a .readcom file - to use that story's URL in URLActions of StoryItems right click the URL and select Copy, then right-click and Paste in the URLAction editbox at the popup dialog of the ActiveStoryItem in the app).
@@ -49,6 +46,8 @@ Older screenshots:
 
 ![image](https://user-images.githubusercontent.com/3461504/150108636-95dbc253-33bc-46ab-b1cb-aa91d1f7a6fb.png)
 
+## Build from Source code
+see https://github.com/Zoomicon/READCOM_App/wiki/Source-code
 
 ## Attributions
 Icons by:

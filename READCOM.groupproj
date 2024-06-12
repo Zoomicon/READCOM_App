@@ -4,9 +4,6 @@
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="Zoomicon.Downloader\Zoomicon.Downloader.dproj">
-            <Dependencies>Zoomicon.Cache\Zoomicon.Cache.dproj</Dependencies>
-        </Projects>
-        <Projects Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
@@ -15,14 +12,11 @@
         <Projects Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Zoomicon.Generics\Zoomicon.Generics.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Zoomicon.GitStore\Zoomicon.GitStore.dproj">
             <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
+            <Dependencies>Zoomicon.Downloader\Zoomicon.Downloader.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
             <Dependencies>Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
@@ -31,7 +25,7 @@
             <Dependencies>Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
-            <Dependencies>Zoomicon.Generics\Zoomicon.Generics.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
+            <Dependencies>Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj;Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj</Dependencies>
         </Projects>
         <Projects Include="Zoomicon.Text\Zoomicon.Text.dproj">
             <Dependencies/>
@@ -59,23 +53,14 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Zoomicon_Downloader" DependsOnTargets="Zoomicon.Cache">
+    <Target Name="Zoomicon_Downloader">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Downloader:Clean" DependsOnTargets="Zoomicon.Cache:Clean">
+    <Target Name="Zoomicon_Downloader:Clean">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Downloader:Make" DependsOnTargets="Zoomicon.Cache:Make">
+    <Target Name="Zoomicon_Downloader:Make">
         <MSBuild Projects="Zoomicon.Downloader\Zoomicon.Downloader.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="Zoomicon_Cache">
-        <MSBuild Projects="Zoomicon.Cache\Zoomicon.Cache.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Cache:Clean">
-        <MSBuild Projects="Zoomicon.Cache\Zoomicon.Cache.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Cache:Make">
-        <MSBuild Projects="Zoomicon.Cache\Zoomicon.Cache.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_Helpers_FMX">
         <MSBuild Projects="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj"/>
@@ -95,15 +80,6 @@
     <Target Name="Zoomicon_Helpers_RTL:Make">
         <MSBuild Projects="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Generics">
-        <MSBuild Projects="Zoomicon.Generics\Zoomicon.Generics.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Generics:Clean">
-        <MSBuild Projects="Zoomicon.Generics\Zoomicon.Generics.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Generics:Make">
-        <MSBuild Projects="Zoomicon.Generics\Zoomicon.Generics.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Zoomicon_GitStore" DependsOnTargets="Zoomicon.Downloader">
         <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj"/>
     </Target>
@@ -113,13 +89,13 @@
     <Target Name="Zoomicon_GitStore:Make" DependsOnTargets="Zoomicon.Downloader:Make">
         <MSBuild Projects="Zoomicon.GitStore\Zoomicon.GitStore.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler" DependsOnTargets="Zoomicon.Generics;Zoomicon.Helpers.FMX">
+    <Target Name="Zoomicon_Puzzler" DependsOnTargets="Zoomicon.Downloader;Zoomicon.Helpers.FMX">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Helpers.FMX:Clean">
+    <Target Name="Zoomicon_Puzzler:Clean" DependsOnTargets="Zoomicon.Downloader:Clean;Zoomicon.Helpers.FMX:Clean">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Puzzler:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Helpers.FMX:Make">
+    <Target Name="Zoomicon_Puzzler:Make" DependsOnTargets="Zoomicon.Downloader:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Puzzler\Zoomicon.Puzzler.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_Zooming_FMX" DependsOnTargets="Zoomicon.Helpers.FMX">
@@ -140,13 +116,13 @@
     <Target Name="Zoomicon_Introspection_FMX:Make" DependsOnTargets="Zoomicon.Helpers.RTL:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX" DependsOnTargets="Zoomicon.Generics;Zoomicon.Helpers.FMX">
+    <Target Name="Zoomicon_Manipulation_FMX" DependsOnTargets="Zoomicon.Helpers.RTL;Zoomicon.Helpers.FMX">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Clean" DependsOnTargets="Zoomicon.Generics:Clean;Zoomicon.Helpers.FMX:Clean">
+    <Target Name="Zoomicon_Manipulation_FMX:Clean" DependsOnTargets="Zoomicon.Helpers.RTL:Clean;Zoomicon.Helpers.FMX:Clean">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Make" DependsOnTargets="Zoomicon.Generics:Make;Zoomicon.Helpers.FMX:Make">
+    <Target Name="Zoomicon_Manipulation_FMX:Make" DependsOnTargets="Zoomicon.Helpers.RTL:Make;Zoomicon.Helpers.FMX:Make">
         <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Make"/>
     </Target>
     <Target Name="Zoomicon_Text">
@@ -204,13 +180,13 @@
         <MSBuild Projects="App\READCOM_App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Downloader;Zoomicon_Cache;Zoomicon_Helpers_FMX;Zoomicon_Helpers_RTL;Zoomicon_Generics;Zoomicon_GitStore;Zoomicon_Puzzler;Zoomicon_Zooming_FMX;Zoomicon_Introspection_FMX;Zoomicon_Manipulation_FMX;Zoomicon_Text;Zoomicon_Media_FMX;Zoomicon_Downloader_Tests;Zoomicon_GitStore_Tests;READCOM_GalleryLib;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Downloader;Zoomicon_Helpers_FMX;Zoomicon_Helpers_RTL;Zoomicon_GitStore;Zoomicon_Puzzler;Zoomicon_Zooming_FMX;Zoomicon_Introspection_FMX;Zoomicon_Manipulation_FMX;Zoomicon_Text;Zoomicon_Media_FMX;Zoomicon_Downloader_Tests;Zoomicon_GitStore_Tests;READCOM_GalleryLib;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Downloader:Clean;Zoomicon_Cache:Clean;Zoomicon_Helpers_FMX:Clean;Zoomicon_Helpers_RTL:Clean;Zoomicon_Generics:Clean;Zoomicon_GitStore:Clean;Zoomicon_Puzzler:Clean;Zoomicon_Zooming_FMX:Clean;Zoomicon_Introspection_FMX:Clean;Zoomicon_Manipulation_FMX:Clean;Zoomicon_Text:Clean;Zoomicon_Media_FMX:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore_Tests:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Downloader:Clean;Zoomicon_Helpers_FMX:Clean;Zoomicon_Helpers_RTL:Clean;Zoomicon_GitStore:Clean;Zoomicon_Puzzler:Clean;Zoomicon_Zooming_FMX:Clean;Zoomicon_Introspection_FMX:Clean;Zoomicon_Manipulation_FMX:Clean;Zoomicon_Text:Clean;Zoomicon_Media_FMX:Clean;Zoomicon_Downloader_Tests:Clean;Zoomicon_GitStore_Tests:Clean;READCOM_GalleryLib:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Downloader:Make;Zoomicon_Cache:Make;Zoomicon_Helpers_FMX:Make;Zoomicon_Helpers_RTL:Make;Zoomicon_Generics:Make;Zoomicon_GitStore:Make;Zoomicon_Puzzler:Make;Zoomicon_Zooming_FMX:Make;Zoomicon_Introspection_FMX:Make;Zoomicon_Manipulation_FMX:Make;Zoomicon_Text:Make;Zoomicon_Media_FMX:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore_Tests:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Downloader:Make;Zoomicon_Helpers_FMX:Make;Zoomicon_Helpers_RTL:Make;Zoomicon_GitStore:Make;Zoomicon_Puzzler:Make;Zoomicon_Zooming_FMX:Make;Zoomicon_Introspection_FMX:Make;Zoomicon_Manipulation_FMX:Make;Zoomicon_Text:Make;Zoomicon_Media_FMX:Make;Zoomicon_Downloader_Tests:Make;Zoomicon_GitStore_Tests:Make;READCOM_GalleryLib:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
     <ItemGroup Condition="'$(BuildGroup)'=='Tests'">
@@ -274,22 +250,16 @@
             <Platforms>Win32</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
-            <ProjectGuid>{25125E12-0B28-40DA-8EB1-85081EA6CAE9}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
-            <Enabled>False</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Generics\Zoomicon.Generics.dproj">
-            <ProjectGuid>{4E802638-0807-4E61-80B9-F0D9A1704024}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>False</Enabled>
-        </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
             <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
+            <Enabled>False</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="App\READCOM_App.dproj">
+            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win64</Platforms>
             <Enabled>False</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Downloader\Test\Zoomicon.Downloader.Tests.dproj">
@@ -302,12 +272,6 @@
             <ProjectGuid>{A2C45F42-707A-421D-9D8A-238AA562E77C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
-            <Enabled>False</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="App\READCOM_App.dproj">
-            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
             <Enabled>False</Enabled>
         </BuildGroupProject>
     </ItemGroup>
@@ -372,23 +336,17 @@
             <Platforms>Win32</Platforms>
             <Enabled>False</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
-            <ProjectGuid>{25125E12-0B28-40DA-8EB1-85081EA6CAE9}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Generics\Zoomicon.Generics.dproj">
-            <ProjectGuid>{4E802638-0807-4E61-80B9-F0D9A1704024}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
             <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
             <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="App\READCOM_App.dproj">
+            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win64</Platforms>
+            <Enabled>False</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Downloader\Test\Zoomicon.Downloader.Tests.dproj">
             <ProjectGuid>{C516BAD6-362F-4F4C-89F3-B9225D62A793}</ProjectGuid>
@@ -401,12 +359,6 @@
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
             <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="App\READCOM_App.dproj">
-            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>False</Enabled>
         </BuildGroupProject>
     </ItemGroup>
     <ItemGroup Condition="'$(BuildGroup)'=='All'">
@@ -470,22 +422,16 @@
             <Platforms>Win32</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
-            <ProjectGuid>{25125E12-0B28-40DA-8EB1-85081EA6CAE9}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Generics\Zoomicon.Generics.dproj">
-            <ProjectGuid>{4E802638-0807-4E61-80B9-F0D9A1704024}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
             <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="App\READCOM_App.dproj">
+            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Downloader\Test\Zoomicon.Downloader.Tests.dproj">
@@ -498,12 +444,6 @@
             <ProjectGuid>{A2C45F42-707A-421D-9D8A-238AA562E77C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="App\READCOM_App.dproj">
-            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
     </ItemGroup>
@@ -568,23 +508,17 @@
             <Platforms>Win32</Platforms>
             <Enabled>False</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Cache\Zoomicon.Cache.dproj">
-            <ProjectGuid>{25125E12-0B28-40DA-8EB1-85081EA6CAE9}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
-            <Enabled>False</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Generics\Zoomicon.Generics.dproj">
-            <ProjectGuid>{4E802638-0807-4E61-80B9-F0D9A1704024}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>False</Enabled>
-        </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
             <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
             <Enabled>False</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="App\READCOM_App.dproj">
+            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win64</Platforms>
+            <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Downloader\Test\Zoomicon.Downloader.Tests.dproj">
             <ProjectGuid>{C516BAD6-362F-4F4C-89F3-B9225D62A793}</ProjectGuid>
@@ -597,12 +531,6 @@
             <Configurations>Debug</Configurations>
             <Platforms>Win32</Platforms>
             <Enabled>False</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="App\READCOM_App.dproj">
-            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win64</Platforms>
-            <Enabled>True</Enabled>
         </BuildGroupProject>
     </ItemGroup>
 </Project>
