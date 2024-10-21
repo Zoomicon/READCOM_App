@@ -1,0 +1,22 @@
+{
+	"hash": "d41d8cd98f00b204e9800998ecf8427e",
+	"updated": "2024-10-09T05:39:21.0987052+03:00",
+	"installedModules": {
+		"github.com/zoomicon/zoomicon.cache.delphi": {
+			"name": "zoomicon.cache.delphi",
+			"version": "main",
+			"hash": "a73e58d2bae57aafd007230f44e6218f",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
+		"github.com/zoomicon/zoomicon.generics.delphi": {
+			"name": "zoomicon.generics.delphi",
+			"version": "main",
+			"hash": "48beb0d9723f17c301a59485918c9561",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		}
+	}
+}

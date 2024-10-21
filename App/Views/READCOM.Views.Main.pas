@@ -195,7 +195,7 @@ implementation
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
     Zoomicon.Text, //for SafeTextToShortcut
     READCOM.App.Main, //for StorySource
-    READCOM.App.URLs, //for OpenURLinBrowser and DownloadFileWithFallbackCache
+    READCOM.App.URLs, //for OpenURLinBrowser
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TImageStoryItem

@@ -4,23 +4,12 @@
 unit READCOM.App.URLs;
 
 interface
-  uses
-    System.Classes, //for TMemoryStream
-    Zoomicon.Cache.Models; //for IFileCache
-
-  const
-    DOWNLOAD_TIMEOUT: Cardinal = 10000; //10 sec (can also use INFINITE)
 
   function IsURI(const Value: String): Boolean;
 
   /// <summary>Open URL on default browser</summary>
   /// <param name="url">Absolute address of the website to open in the web browser</param>
   procedure OpenURLinBrowser(const url: string);
-
-  function DownloadFileWithFallbackCache(const url: string): TMemoryStream;
-
-  var
-    FileCache: IFileCache;
 
 implementation
   uses
@@ -30,8 +19,6 @@ implementation
    System.UITypes,
    System.Variants,
    System.Net.URLClient, //for TURI
-   Zoomicon.Cache.Classes, //for TFileCache
-   Zoomicon.Downloader.Classes, //for TFileDownloader
   {$IF DEFINED(IOS)}
    macapi.helpers, iOSapi.Foundation, FMX.Helpers.iOS;
   {$ELSEIF DEFINED(ANDROID)}
@@ -74,20 +61,5 @@ begin
 end;
 
 {$endregion}
-
-function DownloadFileWithFallbackCache(const url: string): TMemoryStream;
-begin
-  result := TMemoryStream.Create; //caller should free this
-  var FileDownloader := TDownloader.Create(Application.MainForm, TURI.Create(url), result, FileCache, true); //AutoStart
-  try
-    FileDownloader.OnlyFallbackCache := true; //would use this if we only wanted to fallback to cache in case of download errors / offline case
-    FileDownloader.WaitForDownload(DOWNLOAD_TIMEOUT); //Note: this can freeze the main thread
-  finally
-    FreeAndNil(FileDownloader);
-  end;
-end;
-
-initialization
-  FileCache := TFileCache.Create;
 
 end.

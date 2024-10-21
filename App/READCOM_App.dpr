@@ -2,6 +2,17 @@
 //Source: https://github.com/zoomicon/READCOM_App
 //Author: George Birbilis (http://zoomicon.com)
 
+(*
+Dependencies:
++ GetIt Packages (GetIt Package Manager is included in Delphi IDE):
+  - TFrameStand
+  - SVGIconImageList
+  - CodeSite Express
+  - Boss Experts (optional)
++ Boss Packages (need Boss Package Manager):
+  - Zoomicon.Generics.Delphi
+*)
+
 program READCOM_App;
 
 {$R *.dres}
@@ -10,13 +21,9 @@ uses
   System.StartUpCopy,
   {$IFDEF DEBUG}
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
+  {$ENDIF }
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
-  {$ENDIF }
-  Zoomicon.Generics.Factories in '..\Zoomicon.Generics\Factories\Zoomicon.Generics.Factories.pas',
-  Zoomicon.Generics.Registries in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Registries.pas',
-  Zoomicon.Generics.Functors in '..\Zoomicon.Generics\Functors\Zoomicon.Generics.Functors.pas',
-  Zoomicon.Generics.Collections in '..\Zoomicon.Generics\Collections\Zoomicon.Generics.Collections.pas',
   Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
   Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
   Zoomicon.Helpers.RTL.StreamHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
@@ -33,10 +40,6 @@ uses
   Zoomicon.Manipulation.FMX.CustomManipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
   Zoomicon.Manipulation.FMX.Manipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas' {Manipulator: TFrame},
   Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
-  Zoomicon.Cache.Classes in '..\Zoomicon.Cache\Zoomicon.Cache.Classes.pas',
-  Zoomicon.Cache.Models in '..\Zoomicon.Cache\Zoomicon.Cache.Models.pas',
-  Zoomicon.Downloader.Classes in '..\Zoomicon.Downloader\Zoomicon.Downloader.Classes.pas',
-  Zoomicon.Downloader.Models in '..\Zoomicon.Downloader\Zoomicon.Downloader.Models.pas',
   Zoomicon.Media.FMX.MediaPlayerEx in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas',
   Zoomicon.Media.FMX.Models in '..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas',
   Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
@@ -64,8 +67,6 @@ uses
   READCOM.App.Main in 'READCOM.App.Main.pas',
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
-  FMX.Image32SVG in '..\3rdPartyLib\SVGIconImageList\Source\FMX.Image32SVG.pas',
-  Img32.SVG.Core in '..\3rdPartyLib\SVGIconImageList\Image32\source\Img32.SVG.Core.pas',
   Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas',
   Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas';
 
