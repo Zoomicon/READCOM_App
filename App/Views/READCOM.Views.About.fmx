@@ -52,7 +52,6 @@ object AboutFrame: TAboutFrame
       object btnHelp: TSpeedButton
         Action = actionHelp
         Anchors = [akRight, akBottom]
-        Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 16
         Margins.Left = 3.000000000000000000
@@ -65,6 +64,7 @@ object AboutFrame: TAboutFrame
         Size.Height = 53.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'searchtoolbutton'
+        TextSettings.Trimming = None
       end
       object GlyphLogo: TGlyph
         OnTap = GlyphLogoTap
@@ -166,6 +166,7 @@ object AboutFrame: TAboutFrame
         Size.PlatformDefault = False
         StyleLookup = 'stoptoolbutton'
         Text = 'stoptoolbutton'
+        TextSettings.Trimming = None
         OnClick = btnCloseClick
       end
     end

@@ -79,8 +79,29 @@ begin
   begin
     Parent := TheParent;
 
-    //Visible := VisibleFlag;
-    if not VisibleFlag then FreeAndNil(Frame); //destroy instead of hiding to save memory
+    Visible := VisibleFlag;
+    if not VisibleFlag then
+    begin
+      //Note: following code is needed, if we call FreeAndNil(Frame) it fails on MacOS-X cause TControl.MouseClick tries to call StartTriggerAnimation(Self, 'Pressed') at the already deleted button (cause its parent+owner frame was deleted by the Click event handler)
+      //message queuing logic based on TStyledControl.KillResourceLink
+      {$IFDEF ANDROID} //TODO: not sure why Android needs different treatment (there was mention of RSP-17938)
+      TThread.CreateAnonymousThread(
+        procedure
+        begin
+          TThread.Queue(nil,
+            procedure
+            begin
+              FreeAndNil(Frame); //destroy instead of hiding to save memory
+            end);
+        end).Start;
+      {$ELSE} //TODO: maybe also see RSP-27656
+      TThread.ForceQueue(nil, //ForceQueue will make sure that even when on main thread we'll queue the message instead of processing immediately
+        procedure
+        begin
+          FreeAndNil(Frame); //destroy instead of hiding to save memory
+        end);
+     {$ENDIF}
+    end;
   end;
 end;
 
