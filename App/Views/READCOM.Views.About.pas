@@ -79,10 +79,11 @@ begin
   begin
     Parent := TheParent;
 
-    Visible := VisibleFlag;
+    //Visible := VisibleFlag; //not needed, we're destroying the frame instead of hiding it
     if not VisibleFlag then
     begin
-      //Note: following code is needed, if we call FreeAndNil(Frame) it fails on MacOS-X cause TControl.MouseClick tries to call StartTriggerAnimation(Self, 'Pressed') at the already deleted button (cause its parent+owner frame was deleted by the Click event handler)
+      //Note: following code is needed, if we call FreeAndNil(Frame) it fails on MacOS-X cause TControl.MouseClick tries to call StartTriggerAnimation(Self, 'Pressed') at the already deleted button (cause its parent+owner frame was deleted by the Click event handler).
+      //...should probably make this some utility method like FreeAndNilAsync or FreeAndNilQueued or something
       //message queuing logic based on TStyledControl.KillResourceLink
       {$IFDEF ANDROID} //TODO: not sure why Android needs different treatment (there was mention of RSP-17938)
       TThread.CreateAnonymousThread(

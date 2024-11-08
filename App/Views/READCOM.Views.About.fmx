@@ -46,8 +46,8 @@ object AboutFrame: TAboutFrame
         Size.Height = 187.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        Viewport.Width = 472.000000000000000000
-        Viewport.Height = 183.000000000000000000
+        Viewport.Width = 492.000000000000000000
+        Viewport.Height = 187.000000000000000000
       end
       object btnHelp: TSpeedButton
         Action = actionHelp
