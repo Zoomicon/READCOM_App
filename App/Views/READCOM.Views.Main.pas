@@ -188,6 +188,7 @@ implementation
     System.Contnrs, //for TClassList
     System.IOUtils, //for TPath
     System.Math, //for Max
+    System.Net.HttpClient, //for HTTP/HTTPS url scheme support in TURLStream (Delphi 11.1+)
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
@@ -1173,7 +1174,7 @@ begin
         TWaitFrame.ShowModal(Self, false);
         StorySource := Url;
       end,
-      true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (it not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
+      true, //ASynchronizeProvide: call the anonymous proc (AProvider parameter) in the context of the main thread //IMPORTANT (if not done various AV errors occur later: we shouldn't touch the UI from other than the main thread)
       true //free on completion
     );
 
