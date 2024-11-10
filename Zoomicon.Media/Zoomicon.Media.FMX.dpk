@@ -42,7 +42,8 @@ contains
   Zoomicon.Media.FMX.DataBinding in 'Zoomicon.Media.FMX.DataBinding.pas',
   Zoomicon.Media.FMX.MediaDisplay in 'Zoomicon.Media.FMX.MediaDisplay.pas',
   Zoomicon.Media.FMX.MediaPlayerEx in 'Zoomicon.Media.FMX.MediaPlayerEx.pas',
-  Zoomicon.Media.FMX.FileChooser in 'Zoomicon.Media.FMX.FileChooser.pas' {FileChooser: TFrame};
+  Zoomicon.Media.FMX.FileChooser in 'Zoomicon.Media.FMX.FileChooser.pas' {FileChooser: TFrame},
+  Zoomicon.Media.FMX.ClickableGlyph in 'Zoomicon.Media.FMX.ClickableGlyph.pas';
 
 {$Description 'Zoomicon Media FMX Controls'}
 

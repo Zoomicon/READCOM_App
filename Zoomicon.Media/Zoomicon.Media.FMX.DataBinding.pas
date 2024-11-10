@@ -2,7 +2,7 @@ unit Zoomicon.Media.FMX.DataBinding;
 
 interface
   uses
-    System.Classes, //for TPersistent
+    System.Classes, //for TPersistent, GroupDescendentsWith, RegisterComponents
     Data.Bind.ObjectScope, //for TListBindSourceAdapter
     FMX.Graphics, //for TBitmap
     FMX.Objects, //for TImage
