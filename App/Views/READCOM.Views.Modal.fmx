@@ -10,7 +10,7 @@ object ModalFrame: TModalFrame
     Size.Height = 216.000000000000000000
     Size.PlatformDefault = False
     OnClick = rectBackgroundClick
-    object GlyphLogo: TGlyph
+    object GlyphIcon: TGlyph
       Align = Scale
       Size.Width = 240.000000000000000000
       Size.Height = 216.000000000000000000

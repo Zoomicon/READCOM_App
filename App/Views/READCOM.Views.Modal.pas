@@ -16,7 +16,7 @@ uses
 type
   TModalFrame = class(TFrame)
     rectBackground: TRectangle;
-    GlyphLogo: TGlyph;
+    GlyphIcon: TGlyph;
     procedure rectBackgroundClick(Sender: TObject);
 
   protected

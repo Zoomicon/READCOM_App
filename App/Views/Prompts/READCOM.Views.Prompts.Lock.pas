@@ -55,7 +55,7 @@ end;
 
 function TLockFrame.IsLocked: Boolean;
 begin
-  result := (GlyphLogo.ImageIndex = IMAGES_LOCKED);
+  result := (GlyphIcon.ImageIndex = IMAGES_LOCKED);
 end;
 
 procedure TLockFrame.SetLocked(const Value: Boolean);
@@ -67,7 +67,7 @@ begin
   else
     LImageIndex := IMAGES_UNLOCKED;
 
-  GlyphLogo.ImageIndex := LImageIndex;
+  GlyphIcon.ImageIndex := LImageIndex;
 end;
 
 {$endregion}

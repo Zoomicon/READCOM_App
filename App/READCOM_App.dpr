@@ -4,6 +4,12 @@
 
 (*
 Dependencies:
++ Design Packages (need to select all [or one by one], right-click and install at Projects tool window):
+  - Zoomicon.Zooming.FMX
+  - Zoomicon.Introspection.FMX
+  - Zoomicon.Manipulation.FMX
+  - Zoomicon.Text.FMX
+  - Zoomicon.Media.FMX
 + GetIt Packages (GetIt Package Manager is included in Delphi IDE):
   - TFrameStand
   - SVGIconImageList
@@ -68,7 +74,8 @@ uses
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
   Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas',
-  Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas';
+  Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas',
+  Zoomicon.Media.FMX.ClickableGlyph in '..\Zoomicon.Media\Zoomicon.Media.FMX.ClickableGlyph.pas';
 
 {$R *.res}
 

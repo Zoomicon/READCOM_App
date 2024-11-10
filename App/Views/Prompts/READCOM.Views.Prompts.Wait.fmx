@@ -1,6 +1,6 @@
 inherited WaitFrame: TWaitFrame
   inherited rectBackground: TRectangle
-    inherited GlyphLogo: TGlyph
+    inherited GlyphIcon: TGlyph
       ImageIndex = 31
     end
   end
