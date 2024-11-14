@@ -1274,6 +1274,10 @@ begin
   SaveCurrentState;
 end;
 
+{$endregion}
+
+{$region 'Command-line'}
+
 procedure TMainForm.CheckCommandLineActions;
 
   procedure CheckSaveThumbnail;
