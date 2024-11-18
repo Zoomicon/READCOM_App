@@ -4,7 +4,7 @@
 
 (*
 Dependencies:
-+ Design Packages (need to select all [or one by one], right-click and install at Projects tool window):
++ Design Packages (need to select all [or one by one], right-click and Install at Projects tool window):
   - Zoomicon.Zooming.FMX
   - Zoomicon.Introspection.FMX
   - Zoomicon.Manipulation.FMX
