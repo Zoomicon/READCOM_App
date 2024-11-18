@@ -12,8 +12,10 @@ uses
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, FMX.Edit,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Controls.Presentation, FMX.Layouts, FMX.StdActns,
-  FMX.MediaLibrary.Actions,
+  FMX.MediaLibrary, //probably needed by FMX.MediaLibrary.Actions (saving the frame in D12.2 puts it into "interface" section's uses clause, causing compilation error if already at "implementation" section's uses clause)
+  FMX.MediaLibrary.Actions, //for TTakePhotoFromCameraAction
   FMX.Objects,
+  //
   READCOM.Views.Options.StoryItemOptions,
   READCOM.App.Models;
 
@@ -46,7 +48,6 @@ type
 
 implementation
 uses
-  FMX.MediaLibrary,
   FMX.Platform;
 
 {$R *.fmx}

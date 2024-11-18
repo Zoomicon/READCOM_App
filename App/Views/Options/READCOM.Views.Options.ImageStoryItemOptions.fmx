@@ -30,13 +30,13 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
       object btnCamera: TSpeedButton
         Action = TakePhotoFromCameraAction
         Align = Client
-        Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 11
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
     end
   end
