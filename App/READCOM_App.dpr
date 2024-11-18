@@ -23,6 +23,7 @@ program READCOM_App;
 
 {$R *.dres}
 
+{$region 'Used units' ---------------------------------------------------------} //TODO: D12.2 doesn't seem to fold/expand regions in .dpr files
 uses
   System.StartUpCopy,
   {$IFDEF DEBUG}
@@ -48,8 +49,6 @@ uses
   Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
   Zoomicon.Media.FMX.MediaPlayerEx in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas',
   Zoomicon.Media.FMX.Models in '..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas',
-  Zoomicon.Puzzler.Classes in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas',
-  Zoomicon.Puzzler.Models in '..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   READCOM.App.Models in 'READCOM.App.Models.pas',
@@ -76,6 +75,7 @@ uses
   Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas',
   Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas',
   Zoomicon.Media.FMX.ClickableGlyph in '..\Zoomicon.Media\Zoomicon.Media.FMX.ClickableGlyph.pas';
+{$endregion}
 
 {$R *.res}
 

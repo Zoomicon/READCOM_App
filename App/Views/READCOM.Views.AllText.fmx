@@ -49,6 +49,7 @@ object AllTextFrame: TAllTextFrame
           Size.Width = 25.000000000000000000
           Size.Height = 17.000000000000000000
           Size.PlatformDefault = False
+          TextSettings.Trimming = None
           OnClick = btnApplyClick
         end
       end
@@ -60,6 +61,7 @@ object AllTextFrame: TAllTextFrame
         Size.PlatformDefault = False
         StyleLookup = 'stoptoolbutton'
         Text = 'stoptoolbutton'
+        TextSettings.Trimming = None
         OnClick = btnCloseClick
       end
     end

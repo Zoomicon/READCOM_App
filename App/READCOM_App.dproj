@@ -380,7 +380,6 @@
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
         <PF_AliasKeyPass>851D47CC5F96078ECF72E53AA45C7B88E44308587EF6ECF897E40FA78E273CF6DB5EA3DEE3551C63C1A4572EFACFC36ABAB3361C046522D316204584E58822A2C958F35CD507FA8FBFBAAF0007301D44921D3E131DF90939</PF_AliasKeyPass>
-        <BT_BuildType>AppStore</BT_BuildType>
         <Android_BackgroundColor>#FFFFFF</Android_BackgroundColor>
         <Android_DarkBackgroundColor>#000000</Android_DarkBackgroundColor>
     </PropertyGroup>
@@ -599,8 +598,6 @@
         <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Classes.pas"/>
-        <DCCReference Include="..\Zoomicon.Puzzler\Zoomicon.Puzzler.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
             <Form>Globals</Form>
@@ -727,9 +724,27 @@
                 <DeployFile LocalName="$(BDS)\bin\delphi_PROJECTICNS.icns" Configuration="Debug" Class="ProjectOSXResource"/>
                 <DeployFile LocalName="$(BDS)\bin\delphi_PROJECTICNS.icns" Configuration="Release" Class="ProjectOSXResource"/>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi-v7a\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiv7aFile"/>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi-v7a\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiv7aFile">
+                    <Platform Name="Android64">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile"/>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile">
+                    <Platform Name="Android64">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Configuration="Release" Class="AndroidLibnativeArmeabiFile"/>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile"/>
+                <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeMipsFile">
+                    <Platform Name="Android64">
+                        <RemoteName>libREADCOM_App.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Release" Class="AndroidLibnativeMipsFile"/>
                 <DeployFile LocalName="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile"/>
                 <DeployFile LocalName="$(BDS)\lib\android\release\armeabi\libnative-activity.so" Configuration="Debug" Class="AndroidLibnativeArmeabiFile">
@@ -1290,12 +1305,6 @@
                 </DeployFile>
                 <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Android">
-                        <RemoteName>libREADCOM_App.so</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Android\Release\libREADCOM_App.so" Configuration="Release" Class="ProjectOutput_Android32">
-                    <Platform Name="Android64">
                         <RemoteName>libREADCOM_App.so</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

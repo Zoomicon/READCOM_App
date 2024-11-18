@@ -5,18 +5,28 @@ unit READCOM.Views.StoryItem;
 
 interface
 
+{$region 'Used units' ---------------------------------------------------------}
 uses
   System.UITypes,
   System.SysUtils, System.Types, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.SVGIconImage, FMX.ExtCtrls, FMX.Controls.Presentation,
+  FMX.Objects,
+  FMX.ExtCtrls,
+  FMX.Controls.Presentation,
   FMX.Surfaces, //for TBitmapSurface
   FMX.Clipboard, //for IFMXExtendedClipboardService
-  READCOM.App.Models, //for IStoryItem
+  FMX.Layouts,
+  //
+  FMX.SVGIconImage,
+  //
   Zoomicon.Manipulation.FMX.CustomManipulator, //for TCustomManipulator
-  Zoomicon.Puzzler.Models, //for IHasTarget
+  //TODO: unused// Zoomicon.Puzzler.Models, //for IHasTarget, IMultipleHasTarget
+  //TODO: unused// Zoomicon.Puzzler.Classes, //for TControlHasTargetHelper, TControlMultipleHasTargetHelper
   Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.SelectNext //MUST DECLARE BEFORE Zoomicon.Puzzler.Classes
-  Zoomicon.Puzzler.Classes, Zoomicon.Media.FMX.MediaDisplay, FMX.Layouts; //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
+  Zoomicon.Media.FMX.MediaDisplay, //for TControlHasTargetHelper //MUST DECLARE AFTER Zoomicon.Helpers.FMX.Controls.ControlHelpers
+  //
+  READCOM.App.Models; //for IStoryItem
+{$endregion}
 
 resourcestring
   MSG_CONTENT_FORMAT_NOT_SUPPORTED = 'Content format not supported: %s';
@@ -24,7 +34,7 @@ resourcestring
 //TODO: override EnabledStored maybe to never store Enabled property (which is used in Edit mode - in that case should disable a child after pasting in edit mode)
 
 type
-  TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable, IHasTarget, IMultipleHasTarget) //IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper
+  TStoryItem = class(TCustomManipulator, IStoryItem, IClipboardEnabled, IStoreable (*, IHasTarget, IMultipleHasTarget*)) //TODO: from Zoomicon.Puzzler: unused (IHasTarget implemented via TControlHasTargetHelper //IMultipleHasTarget implemented via TControlMultipleHasTargetHelper)
     Border: TRectangle;
     Background: TRectangle;
     Glyph: TMediaDisplay;
@@ -204,7 +214,7 @@ type
     constructor Create(AOwner: TComponent; const AName: String); reintroduce; overload; virtual; //TODO: see why if we don't define "reintroduce" we're getting message "[dcc32 Warning] READCOM.Views.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
     destructor Destroy; override;
 
-    procedure Paint; override;
+    //procedure Paint; override; //TODO: not doing any custom drawing like target lines
 
     procedure PlayRandomAudioStoryItem;
 
@@ -430,7 +440,7 @@ end;
 
 destructor TStoryItem.Destroy;
 begin
-  Target := nil;
+  //TODO: Zoomicon.Puzzler unused for now// Target := nil;
   Active := false; //making sure an IStoryItem reference to this object isn't held by the class var FActiveStoryItem
   Home := false; //making sure an IStoryItem reference to this object isn't held by the class var FHomeStoryItem
 
@@ -517,11 +527,13 @@ begin
     inherited; //needed to add the top StoryItem to some container
 end;
 
+(*
 procedure TStoryItem.Paint;
 begin
   inherited;
   PaintTargetLines;
 end;
+*)
 
 procedure TStoryItem.PlayRandomAudioStoryItem;
 begin

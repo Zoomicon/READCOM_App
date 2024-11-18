@@ -4,9 +4,9 @@
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <PropertyGroup>
-        <DeviceId Condition="'$(Platform)'=='Android'"/>
-        <DeviceId Condition="'$(Platform)'=='Android64'"/>
-        <DeviceId Condition="'$(Platform)'=='iOSDevice64'">00008101-00121D8434D2001E</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android'">HGR4Z8ML</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='Android64'">HGR4Z8ML</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
         <DeviceId Condition="'$(Platform)'=='iOSSimARM64'">FB56CD0D-4EE1-4C34-94F3-E2490DE5E227</DeviceId>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
@@ -180,6 +180,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\library\lib\mips\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>AndroidLibnativeMipsFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="READCOM_App\LaunchGen\Android_NotificationIcon36.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -274,15 +283,6 @@
             <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libREADCOM_App.so</RemoteName>
-            <DeployClass>ProjectOutput_Android32</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -424,6 +424,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi-v7a\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiv7aFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Android64\Release\styles-v21.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>READCOM_App\res\values-v21\</RemoteDir>
             <RemoteName>styles.xml</RemoteName>
@@ -446,6 +455,15 @@
             <RemoteDir>READCOM_App\res\drawable-mdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon48</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>

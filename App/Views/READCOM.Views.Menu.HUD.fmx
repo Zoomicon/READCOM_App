@@ -7,7 +7,6 @@ object StoryHUD: TStoryHUD
   ShowHint = True
   object BtnMenu: TSpeedButton
     Action = actionMenu
-    Enabled = True
     Images = Globals.SVGIconImageList
     ImageIndex = -1
     Position.X = 3.000000000000000000
@@ -16,6 +15,7 @@ object StoryHUD: TStoryHUD
     Size.Height = 33.000000000000000000
     Size.PlatformDefault = False
     StyleLookup = 'drawertoolbutton'
+    TextSettings.Trimming = None
   end
   object layoutContent: TLayout
     Align = Client
@@ -44,7 +44,6 @@ object StoryHUD: TStoryHUD
       FlowDirection = LeftToRight
       object btnNew: TSpeedButton
         Action = actionNew
-        Enabled = True
         Hint = 
           'Load Default Story'#13#13'Clears current contents and loads the Defaul' +
           't Story'
@@ -60,10 +59,10 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'priortoolbutton'
+        TextSettings.Trimming = None
       end
       object btnLoad: TSpeedButton
         Action = actionLoad
-        Enabled = True
         Hint = 
           'Load Story'#13#13'Clears current contents and loads a Story'#39's contents' +
           ' from a .readcom file'
@@ -79,10 +78,10 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnSave: TSpeedButton
         Action = actionSave
-        Enabled = True
         Hint = 'Save Story'#13#13'Saves current Story contents to a .readcom file'
         Images = Globals.SVGIconImageList
         ImageIndex = 7
@@ -96,6 +95,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnToggleEditMode: TSpeedButton
         StaysPressed = True
@@ -113,6 +113,7 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'escapetoolbutton'
         Text = 'Edit'
+        TextSettings.Trimming = None
         OnClick = btnToggleEditModeClick
       end
       object btnToggleStructureVisible: TSpeedButton
@@ -134,6 +135,7 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'bookmarkstoolbutton'
         Text = 'Structure'
+        TextSettings.Trimming = None
         OnClick = btnToggleStructureVisibleClick
       end
       object btnToggleTargetsVisible: TSpeedButton
@@ -156,6 +158,7 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
         Text = 'Targets'
+        TextSettings.Trimming = None
         Visible = False
         OnClick = btnToggleTargetsVisibleClick
       end
@@ -177,11 +180,11 @@ object StoryHUD: TStoryHUD
         Size.PlatformDefault = False
         StyleLookup = 'playtoolbutton'
         Text = 'Story Timer'
+        TextSettings.Trimming = None
         OnClick = btnToggleUseStoryTimerClick
       end
       object btnNextTheme: TSpeedButton
         Action = actionNextTheme
-        Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 26
         Margins.Left = 3.000000000000000000
@@ -194,10 +197,10 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnAbout: TSpeedButton
         Action = actionAbout
-        Enabled = True
         Hint = 'About'#13#13'Shows application version and related information'
         Images = Globals.SVGIconImageList
         ImageIndex = 15
@@ -211,6 +214,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'infotoolbutton'
+        TextSettings.Trimming = None
       end
     end
     object layoutButtonsEdit: TFlowLayout
@@ -228,7 +232,6 @@ object StoryHUD: TStoryHUD
       object btnAdd: TSpeedButton
         Action = actionAdd
         Align = Client
-        Enabled = True
         Hint = 
           'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
           ' audio, text) or saved StoryItems (.readcom files). Respective S' +
@@ -241,11 +244,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'additembutton'
+        TextSettings.Trimming = None
       end
       object btnAddImageStoryItem: TSpeedButton
         Action = actionAddImageStoryItem
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 
           'Add Image'#13#13'Adds an ImageStoryItem placeholder into the edited St' +
           'oryItem'
@@ -261,11 +264,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnAddTextStoryItem: TSpeedButton
         Action = actionAddTextStoryItem
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 
           'Add Text'#13#13'Adds a TextStoryItem placeholder into the edited Story' +
           'Item'
@@ -281,11 +284,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnDelete: TSpeedButton
         Action = actionDelete
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 'Delete'#13#13'Delete the edited StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 8
@@ -299,12 +302,12 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
         Visible = False
       end
       object btnCut: TSpeedButton
         Action = actionCut
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 'Cut'#13#13'Moves the edited StoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 25
@@ -318,11 +321,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnCopy: TSpeedButton
         Action = actionCopy
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 'Copy'#13#13'Copies the edited StoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 17
@@ -336,11 +339,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnPaste: TSpeedButton
         Action = actionPaste
         Anchors = [akTop, akRight]
-        Enabled = True
         Hint = 
           'Paste'#13#13'Pastes content from the Clipboard into the edited StoryIt' +
           'em'
@@ -356,6 +359,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnFlipHorizontally: TSpeedButton
         Anchors = [akTop, akRight]
@@ -372,6 +376,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object btnFlipVertically: TSpeedButton
         Anchors = [akTop, akRight]
@@ -388,6 +393,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
       object comboForeColor: TComboColorBox
         Color = claWhite
@@ -418,7 +424,6 @@ object StoryHUD: TStoryHUD
       object btnOptions: TSpeedButton
         Action = actionOptions
         Anchors = [akTop, akRight]
-        Enabled = True
         Images = Globals.SVGIconImageList
         ImageIndex = 29
         Margins.Left = 3.000000000000000000
@@ -431,6 +436,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
+        TextSettings.Trimming = None
       end
     end
     object layoutButtonsNavigation: TLayout
@@ -447,7 +453,6 @@ object StoryHUD: TStoryHUD
       object btnNext: TSpeedButton
         Action = actionNext
         Align = MostRight
-        Enabled = True
         Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
         Images = Globals.SVGIconImageList
         ImageIndex = 2
@@ -456,11 +461,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'arrowrighttoolbutton'
+        TextSettings.Trimming = None
       end
       object btnPrevious: TSpeedButton
         Action = actionPrevious
         Align = MostLeft
-        Enabled = True
         Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
         Images = Globals.SVGIconImageList
         ImageIndex = 1
@@ -468,11 +473,11 @@ object StoryHUD: TStoryHUD
         Size.Height = 42.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'arrowlefttoolbutton'
+        TextSettings.Trimming = None
       end
       object btnHome: TSpeedButton
         Action = actionHome
         Align = Center
-        Enabled = True
         Hint = 'Home'#13#13'Activates Home StoryItem'
         Images = Globals.SVGIconImageList
         ImageIndex = 13
@@ -480,6 +485,7 @@ object StoryHUD: TStoryHUD
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'refreshtoolbutton'
+        TextSettings.Trimming = None
       end
     end
   end

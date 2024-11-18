@@ -42,6 +42,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
         Size.PlatformDefault = False
         StyleLookup = 'actiontoolbutton'
         Text = 'Change URL Action'
+        TextSettings.Trimming = None
         OnClick = actionToggleEditableExecute
       end
       object LayoutHorzAlign: TFlowLayout
@@ -68,6 +69,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleAlignClick
         end
         object btnToggleAlignCenter: TSpeedButton
@@ -85,6 +87,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleAlignClick
         end
         object btnToggleAlignRight: TSpeedButton
@@ -102,6 +105,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleAlignClick
         end
       end
@@ -126,6 +130,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleBoldClick
         end
         object btnToggleItalic: TSpeedButton
@@ -140,6 +145,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleItalicClick
         end
         object btnToggleUnderline: TSpeedButton
@@ -154,6 +160,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleUnderlineClick
         end
         object btnToggleStrikeout: TSpeedButton
@@ -168,6 +175,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Size.PlatformDefault = False
           StyleLookup = 'actiontoolbutton'
           Text = 'Change URL Action'
+          TextSettings.Trimming = None
           OnClick = btnToggleStrikeoutClick
         end
       end
