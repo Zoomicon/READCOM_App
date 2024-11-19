@@ -7,7 +7,7 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1741843</TargetedPlatforms>
+        <TargetedPlatforms>693267</TargetedPlatforms>
         <AppType>Package</AppType>
         <ProjectName Condition="'$(ProjectName)'==''">Zoomicon.Media.FMX</ProjectName>
     </PropertyGroup>
@@ -197,20 +197,19 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="Zoomicon.Generics.dcp"/>
         <DCCReference Include="bindengine.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="bindcomp.dcp"/>
         <DCCReference Include="bindcompfmx.dcp"/>
         <DCCReference Include="SVGImage32Package.dcp"/>
         <DCCReference Include="SVGIconImageListFMX.dcp"/>
+        <DCCReference Include="Zoomicon.Generics.dcp"/>
         <DCCReference Include="Zoomicon.Media.FMX.Models.pas"/>
         <DCCReference Include="Zoomicon.Media.FMX.DataBinding.pas"/>
         <DCCReference Include="Zoomicon.Media.FMX.MediaDisplay.pas"/>
         <DCCReference Include="Zoomicon.Media.FMX.MediaPlayerEx.pas"/>
         <DCCReference Include="Zoomicon.Media.FMX.FileChooser.pas">
             <Form>FileChooser</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Zoomicon.Media.FMX.ClickableGlyph.pas"/>
@@ -252,6 +251,12 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\Zoomicon.Media.FMX.bpl" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\23.0\Bpl\Win64\Zoomicon.Media.FMX.bpl" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>Zoomicon.Media.FMX.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\23.0\Bpl\Zoomicon.Media.FMX.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Zoomicon.Media.FMX.bpl</RemoteName>
@@ -1110,7 +1115,7 @@
                 <Platform value="OSXARM64">True</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">True</Platform>
-                <Platform value="Win64x">True</Platform>
+                <Platform value="Win64x">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

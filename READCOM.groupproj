@@ -118,50 +118,100 @@
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms'">
+        <BuildGroupProject Include="Zoomicon.Text\Zoomicon.Text.dproj">
+            <ProjectGuid>{024B7E47-45DD-414D-AB87-1A51D735D639}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
+            <ProjectGuid>{B42CA181-8650-490B-BB64-1D04F3C529A9}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
             <ProjectGuid>{15A4C580-B074-4A34-9E19-5DDBAAED1C56}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
             <ProjectGuid>{E21B9910-DD63-4407-8956-7913CC34AAE8}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
+            <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
             <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="App\READCOM_App.dproj">
+            <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
             <ProjectGuid>{8AEEF5E7-E3D7-4CE9-93CD-80F346D9C7FF}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Configurations>Release</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
+    </ItemGroup>
+    <ItemGroup Condition="'$(BuildGroup)'=='All Platforms - Debug'">
         <BuildGroupProject Include="Zoomicon.Text\Zoomicon.Text.dproj">
             <ProjectGuid>{024B7E47-45DD-414D-AB87-1A51D735D639}</ProjectGuid>
             <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
             <ProjectGuid>{B42CA181-8650-490B-BB64-1D04F3C529A9}</ProjectGuid>
             <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
+            <ProjectGuid>{15A4C580-B074-4A34-9E19-5DDBAAED1C56}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
+            <ProjectGuid>{E21B9910-DD63-4407-8956-7913CC34AAE8}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
             <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
             <Configurations>Debug</Configurations>
-            <Platforms>Win32</Platforms>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
+            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
         <BuildGroupProject Include="App\READCOM_App.dproj">
             <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
+            <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
+            <ProjectGuid>{8AEEF5E7-E3D7-4CE9-93CD-80F346D9C7FF}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>

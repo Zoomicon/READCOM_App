@@ -5,7 +5,7 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>693267</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>READCOM_App.dpr</MainSource>
@@ -467,9 +467,9 @@
         <AUP_ACCESS_FINE_LOCATION>false</AUP_ACCESS_FINE_LOCATION>
         <AUP_CALL_PHONE>false</AUP_CALL_PHONE>
         <AUP_READ_PHONE_STATE>false</AUP_READ_PHONE_STATE>
-        <BT_BuildType>AppStore</BT_BuildType>
         <Android_BackgroundColor>#FFFFFF</Android_BackgroundColor>
         <Android_DarkBackgroundColor>#000000</Android_DarkBackgroundColor>
+        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_iOSDevice64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -507,7 +507,7 @@
         <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
         <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
         <PF_StapleTicket>true</PF_StapleTicket>
-        <BT_BuildType>DeveloperID</BT_BuildType>
+        <BT_BuildType>AppStore</BT_BuildType>
         <VerInfo_Build>2</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
     </PropertyGroup>
@@ -522,7 +522,7 @@
         <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
         <PF_StapleTicket>true</PF_StapleTicket>
         <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
-        <BT_BuildType>DeveloperID</BT_BuildType>
+        <BT_BuildType>AppStore</BT_BuildType>
         <VerInfo_Build>2</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
         <PF_DevSandBox>Apple Distribution: Georgios Birmpilis (KVJTZJTSS6)</PF_DevSandBox>
@@ -542,6 +542,7 @@
         <PF_UWPPackageDisplayName>READ-COM: Reading Communities</PF_UWPPackageDisplayName>
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
         <VerInfo_Release>3</VerInfo_Release>
+        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -553,6 +554,7 @@
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
         <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.2);FileVersion=0.7.2.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
         <VerInfo_Release>1</VerInfo_Release>
+        <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

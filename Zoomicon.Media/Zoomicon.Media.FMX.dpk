@@ -29,13 +29,15 @@ package Zoomicon.Media.FMX;
 
 requires
   rtl,
-  Zoomicon.Generics,
   bindengine,
   fmx,
   bindcomp,
   bindcompfmx,
+  {$IFDEF WIN32} //IGNORE ANY WARNINGS (PRESS CANCEL AND THEN YES) BY DELPHI IDE TRYING TO ADD THESE TWO PACKAGES. KEEP THEM ONLY FOR WIN32 (FOR INSTALLING IN DELPHI IDE). ELSE IT WILL SAYS AT BUILD IT CAN'T FIND THOSE PACKAGES. WITHOUT THEM IT IMPLICITLY IMPORTS THE NEEDED UNITS ON BUILD
   SVGImage32Package,
-  SVGIconImageListFMX;
+  SVGIconImageListFMX,
+  {$ENDIF}
+  Zoomicon.Generics;
 
 contains
   Zoomicon.Media.FMX.Models in 'Zoomicon.Media.FMX.Models.pas',
