@@ -1818,31 +1818,34 @@ begin
 end;
 
 function TStoryItem.SaveToString: String;
+var
+  BinStream: TMemoryStream;
+  StrStream: TStringStream;
 begin
-  var BinStream := TMemoryStream.Create;
-  var s: String;
   try
-    var StrStream := TStringStream.Create(s);
-    try
-      SaveReadComBin(BinStream); //need to save to binary first (to memory)... //TODO: save to temp file (esp. for memory constrained devices) instead?
-      BinStream.Seek(0, soFromBeginning);
-      ObjectBinaryToText(BinStream, StrStream); //...then convert to text format
-      StrStream.Seek(0, soFromBeginning);
-      result:= StrStream.DataString;
-    finally
-      StrStream.Free;
-    end;
+    BinStream := TMemoryStream.Create;
+    SaveReadComBin(BinStream); //need to save to binary first (to memory)... //TODO: save to temp file (esp. for memory constrained devices) instead?
+    BinStream.Seek(0, soFromBeginning);
+
+    StrStream := TStringStream.Create('');
+    ObjectBinaryToText(BinStream, StrStream); //...then convert to text format
+
+    StrStream.Seek(0, soFromBeginning); //position back to start of stream
+    result:= StrStream.DataString; //get as a string
   finally
-    BinStream.Free;
+    //freeing (will check internally if not nil) in reverse order
+    FreeAndNil(StrStream);
+    FreeAndNil(BinStream);
   end;
 
   Log(result);
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);
+var writer: TStreamWriter;
 begin
-  var writer := TStreamWriter.Create(Stream);
   try
+    writer := TStreamWriter.Create(Stream);
     writer.Write(SaveToString); //SaveToString uses SaveReadComBin (then converts to String)
   finally
     FreeAndNil(writer); //the writer doesn't own the stream by default, so this won't close the stream
