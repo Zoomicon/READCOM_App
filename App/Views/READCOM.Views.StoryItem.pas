@@ -1879,15 +1879,17 @@ begin
 end;
 
 procedure TStoryItem.Save(const Filepath: String);
+var OutputFileStream: TFileStream;
 begin
-  var OutputFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
   try
-   var ContentFormat := ExtractFileExt(Filepath);
+   OutputFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
 
+   var ContentFormat := ExtractFileExt(Filepath);
    if ContentFormat = EXT_HTML then //must check here instead of at Save(Stream, ContentFormat), since saving to HTML requires a filepath (we don't save images encoded inside the HTML for size reasons)
     SaveHTML(OutputFileStream, Filepath + '_Images')
    else
     Save(OutputFileStream, ContentFormat);
+
   finally
     FreeAndNil(OutputFileStream);
   end;
@@ -1902,8 +1904,9 @@ begin
 
   //TThread.Queue(nil, procedure
     //begin
-      var thumb := MakeThumbnail(MaxWidth, MaxHeight);
+      var thumb: TBitmap;
       try
+        thumb := MakeThumbnail(MaxWidth, MaxHeight);
         thumb.SaveToFile(Filepath); //Max thumb size 200x200
       finally
         FreeAndNil(thumb);
@@ -1915,8 +1918,7 @@ begin
 end;
 
 procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
-  var
-    LHTMLWriter: TStreamWriter;
+  var LHTMLWriter: TStreamWriter;
 
   procedure SaveHTMLImage(const AStoryItem: IStoryItem; const AIndex: Integer);
   begin
@@ -1933,8 +1935,8 @@ procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; c
   end;
 
 begin
-  LHTMLWriter := TStreamWriter.Create(Stream, TEncoding.UTF8);
   try
+    LHTMLWriter := TStreamWriter.Create(Stream, TEncoding.UTF8);
 
     with LHTMLWriter do
     begin
