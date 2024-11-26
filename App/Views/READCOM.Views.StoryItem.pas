@@ -1701,9 +1701,10 @@ begin
 end;
 
 class function TStoryItem.LoadNew(const Stream: TStream; const ContentFormat: String): TStoryItem;
+var tempStoryItem: TStoryItem;
 begin
-  var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
   try
+    tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
     result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
   finally
     FreeAndNil(tempStoryItem); //releasing the tempStoryItem
@@ -1711,9 +1712,10 @@ begin
 end;
 
 class function TStoryItem.LoadNew(const Filepath: String; const ContentFormat: String = EXT_READCOM): TStoryItem;
+var tempStoryItem: TStoryItem;
 begin
-  var tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
   try
+    tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
     result := TStoryItem(tempStoryItem.Load(Filepath, true)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
   finally
     FreeAndNil(tempStoryItem); //releasing the tempStoryItem
@@ -1721,20 +1723,23 @@ begin
 end;
 
 function TStoryItem.LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
+var
+  StrStream: TStringStream;
+  BinStream: TMemoryStream;
 begin
-  var StrStream := TStringStream.Create(Data);
   try
-    var BinStream := TMemoryStream.Create;
-    try
-      Log(StrStream.DataString);
-      ObjectTextToBinary(StrStream, BinStream); //may throw exception here
-      BinStream.Seek(0, soFromBeginning);
-      result := LoadReadComBin(BinStream, CreateNew).View;
-    finally
-      BinStream.Free;
-    end;
+    StrStream := TStringStream.Create(Data);
+    Log(StrStream.DataString);
+
+    BinStream := TMemoryStream.Create;
+    ObjectTextToBinary(StrStream, BinStream); //may throw exception here
+
+    BinStream.Seek(0, soFromBeginning); //position back to start of stream
+    result := LoadReadComBin(BinStream, CreateNew).View;
   finally
-    StrStream.Free;
+    //freeing (will check internally if not nil) in reverse order
+    FreeAndNil(BinStream);
+    FreeAndNil(StrStream);
   end;
 end;
 
@@ -1751,10 +1756,14 @@ end;
 function TStoryItem.LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; //TODO: could make this return TObject to support loading any Delphi object stream
 
   procedure RemoveStoryItems; //TODO: add to IStoryItem and implement at TStoryItem level?
+  var StoryItemViews: TObjectListEx<TStoryItem>;
   begin
-    var StoryItemViews := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls);
-    StoryItemViews.FreeAll; //this will end up having RemoveObject called for each StoryItem (which will also remove from StoryItems and AudioStoryItems [if it is such] lists)
-    FreeAndNil(StoryItemViews);
+    try
+      StoryItemViews := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls); //TODO: make some reusable property?
+      StoryItemViews.FreeAll; //this will end up having RemoveObject called for each StoryItem (which will also remove from StoryItems and AudioStoryItems [if it is such] lists)
+    finally
+      FreeAndNil(StoryItemViews);
+    end;
   end;
 
 var Instance: TStoryItem;
@@ -1986,9 +1995,10 @@ begin
 end;
 
 procedure TStoryItem.SaveHTML(const Filepath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
+var LHtmlFileStream: TFileStream;
 begin
-  var LHtmlFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
   try
+    LHtmlFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: fmShareDenyNone may be needed for Android //Note: fmCreate clears (overwrites) any existing content
     SaveHtml(LHtmlFileStream, Filepath + '_Images', MaxImageWidth, MaxImageHeight);
   finally
     FreeAndNil(LHtmlFileStream);
