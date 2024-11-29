@@ -7,7 +7,7 @@
         <DeviceId Condition="'$(Platform)'=='Android'">HGR4Z8ML</DeviceId>
         <DeviceId Condition="'$(Platform)'=='Android64'">HGR4Z8ML</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
-        <DeviceId Condition="'$(Platform)'=='iOSSimARM64'">FB56CD0D-4EE1-4C34-94F3-E2490DE5E227</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='iOSSimARM64'"/>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
         <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Release'">
@@ -283,6 +283,15 @@
             <RemoteDir>READCOM_App\res\drawable-large\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android\Release\libREADCOM_App.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libREADCOM_App.so</RemoteName>
+            <DeployClass>ProjectOutput_Android32</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
