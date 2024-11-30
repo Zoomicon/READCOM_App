@@ -13,7 +13,7 @@ uses
   FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
   FMX.Layouts, System.Actions, FMX.ActnList,
   FMX.MultiView, SubjectStand, FrameStand,
-  READCOM.Views.About, //for TAboutFrame
+  READCOM.Views.Dialogs.About, //for TAboutFrame
   READCOM.App.Globals, //for Globals.SVGIconImageList
   FMX.Colors;
 

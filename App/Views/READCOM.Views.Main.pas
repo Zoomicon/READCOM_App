@@ -201,7 +201,7 @@ implementation
     READCOM.App.Messages,
     READCOM.Views.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.TextStoryItem, //for TTextStoryItem
-    READCOM.Views.AllText, //for TAllTextFrame
+    READCOM.Views.Dialogs.AllText, //for TAllTextFrame
     READCOM.Views.Prompts.Wait, //for TWaitFrame
     READCOM.Views.Prompts.Lock, //for TLockFrame
     READCOM.Views.Prompts.Rotate; //for TRotateFrame

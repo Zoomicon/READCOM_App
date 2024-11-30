@@ -636,11 +636,11 @@
         <DCCReference Include="Views\READCOM.Views.Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.About.pas">
+        <DCCReference Include="Views\Dialogs\READCOM.Views.Dialogs.About.pas">
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.AllText.pas">
+        <DCCReference Include="Views\Dialogs\READCOM.Views.Dialogs.AllText.pas">
             <Form>AllTextFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>

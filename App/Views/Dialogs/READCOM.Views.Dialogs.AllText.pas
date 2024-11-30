@@ -1,7 +1,7 @@
 //Description: READ-COM About dialog
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.AllText;
+unit READCOM.Views.Dialogs.AllText;
 
 interface
   uses
