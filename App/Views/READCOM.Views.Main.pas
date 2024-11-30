@@ -14,7 +14,7 @@ uses
   Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
   READCOM.App.Globals, //for Globals.SVGIconImageList
   READCOM.App.Models, //for IStory, ISToryItem
-  READCOM.Views.StoryItem, //for TStoryItem
+  READCOM.Views.StoryItems.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
@@ -199,8 +199,8 @@ implementation
     READCOM.App.URLs, //for OpenURLinBrowser
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.App.Messages,
-    READCOM.Views.ImageStoryItem, //for TImageStoryItem
-    READCOM.Views.TextStoryItem, //for TTextStoryItem
+    READCOM.Views.StoryItems.ImageStoryItem, //for TImageStoryItem
+    READCOM.Views.StoryItems.TextStoryItem, //for TTextStoryItem
     READCOM.Views.Dialogs.AllText, //for TAllTextFrame
     READCOM.Views.Prompts.Wait, //for TWaitFrame
     READCOM.Views.Prompts.Lock, //for TLockFrame

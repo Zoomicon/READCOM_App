@@ -4,7 +4,7 @@
         <ProjectVersion>20.2</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>693267</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -563,6 +563,13 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas">
             <Form>MessageForm</Form>
         </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas">
+            <Form>FMXObjectDebuggerFrame</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
+            <Form>ObjectDebuggerFMXForm</Form>
+        </DCCReference>
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas"/>
         <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas"/>
@@ -612,23 +619,23 @@
             <Form>TextStoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.StoryItem.pas">
+        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.StoryItem.pas">
             <Form>StoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.ImageStoryItem.pas">
+        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.ImageStoryItem.pas">
             <Form>ImageStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.AudioStoryItem.pas">
+        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.AudioStoryItem.pas">
             <Form>AudioStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.TextStoryItem.pas">
+        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.TextStoryItem.pas">
             <Form>TextStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.StoryItemFactory.pas"/>
+        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.StoryItemFactory.pas"/>
         <DCCReference Include="Views\READCOM.Views.Menu.HUD.pas">
             <Form>StoryHUD</Form>
             <DesignClass>TFrame</DesignClass>
@@ -1943,8 +1950,20 @@
                 </DeployFile>
                 <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo150.png" Configuration="Debug" Class="UWP_DelphiLogo150"/>
                 <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo150.png" Configuration="Release" Class="UWP_DelphiLogo150"/>
+                <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo150.png" Configuration="Release" Class="UWP_DelphiLogo150">
+                    <Platform Name="Win32">
+                        <RemoteName>Logo150x150.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo44.png" Configuration="Debug" Class="UWP_DelphiLogo44"/>
                 <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo44.png" Configuration="Release" Class="UWP_DelphiLogo44"/>
+                <DeployFile LocalName="READCOM_App\LaunchGen\UWP_DelphiLogo44.png" Configuration="Release" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win32">
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="READCOM_App\LaunchGen\iOS_AppStore1024.png" Configuration="Debug" Class="iOS_AppStore1024"/>
                 <DeployFile LocalName="READCOM_App\LaunchGen\iOS_AppStore1024.png" Configuration="Debug" Class="iOS_AppStore1024">
                     <Platform Name="iOSDevice64">
@@ -2418,6 +2437,11 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="Win32\Release\AppxManifest.xml" Configuration="Release" Class="ProjectUWPManifest"/>
+                <DeployFile LocalName="Win32\Release\AppxManifest.xml" Configuration="Release" Class="ProjectUWPManifest">
+                    <Platform Name="Win32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Release\READCOM_App.exe" Configuration="Release" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win32\Release\READCOM_App.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">

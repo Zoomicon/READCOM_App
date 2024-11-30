@@ -1,7 +1,7 @@
 //Description: READ-COM AudioStoryItem View
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.AudioStoryItem;
+unit READCOM.Views.StoryItems.AudioStoryItem;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.ExtCtrls, FMX.Objects,
   FMX.Media,
-  READCOM.Views.StoryItem, //for TStoryItem
+  READCOM.Views.StoryItems.StoryItem, //for TStoryItem
   Zoomicon.Media.FMX.Models, //for IMediaPlayer
   Zoomicon.Media.FMX.MediaPlayerEx, //for TMediaPlayerEx
   READCOM.App.Models, FMX.Layouts, Zoomicon.Media.FMX.MediaDisplay; //for TStoryItem, IAudioStoryItem, IStoryItem
@@ -108,7 +108,7 @@ type
 
 implementation
   uses
-    READCOM.Views.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Views.StoryItems.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
 
 {$R *.fmx}
 

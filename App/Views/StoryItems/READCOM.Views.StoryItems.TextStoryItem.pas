@@ -1,7 +1,7 @@
 //Description: READ-COM TextStoryItem View
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.TextStoryItem;
+unit READCOM.Views.StoryItems.TextStoryItem;
 
 interface
 
@@ -15,8 +15,8 @@ uses
   FMX.Clipboard, //for IFMXExtendedClipboardService
   Zoomicon.Media.FMX.MediaDisplay, //for TMediaDisplay
   READCOM.App.Models, //for IStoryItem
-  READCOM.Views.StoryItem, //for TStoryItem
-  READCOM.Views.ImageStoryItem; //for TImageStoryItem
+  READCOM.Views.StoryItems.StoryItem, //for TStoryItem
+  READCOM.Views.StoryItems.ImageStoryItem; //for TImageStoryItem
 
 const
   EXT_TXT = '.txt';
@@ -139,7 +139,7 @@ implementation
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Text, //for
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
-    READCOM.Views.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
+    READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
     READCOM.App.Debugging; //for Log
 
 {$R *.fmx}

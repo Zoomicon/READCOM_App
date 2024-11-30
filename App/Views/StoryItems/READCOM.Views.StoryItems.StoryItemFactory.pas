@@ -1,7 +1,7 @@
 //Description: READ-COM StoryItem Factory
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.StoryItemFactory;
+unit READCOM.Views.StoryItems.StoryItemFactory;
 
 interface
   uses

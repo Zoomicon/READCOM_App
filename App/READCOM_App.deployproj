@@ -104,11 +104,38 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
+        <DeployFile Include="READCOM_App\LaunchGen\UWP_DelphiLogo150.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\Assets\</RemoteDir>
+            <RemoteName>Logo150x150.png</RemoteName>
+            <DeployClass>UWP_DelphiLogo150</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Debug'">
             <RemoteDir>READCOM_App\</RemoteDir>
             <RemoteName>Default.readcom</RemoteName>
             <DeployClass>ProjectFile</DeployClass>
             <Operation>0</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Win32\Release\AppxManifest.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\</RemoteDir>
+            <RemoteName>AppxManifest.xml</RemoteName>
+            <DeployClass>ProjectUWPManifest</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="READCOM_App\LaunchGen\UWP_DelphiLogo44.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>READCOM_App\Assets\</RemoteDir>
+            <RemoteName>Logo44x44.png</RemoteName>
+            <DeployClass>UWP_DelphiLogo44</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>

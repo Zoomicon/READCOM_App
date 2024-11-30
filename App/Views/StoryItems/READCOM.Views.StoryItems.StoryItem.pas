@@ -1,7 +1,7 @@
 //Description: READ-COM StoryItem View
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.StoryItem;
+unit READCOM.Views.StoryItems.StoryItem;
 
 interface
 
@@ -211,7 +211,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; const AName: String); reintroduce; overload; virtual; //TODO: see why if we don't define "reintroduce" we're getting message "[dcc32 Warning] READCOM.Views.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
+    constructor Create(AOwner: TComponent; const AName: String); reintroduce; overload; virtual; //TODO: see why if we don't define "reintroduce" we're getting message "[dcc32 Warning] READCOM.Views.StoryItems.StoryItem.pas(148): W1010 Method 'Create' hides virtual method of base type 'TCustomManipulator'" even though "virtual" was added here (ancestor has no such constructor to use "override" instead)
     destructor Destroy; override;
 
     //procedure Paint; override; //TODO: not doing any custom drawing like target lines
@@ -334,7 +334,7 @@ implementation
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStreamErrorHelper.ReadComponent
     Zoomicon.Text, //for GetLines
     READCOM.App.Debugging, //for Log
-    READCOM.Views.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
+    READCOM.Views.StoryItems.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
 
 {$R *.fmx}

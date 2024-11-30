@@ -1,7 +1,7 @@
 //Description: READ-COM ImageStoryItem View
 //Author: George Birbilis (http://zoomicon.com)
 
-unit READCOM.Views.ImageStoryItem;
+unit READCOM.Views.StoryItems.ImageStoryItem;
 
 interface
 
@@ -15,7 +15,7 @@ uses
   FMX.SVGIconImage, //for TSVGIconImage
   Zoomicon.Media.FMX.Models, //for EXT_XX constants
   READCOM.App.Models, //for IImageStoryItem
-  READCOM.Views.StoryItem, Zoomicon.Media.FMX.MediaDisplay, FMX.Layouts; //for TStoryItem
+  READCOM.Views.StoryItems.StoryItem, Zoomicon.Media.FMX.MediaDisplay, FMX.Layouts; //for TStoryItem
 
 {$REGION 'CONSTANTS'}
 
@@ -107,7 +107,7 @@ type
 implementation
   uses
     READCOM.Views.Options.ImageStoryItemOptions, //for TImageStoryItemOptions
-    READCOM.Views.StoryItemFactory, //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, StoryItemAddFileFilter
     Zoomicon.Text; //for ReadAllText
 
 {$R *.fmx}
