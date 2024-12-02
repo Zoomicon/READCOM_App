@@ -460,8 +460,8 @@ end;
 
 procedure TStoryItem.DoAddObject(const AObject: TFmxObject);
   procedure AddToStoryItems;
+  var StoryItem: IStoryItem;
   begin
-    var StoryItem: IStoryItem;
     if Supports(AObject, IStoryItem, StoryItem) then
     begin
       FStoryItems.Add(StoryItem);
@@ -470,8 +470,8 @@ procedure TStoryItem.DoAddObject(const AObject: TFmxObject);
   end;
 
   procedure AddToAudioStoryItems;
+  var AudioStoryItem: IAudioStoryItem;
   begin
-    var AudioStoryItem: IAudioStoryItem;
     if Supports(AObject, IAudioStoryItem, AudioStoryItem) then
       FAudioStoryItems.Add(AudioStoryItem);
   end;
@@ -500,15 +500,15 @@ end;
 procedure TStoryItem.DoRemoveObject(const AObject: TFmxObject);
 
   procedure RemoveFromStoryItems;
+  var StoryItem: IStoryItem;
   begin
-    var StoryItem: IStoryItem;
     if Supports(AObject, IStoryItem, StoryItem) then
       FStoryItems.Remove(StoryItem);
   end;
 
   procedure RemoveFromAudioStoryItems;
+  var AudioStoryItem: IAudioStoryItem;
   begin
-    var AudioStoryItem: IAudioStoryItem;
     if Supports(AObject, IAudioStoryItem, AudioStoryItem) then
       FStoryItems.Remove(AudioStoryItem);
   end;
@@ -1213,41 +1213,42 @@ function TStoryItem.AreTagsMatched: Boolean;
   end;
 
 begin
-  var MoveablesWithTags := GetTagged(false); //non-anchored with tags
-  Log('MoveablesWithTags.Count=%d', [MoveablesWithTags.Count]);
+  var MoveablesWithTags: TListEx<IStoryItem> := nil; //local vars not auto-initialized, safeguarding FreeAndNil
+  var TargetsWithTags: TListEx<IStoryItem> := nil;
   try
-    var TargetsWithTags := GetTagged(true); //anchored with tags (targets)
+    MoveablesWithTags := GetTagged(false); //non-anchored with tags
+    Log('MoveablesWithTags.Count=%d', [MoveablesWithTags.Count]);
+
+    TargetsWithTags := GetTagged(true); //anchored with tags (targets)
     Log('TargetsWithTags.Count=%d', [TargetsWithTags.Count]);
-    try
 
-      result :=
-        TargetsWithTags.All( //looping over all targets, not over moveables since we'll remove every matched moveables (a moveable can be matched to a single target, but a target can be matched to multiple moveables)
-          function(LTarget: IStoryItem): Boolean
-            function CheckMatchingTags(const Tags1, Tags2: String): Boolean;
-            begin
-              result := (Tags1 = Tags2); //TODO: maybe do more complex matching in the future, allowing lists of tags where a Target can define multiple Moveable item Tags it accepts and a Moveable can have multiple identities defined at its Tags
-            end;
+    result :=
+      TargetsWithTags.All( //looping over all targets, not over moveables since we'll remove every matched moveables (a moveable can be matched to a single target, but a target can be matched to multiple moveables)
+        function(LTarget: IStoryItem): Boolean
+          function CheckMatchingTags(const Tags1, Tags2: String): Boolean;
           begin
-            result := false; //consider a Target unmatched initially //Note: must set this here outside of the "for" loop, since no MoveablesWithTags may have been configured (by author's mistake) - else compiler will show warning that function may have undefined result
-            for var i := MoveablesWithTags.Count - 1 downto 0 do //count backwards since we'll remove each matched moveable //TODO: add Remove function to Generics to do this item removal (counting backwards) using an optional (else remove all) predicate
+            result := (Tags1 = Tags2); //TODO: maybe do more complex matching in the future, allowing lists of tags where a Target can define multiple Moveable item Tags it accepts and a Moveable can have multiple identities defined at its Tags
+          end;
+        begin
+          result := false; //consider a Target unmatched initially //Note: must set this here outside of the "for" loop, since no MoveablesWithTags may have been configured (by author's mistake) - else compiler will show warning that function may have undefined result
+          for var i := MoveablesWithTags.Count - 1 downto 0 do //count backwards since we'll remove each matched moveable //TODO: add Remove function to Generics to do this item removal (counting backwards) using an optional (else remove all) predicate
+          begin
+            var LMoveable := MoveablesWithTags[i];
+            if CheckMatchingTags(LTarget.Tags, LMoveable.Tags) and
+               LTarget.View.BoundsRect.Contains(LMoveable.View.BoundsRect.CenterPoint) then
             begin
-              var LMoveable := MoveablesWithTags[i];
-              if CheckMatchingTags(LTarget.Tags, LMoveable.Tags) and
-                 LTarget.View.BoundsRect.Contains(LMoveable.View.BoundsRect.CenterPoint) then
-              begin
-                MoveablesWithTags.RemoveItem(LMoveable, TDirection.FromEnd);
-                Log('Tag match: "%s" and "%s"', [LTarget.Tags, LMoveable.Tags]);
-                result := true; //a Target has to be matched by at least one Moveable (but need to check and remove all from the MoveablesWithTags list to see when finished if any moveables have been left unmatched to any targets)
-              end;
+              MoveablesWithTags.RemoveItem(LMoveable, TDirection.FromEnd);
+              Log('Tag match: "%s" and "%s"', [LTarget.Tags, LMoveable.Tags]);
+              result := true; //a Target has to be matched by at least one Moveable (but need to check and remove all from the MoveablesWithTags list to see when finished if any moveables have been left unmatched to any targets)
             end;
-          end
-        )
-        and (MoveablesWithTags.Count = 0); //check no moveables are left unmatched with targets after the previous action (if we've reached here, we're sure all targets were processed and matched)
+          end;
+        end
+      )
+      and (MoveablesWithTags.Count = 0); //check no moveables are left unmatched with targets after the previous action (if we've reached here, we're sure all targets were processed and matched)
 
-    finally
-      FreeAndNil(TargetsWithTags);
-    end;
   finally
+    //freeing (will check internally if not nil) in reverse order
+    FreeAndNil(TargetsWithTags);
     FreeAndNil(MoveablesWithTags);
   end;
 end;
@@ -1412,7 +1413,7 @@ end;
 
 {$endregion}
 
-{$region DragDrop}
+{$region 'DragDrop'}
 
 procedure TStoryItem.DropTargetDropped(const Filepaths: array of String);
 begin
@@ -1701,8 +1702,8 @@ begin
 end;
 
 class function TStoryItem.LoadNew(const Stream: TStream; const ContentFormat: String): TStoryItem;
-var tempStoryItem: TStoryItem;
 begin
+  var tempStoryItem: TStoryItem := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
     result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
@@ -1712,8 +1713,8 @@ begin
 end;
 
 class function TStoryItem.LoadNew(const Filepath: String; const ContentFormat: String = EXT_READCOM): TStoryItem;
-var tempStoryItem: TStoryItem;
 begin
+  var tempStoryItem: TStoryItem := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
     result := TStoryItem(tempStoryItem.Load(Filepath, true)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
@@ -1723,10 +1724,9 @@ begin
 end;
 
 function TStoryItem.LoadFromString(const Data: String; const CreateNew: Boolean = false): TObject;
-var
-  StrStream: TStringStream;
-  BinStream: TMemoryStream;
 begin
+  var StrStream: TStringStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
+  var BinStream: TMemoryStream := nil;
   try
     StrStream := TStringStream.Create(Data);
     Log(StrStream.DataString);
@@ -1745,8 +1745,9 @@ end;
 
 function TStoryItem.LoadReadCom(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem;
 begin
-  var reader := TStreamReader.Create(Stream);
+  var reader: TStreamReader := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
+    reader := TStreamReader.Create(Stream);
     result := TStoryItem(LoadFromString(reader.ReadToEnd, CreateNew)) as IStoryItem;
   finally
     FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
@@ -1756,8 +1757,8 @@ end;
 function TStoryItem.LoadReadComBin(const Stream: TStream; const CreateNew: Boolean = false): IStoryItem; //TODO: could make this return TObject to support loading any Delphi object stream
 
   procedure RemoveStoryItems; //TODO: add to IStoryItem and implement at TStoryItem level?
-  var StoryItemViews: TObjectListEx<TStoryItem>;
   begin
+    var StoryItemViews: TObjectListEx<TStoryItem> := nil; //local vars not auto-initialized, safeguarding FreeAndNil
     try
       StoryItemViews := TObjectListEx<TControl>.GetAllClass<TStoryItem>(Controls); //TODO: make some reusable property?
       StoryItemViews.FreeAll; //this will end up having RemoveObject called for each StoryItem (which will also remove from StoryItems and AudioStoryItems [if it is such] lists)
@@ -1796,8 +1797,9 @@ end;
 
 function TStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
 begin
-  var InputFileStream := TFileStream.Create(Filepath, fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
+  var InputFileStream: TFileStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
+    InputFileStream := TFileStream.Create(Filepath, fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
     result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
   finally
     FreeAndNil(InputFileStream);
@@ -1827,15 +1829,14 @@ begin
 end;
 
 function TStoryItem.SaveToString: String;
-var
-  BinStream: TMemoryStream;
-  StrStream: TStringStream;
 begin
+  var BinStream: TMemoryStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
+  var StrStream: TStringStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     BinStream := TMemoryStream.Create;
     SaveReadComBin(BinStream); //need to save to binary first (to memory)... //TODO: save to temp file (esp. for memory constrained devices) instead?
-    BinStream.Seek(0, soFromBeginning);
 
+    BinStream.Seek(0, soFromBeginning);
     StrStream := TStringStream.Create('');
     ObjectBinaryToText(BinStream, StrStream); //...then convert to text format
 
@@ -1851,8 +1852,8 @@ begin
 end;
 
 procedure TStoryItem.SaveReadCom(const Stream: TStream);
-var writer: TStreamWriter;
 begin
+  var writer: TStreamWriter := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     writer := TStreamWriter.Create(Stream);
     writer.Write(SaveToString); //SaveToString uses SaveReadComBin (then converts to String)
@@ -1888,8 +1889,8 @@ begin
 end;
 
 procedure TStoryItem.Save(const Filepath: String);
-var OutputFileStream: TFileStream;
 begin
+  var OutputFileStream: TFileStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
    OutputFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: may be needed for Android //Note: fmCreate clears (overwrites) any existing content
 
@@ -1913,7 +1914,7 @@ begin
 
   //TThread.Queue(nil, procedure
     //begin
-      var thumb: TBitmap;
+      var thumb: TBitmap := nil; //local vars not auto-initialized, safeguarding FreeAndNil
       try
         thumb := MakeThumbnail(MaxWidth, MaxHeight);
         thumb.SaveToFile(Filepath); //Max thumb size 200x200
@@ -1944,6 +1945,7 @@ procedure TStoryItem.SaveHTML(const Stream: TStream; const ImagesPath: String; c
   end;
 
 begin
+  LHTMLWriter := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     LHTMLWriter := TStreamWriter.Create(Stream, TEncoding.UTF8);
 
@@ -1995,8 +1997,8 @@ begin
 end;
 
 procedure TStoryItem.SaveHTML(const Filepath: String; const MaxImageWidth: Integer = DEFAULT_HTML_IMAGE_WIDTH; const MaxImageHeight: Integer = DEFAULT_HTML_IMAGE_HEIGHT);
-var LHtmlFileStream: TFileStream;
 begin
+  var LHtmlFileStream: TFileStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
   try
     LHtmlFileStream := TFileStream.Create(Filepath, fmCreate or fmOpenWrite {or fmShareDenyNone}); //TODO: fmShareDenyNone may be needed for Android //Note: fmCreate clears (overwrites) any existing content
     SaveHtml(LHtmlFileStream, Filepath + '_Images', MaxImageWidth, MaxImageHeight);
