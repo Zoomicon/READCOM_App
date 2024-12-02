@@ -127,6 +127,8 @@ end;
 
 {$ENDREGION}
 
+{$REGION 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TFileChooser]);
@@ -138,6 +140,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TFileChooser]);
 end;
+
+{$ENDREGION}
 
 initialization
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

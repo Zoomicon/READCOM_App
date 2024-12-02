@@ -25,6 +25,7 @@ type
   TMediaDisplay = class(TLayout, IMediaDisplay)
   protected
     FPresenter: TControl;
+    FSVGLines: TStringList;
     FAutoSize: Boolean;
     FWrapMode: TImageWrapMode;
     FForegroundColor: TAlphaColor;
@@ -53,19 +54,24 @@ type
     procedure SetForegroundColor(const Value: TAlphaColor); virtual;
     procedure ApplyForegroundColor; virtual;
 
-    {SVGText}
-    function GetSVGText: String;
-    procedure SetSVGText(const Value: String);
-
     {Bitmap}
     function GetBitmap: TBitmap;
     procedure SetBitmap(const Value: TBitmap);
 
+    {SVGText}
+    function GetSVGText: String;
+    procedure SetSVGText(const Value: String);
+
+    {SVGLines}
+    function GetSVGLines: TStrings;
+    procedure SetSVGLines(const Value: TStrings);
+
   public
-    class function IsContentFormatSVG(const ContentFormat: String): Boolean;
     class function IsContentFormatBitmap(const ContentFormat: String): Boolean;
+    class function IsContentFormatSVG(const ContentFormat: String): Boolean;
 
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     procedure Load(const Stream: TStream; const ContentFormat: String);
     procedure LoadBitmap(const Stream: TStream; const ContentFormat: String);
@@ -73,15 +79,16 @@ type
     //TODO: add more using Skia4Delphi
 
    function HasNonEmptyBitmap: Boolean;
+   function HasNonDefaultSVG: Boolean;
 
   published
     const
       DEFAULT_AUTOSIZE = false;
       DEFAULT_FOREGROUND_COLOR = TAlphaColorRec.Null; //claNull
-      DEFAULT_SVG_TEXT =  '';
+      DEFAULT_SVG_TEXT = SVG_BLANK;
       DEFAULT_WRAP_MODE = TImageWrapMode.Stretch;
 
-    property Presenter: TControl read FPresenter write SetPresenter;
+    property Presenter: TControl read FPresenter write SetPresenter stored false;
 
     property AutoSize: Boolean read FAutoSize write SetAutoSize default DEFAULT_AUTOSIZE;
     property ContentSize: TSizeF read GetContentSize;
@@ -90,8 +97,9 @@ type
 
     property ForegroundColor: TAlphaColor read FForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR;
 
-    property SVGText: String read GetSVGText write SetSVGText; //default DEFAULT_SVG_TEXT (Delphi doesn't allow using this for String properties, it's done implicitly for '' values)
     property Bitmap: TBitmap read GetBitmap write SetBitmap stored HasNonEmptyBitmap default nil;
+    property SVGText: String read GetSVGText write SetSVGText stored false;
+    property SVGLines: TStrings read GetSVGLines write SetSVGLines stored HasNonDefaultSVG default nil;
   end;
 
 {$ENDREGION}
@@ -104,14 +112,24 @@ implementation
 
 {$REGION 'TMediaDisplay'}
 
-{$region 'Initialization'}
+{$region 'Initialization / Destruction'}
 
 constructor TMediaDisplay.Create(AOwner: TComponent);
 begin
   inherited;
-  AutoSize := DEFAULT_AUTOSIZE;
-  ForegroundColor := DEFAULT_FOREGROUND_COLOR;
-  SVGText := DEFAULT_SVG_TEXT;
+  FSVGLines := TStringList.Create;
+  if not (csLoading in ComponentState) then
+  begin
+    AutoSize := DEFAULT_AUTOSIZE;
+    ForegroundColor := DEFAULT_FOREGROUND_COLOR;
+    SVGText := DEFAULT_SVG_TEXT;
+  end;
+end;
+
+destructor TMediaDisplay.Destroy;
+begin
+  FreeAndNil(FSVGLines);
+  inherited;
 end;
 
 {$endregion}
@@ -251,32 +269,6 @@ begin
   ApplyForegroundColor;
 end;
 
-{$region 'SVGText'}
-
-function TMediaDisplay.GetSVGText: String;
-begin
-  if (Presenter is TSVGIconImage) then
-  begin
-    result := (Presenter as TSVGIconImage).SVGText;
-    if (result.ToLower = SVG_BLANK) then
-      result := '';
-  end
-  else
-    result := '';
-end;
-
-procedure TMediaDisplay.SetSVGText(const Value: String);
-begin
-  if (Value = '') or (Value.ToLower = SVG_BLANK) then
-    SetPresenter(nil)
-  else
-    SetSVGPresenter.SVGText := Value;
-
-  InitContent; //this does DoAutoSize (if AutoSize is set) and DoWrap
-end;
-
-{$endregion}
-
 {$region 'Bitmap'}
 
 function TMediaDisplay.HasNonEmptyBitmap: Boolean;
@@ -310,6 +302,52 @@ begin
     SetBitmapPresenter.Bitmap := Value; //this does "Assign" internally and copies the Bitmap
 
   InitContent; //this does DoAutoSize (if AutoSize is set) and DoWrap
+end;
+
+{$endregion}
+
+{$region 'SVGText'}
+
+function TMediaDisplay.GetSVGText: String;
+begin
+  result := FSVGLines.Text;
+end;
+
+procedure TMediaDisplay.SetSVGText(const Value: String);
+begin
+  if (Value = '') or (Value.ToLower = SVG_BLANK) then
+    SetPresenter(nil)
+  else
+  begin
+    FSVGLines.Text := Value; //note: reusing a single TStrings instance
+    SetSVGPresenter.SVGText := Value;
+  end;
+
+  InitContent; //this does DoAutoSize (if AutoSize is set) and DoWrap
+end;
+
+{$endregion}
+
+{$region 'SVGLines'}
+
+function TMediaDisplay.HasNonDefaultSVG: Boolean;
+var LSVGText: String;
+begin
+  LSVGText := SVGText;
+  result := (LSVGText <> '') and (LSVGText <> DEFAULT_SVG_TEXT);
+end;
+
+function TMediaDisplay.GetSVGLines: TStrings;
+begin
+  result := FSVGLines;
+end;
+
+procedure TMediaDisplay.SetSVGLines(const Value: TStrings);
+begin
+  if (Value <> nil) then
+    SVGText := Value.Text //this will also update FSVGLines //Note: if we'd be setting FSVGLines directly here, we'd need to use FSVGLines.Assign(Value), not FSVGLines := Value
+  else
+    SVGText := '';
 end;
 
 {$endregion}
@@ -379,6 +417,8 @@ end;
 
 {$ENDREGION}
 
+{$REGION 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TMediaDisplay]);
@@ -390,6 +430,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TMediaDisplay]);
 end;
+
+{$ENDREGION}
 
 initialization
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

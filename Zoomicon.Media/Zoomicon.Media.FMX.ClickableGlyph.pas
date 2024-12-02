@@ -19,6 +19,8 @@ implementation
     System.Classes, //for GroupDescendentsWith, RegisterComponents
     FMX.Types; //for RegisterFmxClasses
 
+{$REGION 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TClickableGlyph]);
@@ -30,6 +32,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TClickableGlyph]);
 end;
+
+{$ENDREGION}
 
 initialization
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

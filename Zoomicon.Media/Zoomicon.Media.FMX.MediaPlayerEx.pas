@@ -117,6 +117,8 @@ uses
 
 {$REGION 'TMediaPlayerEx'}
 
+{$region 'Initialization / Destruction'}
+
 constructor TMediaPlayerEx.Create(AOwner: TComponent);
 begin
   FTimer := TTimer.Create(self);
@@ -130,6 +132,8 @@ begin
   Stream := nil; //must do (calls SetStream) to free any temporary file we had created //do not free FStream, we hadn't created it
   inherited; //do last
 end;
+
+{$endregion}
 
 procedure TMediaPlayerEx.Play;
 begin
@@ -391,6 +395,8 @@ end;
 
 {$ENDREGION}
 
+{$REGION 'Registration'}
+
 procedure RegisterSerializationClasses;
 begin
   RegisterFmxClasses([TMediaPlayerEx]);
@@ -402,6 +408,8 @@ begin
   RegisterSerializationClasses;
   RegisterComponents('Zoomicon', [TMediaPlayerEx]);
 end;
+
+{$ENDREGION}
 
 initialization
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

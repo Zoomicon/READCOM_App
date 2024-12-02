@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{DF768E60-B1B3-4AA6-BABF-675634B77ECC}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Zoomicon.Media.FMX.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Demo\Zoomicon.Media.FMX.Demo.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Zoomicon_Media_FMX">
+        <MSBuild Projects="Zoomicon.Media.FMX.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Clean">
+        <MSBuild Projects="Zoomicon.Media.FMX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX:Make">
+        <MSBuild Projects="Zoomicon.Media.FMX.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX_Demo">
+        <MSBuild Projects="Demo\Zoomicon.Media.FMX.Demo.dproj"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX_Demo:Clean">
+        <MSBuild Projects="Demo\Zoomicon.Media.FMX.Demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Zoomicon_Media_FMX_Demo:Make">
+        <MSBuild Projects="Demo\Zoomicon.Media.FMX.Demo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Zoomicon_Media_FMX;Zoomicon_Media_FMX_Demo"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Zoomicon_Media_FMX:Clean;Zoomicon_Media_FMX_Demo:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Zoomicon_Media_FMX:Make;Zoomicon_Media_FMX_Demo:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
