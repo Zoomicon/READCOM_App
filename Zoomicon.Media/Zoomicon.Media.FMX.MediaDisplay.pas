@@ -98,8 +98,8 @@ type
     property ForegroundColor: TAlphaColor read FForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR;
 
     property Bitmap: TBitmap read GetBitmap write SetBitmap stored HasNonEmptyBitmap default nil;
-    property SVGText: String read GetSVGText write SetSVGText stored false;
-    property SVGLines: TStrings read GetSVGLines write SetSVGLines stored HasNonDefaultSVG default nil;
+    property SVGText: String read GetSVGText write SetSVGText stored HasNonDefaultSVG;
+    property SVGLines: TStrings read GetSVGLines write SetSVGLines stored false;
   end;
 
 {$ENDREGION}

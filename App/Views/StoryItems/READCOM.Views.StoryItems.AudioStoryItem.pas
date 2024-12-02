@@ -120,7 +120,13 @@ begin
 
   FPlayedOnce := false;
 
-  MediaPlayer.Stored := false; //don't store state, should use state from designed .FMX resource
+  with MediaPlayer do
+  begin
+    Stored := false; //don't store state, should use state from designed .FMX resource
+    SetSubComponent(true);
+    HitTest := false;
+    Visible:= false;
+  end;
 
   Hidden := true;
 end;
@@ -165,21 +171,26 @@ end;
 procedure TAudioStoryItem.Play;
 begin
   if (not FIsPlayOnce) or (not FPlayedOnce) then //equivalent to "if not (FIsPlayOnce and FPlayedOnce)"
-  begin
-    MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
-    FPlayedOnce := true;
-  end;
+    if Assigned(MediaPlayer) then
+    begin
+      MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
+      FPlayedOnce := true;
+    end;
 end;
 
 procedure TAudioStoryItem.Pause;
 begin
-  MediaPlayer.Stop; //this Pauses
+  if Assigned(MediaPlayer) then
+    MediaPlayer.Stop; //this Pauses
 end;
 
 procedure TAudioStoryItem.Stop;
 begin
-  MediaPlayer.Stop; //this only Pauses...
-  MediaPlayer.CurrentTime := 0; //...so we also reset CurrentTime to 0
+  if Assigned(MediaPlayer) then
+  begin
+    MediaPlayer.Stop; //this only Pauses...
+    MediaPlayer.CurrentTime := 0; //...so we also reset CurrentTime to 0
+  end;
 end;
 
 {$endregion}
@@ -217,12 +228,16 @@ end;
 
 function TAudioStoryItem.IsMuted: Boolean;
 begin
-  result := MediaPlayer.Muted;
+  if Assigned(MediaPlayer) then
+    result := MediaPlayer.Muted
+  else
+    result := true;
 end;
 
 procedure TAudioStoryItem.SetMuted(const Value: Boolean); //TODO: should rename this in interface (call it enabled) and Stop the MediaPlayer instead of muting the audio
 begin
-  MediaPlayer.Muted := Value;
+  if Assigned(MediaPlayer) then
+    MediaPlayer.Muted := Value;
 end;
 
 {$endregion}
@@ -231,12 +246,16 @@ end;
 
 function TAudioStoryItem.IsAutoPlaying: Boolean;
 begin
-  result := MediaPlayer.AutoPlaying;
+  if Assigned(MediaPlayer) then
+    result := MediaPlayer.AutoPlaying
+  else
+    result := false;
 end;
 
 procedure TAudioStoryItem.SetAutoPlaying(const Value: Boolean);
 begin
-  MediaPlayer.AutoPlaying := Value;
+  if Assigned(MediaPlayer) then
+    MediaPlayer.AutoPlaying := Value;
 end;
 
 {$endregion}
@@ -245,12 +264,16 @@ end;
 
 function TAudioStoryItem.IsLooping: Boolean;
 begin
-  result := MediaPlayer.Looping;
+  if Assigned(MediaPlayer) then
+    result := MediaPlayer.Looping
+  else
+    result := false;
 end;
 
 procedure TAudioStoryItem.SetLooping(const Value: Boolean);
 begin
-  MediaPlayer.Looping := Value;
+  if Assigned(MediaPlayer) then
+    MediaPlayer.Looping := Value;
 end;
 
 {$endregion}
@@ -279,7 +302,8 @@ end;
 
 procedure TAudioStoryItem.SetAudio(const Value: IMediaPlayer);
 begin
-  MediaPlayer.FileName := Value.FileName;
+  if Assigned(MediaPlayer) then
+    MediaPlayer.FileName := Value.FileName;
 end;
 
 {$endregion}
