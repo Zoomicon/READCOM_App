@@ -3,21 +3,6 @@
         <ProjectGuid>{D72D9F84-A7BE-49DF-8CD0-E76416CE4FEE}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="Zoomicon.Text\Zoomicon.Text.dproj">
             <Dependencies/>
         </Projects>
@@ -35,51 +20,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Zoomicon_Helpers_FMX">
-        <MSBuild Projects="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Helpers_FMX:Clean">
-        <MSBuild Projects="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Helpers_FMX:Make">
-        <MSBuild Projects="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="Zoomicon_Helpers_RTL">
-        <MSBuild Projects="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Helpers_RTL:Clean">
-        <MSBuild Projects="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Helpers_RTL:Make">
-        <MSBuild Projects="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="Zoomicon_Zooming_FMX">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Zooming_FMX:Clean">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Zooming_FMX:Make">
-        <MSBuild Projects="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="Zoomicon_Introspection_FMX">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Introspection_FMX:Clean">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Introspection_FMX:Make">
-        <MSBuild Projects="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="Zoomicon_Manipulation_FMX">
-        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Clean">
-        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Manipulation_FMX:Make">
-        <MSBuild Projects="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Zoomicon_Text">
         <MSBuild Projects="Zoomicon.Text\Zoomicon.Text.dproj"/>
     </Target>
@@ -108,48 +48,18 @@
         <MSBuild Projects="App\READCOM_App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Helpers_FMX;Zoomicon_Helpers_RTL;Zoomicon_Zooming_FMX;Zoomicon_Introspection_FMX;Zoomicon_Manipulation_FMX;Zoomicon_Text;Zoomicon_Media_FMX;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Text;Zoomicon_Media_FMX;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Helpers_FMX:Clean;Zoomicon_Helpers_RTL:Clean;Zoomicon_Zooming_FMX:Clean;Zoomicon_Introspection_FMX:Clean;Zoomicon_Manipulation_FMX:Clean;Zoomicon_Text:Clean;Zoomicon_Media_FMX:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Text:Clean;Zoomicon_Media_FMX:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Helpers_FMX:Make;Zoomicon_Helpers_RTL:Make;Zoomicon_Zooming_FMX:Make;Zoomicon_Introspection_FMX:Make;Zoomicon_Manipulation_FMX:Make;Zoomicon_Text:Make;Zoomicon_Media_FMX:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Text:Make;Zoomicon_Media_FMX:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms'">
         <BuildGroupProject Include="Zoomicon.Text\Zoomicon.Text.dproj">
             <ProjectGuid>{024B7E47-45DD-414D-AB87-1A51D735D639}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
-            <ProjectGuid>{B42CA181-8650-490B-BB64-1D04F3C529A9}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
-            <ProjectGuid>{15A4C580-B074-4A34-9E19-5DDBAAED1C56}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
-            <ProjectGuid>{E21B9910-DD63-4407-8956-7913CC34AAE8}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
-            <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
             <Configurations>Release</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
@@ -160,8 +70,8 @@
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
-            <ProjectGuid>{8AEEF5E7-E3D7-4CE9-93CD-80F346D9C7FF}</ProjectGuid>
+        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
+            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
             <Configurations>Release</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
@@ -174,44 +84,14 @@
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Introspection\Zoomicon.Introspection.FMX.dproj">
-            <ProjectGuid>{B42CA181-8650-490B-BB64-1D04F3C529A9}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.dproj">
-            <ProjectGuid>{15A4C580-B074-4A34-9E19-5DDBAAED1C56}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Zooming\Zoomicon.Zooming.FMX.dproj">
-            <ProjectGuid>{E21B9910-DD63-4407-8956-7913CC34AAE8}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.dproj">
-            <ProjectGuid>{5FA59D31-3E92-458C-B539-3809C8A0E13C}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
         <BuildGroupProject Include="App\READCOM_App.dproj">
             <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.dproj">
-            <ProjectGuid>{8AEEF5E7-E3D7-4CE9-93CD-80F346D9C7FF}</ProjectGuid>
+        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
+            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>

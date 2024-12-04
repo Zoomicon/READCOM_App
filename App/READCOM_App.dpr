@@ -4,19 +4,21 @@
 
 (*
 Dependencies:
-+ Design Packages (need to select all [or one by one], right-click and Install at Projects tool window):
-  - Zoomicon.Zooming.FMX
-  - Zoomicon.Introspection.FMX
-  - Zoomicon.Manipulation.FMX
-  - Zoomicon.Text.FMX
-  - Zoomicon.Media.FMX
 + GetIt Packages (GetIt Package Manager is included in Delphi IDE):
   - TFrameStand
   - SVGIconImageList
   - CodeSite Express
   - Boss Experts (optional)
-+ Boss Packages (need Boss Package Manager):
-  - Zoomicon.Generics.Delphi
++ Boss Packages (need Boss Package Manager - configuration is in boss.json):
+  - Zoomicon.Generics
+  - Zoomicon.Helpers.RTL
+  - Zoomicon.Helpers.FMX
+  - Zoomicon.Introspection.FMX
+  - Zoomicon.ZUI.FMX
+  - Zoomicon.Manipulation.FMX
++ Design Packages (need to select all [or one by one], right-click and Install at Projects tool window):
+  - Zoomicon.Text.FMX
+  - Zoomicon.Media.FMX
 *)
 
 program READCOM_App;
@@ -30,29 +32,7 @@ uses
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
-  {-$ENDIF}
-  Zoomicon.Helpers.RTL.ClassListHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas',
-  Zoomicon.Helpers.RTL.ComponentHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas',
-  Zoomicon.Helpers.RTL.StreamHelpers in '..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas',
-  //
-  Zoomicon.Helpers.FMX.Controls.ControlHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelper.pas',
-  Zoomicon.Helpers.FMX.Forms.ApplicationHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas',
-  Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas',
-  Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas',
-  Zoomicon.Helpers.FMX.ImgList.ImageListHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas',
-  Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas',
-  Zoomicon.Helpers.FMX.Forms.FormHelper in '..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas',
-  //
-  Zoomicon.Zooming.FMX in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas',
-  Zoomicon.Zooming.FMX.ZoomFrame in '..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas' {ZoomFrame: TFrame},
-  Zoomicon.Zooming.Models in '..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas',
-  //
-  Zoomicon.Introspection.FMX.StructureView in '..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas' {StructureView: TFrame},
-  //
-  Zoomicon.Manipulation.FMX.CustomManipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
-  Zoomicon.Manipulation.FMX.Manipulator in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas' {Manipulator: TFrame},
-  Zoomicon.Manipulation.FMX.Selector in '..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas',
-  //
+{-$ENDIF}
   Zoomicon.Media.FMX.MediaPlayerEx in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas',
   Zoomicon.Media.FMX.Models in '..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas',
   Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas',

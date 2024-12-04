@@ -3,9 +3,9 @@
 
     "description": "READ-COM - Reading Communities app",
 
-    "version": "0.7.2",
+    "version": "0.7.3",
 
-    "homepage": "https://github.com/zoomicon/READCOM_App",
+    "homepage": "https://github.com/Zoomicon/READCOM_App",
 
     "main": "READCOM_App.dproj",
     "mainsrc": ".",
@@ -15,7 +15,12 @@
     ],
 
     "dependencies": {
-        "github.com/zoomicon/zoomicon.generics.delphi": ">0.0.0"
+        "github.com/zoomicon/zoomicon.generics.delphi": ">0.0.0",
+        "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">0.0.0",
+        "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">0.0.0",
+        "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">0.0.0",
+        "github.com/zoomicon/zoomicon.zui.fmx.delphi": ">0.0.0",
+        "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">0.0.0"
     }
 
 }

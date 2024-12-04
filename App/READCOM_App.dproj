@@ -570,35 +570,6 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
             <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ClassListHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.ComponentHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL\Zoomicon.Helpers.RTL.StreamHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Controls\Zoomicon.Helpers.FMX.Controls.ControlHelper.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.ApplicationHelper.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScaledLayoutHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Layouts\Zoomicon.Helpers.FMX.Layouts.ScrollBoxHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.ImgList\Zoomicon.Helpers.FMX.ImgList.ImageListHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.TreeView\Zoomicon.Helpers.FMX.TreeView.TreeViewHelpers.pas"/>
-        <DCCReference Include="..\Zoomicon.Helpers.FMX\Zoomicon.Helpers.FMX.Forms\Zoomicon.Helpers.FMX.Forms.FormHelper.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.pas"/>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.FMX.ZoomFrame.pas">
-            <Form>ZoomFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Zooming\Zoomicon.Zooming.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Introspection\Zoomicon.Introspection.FMX.StructureView.pas">
-            <Form>StructureView</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
-            <Form>CustomManipulator</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Manipulator.pas">
-            <Form>Manipulator</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\Zoomicon.Manipulation\Zoomicon.Manipulation.FMX.Selector.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas"/>
         <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas"/>
