@@ -14,27 +14,24 @@ Dependencies:
   - Zoomicon.Helpers.RTL
   - Zoomicon.Helpers.FMX
   - Zoomicon.Introspection.FMX
-  - Zoomicon.ZUI.FMX
   - Zoomicon.Manipulation.FMX
+  - Zoomicon.Media.FMX
+  - Zoomicon.ZUI.FMX
 + Design Packages (need to select all [or one by one], right-click and Install at Projects tool window):
   - Zoomicon.Text.FMX
-  - Zoomicon.Media.FMX
+  Note: will also need to manually install the BOSS packages (see modules subfolder that it creates) if BOSS doesn't install them as design packages
 *)
 
 program READCOM_App;
 
 {$R *.dres}
 
-{$region 'Used units' ---------------------------------------------------------} //TODO: D12.2 doesn't seem to fold/expand regions in .dpr files
-uses
+  {$region 'Used units' ---------------------------------------------------------} //TODO: D12.2 doesn't seem to fold/expand regions in .dpr files
+  uses
   System.StartUpCopy,
   FormMessage in '..\3rdPartyLib\object-debugger-for-firemonkey\FormMessage.pas' {MessageForm},
   ObjectDebuggerFMXFrame in '..\3rdPartyLib\object-debugger-for-firemonkey\ObjectDebuggerFMXFrame.pas' {FMXObjectDebuggerFrame: TFrame},
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
-  Zoomicon.Media.FMX.MediaPlayerEx in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas',
-  Zoomicon.Media.FMX.Models in '..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas',
-  Zoomicon.Media.FMX.MediaDisplay in '..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas',
-  Zoomicon.Media.FMX.ClickableGlyph in '..\Zoomicon.Media\Zoomicon.Media.FMX.ClickableGlyph.pas',
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   READCOM.App.Models in 'READCOM.App.Models.pas',

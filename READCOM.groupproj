@@ -6,9 +6,6 @@
         <Projects Include="Zoomicon.Text\Zoomicon.Text.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="App\READCOM_App.dproj">
             <Dependencies/>
         </Projects>
@@ -29,15 +26,6 @@
     <Target Name="Zoomicon_Text:Make">
         <MSBuild Projects="Zoomicon.Text\Zoomicon.Text.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Media_FMX">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Media_FMX:Clean">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Media_FMX:Make">
-        <MSBuild Projects="Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Make"/>
-    </Target>
     <Target Name="READCOM_App">
         <MSBuild Projects="App\READCOM_App.dproj"/>
     </Target>
@@ -48,13 +36,13 @@
         <MSBuild Projects="App\READCOM_App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Zoomicon_Text;Zoomicon_Media_FMX;READCOM_App"/>
+        <CallTarget Targets="Zoomicon_Text;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Zoomicon_Text:Clean;Zoomicon_Media_FMX:Clean;READCOM_App:Clean"/>
+        <CallTarget Targets="Zoomicon_Text:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Zoomicon_Text:Make;Zoomicon_Media_FMX:Make;READCOM_App:Make"/>
+        <CallTarget Targets="Zoomicon_Text:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms'">
@@ -70,12 +58,6 @@
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
-            <Configurations>Release</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
     </ItemGroup>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms - Debug'">
         <BuildGroupProject Include="Zoomicon.Text\Zoomicon.Text.dproj">
@@ -86,12 +68,6 @@
         </BuildGroupProject>
         <BuildGroupProject Include="App\READCOM_App.dproj">
             <ProjectGuid>{B62CC64D-8B42-4BF6-98BF-575769C693DD}</ProjectGuid>
-            <Configurations>Debug</Configurations>
-            <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
-            <Enabled>True</Enabled>
-        </BuildGroupProject>
-        <BuildGroupProject Include="Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <ProjectGuid>{6E2C0463-4BB6-4FCC-AA63-3D1E63BDF956}</ProjectGuid>
             <Configurations>Debug</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>

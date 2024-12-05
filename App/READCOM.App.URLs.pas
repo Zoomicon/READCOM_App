@@ -12,6 +12,7 @@ interface
   procedure OpenURLinBrowser(const url: string);
 
 implementation
+  {$region 'Used units'}
   uses
    FMX.Forms,
    System.SysUtils,
@@ -31,6 +32,7 @@ implementation
   {$ELSEIF DEFINED(MSWINDOWS)}
    Winapi.ShellAPI, Winapi.Windows;
   {$ENDIF}
+  {$endregion}
 
 function IsURI(const Value: String): Boolean;
 begin

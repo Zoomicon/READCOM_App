@@ -570,10 +570,6 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
             <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.MediaPlayerEx.pas"/>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.Models.pas"/>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.MediaDisplay.pas"/>
-        <DCCReference Include="..\Zoomicon.Media\Zoomicon.Media.FMX.ClickableGlyph.pas"/>
         <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
             <Form>Globals</Form>
