@@ -11,7 +11,7 @@ uses
   FrameStand, //for TFrameInfo
   Zoomicon.Generics.Collections, //for TObjectListEx
   Zoomicon.Introspection.FMX.StructureView, //for TStructureView
-  Zoomicon.Zooming.FMX.ZoomFrame, //for TZoomFrame
+  Zoomicon.ZUI.FMX.ZoomFrame, //for TZoomFrame
   READCOM.App.Globals, //for Globals.SVGIconImageList
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItems.StoryItem, //for TStoryItem

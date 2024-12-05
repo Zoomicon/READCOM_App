@@ -181,7 +181,7 @@
         <Icon_MainIcon>READCOM_App\LaunchGen\Icon_MainIcon.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>READCOM_App</SanitizedProjectName>
-        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\zoomicon.generics.delphi\Source\Collections;..\modules\zoomicon.generics.delphi\Source\Factories;..\modules\zoomicon.generics.delphi\Source\Functors;..\modules\zoomicon.generics.delphi\Test;..\modules\zoomicon.cache.delphi\Source;..\modules\zoomicon.cache.delphi\Test;modules\.dcp;modules\.dcu;modules;modules\zoomicon.cache.delphi\Source;modules\zoomicon.cache.delphi\Test;modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.generics.delphi\Test;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.helpers.fmx.delphi\Source\Zoomicon.Helpers.FMX.Controls;modules\zoomicon.helpers.fmx.delphi\Source\Zoomicon.Helpers.FMX.Forms;modules\zoomicon.helpers.fmx.delphi\Source\Zoomicon.Helpers.FMX.ImgList;modules\zoomicon.helpers.fmx.delphi\Source\Zoomicon.Helpers.FMX.Layouts;modules\zoomicon.helpers.fmx.delphi\Source\Zoomicon.Helpers.FMX.TreeView;modules\zoomicon.helpers.rtl.delphi\Source\Zoomicon.Helpers.RTL;modules\zoomicon.introspection.fmx.delphi\Source;modules\zoomicon.manipulation.fmx.delphi\Source;modules\zoomicon.zui.fmx.delphi\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>fmx;DbxCommonDriver;bindengine;IndyIPCommon;emsclient;FireDACCommonDriver;IndyProtocols;IndyIPClient;dbxcds;FmxTeeUI;bindcompfmx;ibmonitor;FireDACSqliteDriver;DbxClientDriver;soapmidas;fmxFireDAC;dbexpress;inet;DataSnapCommon;dbrtl;FireDACDBXDriver;CustomIPTransport;DBXInterBaseDriver;IndySystem;ibxbindings;bindcomp;FireDACCommon;IndyCore;RESTBackendComponents;bindcompdbx;rtl;RESTComponents;DBXSqliteDriver;IndyIPServer;dsnapxml;DataSnapClient;DataSnapProviderClient;DataSnapFireDAC;emsclientfiredac;FireDAC;FireDACDSDriver;xmlrtl;tethering;ibxpress;dsnap;CloudService;FMXTee;DataSnapNativeClient;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
@@ -673,10 +673,7 @@
                 <Source>
                     <Source Name="MainSource">READCOM_App.dpr</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </Delphi.Personality>
             <Deployment Version="5">
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
