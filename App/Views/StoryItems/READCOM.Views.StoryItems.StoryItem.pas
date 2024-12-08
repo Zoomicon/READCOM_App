@@ -331,7 +331,8 @@ implementation
     FMX.Platform, //for TPlatformServices
     Zoomicon.Generics.Collections, //for TObjectListEx
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
-    Zoomicon.Helpers.RTL.StreamHelpers, //for TStreamErrorHelper.ReadComponent
+    Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.ReadComponent
+    Zoomicon.Helpers.RTL.StringsHelpers, //for TStrings.GetLines
     Zoomicon.Text, //for GetLines
     READCOM.App.Debugging, //for Log
     READCOM.Views.StoryItems.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
@@ -1023,7 +1024,7 @@ begin
     if (LNextSeparatorIndex < 0) then
       LNextSeparatorIndex := Value.Count; //if no separator found, assume it's till the end
 
-    var LText := GetLines(Value, 0, LNextSeparatorIndex - 1, false); //skip the separator and don't output a line break for last line
+    var LText := Value.GetLines(0, LNextSeparatorIndex - 1, false); //skip the separator and don't output a line break for last line
     for var i := LNextSeparatorIndex downto 0 do //Deleting in reverse order, including the found separator
       Value.Delete(i); //TODO: Maybe add some helper method to delete ranges like that
     LTextStoryItem.Text := LText;

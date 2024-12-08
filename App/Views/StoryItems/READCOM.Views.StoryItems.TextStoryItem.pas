@@ -137,7 +137,7 @@ implementation
   uses
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
-    Zoomicon.Text, //for
+    Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.RealAllText
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
     READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
     READCOM.App.Debugging; //for Log
@@ -441,7 +441,7 @@ end;
 
 function TTextStoryItem.LoadTXT(const Stream: TStream): TObject;
 begin
-  //Text := ReadAllText(Stream); //TODO: doesn't seem to work correctly
+  //Text := Stream.ReadAllText; //TODO: doesn't seem to work correctly
 
   var s := TStringList.Create(#0, #13);
   try
