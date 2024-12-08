@@ -138,6 +138,7 @@ implementation
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.RealAllText
+    Zoomicon.Text, //for SetMemoFontSizeToFit
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
     READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
     READCOM.App.Debugging; //for Log
