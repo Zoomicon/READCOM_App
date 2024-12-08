@@ -6,8 +6,6 @@ unit Zoomicon.Text;
 interface
   {$region 'Used units'}
   uses
-    System.Classes, //for TStream
-    System.SysUtils, //for TBytes
     System.Types, //for RectF, TSizeF
     //
     FMX.Memo; //for TMemo
@@ -23,20 +21,13 @@ interface
 
   procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
 
-  function ReadAllBytes(const Stream: TStream): TBytes;
-  function ReadAllText(const Stream: TStream; const DefaultEncoding: TEncoding = nil; const ForceDefaultEncoding: Boolean = false): string;
-
   function SafeTextToShortCut(const Text: string): Integer; //the Delphi 11.1 TextToShortcut returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
-
-  function GetLines(const AList: TStrings; const AStart, AEnd: Integer; const AddTrailingLineBreak :Boolean = false): string;
 
 implementation
   {$region 'Used units'}
   uses
-    RTLConsts, //for SFileTooLong
-    //
-    System.Math, //for Min
     System.UIConsts, //for claXX
+    System.Math, //for Max
     //
     FMX.ActnList, //for TextToShortcut
     FMX.Controls, //for TControl
@@ -123,48 +114,9 @@ implementation
 
   end;
 
-  function ReadAllBytes(const Stream: TStream): TBytes;
-  begin
-    var LFileSize := Stream.Size;
-    {$IFDEF CPU32BITS}
-    if LFileSize > MaxInt then
-      raise EInOutError.CreateRes(@SFileTooLong);
-    {$ENDIF}
-    SetLength(Result, LFileSize);
-    Stream.ReadBuffer(result, Length(result));
-  end;
-
-  function ReadAllText(const Stream: TStream; const DefaultEncoding: TEncoding = nil; const ForceDefaultEncoding: Boolean = false): string;
-  var FoundEncoding: TEncoding;
-  begin
-    if ForceDefaultEncoding then
-      FoundEncoding := DefaultEncoding;
-    var Buff := ReadAllBytes(Stream);
-    var BOMLength := TEncoding.GetBufferEncoding(Buff, FoundEncoding, DefaultEncoding);
-    result := FoundEncoding.GetString(Buff, BOMLength, Length(Buff) - BOMLength);
-  end;
-
   function SafeTextToShortCut(const Text: string): Integer; //TODO: maybe move to a Zoomicon.Helpers.FMX.ActnList or a Zoomicon.Helpers.FMX.Menus unit at Zoomicon.Helpers.FMX package
   begin
-    result := TextToShortCut(Text);
-    if (result < 0) then //the Delphi 11.1 TextToShortcut returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
-      result := 0;
-  end;
-
-  function GetLines(const AList: TStrings; const AStart, AEnd: Integer; const AddTrailingLineBreak :Boolean = false): string; //see https://stackoverflow.com/a/11028950
-  begin
-    Result := '';
-    if (AStart < AEnd) then
-      Exit;
-
-    var LLast := Min(AEnd, AList.Count - 1);
-    for var I := AStart to  (LLast - 1) do
-      Result := Result + AList[I] + sLineBreak;
-
-    Result := Result + AList[LLast]; //add the last item separately to avoid the extra line-break
-
-    if AddTrailingLineBreak then
-      Result := Result + sLineBreak;
+    result := Max(TextToShortCut(Text), 0); //Fixing Delphi's 11.1 TextToShortcut which returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
   end;
 
 end.
