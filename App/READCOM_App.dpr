@@ -55,7 +55,8 @@ program READCOM_App;
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
-  READCOM.App.Main in 'READCOM.App.Main.pas';
+  READCOM.App.Main in 'READCOM.App.Main.pas',
+  Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame};
 
 {$endregion}
 

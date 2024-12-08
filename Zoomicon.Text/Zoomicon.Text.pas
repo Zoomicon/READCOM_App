@@ -13,13 +13,13 @@ interface
 
   type
 
-    TMemoExt = class(TMemo) //TODO: maybe move to a Zoomicon.Helpers.FMX.Memo unit under Zoomicon.Helpers.FMX package
+    TMemoExt = class(TMemo)
       procedure ApplyStyle; override;
     end;
 
   var DisableMemoFontSizeToFit : boolean; //=false
 
-  procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF);
+  procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF); //TODO: maybe move to a Zoomicon.Helpers.FMX.Memo unit under Zoomicon.Helpers.FMX package
 
   function SafeTextToShortCut(const Text: string): Integer; //the Delphi 11.1 TextToShortcut returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
 
@@ -114,7 +114,7 @@ implementation
 
   end;
 
-  function SafeTextToShortCut(const Text: string): Integer; //TODO: maybe move to a Zoomicon.Helpers.FMX.ActnList or a Zoomicon.Helpers.FMX.Menus unit at Zoomicon.Helpers.FMX package
+  function SafeTextToShortCut(const Text: string): Integer; //TODO: maybe move to a Zoomicon.Helpers.FMX.ActnList unit at Zoomicon.Helpers.FMX package (though this is not technically a method so wouldn't put in a helper, but just in the unit)
   begin
     result := Max(TextToShortCut(Text), 0); //Fixing Delphi's 11.1 TextToShortcut which returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
   end;

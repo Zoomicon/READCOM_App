@@ -639,6 +639,11 @@
         <DCCReference Include="READCOM.App.Debugging.pas"/>
         <DCCReference Include="READCOM.App.Messages.pas"/>
         <DCCReference Include="READCOM.App.Main.pas"/>
+        <DCCReference Include="modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
+            <Form>CustomManipulator</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
