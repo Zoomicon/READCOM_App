@@ -190,10 +190,12 @@ implementation
     System.Math, //for Max
     System.Net.HttpClient, //for HTTP/HTTPS url scheme support in TURLStream (Delphi 11.1+)
     System.Net.URLClient, //for TURLStream (Delphi 11.1+)
+    Fmx.Memo, //for TMemo
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
+    Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.DisableFontSizeToFit
     Zoomicon.Text, //for SafeTextToShortcut
     READCOM.App.Main, //for StorySource
     READCOM.App.URLs, //for OpenURLinBrowser
@@ -1311,7 +1313,7 @@ procedure TMainForm.CheckCommandLineActions;
   end;
 
 begin
-  DisableMemoFontSizeToFit := true; //don't do font fitting, seems to result in some TextStoryItems not rendering in resulting snapshot images
+  TMemo.DisableFontSizeToFit := true; //don't do font fitting, seems to result in some TextStoryItems not rendering in resulting snapshot images
   CheckSaveThumbnail;
   CheckSaveHtml;
 end;

@@ -138,7 +138,7 @@ implementation
     IOUtils, //for TFile
     FMX.Styles.Objects, //for TActiveStyleObject
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.RealAllText
-    Zoomicon.Text, //for SetMemoFontSizeToFit
+    Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.SetFontSizeToFit
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
     READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
     READCOM.App.Debugging; //for Log
@@ -182,7 +182,7 @@ procedure TTextStoryItem.Loaded; //this gets called multiple times when you have
 begin
   {//}Log('TTextStoryItem.Loaded %p', [@Self]);
   inherited;
-  SetMemoFontSizeToFit(Memo, FLastMemoSize);
+  Memo.SetFontSizeToFit(FLastMemoSize);
 end;
 *)
 
@@ -191,7 +191,7 @@ procedure TTextStoryItem.SetBounds(X, Y, AWidth, AHeight: Single); //Note: also 
 begin
   {//}Log('TTextStoryItem.SetBounds %p', [@Self]);
   inherited;
-  SetMemoFontSizeToFit(Memo, FLastMemoSize);
+  Memo.SetFontSizeToFit(FLastMemoSize);
 end;
 *)
 
@@ -199,7 +199,7 @@ procedure TTextStoryItem.Painting;
 begin
   //Log('TTextStoryItem.Painting %p', [@Self]);
   inherited;
-  SetMemoFontSizeToFit(Memo, FLastMemoSize);
+  Memo.SetFontSizeToFit(FLastMemoSize);
 end;
 
 (*
@@ -208,7 +208,7 @@ begin
   Log('TTextStoryItem.DoResized');
   inherited;
   try
-    SetMemoFontSizeToFit(Memo, FLastMemoSize); //throws exceptions at startup
+    Memo.SetFontSizeToFit(FLastMemoSize); //throws exceptions at startup
   Except
     //NOP
   end;
@@ -218,7 +218,7 @@ end;
 procedure TTextStoryItem.MemoChangeTracking(Sender: TObject);
 begin
   //Log('TTextStoryItem.MemoChangeTracking %p', [@Self]);
-  SetMemoFontSizeToFit(Memo, FLastMemoSize);
+  Memo.SetFontSizeToFit(FLastMemoSize);
 end;
 
 {$endregion}

@@ -4,12 +4,8 @@
 unit Zoomicon.Text;
 
 interface
-  {$region 'Used units'}
   uses
-    System.Types, //for RectF, TSizeF
-    //
     FMX.Memo; //for TMemo
-  {$endregion}
 
   type
 
@@ -17,16 +13,13 @@ interface
       procedure ApplyStyle; override;
     end;
 
-  var DisableMemoFontSizeToFit : boolean; //=false
-
-  procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF); //TODO: maybe move to a Zoomicon.Helpers.FMX.Memo unit under Zoomicon.Helpers.FMX package
-
   function SafeTextToShortCut(const Text: string): Integer; //the Delphi 11.1 TextToShortcut returns -1 when platform doesn't support the check (e.g. on Android) instead of 0 (which is what TAction.Shortcut expects for no-shortcut)
 
 implementation
   {$region 'Used units'}
   uses
-    System.UIConsts, //for claXX
+    System.Types, //for RectF
+    System.UIConsts, //for claXX color constants
     System.Math, //for Max
     //
     FMX.ActnList, //for TextToShortcut
@@ -54,64 +47,6 @@ implementation
           SendToBack;
         end;
      end;
-  end;
-
-  procedure SetMemoFontSizeToFit(const AMemo: TMemo; var LastFontFitSize: TSizeF); //TODO: add logging
-  //const
-    //Offset = 0; //The diference between ContentBounds and ContentLayout //TODO: info coming from https://stackoverflow.com/a/21993017/903783 - need to verify
-  begin
-    if DisableMemoFontSizeToFit then exit;
-
-    //AMemo.AutoCalculateContentSize := true; //don't use
-
-    {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
-    AMemo.UpdateContentSize; //Recalculates content bounds of a scroll box. Does not calculate content bounds if AutoCalculateContentSize is False or if the state of the scroll box is csLoading or csDestroying
-    {$ENDIF}
-
-    var Offset := 10 {* AMemo.AbsoluteScale.Y}; //TODO: not very good
-    var LHeight := AMemo.Height;
-    if (LHeight = 0) {or (AMemo.Size.Size = LastFontFitSize)} then
-      exit; //don't calculate font autofit based on probably not yet available height information, nor when AMemo.Height didn't change from last calculation
-
-    //AMemo.Font.Size := 12; //Don't set initial font size, use the current one (which may be from a previous calculation - this speeds up when resizing and also fixes glitches when loading saved state if recalculation isn't done for some reason after loading)
-
-    var LContentBoundsHeight := AMemo.ContentBounds.Height;
-    if (LContentBoundsHeight = 0) then //must check, else first while will loop for ever since ContentBounds.Height is 0 on load
-      exit;
-
-    var LFontSize := AMemo.Font.Size;
-    LastFontFitSize := AMemo.Size.Size;
-
-    //make font bigger
-    while (LContentBoundsHeight + Offset < LHeight) do //using WordWrap, not checking for Width
-    begin
-      LFontSize := LFontSize + 1;
-      AMemo.Font.Size := LFontSize;
-
-      var LContentBoundsNewHeight := AMemo.ContentBounds.Height;
-      if LContentBoundsNewHeight = LContentBoundsHeight then
-      begin
-        AMemo.Font.Size := LFontSize - 1; //undo font size increase since it had no effect
-        exit; //TODO: See why changing Font.Size doesn't affect ContentBounds in Android implementation so we get an infinite loop (Height is never reached)
-      end;
-      LContentBoundsHeight := LContentBoundsNewHeight;
-    end;
-
-    //make font smaller
-    while (LContentBoundsHeight + Offset > LHeight) do //using WordWrap, not checking for Width
-    begin
-      LFontSize := LFontSize - 1;
-      AMemo.Font.Size := LFontSize;
-
-      var LContentBoundsNewHeight := AMemo.ContentBounds.Height;
-      if LContentBoundsNewHeight = LContentBoundsHeight then
-      begin
-        AMemo.Font.Size := LFontSize + 1; //undo font size decrease since it had no effect
-        exit; //TODO: See why changing Font.Size doesn't affect ContentBounds in Android implementation so we get an infinite loop (Height is never reached)
-      end;
-      LContentBoundsHeight := LContentBoundsNewHeight;
-    end;
-
   end;
 
   function SafeTextToShortCut(const Text: string): Integer; //TODO: maybe move to a Zoomicon.Helpers.FMX.ActnList unit at Zoomicon.Helpers.FMX package (though this is not technically a method so wouldn't put in a helper, but just in the unit)
