@@ -17,7 +17,7 @@
     "dependencies": {
         "github.com/zoomicon/zoomicon.generics.delphi": ">=1.0.0",
         "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=1.2.0",
-        "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=1.4.0",
+        "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=1.5.0",
         "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=1.0.0",
         "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=1.0.0",
         "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=1.0.0",
