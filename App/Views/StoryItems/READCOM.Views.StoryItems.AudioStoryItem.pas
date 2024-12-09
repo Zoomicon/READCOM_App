@@ -124,8 +124,7 @@ begin
   begin
     Stored := false; //don't store state, should use state from designed .FMX resource
     SetSubComponent(true);
-    HitTest := false;
-    Visible:= false;
+    //Note: don't try to set HitTest and Visible here, this is not a visible control, doesn't have such properties (would act upon the form instead)
   end;
 
   Hidden := true;
