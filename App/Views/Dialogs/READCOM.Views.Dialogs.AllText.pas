@@ -6,7 +6,7 @@ unit READCOM.Views.Dialogs.AllText;
 interface
   uses
     READCOM.App.Globals, //for Globals.SVGIconImageList
-    READCOM.App.Models, //for IStoryItem
+    READCOM.Models.Stories, //for IStoryItem
     System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
     FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
     FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,

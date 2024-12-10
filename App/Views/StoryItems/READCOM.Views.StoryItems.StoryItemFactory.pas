@@ -8,7 +8,7 @@ interface
     System.SysUtils, //for FreeAndNil
     System.Generics.Collections, //for TPair, doOwnsValues (of TDictionaryOwnerships set)
     Zoomicon.Generics.Factories, //for TFactoryRegistry
-    READCOM.App.Models; //for IStoryItemFactoryRegistry
+    READCOM.Models.Stories; //for IStoryItemFactoryRegistry
 
   var
     StoryItemFileFilters: TList<TPair<String, String>>;

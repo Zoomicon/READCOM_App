@@ -17,7 +17,7 @@ uses
   FMX.Objects,
   //
   READCOM.Views.Options.StoryItemOptions,
-  READCOM.App.Models;
+  READCOM.Models.Stories;
 
 type
   TImageStoryItemOptions = class(TStoryItemOptions, IImageStoryItemOptions, IStoryItemOptions)

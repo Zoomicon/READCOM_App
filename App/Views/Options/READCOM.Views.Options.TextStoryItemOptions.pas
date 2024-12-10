@@ -14,7 +14,7 @@ uses
   FMX.MediaLibrary.Actions,
   FMX.Objects,
   READCOM.Views.Options.StoryItemOptions,
-  READCOM.App.Models;
+  READCOM.Models.Stories;
 
 type
   TTextStoryItemOptions = class(TStoryItemOptions, ITextStoryItemOptions, IStoryItemOptions)

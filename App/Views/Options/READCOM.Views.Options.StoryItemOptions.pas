@@ -4,7 +4,7 @@ interface
 
 uses
   READCOM.App.Globals, //for Globals.SVGIconImageList
-  READCOM.App.Models, //for IStoryItemOptions
+  READCOM.Models.Stories, //for IStoryItemOptions
   System.SysUtils, System.Types,
   System.UITypes, //for TOpenOption
   System.Classes, System.Variants,
@@ -82,7 +82,8 @@ type
 
 implementation
   uses
-    FMX.DialogService.Async; //for TDialogServiceAsync
+    FMX.DialogService.Async, //for TDialogServiceAsync
+    READCOM.Models; //for EXT_READCOM
 
 {$R *.fmx}
 

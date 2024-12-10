@@ -6,7 +6,7 @@ unit READCOM.App.Main;
 interface
   uses
     System.Math, //for Min
-    READCOM.App.Models; //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT
+    READCOM.Models.Stories; //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT
 
   procedure Main;
   procedure ShowHelp;
@@ -21,83 +21,93 @@ interface
     HtmlImageMaxSize: Integer; //initialized at "ParseCommandLine"
 
 implementation
+  {$region 'Used units'}
   uses
+    System.SysUtils, //for FreeAndNil
+    //
     FMX.Dialogs, //for ShowMessage
     FMX.Forms, //for Application
-    System.SysUtils, //for FreeAndNil
+    //
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
+    //
+    READCOM.Models, //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT, DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT
     READCOM.Views.Main,
     READCOM.App.Debugging,
     READCOM.App.Globals, //for TGlobals
     READCOM.App.Themes, //for TThemes
     READCOM.App.Messages,
     READCOM.App.URLs; //for OpenURLinBrowser
+  {$endregion}
 
-procedure ParseCommandLine; //TODO: use https://github.com/gabr42/GpDelphiUnits/blob/master/src/GpCommandLineParser.pas or https://github.com/VSoftTechnologies/VSoft.CommandLineParser instead to parse command-line
-const
-  PARAM_THUMB = '-thumb';
-  PARAM_HTML = '-html';
-begin
-  if (ParamCount <> 0) then
+  {$region 'Command-line'}
+
+  procedure ParseCommandLine; //TODO: use https://github.com/gabr42/GpDelphiUnits/blob/master/src/GpCommandLineParser.pas or https://github.com/VSoftTechnologies/VSoft.CommandLineParser instead to parse command-line
+  const
+    PARAM_THUMB = '-thumb';
+    PARAM_HTML = '-html';
   begin
-    var param1 := ParamStr(1);
-
-    if (ParamCount > 1) then
+    if (ParamCount <> 0) then
     begin
+      var param1 := ParamStr(1);
 
-      if (param1.StartsWith(PARAM_THUMB)) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+      if (ParamCount > 1) then
       begin
-        SaveThumbnail := true;
 
-        //Bounding box for thumbnail fitting is a square, using default as min of max thumb width and height if not provided
-        ThumbnailMaxSize := Min(DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT);
-        var LThumbEqLength := PARAM_THUMB.Length + 1;
-        if param1.Length > LThumbEqLength then
-          ThumbnailMaxSize := param1.Substring(LThumbEqLength).ToInteger;
+        if (param1.StartsWith(PARAM_THUMB)) then //optional -thumb switch: save screenshot (after having loaded any given story or last state or default document) and close again
+        begin
+          SaveThumbnail := true;
+
+          //Bounding box for thumbnail fitting is a square, using default as min of max thumb width and height if not provided
+          ThumbnailMaxSize := Min(DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT);
+          var LThumbEqLength := PARAM_THUMB.Length + 1;
+          if param1.Length > LThumbEqLength then
+            ThumbnailMaxSize := param1.Substring(LThumbEqLength).ToInteger;
+        end
+
+        else if (param1.StartsWith(PARAM_HTML)) then
+        begin
+          SaveHTML := true;
+          HtmlImageMaxSize := Min(DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT);
+          var LHtmlEqLength := PARAM_HTML.Length + 1;
+          if param1.Length > LHtmlEqLength then
+            HtmlImageMaxSize := param1.Substring(HtmlImageMaxSize).ToInteger;
+        end;
+
+        StorySource := ParamStr(2);
       end
-
-      else if (param1.StartsWith(PARAM_HTML)) then
-      begin
-        SaveHTML := true;
-        HtmlImageMaxSize := Min(DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT);
-        var LHtmlEqLength := PARAM_HTML.Length + 1;
-        if param1.Length > LHtmlEqLength then
-          HtmlImageMaxSize := param1.Substring(HtmlImageMaxSize).ToInteger;
-      end;
-
-      StorySource := ParamStr(2);
-    end
-    else
-      StorySource := ParamStr(1);
+      else
+        StorySource := ParamStr(1);
+    end;
   end;
-end;
 
-procedure ShowHelp;
-begin
-  OpenURLinBrowser(URL_HELP);
-end;
+  {$endregion}
 
-procedure Main;
-begin
-  CheckSafeMode;
-
-  Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
-
-  //ApplicationHandleException := //...
-  //ApplicationShowException := //...
-
-  Application.Initialize; //FMX app template has this before creation of form(s) - probably the order plays some role
-
-  Application.CreateForm(TGlobals, Globals); //create before MainForm, it's a DataModule it uses
-  Application.CreateForm(TThemes, Themes); //create before MainForm, it's a DataModule it uses
-  Application.CreateForm(TMainForm, MainForm); //note that CreateForm doesn't immediately create and assign the form object to the variable (depends on platform, may delay till Application.Run)
-
-  try
-    ParseCommandLine;
-    Application.Run; //TODO: should nest in try/catch with raise and in case the error is related to DirectX not supported (need to check which exceptions are thrown, say DXCanvas or something not being possible to create), Show message that user can use SHIFT key on start, then terminate the app - SEE THOUGH IF MAIN FORM'S INITIAL METHODS THAT TRY TO LOAD DEFAULT STORY ETC. ARE THE ONE'S THAT CATCH AND SHOW THE ERROR AND MAKE SURE THERE IT'S RAISED AGAIN
-  finally
-    FreeObjectDebugger; //must free here and not in "finalization" section of READCOM.App.Debugging to not see leaks upon exiting
+  procedure ShowHelp;
+  begin
+    OpenURLinBrowser(URL_HELP);
   end;
-end;
+
+  procedure Main;
+  begin
+    CheckSafeMode;
+
+    Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
+
+    //ApplicationHandleException := //...
+    //ApplicationShowException := //...
+
+    Application.Initialize; //FMX app template has this before creation of form(s) - probably the order plays some role
+
+    Application.CreateForm(TGlobals, Globals); //create before MainForm, it's a DataModule it uses
+    Application.CreateForm(TThemes, Themes); //create before MainForm, it's a DataModule it uses
+    Application.CreateForm(TMainForm, MainForm); //note that CreateForm doesn't immediately create and assign the form object to the variable (depends on platform, may delay till Application.Run)
+
+    try
+      ParseCommandLine;
+      Application.Run; //TODO: should nest in try/catch with raise and in case the error is related to DirectX not supported (need to check which exceptions are thrown, say DXCanvas or something not being possible to create), Show message that user can use SHIFT key on start, then terminate the app - SEE THOUGH IF MAIN FORM'S INITIAL METHODS THAT TRY TO LOAD DEFAULT STORY ETC. ARE THE ONE'S THAT CATCH AND SHOW THE ERROR AND MAKE SURE THERE IT'S RAISED AGAIN
+    finally
+      FreeObjectDebugger; //must free here and not in "finalization" section of READCOM.App.Debugging to not see leaks upon exiting
+    end;
+  end;
 
 end.
