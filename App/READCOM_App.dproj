@@ -574,6 +574,10 @@
             <Form>Globals</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="READCOM.App.Themes.pas">
+            <Form>Themes</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <DCCReference Include="READCOM.App.Models.pas"/>
         <DCCReference Include="READCOM.App.URLs.pas"/>
         <DCCReference Include="Views\Options\READCOM.Views.Options.StoryItemOptions.pas">
@@ -641,7 +645,6 @@
         <DCCReference Include="READCOM.App.Main.pas"/>
         <DCCReference Include="modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
             <Form>CustomManipulator</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <RcItem Include="Default.readcom">

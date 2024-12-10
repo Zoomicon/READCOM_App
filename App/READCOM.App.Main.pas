@@ -29,6 +29,7 @@ implementation
     READCOM.Views.Main,
     READCOM.App.Debugging,
     READCOM.App.Globals, //for TGlobals
+    READCOM.App.Themes, //for TThemes
     READCOM.App.Messages,
     READCOM.App.URLs; //for OpenURLinBrowser
 
@@ -88,6 +89,7 @@ begin
   Application.Initialize; //FMX app template has this before creation of form(s) - probably the order plays some role
 
   Application.CreateForm(TGlobals, Globals); //create before MainForm, it's a DataModule it uses
+  Application.CreateForm(TThemes, Themes); //create before MainForm, it's a DataModule it uses
   Application.CreateForm(TMainForm, MainForm); //note that CreateForm doesn't immediately create and assign the form object to the variable (depends on platform, may delay till Application.Run)
 
   try

@@ -3,15 +3,18 @@ unit READCOM.App.Globals;
 interface
 
 uses
-  System.SysUtils, System.Classes, FMX.Types, FMX.Controls,
-  System.ImageList, FMX.ImgList, FMX.SVGIconImageList;
+  System.SysUtils,
+  System.Classes,
+  System.ImageList,
+  FMX.Types,
+  FMX.Controls,
+  FMX.ImgList,
+  FMX.SVGIconImageList;
 
 type
 
   TGlobals = class(TDataModule)
     Lang: TLang;
-    LightTheme: TStyleBook;
-    DarkTheme: TStyleBook;
     SVGIconImageList: TSVGIconImageList;
   end;
 

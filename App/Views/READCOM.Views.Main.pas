@@ -12,7 +12,6 @@ uses
   Zoomicon.Generics.Collections, //for TObjectListEx
   Zoomicon.Introspection.FMX.StructureView, //for TStructureView
   Zoomicon.ZUI.FMX.ZoomFrame, //for TZoomFrame
-  READCOM.App.Globals, //for Globals.SVGIconImageList
   READCOM.App.Models, //for IStory, ISToryItem
   READCOM.Views.StoryItems.StoryItem, //for TStoryItem
   READCOM.Views.Menu.HUD,
@@ -201,6 +200,7 @@ implementation
     READCOM.App.URLs, //for OpenURLinBrowser
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.App.Messages,
+    READCOM.App.Themes, //for Themes.LightTheme, Themes.DarkTheme
     READCOM.Views.StoryItems.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.StoryItems.TextStoryItem, //for TTextStoryItem
     READCOM.Views.Dialogs.AllText, //for TAllTextFrame
@@ -243,7 +243,7 @@ begin
   {$IFDEF NOSTYLE}
   StyleBook := nil; //TODO: can we make a style platform agnostic?
   {$ELSE}
-  StyleBook := Globals.LightTheme;
+  StyleBook := Themes.LightTheme;
   {$ENDIF}
 
   const StrAppVersion = '(' + Application.AppVersion + ')';
@@ -737,10 +737,10 @@ end;
 
 procedure TMainForm.HUDactionNextThemeExecute(Sender: TObject);
 begin
-  if not Assigned(Globals) then exit; //Note: safety check (useful when debugging with loading of Globals data module commented-out [had some issues loading the main form on Android when that was loaded too])
+  if not Assigned(Themes) then exit; //Note: safety check (useful when debugging with loading of Themes data module commented-out [had some issues loading the main form on Android when that was loaded too])
 
   var switchToLightMode: Boolean;
-  with Globals do
+  with Themes do
   begin
     switchToLightMode := DarkTheme.UseStyleManager; //don't use "LightTheme.UseStyleManager" this seems to return false, even though it's set to true in the designer (the default style is white)
     LightTheme.UseStyleManager := switchToLightMode;
@@ -748,9 +748,9 @@ begin
   end;
 
   if switchToLightMode then //the code above isn't enough to switch theme, so switching the MainForm's theme directly //TODO: this won't work for extra forms, try TStyleManager instead
-    StyleBook := Globals.LightTheme
+    StyleBook := Themes.LightTheme
   else
-    StyleBook := Globals.DarkTheme;
+    StyleBook := Themes.DarkTheme;
 end;
 
 {$endregion}
