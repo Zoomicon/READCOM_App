@@ -47,8 +47,8 @@ inherited AboutFrame: TAboutFrame
       Size.Height = 308.476318359375000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 419.700000000000000000
-      Viewport.Height = 304.500000000000000000
+      Viewport.Width = 423.700000000000000000
+      Viewport.Height = 308.500000000000000000
     end
     object GlyphLogo: TClickableGlyph
       OnTap = GlyphLogoTap

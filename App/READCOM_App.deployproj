@@ -4,9 +4,9 @@
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <PropertyGroup>
-        <DeviceId Condition="'$(Platform)'=='Android'"/>
+        <DeviceId Condition="'$(Platform)'=='Android'">HGR4Z8ML</DeviceId>
         <DeviceId Condition="'$(Platform)'=='Android64'">HGR4Z8ML</DeviceId>
-        <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
+        <DeviceId Condition="'$(Platform)'=='iOSDevice64'">00008030-001E58CE0A52202E</DeviceId>
         <DeviceId Condition="'$(Platform)'=='iOSSimARM64'"/>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
@@ -23,6 +23,15 @@
             <RemoteDir>READCOM_App.app\Contents\Resources\</RemoteDir>
             <RemoteName>READCOM_App.icns</RemoteName>
             <DeployClass>ProjectOSXResource</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="OSX64\Debug\READCOM_App.dSYM" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>READCOM_App.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
+            <RemoteName>READCOM_App</RemoteName>
+            <DeployClass>ProjectOSXDebug</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>

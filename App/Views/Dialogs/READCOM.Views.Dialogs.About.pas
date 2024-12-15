@@ -74,14 +74,14 @@ end;
 procedure TAboutFrame.GlyphLogoClick(Sender: TObject);
 begin
   inherited;
-  OpenURLinBrowser(URL_READCOM);
+  Application.OpenURL(URL_READCOM);
 end;
 
 //Click doesn't seem to work even though TClickableGlyph surfaces it (nor the Cursor property), so using Tap to support clicking at least on touch screens
 procedure TAboutFrame.GlyphLogoTap(Sender: TObject; const Point: TPointF);
 begin
   inherited;
-  OpenURLinBrowser(URL_READCOM);
+  Application.OpenURL(URL_READCOM);
 end;
 
 procedure TAboutFrame.actionCloseExecute(Sender: TObject);

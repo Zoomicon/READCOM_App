@@ -84,7 +84,7 @@ implementation
 
   procedure ShowHelp;
   begin
-    OpenURLinBrowser(URL_HELP);
+    Application.OpenURL(URL_HELP);
   end;
 
   procedure Main;
