@@ -199,6 +199,7 @@ implementation
     Fmx.Memo, //for TMemo
     //
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
+    Zoomicon.Helpers.FMX.ActnList, //for SafeTextToShortcut
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm, TApplication.OpenURL
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
@@ -477,7 +478,7 @@ implementation
       //Cut-Copy-Paste shortcut keys variation for TextStoryItem //TODO: should maybe disable respective actions in non-Edit mode, even though they do check it to do nothing when not in edit mode
       if (StoryItem is TTextStoryItem) then
       begin
-        //Note: don't use plain TextToShortcut, returns -1 on Android at Delphi 11.1, which gives Range Check Error since TCustomAction.Shortcut doesn't accept values <0
+        //Note: don't use plain TextToShortcut, returns -1 on Android at Delphi 11.1, which gives Range Check Error since TCustomAction.Shortcut doesn't accept values <0. Delphi 12.2 seems to have this fixed, returning 0 in that case
         HUD.actionCut.ShortCut := SafeTextToShortCut('Ctrl+Shift+X'); //set alternate shortcut while TTextStoryItem is being edited
         HUD.actionCopy.ShortCut := SafeTextToShortCut('Ctrl+Shift+C'); //set alternate shortcut while TTextStoryItem is being edited
         HUD.actionPaste.ShortCut := SafeTextToShortCut('Ctrl+Shift+V'); //set alternate shortcut while TTextStoryItem is being edited

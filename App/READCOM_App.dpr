@@ -18,10 +18,9 @@ Dependencies:
   - Zoomicon.Media.FMX
   - Zoomicon.ZUI.FMX
   - READCOM.Core
-  Note: at Build/Compiler/Search path/All configurations - All platforms, using relative search paths to respective Boss cache folders (see App/modules folder)
-+ Design Packages (need to select all [or one by one], right-click and Install at Projects tool window):
-  - Zoomicon.Text.FMX
-  Note: will also need to manually install the BOSS packages (see modules subfolder that it creates) if BOSS doesn't install them as design packages
+  Notes:
+  - at Build/Compiler/Search path/All configurations - All platforms, using relative search paths to respective Boss cache folders (see App/modules folder)
+  - will need to manually install the BOSS packages (see modules subfolder that it creates) if BOSS doesn't install them as design packages
 *)
 
 program READCOM_App;
