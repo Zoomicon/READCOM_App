@@ -49,10 +49,9 @@ type
 
 implementation
   uses
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for AppVersion
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.AppVersion, TApplication.OpenURL
     READCOM.App.Main,
-    READCOM.App.Messages,
-    READCOM.App.URLs; //for OpenURLinBrowser
+    READCOM.App.Messages;
 
 {$R *.fmx}
 

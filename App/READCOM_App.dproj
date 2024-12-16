@@ -363,8 +363,8 @@
         <DCC_RangeChecking>true</DCC_RangeChecking>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Android)'!=''">
-        <VerInfo_Build>8</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=8;versionName=0.7.3;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
+        <VerInfo_Build>9</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=9;versionName=0.7.4;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <BT_BuildType>AppStore</BT_BuildType>
@@ -375,8 +375,8 @@
         <Debugger_RunParams>-cleaninstall</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Android64)'!=''">
-        <VerInfo_Build>8</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=8;versionName=0.7.3;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
+        <VerInfo_Build>9</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=9;versionName=0.7.4;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
@@ -388,33 +388,35 @@
     <PropertyGroup Condition="'$(Cfg_1_iOSDevice64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>6</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
         <VerInfo_BundleId>com.zoomicon.readcom.app</VerInfo_BundleId>
+        <VerInfo_Build>4</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_iOSSimARM64)'!=''">
         <Cfg_1>true</Cfg_1>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
-        <VerInfo_MinorVer>6</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
+        <VerInfo_MinorVer>7</VerInfo_MinorVer>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=iPad;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
+        <VerInfo_Build>4</VerInfo_Build>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_OSX64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.education;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
+        <VerInfo_Build>4</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_OSXARM64)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.education;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
+        <VerInfo_Build>4</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
@@ -425,8 +427,8 @@
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.3);FileVersion=0.7.3.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>3</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.4);FileVersion=0.7.4.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>4</VerInfo_Release>
         <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -436,8 +438,8 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.2);FileVersion=0.7.1.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.4);FileVersion=0.7.4.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>4</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -446,8 +448,8 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android)'!=''">
-        <VerInfo_Build>8</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=8;versionName=0.7.3;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
+        <VerInfo_Build>9</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=9;versionName=0.7.4;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
@@ -457,8 +459,8 @@
         <Android_DarkBackgroundColor>#000000</Android_DarkBackgroundColor>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Android64)'!=''">
-        <VerInfo_Build>8</VerInfo_Build>
-        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=8;versionName=0.7.3;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
+        <VerInfo_Build>9</VerInfo_Build>
+        <VerInfo_Keys>package=com.zoomicon.readcom.app;label=READ-COM: Reading Communities;versionCode=9;versionName=0.7.4;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=No TitleBar;hardwareAccelerated=true;apiKey=;minSdkVersion=21;targetSdkVersion=34</VerInfo_Keys>
         <PF_KeyStore>..\..\..\..\Zoomicon\Android\Keystore.keystore</PF_KeyStore>
         <PF_KeyStorePass>850E47C75F930798CF7EE53CA4557B88E44308587EA6ECBC9F0B7771D801A8FDA5B85D4B7F29E22DC1E05723FA84C317BAE13658042922D2163F458CE5F422DFC902F311D544FACDBFA1AF4B072C1D7692533E451DBA097AE3AE16F2440B789365819AD322F17D52</PF_KeyStorePass>
         <PF_AliasKey>readcom</PF_AliasKey>
@@ -476,10 +478,10 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
         <VerInfo_BundleId>com.zoomicon.readcom.app</VerInfo_BundleId>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>4</VerInfo_Build>
         <PF_DevDebug>Apple Development: Georgios Birmpilis (NJM7SVX96N)</PF_DevDebug>
         <PF_MobileProvisionDebug>836e61d5-59ba-4fc6-946f-f3f1b579cab7</PF_MobileProvisionDebug>
         <PF_AutoMobileProvisionDebug>False</PF_AutoMobileProvisionDebug>
@@ -491,9 +493,9 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDevelopmentRegion=en;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleInfoDictionaryVersion=7.1;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;LSRequiresIPhoneOS=true;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);UIDeviceFamily=iPhone &amp; iPad;NSLocationAlwaysUsageDescription=The reason for accessing the location information of the user;NSLocationWhenInUseUsageDescription=The reason for accessing the location information of the user;NSLocationAlwaysAndWhenInUseUsageDescription=The reason for accessing the location information of the user;UIBackgroundModes=;NSContactsUsageDescription=The reason for accessing the contacts;NSPhotoLibraryUsageDescription=The reason for accessing the photo library;NSPhotoLibraryAddUsageDescription=The reason for adding to the photo library;NSCameraUsageDescription=The reason for accessing the camera;NSFaceIDUsageDescription=The reason for accessing the face id;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSSiriUsageDescription=The reason for accessing Siri;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing bluetooth;NSBluetoothPeripheralUsageDescription=The reason for accessing bluetooth peripherals;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSMotionUsageDescription=The reason for accessing the accelerometer;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers</VerInfo_Keys>
         <VerInfo_UIDeviceFamily>iPhoneAndiPad</VerInfo_UIDeviceFamily>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>4</VerInfo_Build>
         <PF_DevDebug>Apple Development: Georgios Birmpilis (NJM7SVX96N)</PF_DevDebug>
         <PF_MobileProvisionDebug>836e61d5-59ba-4fc6-946f-f3f1b579cab7</PF_MobileProvisionDebug>
         <PF_AutoMobileProvisionDebug>False</PF_AutoMobileProvisionDebug>
@@ -503,13 +505,13 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.education;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
         <PF_AppleID>birbilis@zoomicon.com</PF_AppleID>
         <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
         <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
         <PF_StapleTicket>true</PF_StapleTicket>
         <BT_BuildType>AppStore</BT_BuildType>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>4</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_OSXARM64)'!=''">
@@ -517,44 +519,42 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.2;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.utilities;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
+        <VerInfo_Keys>CFBundleName=READCOM_App;CFBundleDisplayName=READ-COM: Reading Communities;CFBundleIdentifier=com.zoomicon.readcom.app;CFBundleVersion=0.7.4;CFBundleShortVersionString=1.0.0;CFBundlePackageType=APPL;CFBundleSignature=????;CFBundleAllowMixedLocalizations=YES;CFBundleExecutable=$(MSBuildProjectName);NSHighResolutionCapable=true;LSApplicationCategoryType=public.app-category.education;NSLocationUsageDescription=The reason for accessing the location information of the user;NSContactsUsageDescription=The reason for accessing the contacts;NSCalendarsUsageDescription=The reason for accessing the calendar data;NSRemindersUsageDescription=The reason for accessing the reminders;NSCameraUsageDescription=The reason for accessing the camera;NSMicrophoneUsageDescription=The reason for accessing the microphone;NSMotionUsageDescription=The reason for accessing the accelerometer;NSDesktopFolderUsageDescription=The reason for accessing the Desktop folder;NSDocumentsFolderUsageDescription=The reason for accessing the Documents folder;NSDownloadsFolderUsageDescription=The reason for accessing the Downloads folder;NSNetworkVolumesUsageDescription=The reason for accessing files on a network volume;NSRemovableVolumesUsageDescription=The reason for accessing files on a removable volume;NSSpeechRecognitionUsageDescription=The reason for requesting to send user data to Apple&apos;s speech recognition servers;ITSAppUsesNonExemptEncryption=false;NSBluetoothAlwaysUsageDescription=The reason for accessing the Bluetooth interface</VerInfo_Keys>
         <DCC_GenerateOSXUniversalBinaryFile>true</DCC_GenerateOSXUniversalBinaryFile>
         <PF_AppleID>birbilis@zoomicon.com</PF_AppleID>
         <PF_AppSpecificPassword>852847CD5F90079FCF3CE53CA4437BACE45C080C7EB7ECA49F0C7772D849A8ACA5FF5D197F6E1C61C1BD5765FAB3C363BAB3361C04652294162B458CE5F52284C946F35DD545FA95BFA2AF3F072C1D0A92003E071DBA097BE3FD16D14425789365CA9A8422F1</PF_AppSpecificPassword>
         <PF_StapleTicket>true</PF_StapleTicket>
         <PF_DeveloperIDCert>Developer ID Application: Georgios Birmpilis (KVJTZJTSS6)</PF_DeveloperIDCert>
         <BT_BuildType>AppStore</BT_BuildType>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>4</VerInfo_Build>
         <Icns_MainIcns>READCOM_App\LaunchGen\Icon_MainIcon.icns</Icns_MainIcns>
         <PF_DevSandBox>Apple Distribution: Georgios Birmpilis (KVJTZJTSS6)</PF_DevSandBox>
         <PF_SandBox>3rd Party Mac Developer Installer: Georgios Birmpilis (KVJTZJTSS6)</PF_SandBox>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.3);FileVersion=0.7.3.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.4);FileVersion=0.7.4.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.4.0;Comments=</VerInfo_Keys>
         <PF_UWPPublisher>CN=E1504C07-F970-414E-A706-87A64B47C12B</PF_UWPPublisher>
         <PF_UWPPackageName>17029Zoomicon.READ-COMReadingCommunities</PF_UWPPackageName>
         <PF_UWPPackageDisplayName>READ-COM: Reading Communities</PF_UWPPackageDisplayName>
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
-        <VerInfo_Release>3</VerInfo_Release>
+        <VerInfo_Release>4</VerInfo_Release>
         <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.2);FileVersion=0.7.2.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.2.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.4);FileVersion=0.7.4.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>4</VerInfo_Release>
         <BT_BuildType>AppStore</BT_BuildType>
     </PropertyGroup>
     <ItemGroup>
@@ -576,7 +576,6 @@
             <Form>CustomManipulator</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="READCOM.App.URLs.pas"/>
         <DCCReference Include="READCOM.App.Globals.pas">
             <Form>Globals</Form>
             <DesignClass>TDataModule</DesignClass>
@@ -2429,6 +2428,12 @@
                 <DeployFile LocalName="Win64\Debug\READCOM_App.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>READCOM_App.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Debug\READCOM_App.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>READCOM_App.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -1,49 +1,55 @@
-//Description: READ-COM About dialog
+//Description: READ-COM Story all-text editing dialog
 //Author: George Birbilis (http://zoomicon.com)
 
 unit READCOM.Views.Dialogs.AllText;
 
 interface
+  {$region 'Used units'}
   uses
-    READCOM.App.Globals, //for Globals.SVGIconImageList
-    READCOM.Models.Stories, //for IStoryItem
     System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+    System.Actions,
+    //
     FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
     FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
-    FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts, System.Actions,
-    FMX.ActnList;
+    FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts,
+    FMX.ActnList,
+    //
+    READCOM.Views.Modal, //for TModalFrame
+    READCOM.App.Globals, //for Globals.SVGIconImageList
+    READCOM.Models.Stories; //for IStoryItem
+  {$endregion}
 
-type
-  TAllTextFrame = class(TFrame)
-    MemoAllText: TMemo;
-    rectBackground: TRectangle;
-    btnClose: TSpeedButton;
-    rectBorder: TRectangle;
-    lblInstructions: TLabel;
-    btnApply: TSpeedButton;
-    procedure btnCloseClick(Sender: TObject);
-    procedure btnApplyClick(Sender: TObject);
+  type
+    TAllTextFrame = class(TModalFrame)
+      MemoAllText: TMemo;
+      rectBackground: TRectangle;
+      btnClose: TSpeedButton;
+      rectBorder: TRectangle;
+      lblInstructions: TLabel;
+      btnApply: TSpeedButton;
+      procedure btnCloseClick(Sender: TObject);
+      procedure btnApplyClick(Sender: TObject);
 
-  protected
-    class var
-      Frame: TFrame;
-      FStoryItem: IStoryItem;
+    protected
+      class var
+        Frame: TFrame;
+        FStoryItem: IStoryItem;
 
-    class function IsShown: Boolean; static;
+      class function IsShown: Boolean; static;
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
+    public
+      constructor Create(AOwner: TComponent); override;
+      class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
 
-    class property Shown: Boolean read IsShown;
-  end;
+      class property Shown: Boolean read IsShown;
+    end;
 
 implementation
+  {$region 'Used units'}
   uses
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for AppVersion
     READCOM.App.Main,
-    READCOM.App.Messages,
-    READCOM.App.URLs; //for OpenURLinBrowser
+    READCOM.App.Messages;
+  {$endregion}
 
 {$R *.fmx}
 

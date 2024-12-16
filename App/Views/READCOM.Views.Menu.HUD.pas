@@ -121,8 +121,6 @@ type
   end;
 
 implementation
-  uses
-    READCOM.App.URLs, READCOM.Views.Main; //for url_Open_In_Browser
 
 {$R *.fmx}
 
@@ -250,7 +248,7 @@ end;
 
 procedure TStoryHUD.actionAboutExecute(Sender: TObject);
 begin
-  TAboutFrame.ShowModal(MainForm); //has [X] button to close itself
+  TAboutFrame.ShowModal(Application.MainForm); //has [X] button to close itself
 end;
 
 {$endregion}

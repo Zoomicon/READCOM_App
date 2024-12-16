@@ -28,15 +28,14 @@ implementation
     FMX.Dialogs, //for ShowMessage
     FMX.Forms, //for Application
     //
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for Application.ExeName
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.ExeName, TApplication.OpenURL
     //
     READCOM.Models, //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT, DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT
     READCOM.Views.Main,
     READCOM.App.Debugging,
     READCOM.App.Globals, //for TGlobals
     READCOM.App.Themes, //for TThemes
-    READCOM.App.Messages,
-    READCOM.App.URLs; //for OpenURLinBrowser
+    READCOM.App.Messages;
   {$endregion}
 
   {$region 'Command-line'}

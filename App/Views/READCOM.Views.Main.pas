@@ -200,14 +200,13 @@ implementation
     //
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm, TApplication.OpenURL
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
     Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.DisableFontSizeToFit
     Zoomicon.Text, //for SafeTextToShortcut
     //
     READCOM.Models, //for EXT_READCOM
     READCOM.App.Main, //for StorySource
-    READCOM.App.URLs, //for OpenURLinBrowser
     READCOM.App.Debugging, //for ToggleObjectDebuggerVisibility
     READCOM.App.Messages,
     READCOM.App.Themes, //for Themes.LightTheme, Themes.DarkTheme
@@ -1083,12 +1082,25 @@ implementation
         ShowHelp; //needed since the Help key (that has the F1 key accelerator) was moved into About box to save toolbar space on small screens
 
       vkF2:
-        HUD.EditMode := not HUD.EditMode; //toggle EditMode
+        HUDactionSaveExecute(Self);
 
       vkF3:
+        HUDactionLoadExecute(Self);
+
+      vkF4:
+        HUDactionNewExecute(Self);
+
+      vkF5:
         HUD.UseStoryTimer := not HUD.UseStoryTimer; //toggle StoryTimer
 
+      vkF6:
+        HUD.StructureVisible := not HUD.StructureVisible; //toggle StructureView visibility
+
+      vkF7:
+        HUD.EditMode := not HUD.EditMode; //toggle EditMode
+
       vkF8:
+        if ssCtrl in Shift then //Ctrl+F8 - making sure users don't press this by mistake since it will also close the app
         begin
           ActivateRootStoryItem;
           ShowMessage('Exporting to HTML and exiting'); //this seems to be needed (TThread.Queue doesn't do the trick) to always save TextStoryItem text in exported images
@@ -1109,8 +1121,8 @@ implementation
       vkF11:
         ToggleObjectDebuggerVisibility; //only available for DEBUG builds
 
-      vkF12:
-        HUD.StructureVisible := not HUD.StructureVisible; //toggle StructureView visibility
+      //vkF12: //don't use F12 key, when debugging with Delphi IDE it breaks into the debugger
+
     end;
   end;
 

@@ -1,13 +1,17 @@
 object AllTextFrame: TAllTextFrame
-  Align = Contents
-  Size.Width = 506.000000000000000000
-  Size.Height = 320.000000000000000000
-  Size.PlatformDefault = False
+  Left = 0
+  Top = 0
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
   object rectBackground: TRectangle
     Align = Contents
     Fill.Color = xBBE0E0E0
-    Size.Width = 506.000000000000000000
-    Size.Height = 320.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
     Size.PlatformDefault = False
     Stroke.Thickness = 0.000000000000000000
     object rectBorder: TRectangle

@@ -36,7 +36,6 @@ program READCOM_App;
   ObjectDebuggerFMXForm in '..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas' {ObjectDebuggerFMXForm},
   Zoomicon.Text in '..\Zoomicon.Text\Zoomicon.Text.pas',
   Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
-  READCOM.App.URLs in 'READCOM.App.URLs.pas',
   READCOM.App.Globals in 'READCOM.App.Globals.pas' {Globals: TDataModule},
   READCOM.App.Themes in 'READCOM.App.Themes.pas' {Themes: TDataModule},
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
