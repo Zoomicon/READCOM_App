@@ -3,6 +3,9 @@
         <ProjectGuid>{D72D9F84-A7BE-49DF-8CD0-E76416CE4FEE}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
+        <Projects Include="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="App\READCOM_App.dproj">
             <Dependencies/>
         </Projects>
@@ -14,6 +17,15 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="READCOM_Core">
+        <MSBuild Projects="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj"/>
+    </Target>
+    <Target Name="READCOM_Core:Clean">
+        <MSBuild Projects="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="READCOM_Core:Make">
+        <MSBuild Projects="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj" Targets="Make"/>
+    </Target>
     <Target Name="READCOM_App">
         <MSBuild Projects="App\READCOM_App.dproj"/>
     </Target>
@@ -24,13 +36,13 @@
         <MSBuild Projects="App\READCOM_App.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="READCOM_App"/>
+        <CallTarget Targets="READCOM_Core;READCOM_App"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="READCOM_App:Clean"/>
+        <CallTarget Targets="READCOM_Core:Clean;READCOM_App:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="READCOM_App:Make"/>
+        <CallTarget Targets="READCOM_Core:Make;READCOM_App:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms'">
@@ -40,6 +52,12 @@
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
         </BuildGroupProject>
+        <BuildGroupProject Include="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj">
+            <ProjectGuid>{F6E5F21F-E8D6-4900-87B5-232766514083}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win32</Platforms>
+            <Enabled>False</Enabled>
+        </BuildGroupProject>
     </ItemGroup>
     <ItemGroup Condition="'$(BuildGroup)'=='All Platforms - Debug'">
         <BuildGroupProject Include="App\READCOM_App.dproj">
@@ -47,6 +65,12 @@
             <Configurations>Debug</Configurations>
             <Platforms>Android;Android64;iOSDevice64;iOSSimARM64;OSX64;OSXARM64;Win32;Win64</Platforms>
             <Enabled>True</Enabled>
+        </BuildGroupProject>
+        <BuildGroupProject Include="..\READCOM.Core.Delphi\Source\READCOM.Core.dproj">
+            <ProjectGuid>{F6E5F21F-E8D6-4900-87B5-232766514083}</ProjectGuid>
+            <Configurations>Debug</Configurations>
+            <Platforms>Win32</Platforms>
+            <Enabled>False</Enabled>
         </BuildGroupProject>
     </ItemGroup>
 </Project>

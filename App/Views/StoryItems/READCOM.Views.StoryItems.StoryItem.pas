@@ -334,7 +334,6 @@ implementation
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.ReadComponent
     Zoomicon.Helpers.RTL.StringsHelpers, //for TStrings.GetLines
-    Zoomicon.Text, //for GetLines
     READCOM.App.Debugging, //for Log
     READCOM.Views.StoryItems.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions

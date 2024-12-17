@@ -204,7 +204,6 @@ implementation
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm, TApplication.OpenURL
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
     Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.DisableFontSizeToFit
-    Zoomicon.Text, //for SafeTextToShortcut
     //
     READCOM.Models, //for EXT_READCOM
     READCOM.App.Main, //for StorySource

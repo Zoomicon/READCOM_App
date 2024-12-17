@@ -571,7 +571,6 @@
         <DCCReference Include="..\3rdPartyLib\object-debugger-for-firemonkey\DemoDesktop\ObjectDebuggerFMXForm.pas">
             <Form>ObjectDebuggerFMXForm</Form>
         </DCCReference>
-        <DCCReference Include="..\Zoomicon.Text\Zoomicon.Text.pas"/>
         <DCCReference Include="modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
             <Form>CustomManipulator</Form>
             <DesignClass>TFrame</DesignClass>
