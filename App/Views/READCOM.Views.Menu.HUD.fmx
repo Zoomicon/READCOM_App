@@ -120,8 +120,8 @@ object StoryHUD: TStoryHUD
         StaysPressed = True
         Hint = 
           'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
-          ' which allows to select active StoryItem and to rearrange StoryI' +
-          'tems when in Edit mode'
+          ' which allows to select ActiveStoryItem and to rearrange StoryIt' +
+          'ems when in Edit mode'
         Images = Globals.SVGIconImageList
         ImageIndex = 3
         Margins.Left = 3.000000000000000000
@@ -185,6 +185,9 @@ object StoryHUD: TStoryHUD
       end
       object btnNextTheme: TSpeedButton
         Action = actionNextTheme
+        Hint = 
+          'Change Theme'#13#13'Switches to the next available user interface them' +
+          'e. Light and dark mode ones are available.'
         Images = Globals.SVGIconImageList
         ImageIndex = 26
         Margins.Left = 3.000000000000000000
@@ -234,8 +237,9 @@ object StoryHUD: TStoryHUD
         Align = Client
         Hint = 
           'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
-          ' audio, text) or saved StoryItems (.readcom files). Respective S' +
-          'toryItems are added as children of the edited StoryItem.'
+          ' audio, text) or saved StoryItems (.readcom files). The new Stor' +
+          'yItems are added as children of the ActiveStoryItem at the selec' +
+          'ted area (if any) or at its center'
         Images = Globals.SVGIconImageList
         ImageIndex = 10
         Margins.Left = 3.000000000000000000
@@ -250,8 +254,8 @@ object StoryHUD: TStoryHUD
         Action = actionAddImageStoryItem
         Anchors = [akTop, akRight]
         Hint = 
-          'Add Image'#13#13'Adds an ImageStoryItem placeholder into the edited St' +
-          'oryItem'
+          'Add Image'#13#13'Adds an ImageStoryItem placeholder into the ActiveSto' +
+          'ryItem at the selected area (if any) or at its center'
         Images = Globals.SVGIconImageList
         ImageIndex = 23
         Margins.Left = 3.000000000000000000
@@ -270,8 +274,8 @@ object StoryHUD: TStoryHUD
         Action = actionAddTextStoryItem
         Anchors = [akTop, akRight]
         Hint = 
-          'Add Text'#13#13'Adds a TextStoryItem placeholder into the edited Story' +
-          'Item'
+          'Add Text'#13#13'Adds a TextStoryItem into the ActiveStoryItem at the s' +
+          'elected area (if any) or at its center'
         Images = Globals.SVGIconImageList
         ImageIndex = 21
         Margins.Left = 3.000000000000000000
@@ -308,7 +312,7 @@ object StoryHUD: TStoryHUD
       object btnCut: TSpeedButton
         Action = actionCut
         Anchors = [akTop, akRight]
-        Hint = 'Cut'#13#13'Moves the edited StoryItem to the Clipboard'
+        Hint = 'Cut'#13#13'Moves the ActiveStoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 25
         Margins.Left = 3.000000000000000000
@@ -326,7 +330,7 @@ object StoryHUD: TStoryHUD
       object btnCopy: TSpeedButton
         Action = actionCopy
         Anchors = [akTop, akRight]
-        Hint = 'Copy'#13#13'Copies the edited StoryItem to the Clipboard'
+        Hint = 'Copy'#13#13'Copies the ActiveStoryItem to the Clipboard'
         Images = Globals.SVGIconImageList
         ImageIndex = 17
         Margins.Left = 3.000000000000000000
@@ -345,8 +349,8 @@ object StoryHUD: TStoryHUD
         Action = actionPaste
         Anchors = [akTop, akRight]
         Hint = 
-          'Paste'#13#13'Pastes content from the Clipboard into the edited StoryIt' +
-          'em'
+          'Paste'#13#13'Pastes content from the Clipboard into the ActiveStoryIte' +
+          'm'
         Images = Globals.SVGIconImageList
         ImageIndex = 18
         Margins.Left = 3.000000000000000000
@@ -363,7 +367,7 @@ object StoryHUD: TStoryHUD
       end
       object btnFlipHorizontally: TSpeedButton
         Anchors = [akTop, akRight]
-        Hint = 'Flip Horizontally'#13#13'Mirrors the edited StoryItem horizontally'
+        Hint = 'Flip Horizontally'#13#13'Mirrors the ActiveStoryItem horizontally'
         Images = Globals.SVGIconImageList
         ImageIndex = 19
         Margins.Left = 3.000000000000000000
@@ -380,7 +384,7 @@ object StoryHUD: TStoryHUD
       end
       object btnFlipVertically: TSpeedButton
         Anchors = [akTop, akRight]
-        Hint = 'Flip Vertically'#13#13'Flips the edited StoryItem vertically'
+        Hint = 'Flip Vertically'#13#13'Flips the ActiveStoryItem vertically'
         Images = Globals.SVGIconImageList
         ImageIndex = 20
         Margins.Left = 3.000000000000000000
@@ -397,6 +401,10 @@ object StoryHUD: TStoryHUD
       end
       object comboForeColor: TComboColorBox
         Color = claWhite
+        Hint = 
+          'Set Foreground Color'#13#13'Sets the foreground color and its transpar' +
+          'ency for the ActiveStoryItem, e.g. for a TextStoryItem this chan' +
+          'ges the text color'
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -410,6 +418,9 @@ object StoryHUD: TStoryHUD
       end
       object comboBackColor: TComboColorBox
         Color = claWhite
+        Hint = 
+          'Set Background Color'#13#13'Sets the background color and its transpar' +
+          'ency for the ActiveStoryItem'
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000

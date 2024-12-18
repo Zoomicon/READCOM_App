@@ -6,253 +6,267 @@
 unit READCOM.Views.Menu.HUD;
 
 interface
+ {$region 'Used units'}
+  uses
+    System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+    FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
+    FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
+    FMX.Layouts, System.Actions, FMX.ActnList,
+    FMX.MultiView, SubjectStand, FrameStand,
+    READCOM.Views.Dialogs.About, //for TAboutFrame
+    READCOM.App.Globals, //for Globals.SVGIconImageList
+    FMX.Colors;
+  {$endregion}
 
-uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
-  FMX.Layouts, System.Actions, FMX.ActnList,
-  FMX.MultiView, SubjectStand, FrameStand,
-  READCOM.Views.Dialogs.About, //for TAboutFrame
-  READCOM.App.Globals, //for Globals.SVGIconImageList
-  FMX.Colors;
+  type
 
-type
+    TEditModeChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+    TStructureVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+    TTargetsVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+    TUseStoryTimerChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
 
-  TEditModeChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
-  TStructureVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
-  TTargetsVisibleChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
-  TUseStoryTimerChangedEvent = procedure (Sender: TObject; const Value: Boolean) of object;
+    TStoryHUD = class(TFrame)
+      btnPrevious: TSpeedButton;
+      btnToggleEditMode: TSpeedButton;
+      BtnMenu: TSpeedButton;
+      btnNext: TSpeedButton;
+      layoutButtonsNavigation: TLayout;
+      ActionList: TActionList;
+      actionPrevious: TAction;
+      actionNext: TAction;
+      actionAddTextStoryItem: TAction;
+      actionAbout: TAction;
+      actionMenu: TAction;
+      layoutButtons: TLayout;
+      MultiView: TMultiView;
+      btnToggleStructureVisible: TSpeedButton;
+      MultiViewFrameStand: TFrameStand;
+      layoutContent: TLayout;
+      btnToggleTargetsVisible: TSpeedButton;
+      layoutButtonsMain: TFlowLayout;
+      layoutButtonsEdit: TFlowLayout;
+      actionLoad: TAction;
+      actionSave: TAction;
+      btnLoad: TSpeedButton;
+      btnSave: TSpeedButton;
+      actionNew: TAction;
+      btnNew: TSpeedButton;
+      actionHome: TAction;
+      btnHome: TSpeedButton;
+      btnAbout: TSpeedButton;
+      actionCopy: TAction;
+      actionPaste: TAction;
+      actionDelete: TAction;
+      btnToggleUseStoryTimer: TSpeedButton;
+      actionAddImageStoryItem: TAction;
+      btnAddTextStoryItem: TSpeedButton;
+      btnCopy: TSpeedButton;
+      btnDelete: TSpeedButton;
+      btnFlipHorizontally: TSpeedButton;
+      btnFlipVertically: TSpeedButton;
+      btnPaste: TSpeedButton;
+      btnAddImageStoryItem: TSpeedButton;
+      btnCut: TSpeedButton;
+      actionCut: TAction;
+      btnAdd: TSpeedButton;
+      actionAdd: TAction;
+      comboForeColor: TComboColorBox;
+      comboBackColor: TComboColorBox;
+      btnNextTheme: TSpeedButton;
+      actionNextTheme: TAction;
+      actionOptions: TAction;
+      btnOptions: TSpeedButton;
+      procedure actionAboutExecute(Sender: TObject);
+      procedure actionMenuExecute(Sender: TObject);
+      procedure btnToggleStructureVisibleClick(Sender: TObject);
+      procedure btnToggleEditModeClick(Sender: TObject);
+      procedure btnToggleTargetsVisibleClick(Sender: TObject);
+      procedure btnToggleUseStoryTimerClick(Sender: TObject);
 
-  TStoryHUD = class(TFrame)
-    btnPrevious: TSpeedButton;
-    btnToggleEditMode: TSpeedButton;
-    BtnMenu: TSpeedButton;
-    btnNext: TSpeedButton;
-    layoutButtonsNavigation: TLayout;
-    ActionList: TActionList;
-    actionPrevious: TAction;
-    actionNext: TAction;
-    actionAddTextStoryItem: TAction;
-    actionAbout: TAction;
-    actionMenu: TAction;
-    layoutButtons: TLayout;
-    MultiView: TMultiView;
-    btnToggleStructureVisible: TSpeedButton;
-    MultiViewFrameStand: TFrameStand;
-    layoutContent: TLayout;
-    btnToggleTargetsVisible: TSpeedButton;
-    layoutButtonsMain: TFlowLayout;
-    layoutButtonsEdit: TFlowLayout;
-    actionLoad: TAction;
-    actionSave: TAction;
-    btnLoad: TSpeedButton;
-    btnSave: TSpeedButton;
-    actionNew: TAction;
-    btnNew: TSpeedButton;
-    actionHome: TAction;
-    btnHome: TSpeedButton;
-    btnAbout: TSpeedButton;
-    actionCopy: TAction;
-    actionPaste: TAction;
-    actionDelete: TAction;
-    btnToggleUseStoryTimer: TSpeedButton;
-    actionAddImageStoryItem: TAction;
-    btnAddTextStoryItem: TSpeedButton;
-    btnCopy: TSpeedButton;
-    btnDelete: TSpeedButton;
-    btnFlipHorizontally: TSpeedButton;
-    btnFlipVertically: TSpeedButton;
-    btnPaste: TSpeedButton;
-    btnAddImageStoryItem: TSpeedButton;
-    btnCut: TSpeedButton;
-    actionCut: TAction;
-    btnAdd: TSpeedButton;
-    actionAdd: TAction;
-    comboForeColor: TComboColorBox;
-    comboBackColor: TComboColorBox;
-    btnNextTheme: TSpeedButton;
-    actionNextTheme: TAction;
-    actionOptions: TAction;
-    btnOptions: TSpeedButton;
-    procedure actionAboutExecute(Sender: TObject);
-    procedure actionMenuExecute(Sender: TObject);
-    procedure btnToggleStructureVisibleClick(Sender: TObject);
-    procedure btnToggleEditModeClick(Sender: TObject);
-    procedure btnToggleTargetsVisibleClick(Sender: TObject);
-    procedure btnToggleUseStoryTimerClick(Sender: TObject);
+    protected
+      FAboutFrame: TAboutFrame;
+      FMultiViewOpenedWidth: Single;
 
-  protected
-    FAboutFrame: TAboutFrame;
-    FMultiViewOpenedWidth: Single;
+      FEditMode: Boolean;
+      FStructureVisible: Boolean;
+      FTargetsVisible: Boolean;
+      FUseStoryTimer: Boolean;
 
-    FEditMode: Boolean;
-    FStructureVisible: Boolean;
-    FTargetsVisible: Boolean;
-    FUseStoryTimer: Boolean;
+      FEditModeChanged: TEditModeChangedEvent;
+      FStructureVisibleChanged: TStructureVisibleChangedEvent;
+      FTargetsVisibleChanged: TTargetsVisibleChangedEvent;
+      FUseStoryTimerChanged: TUseStoryTimerChangedEvent;
 
-    FEditModeChanged: TEditModeChangedEvent;
-    FStructureVisibleChanged: TStructureVisibleChangedEvent;
-    FTargetsVisibleChanged: TTargetsVisibleChangedEvent;
-    FUseStoryTimerChanged: TUseStoryTimerChangedEvent;
+      {EditMode}
+      procedure SetEditMode(const Value: Boolean); virtual;
+      {StructureVisible}
+      procedure SetStructureVisible(const Value: Boolean);
+      {TargetsVisible}
+      procedure SetTargetsVisible(const Value: Boolean);
+      {UseStoryTimer}
+      procedure SetUseStoryTimer(const Value: Boolean);
 
-    {EditMode}
-    procedure SetEditMode(const Value: Boolean); virtual;
-    {StructureVisible}
-    procedure SetStructureVisible(const Value: Boolean);
-    {TargetsVisible}
-    procedure SetTargetsVisible(const Value: Boolean);
-    {UseStoryTimer}
-    procedure SetUseStoryTimer(const Value: Boolean);
+    public
+      constructor Create(AOwner: TComponent); override;
 
-  public
-    constructor Create(AOwner: TComponent); override;
+    published
+      property EditMode: Boolean read FEditMode write SetEditMode default false;
+      property StructureVisible: Boolean read FStructureVisible write SetStructureVisible default false;
+      property TargetsVisible: Boolean read FTargetsVisible write SetTargetsVisible default false;
+      property UseStoryTimer: Boolean read FUseStoryTimer write SetUseStoryTimer default false;
 
-  published
-    property EditMode: Boolean read FEditMode write SetEditMode default false;
-    property StructureVisible: Boolean read FStructureVisible write SetStructureVisible default false;
-    property TargetsVisible: Boolean read FTargetsVisible write SetTargetsVisible default false;
-    property UseStoryTimer: Boolean read FUseStoryTimer write SetUseStoryTimer default false;
-
-    property OnEditModeChanged: TEditModeChangedEvent read FEditModeChanged write FEditModeChanged;
-    property OnStructureVisibleChanged: TStructureVisibleChangedEvent read FStructureVisibleChanged write FStructureVisibleChanged;
-    property OnTargetsVisibleChanged: TTargetsVisibleChangedEvent read FTargetsVisibleChanged write FTargetsVisibleChanged;
-    property OnUseStoryTimerChanged: TUseStoryTimerChangedEvent read FUseStoryTimerChanged write FUseStoryTimerChanged;
-  end;
+      property OnEditModeChanged: TEditModeChangedEvent read FEditModeChanged write FEditModeChanged;
+      property OnStructureVisibleChanged: TStructureVisibleChangedEvent read FStructureVisibleChanged write FStructureVisibleChanged;
+      property OnTargetsVisibleChanged: TTargetsVisibleChangedEvent read FTargetsVisibleChanged write FTargetsVisibleChanged;
+      property OnUseStoryTimerChanged: TUseStoryTimerChangedEvent read FUseStoryTimerChanged write FUseStoryTimerChanged;
+    end;
 
 implementation
 
 {$R *.fmx}
 
-constructor TStoryHUD.Create(AOwner: TComponent);
-begin
-  inherited;
+  constructor TStoryHUD.Create(AOwner: TComponent);
+  begin
+    inherited;
 
-  {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
-  btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
-  btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists)
-  //btnToggleEditMode.Visible := false; //TODO: enable edit again after implementing a Save (and ideally adding Share support too) dialog. Plus need to make the toolbars somehow fit in small screens
-  btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
-  {$ENDIF}
+    {$IF DEFINED(ANDROID) OR DEFINED(IOS)}
+    //layoutButtonsMain//
+    //btnLoad.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
+    //btnSave.Visible := false; //TODO: implement a dialog to ask for a filename (and ask if want to replace if exists) or use sharing dialog on mobiles (could have some way to do so on Win8/10/11 too)
+    //btnToggleEditMode.Visible := false; //TODO: enable edit again after implementing a Save (and ideally adding Share support too) dialog. Plus need to make the toolbars somehow fit in small screens
+    //layoutButtonsEdit//
+    //btnAdd.Visible := false; //TODO: implement some simple Load file dialog for mobile devices (flat list of documents). Should have some button to delete files too
 
-  {$IFDEF NOSTYLE}
-  btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
-  {$ENDIF}
+    //Workaround (removing from Parent instead of Hiding) for Delphi 12.2 TFlowLayout bug on Android (https://embt.atlassian.net/servicedesk/customer/portal/1/RSS-2571)
+    //since code may refer to these controls, not destroying, but assuming former Parent still remains the Owner if it was, so that it will destroy the component when it is itself destroyed
+    //layoutButtonsMain//
+    btnLoad.Parent := nil;
+    btnSave.Parent := nil;
+    //btnToggleEditMode.Parent := nil;
+    btnToggleTargetsVisible.Parent := nil; //this is set to invisible using the form designer, need to remove it to from parent for the Android workaround
+    //layoutButtonsEdit//
+    btnAdd.Parent := nil;
+    btnDelete.Parent:= nil; //this is set to invisible using the form designer, need to remove it to from parent for the Android workaround
+    {$ENDIF}
 
-  FEditMode := false;
-  FMultiViewOpenedWidth := MultiView.Width;
-  FTargetsVisible := false;
+    {$IFDEF NOSTYLE}
+    btnNextTheme.Visible := false; //TODO: if themes that support all platforms are used, enable again
+    {$ENDIF}
 
-  StructureVisible := false; //calling the "setter" to hide the side panel (which is open in design mode to define its width)
-end;
+    FEditMode := false;
+    FMultiViewOpenedWidth := MultiView.Width;
+    FTargetsVisible := false;
 
-{$REGION 'Properties'}
+    StructureVisible := false; //calling the "setter" to hide the side panel (which is open in design mode to define its width)
+  end;
 
-{$region 'EditMode'}
+  {$REGION 'Properties'}
 
-procedure TStoryHUD.SetEditMode(const Value: Boolean);
-begin
-  FEditMode := Value;
-  btnToggleEditMode.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+  {$region 'EditMode'}
 
-  layoutButtonsEdit.Visible := Value;
+  procedure TStoryHUD.SetEditMode(const Value: Boolean);
+  begin
+    FEditMode := Value;
+    btnToggleEditMode.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-  if Assigned(FEditModeChanged) then
-    FEditModeChanged(Self, Value);
-end;
+    layoutButtonsEdit.Visible := Value;
 
-{$endregion}
+    if Assigned(FEditModeChanged) then
+      FEditModeChanged(Self, Value);
+  end;
 
-{$region 'StrucureViewVisible'}
+  {$endregion}
 
-procedure TStoryHUD.SetStructureVisible(const Value: Boolean);
-begin
-  FStructureVisible := Value;
-  btnToggleStructureVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+  {$region 'StrucureViewVisible'}
 
-  if Value then
-    MultiView.Width := FMultiViewOpenedWidth
-  else
-    MultiView.Width := 0;
+  procedure TStoryHUD.SetStructureVisible(const Value: Boolean);
+  begin
+    FStructureVisible := Value;
+    btnToggleStructureVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-  if Assigned(FStructureVisibleChanged) then
-    FStructureVisibleChanged(Self, Value);
-end;
+    if Value then
+      MultiView.Width := FMultiViewOpenedWidth
+    else
+      MultiView.Width := 0;
 
-{$endregion}
+    if Assigned(FStructureVisibleChanged) then
+      FStructureVisibleChanged(Self, Value);
+  end;
 
-{$region 'TargetsVisible'}
+  {$endregion}
 
-procedure TStoryHUD.SetTargetsVisible(const Value: Boolean);
-begin
-  FTargetsVisible := Value;
-  btnToggleTargetsVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+  {$region 'TargetsVisible'}
 
-  if Assigned(FTargetsVisibleChanged) then
-    FTargetsVisibleChanged(Self, Value);
-end;
+  procedure TStoryHUD.SetTargetsVisible(const Value: Boolean);
+  begin
+    FTargetsVisible := Value;
+    btnToggleTargetsVisible.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-{$endregion}
+    if Assigned(FTargetsVisibleChanged) then
+      FTargetsVisibleChanged(Self, Value);
+  end;
 
-{$region 'UseStoryTimer'}
+  {$endregion}
 
-procedure TStoryHUD.SetUseStoryTimer(const Value: Boolean);
-begin
-  FUseStoryTimer := Value;
-  btnToggleUseStoryTimer.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
+  {$region 'UseStoryTimer'}
 
-  if Assigned(FUseStoryTimerChanged) then
-    FUseStoryTimerChanged(Self, Value);
-end;
+  procedure TStoryHUD.SetUseStoryTimer(const Value: Boolean);
+  begin
+    FUseStoryTimer := Value;
+    btnToggleUseStoryTimer.IsPressed := Value; //don't use "Pressed", need to use "IsPressed"
 
-{$endregion}
+    if Assigned(FUseStoryTimerChanged) then
+      FUseStoryTimerChanged(Self, Value);
+  end;
 
-{$ENDREGION}
+  {$endregion}
 
-{$REGION 'Actions'}
+  {$ENDREGION}
 
-procedure TStoryHUD.actionMenuExecute(Sender: TObject);
-begin
-  layoutButtons.Visible := actionMenu.Checked;
-end;
+  {$REGION 'Actions'}
 
-{$region 'Edit actions'}
+  procedure TStoryHUD.actionMenuExecute(Sender: TObject);
+  begin
+    layoutButtons.Visible := actionMenu.Checked;
+  end;
 
-procedure TStoryHUD.btnToggleEditModeClick(Sender: TObject);
-begin
-  EditMode := not EditMode; //don't use "btnToggleEditMode.Pressed", returns inconsistent values
-end;
+  {$region 'Edit actions'}
 
-{$endregion}
+  procedure TStoryHUD.btnToggleEditModeClick(Sender: TObject);
+  begin
+    EditMode := not EditMode; //don't use "btnToggleEditMode.Pressed", returns inconsistent values
+  end;
 
-{$region 'View actions'}
+  {$endregion}
 
-procedure TStoryHUD.btnToggleStructureVisibleClick(Sender: TObject);
-begin
-  StructureVisible := not StructureVisible; //don't use "btnToggleStructureVisible.Pressed", returns inconsistent values
-end;
+  {$region 'View actions'}
 
-procedure TStoryHUD.btnToggleTargetsVisibleClick(Sender: TObject);
-begin
-  TargetsVisible := not TargetsVisible; //don't use "btnToggleTargetsVisible.Pressed", returns inconsistent values
-end;
+  procedure TStoryHUD.btnToggleStructureVisibleClick(Sender: TObject);
+  begin
+    StructureVisible := not StructureVisible; //don't use "btnToggleStructureVisible.Pressed", returns inconsistent values
+  end;
 
-procedure TStoryHUD.btnToggleUseStoryTimerClick(Sender: TObject);
-begin
-  UseStoryTimer := not UseStoryTimer; //don't use "btnToggleUseStoryTimer.Pressed", returns inconsistent values
-end;
+  procedure TStoryHUD.btnToggleTargetsVisibleClick(Sender: TObject);
+  begin
+    TargetsVisible := not TargetsVisible; //don't use "btnToggleTargetsVisible.Pressed", returns inconsistent values
+  end;
 
-{$endregion}
+  procedure TStoryHUD.btnToggleUseStoryTimerClick(Sender: TObject);
+  begin
+    UseStoryTimer := not UseStoryTimer; //don't use "btnToggleUseStoryTimer.Pressed", returns inconsistent values
+  end;
 
-{$region 'Help actions'}
+  {$endregion}
 
-procedure TStoryHUD.actionAboutExecute(Sender: TObject);
-begin
-  TAboutFrame.ShowModal(Application.MainForm); //has [X] button to close itself
-end;
+  {$region 'Help actions'}
 
-{$endregion}
+  procedure TStoryHUD.actionAboutExecute(Sender: TObject);
+  begin
+    TAboutFrame.ShowModal(Application.MainForm); //has [X] button to close itself
+  end;
 
-{$ENDREGION}
+  {$endregion}
+
+  {$ENDREGION}
 
 end.

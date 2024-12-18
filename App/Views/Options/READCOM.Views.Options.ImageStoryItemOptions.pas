@@ -27,6 +27,8 @@ type
     LayoutImageStoryItemButtons: TFlowLayout;
     //procedure actionCameraExecute(Sender: TObject);
     procedure TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
+    procedure TakePhotoFromCameraActionCanActionExec(Sender: TCustomAction;
+      var CanExec: Boolean);
 
   protected
     //procedure DoCameraDidFinish(Image: TBitmap);
@@ -47,99 +49,126 @@ type
   end;
 
 implementation
-uses
-  FMX.Platform;
+  uses
+    FMX.Platform,
+    System.Permissions; // Required for permission handling
 
-{$R *.fmx}
+  {$R *.fmx}
 
-{$REGION 'LIFETIME MANAGEMENT'}
+  {$REGION 'LIFETIME MANAGEMENT'}
 
-constructor TImageStoryItemOptions.Create(AOwner: TComponent);
-begin
-  inherited;
-  //TMessageManager.DefaultManager.SubscribeToMessage(TMessageDidFinishTakingImageFromLibrary, DoMessageDidFinishTakingImageFromLibrary); //see region 'TakePhotoViaCameraService'
-
-  //Resize to not include LayoutImageStoryItemButtons and its break item if Camera button isn't visible (on platforms that don't support it - currently only mobile ones do), since Camera buttons is the only extra button for ImageStoryItem at this point
-  if not btnCamera.Visible then
-    Height := Height - LayoutImageStoryItemButtons.Height - 5; //note: don't subtract LayoutImageStoryItemBreak.Height
-end;
-
-{$ENDREGION}
-
-{$REGION 'PROPERTIES'}
-
-{$region 'StoryItem'}
-
-procedure TImageStoryItemOptions.SetStoryItem(const Value: IStoryItem);
-begin
-  inherited;
-
-  var LImageStoryItem: IImageStoryItem;
-  if not Supports(Value, IImageStoryItem, LImageStoryItem) then
-    raise EIntfCastError.Create('Expected IImageStoryItem');
-
-  SetImageStoryItem(LImageStoryItem);
-end;
-
-{$endregion}
-
-{$region 'ImageStoryItem'}
-
-function TImageStoryItemOptions.GetImageStoryItem: IImageStoryItem;
-begin
-  Supports(FStoryItem, IImageStoryItem, result);
-end;
-
-procedure TImageStoryItemOptions.SetImageStoryItem(const Value: IImageStoryItem);
-begin
-  inherited SetStoryItem(Value); //don't call overriden SetStoryItem, would do infinite loop
-end;
-
-{$endregion}
-
-{$ENDREGION}
-
-procedure TImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
-begin
-  inherited;
-  ImageStoryItem.Image.Bitmap.Assign(Image);
-end;
-
-{$region 'TakePhotoViaCameraService'}
-//using predefined Camera action instead of FMX platform services (need to implement for Windows) - there's also TCameraComponent
-(*
-procedure TImageStoryItemOptions.DoCameraDidFinish(Image: TBitmap);
-begin
-  ImageStoryItem.Image.Bitmap.Assign(Image);
-end;
-
-procedure TImageStoryItemOptions.DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage);
-begin
-  if M is TMessageDidFinishTakingImageFromLibrary then
-    ImageStoryItem.Image.Bitmap.Assign(TMessageDidFinishTakingImageFromLibrary(M).Value);
-end;
-
-procedure TImageStoryItemOptions.actionCameraExecute(Sender: TObject);
-begin
-  inherited;
-
-  var Service: IFMXCameraService;
-  var Params: TParamsPhotoQuery;
-  if TPlatformServices.Current.SupportsPlatformService(IFMXCameraService, Service) then
+  constructor TImageStoryItemOptions.Create(AOwner: TComponent);
   begin
-    with Params do
+    inherited;
+    //TMessageManager.DefaultManager.SubscribeToMessage(TMessageDidFinishTakingImageFromLibrary, DoMessageDidFinishTakingImageFromLibrary); //see region 'TakePhotoViaCameraService'
+
+    //Resize to not include LayoutImageStoryItemButtons and its break item if Camera button isn't visible (on platforms that don't support it - currently only mobile ones do), since Camera buttons is the only extra button for ImageStoryItem at this point
+    if not btnCamera.Visible then
+      Height := Height - LayoutImageStoryItemButtons.Height - 5; //note: don't subtract LayoutImageStoryItemBreak.Height
+  end;
+
+  {$ENDREGION}
+
+  {$REGION 'PROPERTIES'}
+
+  {$region 'StoryItem'}
+
+  procedure TImageStoryItemOptions.SetStoryItem(const Value: IStoryItem);
+  begin
+    inherited;
+
+    var LImageStoryItem: IImageStoryItem;
+    if not Supports(Value, IImageStoryItem, LImageStoryItem) then
+      raise EIntfCastError.Create('Expected IImageStoryItem');
+
+    SetImageStoryItem(LImageStoryItem);
+  end;
+
+  {$endregion}
+
+  {$region 'ImageStoryItem'}
+
+  function TImageStoryItemOptions.GetImageStoryItem: IImageStoryItem;
+  begin
+    Supports(FStoryItem, IImageStoryItem, result);
+  end;
+
+  procedure TImageStoryItemOptions.SetImageStoryItem(const Value: IImageStoryItem);
+  begin
+    inherited SetStoryItem(Value); //don't call overriden SetStoryItem, would do infinite loop
+  end;
+
+  {$endregion}
+
+  {$ENDREGION}
+
+  {$region 'TakePhotoFromCameraAction'}
+
+  //TODO: this won't work in D12.2 since TakePhotoFromCameraAction.ExecuteTarget doesn't call CanActionExec (which calls OnActionExec event handler, if assigned) - need to use TTakePhotoFromCameraActionEx from Zoomicon.Media.FMX package
+  procedure TImageStoryItemOptions.TakePhotoFromCameraActionCanActionExec(Sender: TCustomAction; var CanExec: Boolean);
+  begin
+    log.d('Info', Self, 'TakePhotoFromCameraActionCanActionExec', 'Entered');
+
+    CanExec := false; //don't execute the action before checking permission
+
+    PermissionsService.RequestPermissions(['android.permission.CAMERA'],
+      procedure(const APermissions: TClassicStringDynArray; const AGrantResults: TClassicPermissionStatusDynArray)
+      begin
+        if (Length(AGrantResults) > 0) and (AGrantResults[0] = TPermissionStatus.Granted) then
+          //execute the action now that permission is granted
+          TThread.Queue(nil,
+            procedure
+            begin
+              log.d('Info', Self, 'TakePhotoFromCameraActionCanActionExec', 'Executing action');
+
+              Sender.Execute;  //ensure action executes on the main thread
+            end);
+      end);
+  end;
+
+  procedure TImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
+  begin
+    inherited;
+    ImageStoryItem.Image.Bitmap.Assign(Image);
+  end;
+
+  {$endregion}
+
+  //using predefined Camera action instead of FMX platform services (need to implement for Windows) - there's also TCameraComponent
+  {$region 'TakePhotoViaCameraService'}
+  (*
+  procedure TImageStoryItemOptions.DoCameraDidFinish(Image: TBitmap);
+  begin
+    ImageStoryItem.Image.Bitmap.Assign(Image);
+  end;
+
+  procedure TImageStoryItemOptions.DoMessageDidFinishTakingImageFromLibrary(const Sender: TObject; const M: TMessage);
+  begin
+    if M is TMessageDidFinishTakingImageFromLibrary then
+      ImageStoryItem.Image.Bitmap.Assign(TMessageDidFinishTakingImageFromLibrary(M).Value);
+  end;
+
+  procedure TImageStoryItemOptions.actionCameraExecute(Sender: TObject);
+  begin
+    inherited;
+
+    var Service: IFMXCameraService;
+    var Params: TParamsPhotoQuery;
+    if TPlatformServices.Current.SupportsPlatformService(IFMXCameraService, Service) then
     begin
-      Editable := True;
-      NeedSaveToAlbum := True; // Specifies whether to save a picture to device Photo Library
-      RequiredResolution := TSize.Create(640, 640);
-      OnDidFinishTaking := DoDidFinish;
-    end;
-    //Service.TakePhoto(SpeedButton1, Params); //TODO
-  end
-  else
-    ShowMessage('This device does not support the camera service');
-end;
-*)
-{$endregion}
+      with Params do
+      begin
+        Editable := True;
+        NeedSaveToAlbum := True; // Specifies whether to save a picture to device Photo Library
+        RequiredResolution := TSize.Create(640, 640);
+        OnDidFinishTaking := DoDidFinish;
+      end;
+      //Service.TakePhoto(SpeedButton1, Params); //TODO
+    end
+    else
+      ShowMessage('This device does not support the camera service');
+  end;
+  *)
+  {$endregion}
 
 end.

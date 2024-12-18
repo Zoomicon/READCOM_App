@@ -4,12 +4,12 @@
 
 (*
 Dependencies:
-+ GetIt Packages (GetIt Package Manager is included in Delphi IDE):
++ GetIt Packages (install via GetIt Package Manager, included in Delphi IDE):
   - TFrameStand
   - SVGIconImageList
   - CodeSite Express
   - Boss Experts (optional)
-+ Boss Packages (need Boss Package Manager - configuration is in boss.json):
++ Boss Packages (install via Boss Package Manager [use Boss command-line tool and optionally Boss Experts for IDE] - configuration is in boss.json):
   - Zoomicon.Generics
   - Zoomicon.Helpers.RTL
   - Zoomicon.Helpers.FMX

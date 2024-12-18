@@ -53,6 +53,7 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
     object TakePhotoFromCameraAction: TTakePhotoFromCameraAction
       Category = 'Media Library'
       ImageIndex = 11
+      OnCanActionExec = TakePhotoFromCameraActionCanActionExec
       OnDidFinishTaking = TakePhotoFromCameraActionDidFinishTaking
       ImageIndex = 11
     end

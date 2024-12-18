@@ -4,10 +4,10 @@
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
     <PropertyGroup>
-        <DeviceId Condition="'$(Platform)'=='Android'"/>
+        <DeviceId Condition="'$(Platform)'=='Android'">HGR4Z8ML</DeviceId>
         <DeviceId Condition="'$(Platform)'=='Android64'">HGR4Z8ML</DeviceId>
-        <DeviceId Condition="'$(Platform)'=='iOSDevice64'"/>
-        <DeviceId Condition="'$(Platform)'=='iOSSimARM64'"/>
+        <DeviceId Condition="'$(Platform)'=='iOSDevice64'">00008030-001E58CE0A52202E</DeviceId>
+        <DeviceId Condition="'$(Platform)'=='iOSSimARM64'">FB56CD0D-4EE1-4C34-94F3-E2490DE5E227</DeviceId>
     </PropertyGroup>
     <ItemGroup Condition="'$(Platform)'=='OSX64'">
         <DeployFile Include="Default.readcom" Condition="'$(Config)'=='Release'">
