@@ -55,7 +55,6 @@ program READCOM_App;
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
   READCOM.App.Main in 'READCOM.App.Main.pas';
-
 {$endregion}
 
   {$R *.res}
