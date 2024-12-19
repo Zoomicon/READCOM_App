@@ -75,6 +75,7 @@ interface
       {Image}
       function GetImage: TImage; virtual;
       procedure SetImage(const Value: TImage); overload; virtual;
+      procedure SetImage(const Value: TBitmap); overload; virtual;
       procedure SetImage(const Value: TBitmapSurface); overload; virtual;
 
       {SVGText}
@@ -266,12 +267,20 @@ implementation
       Glyph.Bitmap := Value.Bitmap; //this calls "Assign" internally and copies the bitmap
   end;
 
+  procedure TImageStoryItem.SetImage(const Value: TBitmap);
+  begin
+    Glyph.Bitmap := Value; //this calls "Assign" internally and copies the bitmap
+  end;
+
   procedure TImageStoryItem.SetImage(const Value: TBitmapSurface);
   begin
-    var LBitmap := Glyph.Bitmap;
-    LBitmap.Assign(Value);
+    if not Assigned(Value) then
+    begin
+      Glyph.Bitmap := nil;
+      exit;
+    end;
 
-    Glyph.Bitmap := LBitmap; //TODO: does this work? (check image pasting from clipboard)
+    (Glyph as IMediaDisplay).SetBitmap(Value); //can access the protected method via the interface
   end;
 
   {$endregion}

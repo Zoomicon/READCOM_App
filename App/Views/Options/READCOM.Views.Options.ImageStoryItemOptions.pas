@@ -16,19 +16,18 @@ uses
   FMX.MediaLibrary.Actions, //for TTakePhotoFromCameraAction
   FMX.Objects,
   //
+  Zoomicon.Media.FMX.TakePhotoFromCameraActionEx,
   READCOM.Views.Options.StoryItemOptions,
   READCOM.Models.Stories;
 
 type
   TImageStoryItemOptions = class(TStoryItemOptions, IImageStoryItemOptions, IStoryItemOptions)
-    TakePhotoFromCameraAction: TTakePhotoFromCameraAction;
+    TakePhotoFromCameraAction: TTakePhotoFromCameraActionEx;
     btnCamera: TSpeedButton;
     LayoutImageStoryItemBreak: TFlowLayoutBreak;
     LayoutImageStoryItemButtons: TFlowLayout;
     //procedure actionCameraExecute(Sender: TObject);
     procedure TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
-    procedure TakePhotoFromCameraActionCanActionExec(Sender: TCustomAction;
-      var CanExec: Boolean);
 
   protected
     //procedure DoCameraDidFinish(Image: TBitmap);
@@ -50,8 +49,7 @@ type
 
 implementation
   uses
-    FMX.Platform,
-    System.Permissions; // Required for permission handling
+    FMX.Platform;
 
   {$R *.fmx}
 
@@ -104,32 +102,10 @@ implementation
 
   {$region 'TakePhotoFromCameraAction'}
 
-  //TODO: this won't work in D12.2 since TakePhotoFromCameraAction.ExecuteTarget doesn't call CanActionExec (which calls OnActionExec event handler, if assigned) - need to use TTakePhotoFromCameraActionEx from Zoomicon.Media.FMX package
-  procedure TImageStoryItemOptions.TakePhotoFromCameraActionCanActionExec(Sender: TCustomAction; var CanExec: Boolean);
-  begin
-    log.d('Info', Self, 'TakePhotoFromCameraActionCanActionExec', 'Entered');
-
-    CanExec := false; //don't execute the action before checking permission
-
-    PermissionsService.RequestPermissions(['android.permission.CAMERA'],
-      procedure(const APermissions: TClassicStringDynArray; const AGrantResults: TClassicPermissionStatusDynArray)
-      begin
-        if (Length(AGrantResults) > 0) and (AGrantResults[0] = TPermissionStatus.Granted) then
-          //execute the action now that permission is granted
-          TThread.Queue(nil,
-            procedure
-            begin
-              log.d('Info', Self, 'TakePhotoFromCameraActionCanActionExec', 'Executing action');
-
-              Sender.Execute;  //ensure action executes on the main thread
-            end);
-      end);
-  end;
-
   procedure TImageStoryItemOptions.TakePhotoFromCameraActionDidFinishTaking(Image: TBitmap);
   begin
     inherited;
-    ImageStoryItem.Image.Bitmap.Assign(Image);
+    ImageStoryItem.SetImage(Image);
   end;
 
   {$endregion}
