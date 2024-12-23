@@ -15,7 +15,7 @@ interface
     FMX.ActnList,
     //
     READCOM.Views.Modal, //for TModalFrame
-    READCOM.App.Globals, //for Globals.SVGIconImageList
+    READCOM.App.Icons, //for Icons.SVGIconImageList
     READCOM.Models.Stories; //for IStoryItem
   {$endregion}
 

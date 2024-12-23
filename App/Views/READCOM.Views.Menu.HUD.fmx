@@ -7,7 +7,7 @@ object StoryHUD: TStoryHUD
   ShowHint = True
   object BtnMenu: TSpeedButton
     Action = actionMenu
-    Images = Globals.SVGIconImageList
+    Images = Icons.SVGIconImageList
     ImageIndex = -1
     Position.X = 3.000000000000000000
     Position.Y = 3.000000000000000000
@@ -44,10 +44,7 @@ object StoryHUD: TStoryHUD
       FlowDirection = LeftToRight
       object btnNew: TSpeedButton
         Action = actionNew
-        Hint = 
-          'Load Default Story'#13#13'Clears current contents and loads the Defaul' +
-          't Story'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 24
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -63,10 +60,7 @@ object StoryHUD: TStoryHUD
       end
       object btnLoad: TSpeedButton
         Action = actionLoad
-        Hint = 
-          'Load Story'#13#13'Clears current contents and loads a Story'#39's contents' +
-          ' from a .readcom file'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 6
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -82,8 +76,7 @@ object StoryHUD: TStoryHUD
       end
       object btnSave: TSpeedButton
         Action = actionSave
-        Hint = 'Save Story'#13#13'Saves current Story contents to a .readcom file'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 7
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -100,7 +93,7 @@ object StoryHUD: TStoryHUD
       object btnToggleEditMode: TSpeedButton
         StaysPressed = True
         Hint = 'Toggle Edit mode'#13#13'Enables/Disables story editing functionality'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 0
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -122,7 +115,7 @@ object StoryHUD: TStoryHUD
           'Toggle Structure View'#13#13'Shows/Hides the Structure View side-pane,' +
           ' which allows to select ActiveStoryItem and to rearrange StoryIt' +
           'ems when in Edit mode'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 3
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -145,7 +138,7 @@ object StoryHUD: TStoryHUD
           'em Targets. Targets are used to define where non-Anchored StoryI' +
           'tems are to be dragged to when inside the same parent StoryItem,' +
           ' else define an ActiveStoryItem transition'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 4
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -165,9 +158,9 @@ object StoryHUD: TStoryHUD
       object btnToggleUseStoryTimer: TSpeedButton
         StaysPressed = True
         Hint = 
-          'Toggles Story Timer mode'#13#13'Starts/stops automated Next StoryPoint' +
-          ' navigation'
-        Images = Globals.SVGIconImageList
+          'Toggle Story Timer mode'#13#13'Starts/stops automated Next StoryPoint ' +
+          'navigation'
+        Images = Icons.SVGIconImageList
         ImageIndex = 22
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -185,10 +178,7 @@ object StoryHUD: TStoryHUD
       end
       object btnNextTheme: TSpeedButton
         Action = actionNextTheme
-        Hint = 
-          'Change Theme'#13#13'Switches to the next available user interface them' +
-          'e. Light and dark mode ones are available.'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 26
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -204,8 +194,7 @@ object StoryHUD: TStoryHUD
       end
       object btnAbout: TSpeedButton
         Action = actionAbout
-        Hint = 'About'#13#13'Shows application version and related information'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 15
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -235,12 +224,7 @@ object StoryHUD: TStoryHUD
       object btnAdd: TSpeedButton
         Action = actionAdd
         Align = Client
-        Hint = 
-          'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
-          ' audio, text) or saved StoryItems (.readcom files). The new Stor' +
-          'yItems are added as children of the ActiveStoryItem at the selec' +
-          'ted area (if any) or at its center'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 10
         Margins.Left = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -253,10 +237,7 @@ object StoryHUD: TStoryHUD
       object btnAddImageStoryItem: TSpeedButton
         Action = actionAddImageStoryItem
         Anchors = [akTop, akRight]
-        Hint = 
-          'Add Image'#13#13'Adds an ImageStoryItem placeholder into the ActiveSto' +
-          'ryItem at the selected area (if any) or at its center'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 23
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -273,10 +254,7 @@ object StoryHUD: TStoryHUD
       object btnAddTextStoryItem: TSpeedButton
         Action = actionAddTextStoryItem
         Anchors = [akTop, akRight]
-        Hint = 
-          'Add Text'#13#13'Adds a TextStoryItem into the ActiveStoryItem at the s' +
-          'elected area (if any) or at its center'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 21
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -293,8 +271,7 @@ object StoryHUD: TStoryHUD
       object btnDelete: TSpeedButton
         Action = actionDelete
         Anchors = [akTop, akRight]
-        Hint = 'Delete'#13#13'Delete the edited StoryItem'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 8
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -312,8 +289,7 @@ object StoryHUD: TStoryHUD
       object btnCut: TSpeedButton
         Action = actionCut
         Anchors = [akTop, akRight]
-        Hint = 'Cut'#13#13'Moves the ActiveStoryItem to the Clipboard'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 25
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -330,8 +306,7 @@ object StoryHUD: TStoryHUD
       object btnCopy: TSpeedButton
         Action = actionCopy
         Anchors = [akTop, akRight]
-        Hint = 'Copy'#13#13'Copies the ActiveStoryItem to the Clipboard'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 17
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -348,10 +323,7 @@ object StoryHUD: TStoryHUD
       object btnPaste: TSpeedButton
         Action = actionPaste
         Anchors = [akTop, akRight]
-        Hint = 
-          'Paste'#13#13'Pastes content from the Clipboard into the ActiveStoryIte' +
-          'm'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 18
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -366,9 +338,9 @@ object StoryHUD: TStoryHUD
         TextSettings.Trimming = None
       end
       object btnFlipHorizontally: TSpeedButton
+        Action = actionFlipHorizontally
         Anchors = [akTop, akRight]
-        Hint = 'Flip Horizontally'#13#13'Mirrors the ActiveStoryItem horizontally'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 19
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -383,9 +355,9 @@ object StoryHUD: TStoryHUD
         TextSettings.Trimming = None
       end
       object btnFlipVertically: TSpeedButton
+        Action = actionFlipVertically
         Anchors = [akTop, akRight]
-        Hint = 'Flip Vertically'#13#13'Flips the ActiveStoryItem vertically'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 20
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -435,7 +407,7 @@ object StoryHUD: TStoryHUD
       object btnOptions: TSpeedButton
         Action = actionOptions
         Anchors = [akTop, akRight]
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 29
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
@@ -464,8 +436,7 @@ object StoryHUD: TStoryHUD
       object btnNext: TSpeedButton
         Action = actionNext
         Align = MostRight
-        Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 2
         Position.X = 476.000000000000000000
         Size.Width = 56.000000000000000000
@@ -477,8 +448,7 @@ object StoryHUD: TStoryHUD
       object btnPrevious: TSpeedButton
         Action = actionPrevious
         Align = MostLeft
-        Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 1
         Size.Width = 41.000000000000000000
         Size.Height = 42.000000000000000000
@@ -489,8 +459,7 @@ object StoryHUD: TStoryHUD
       object btnHome: TSpeedButton
         Action = actionHome
         Align = Center
-        Hint = 'Home'#13#13'Activates Home StoryItem'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 13
         Size.Width = 41.000000000000000000
         Size.Height = 40.000000000000000000
@@ -498,6 +467,54 @@ object StoryHUD: TStoryHUD
         StyleLookup = 'refreshtoolbutton'
         TextSettings.Trimming = None
       end
+    end
+    object Localizations: TLang
+      Lang = 'el'
+      Left = 90
+      Top = 248
+      ResourcesBin = {
+        C10000004D0065006E0075000D000A004E00650077000D000A004C006F006100
+        64000D000A0053006100760065000D000A0045006400690074000D000A005300
+        740072007500630074007500720065000D000A00540061007200670065007400
+        73000D000A00530074006F00720079002000540069006D00650072000D000A00
+        4E0065007800740020005400680065006D0065000D000A00410062006F007500
+        74000D000A004100640064000D000A00410064006400200049006D0061006700
+        6500530074006F00720079004900740065006D000D000A004100640064002000
+        5400650078007400530074006F00720079004900740065006D000D000A004400
+        65006C006500740065000D000A004300750074000D000A0043006F0070007900
+        0D000A00500061007300740065000D000A004F007000740069006F006E007300
+        2E002E002E000D000A004E006500780074000D000A0050007200650076006900
+        6F00750073000D000A0048006F006D0065000D000A0053006F00750072006300
+        65000D000A00010000000200000065006C00C80100004D0065006E0075003D00
+        9C03B503BD03BF03CD030D000A004E00650077003D009D03AD03BF030D000A00
+        4C006F00610064003D008603BD03BF03B903B303BC03B1030D000A0053006100
+        760065003D009103C003BF03B803AE03BA03B503C503C303B7030D000A004500
+        6400690074003D009503C003B503BE03B503C103B303B103C303AF03B1030D00
+        0A005300740072007500630074007500720065003D009403BF03BC03AE030D00
+        0A0054006100720067006500740073003D00A303C403CC03C703BF03B9030D00
+        0A00530074006F00720079002000540069006D00650072003D00A703C103BF03
+        BD03CC03BC03B503C403C103BF032000B903C303C403BF03C103AF03B103C203
+        0D000A004E0065007800740020005400680065006D0065003D009503C003CC03
+        BC03B503BD03BF032000BF03C003C403B903BA03CC032000B803AD03BC03B103
+        0D000A00410062006F00750074003D00A003BB03B703C103BF03C603BF03C103
+        AF03B503C2030D000A004100640064003D00A003C103BF03C303B803AE03BA03
+        B7030D000A00410064006400200049006D00610067006500530074006F007200
+        79004900740065006D003D00A003C103BF03C303B803AE03BA03B7032000B903
+        C303C403BF03C103B903BF03C303C403BF03B903C703B503AF03BF03C5032000
+        B503B903BA03CC03BD03B103C2030D000A004100640064002000540065007800
+        7400530074006F00720079004900740065006D003D00A003C103BF03C303B803
+        AE03BA03B7032000B903C303C403BF03C103B903BF03C303C403BF03B903C703
+        B503AF03BF03C5032000BA03B503B903BC03AD03BD03BF03C5030D000A004400
+        65006C006500740065003D009403B903B103B303C103B103C603AE030D000A00
+        4300750074003D009103C003BF03BA03BF03C003AE030D000A0043006F007000
+        79003D009103BD03C403B903B303C103B103C603AE030D000A00500061007300
+        740065003D009503C003B903BA03CC03BB03BB03B703C303B7030D000A004F00
+        7000740069006F006E0073002E002E002E003D009503C003B903BB03BF03B303
+        AD03C2032E002E002E000D000A004E006500780074003D009503C003CC03BC03
+        B503BD03BF030D000A00500072006500760069006F00750073003D00A003C103
+        BF03B703B303BF03CD03BC03B503BD03BF030D000A0048006F006D0065003D00
+        9103C103C703AE030D000A0053006F0075007200630065003D00A003B703B303
+        AE030D000A00}
     end
   end
   object MultiView: TMultiView
@@ -510,24 +527,29 @@ object StoryHUD: TStoryHUD
     TabOrder = 3
   end
   object ActionList: TActionList
-    Images = Globals.SVGIconImageList
+    Images = Icons.SVGIconImageList
     Left = 328
     Top = 32
     object actionFlipVertically: TAction
       Category = 'Edit'
-      Text = 'Paste'
+      Text = 'Flip Vertically'
+      Hint = 'Flip Vertically'#13#13'Flips the ActiveStoryItem vertically'
       ImageIndex = 20
       ImageIndex = 20
     end
     object actionFlipHorizontally: TAction
       Category = 'Edit'
-      Text = 'Paste'
+      Text = 'Flip Horizontally'
+      Hint = 'Flip Horizontally'#13#13'Flips the ActiveStoryItem horizontally'
       ImageIndex = 19
       ImageIndex = 19
     end
     object actionPaste: TAction
       Category = 'Edit'
       Text = 'Paste'
+      Hint = 
+        'Paste'#13#13'Pastes content from the Clipboard into the ActiveStoryIte' +
+        'm'
       ImageIndex = 18
       ShortCut = 16470
       ImageIndex = 18
@@ -535,13 +557,15 @@ object StoryHUD: TStoryHUD
     object actionCopy: TAction
       Category = 'Edit'
       Text = 'Copy'
+      Hint = 'Copy'#13#13'Copies the ActiveStoryItem to the Clipboard'
       ImageIndex = 17
       ShortCut = 16451
       ImageIndex = 17
     end
     object actionCut: TAction
       Category = 'Edit'
-      Text = 'Delete'
+      Text = 'Cut'
+      Hint = 'Cut'#13#13'Moves the ActiveStoryItem to the Clipboard'
       ImageIndex = 25
       ShortCut = 16472
       ImageIndex = 25
@@ -549,18 +573,25 @@ object StoryHUD: TStoryHUD
     object actionDelete: TAction
       Category = 'Edit'
       Text = 'Delete'
+      Hint = 'Delete'#13#13'Delete the edited StoryItem'
       ImageIndex = 8
       ImageIndex = 8
     end
     object actionAdd: TAction
       Category = 'Edit'
       Text = 'Add'
+      Hint = 
+        'Add StoryItems'#13#13'Loads one or more selected media assets (images,' +
+        ' audio, text) or saved StoryItems (.readcom files). The new Stor' +
+        'yItems are added as children of the ActiveStoryItem at the selec' +
+        'ted area (if any) or at its center'
       ImageIndex = 10
       ImageIndex = 10
     end
     object actionHome: TAction
       Category = 'Navigation'
       Text = 'Home'
+      Hint = 'Home'#13#13'Activates Home StoryItem'
       ImageIndex = 13
       ShortCut = 16456
       ImageIndex = 13
@@ -568,24 +599,30 @@ object StoryHUD: TStoryHUD
     object actionPrevious: TAction
       Category = 'Navigation'
       Text = 'Previous'
+      Hint = 'Previous'#13#13'Activates previous StoryItem that is a StoryPoint'
       ImageIndex = 1
       ImageIndex = 1
     end
     object actionNext: TAction
       Category = 'Navigation'
       Text = 'Next'
+      Hint = 'Next'#13#13'Activates next StoryItem that is a StoryPoint'
       ImageIndex = 2
       ImageIndex = 2
     end
     object actionAddTextStoryItem: TAction
       Category = 'Edit'
-      Text = 'Add Text'
+      Text = 'Add TextStoryItem'
+      Hint = 
+        'Add Text'#13#13'Adds a TextStoryItem into the ActiveStoryItem at the s' +
+        'elected area (if any) or at its center'
       ImageIndex = 21
       ImageIndex = 21
     end
     object actionAbout: TAction
       Category = 'Help'
       Text = 'About'
+      Hint = 'About'#13#13'Shows application version and related information'
       ImageIndex = 15
       OnExecute = actionAboutExecute
       ImageIndex = 15
@@ -595,11 +632,15 @@ object StoryHUD: TStoryHUD
       AutoCheck = True
       Text = 'Menu'
       Checked = True
+      Hint = 'Show/Hide buttons'
       OnExecute = actionMenuExecute
     end
     object actionNew: TAction
       Category = 'File'
       Text = 'New'
+      Hint = 
+        'Load Default Story'#13#13'Clears current contents and loads the Defaul' +
+        't Story'
       ImageIndex = 24
       ShortCut = 16462
       ImageIndex = 24
@@ -607,6 +648,9 @@ object StoryHUD: TStoryHUD
     object actionLoad: TAction
       Category = 'File'
       Text = 'Load'
+      Hint = 
+        'Load Story'#13#13'Clears current contents and loads a Story'#39's contents' +
+        ' from a .readcom file'
       ImageIndex = 6
       ShortCut = 16460
       ImageIndex = 6
@@ -614,6 +658,7 @@ object StoryHUD: TStoryHUD
     object actionSave: TAction
       Category = 'File'
       Text = 'Save'
+      Hint = 'Save Story'#13#13'Saves current Story contents to a .readcom file'
       ImageIndex = 7
       ShortCut = 16467
       ImageIndex = 7
@@ -621,12 +666,18 @@ object StoryHUD: TStoryHUD
     object actionAddImageStoryItem: TAction
       Category = 'Edit'
       Text = 'Add ImageStoryItem'
+      Hint = 
+        'Add Image'#13#13'Adds an ImageStoryItem placeholder into the ActiveSto' +
+        'ryItem at the selected area (if any) or at its center'
       ImageIndex = 23
       ImageIndex = 23
     end
     object actionNextTheme: TAction
       Category = 'View'
-      Text = 'actionNextTheme'
+      Text = 'Next Theme'
+      Hint = 
+        'Change Theme'#13#13'Switches to the next available user interface them' +
+        'e. Light and dark mode ones are available'
       ImageIndex = 26
       ImageIndex = 26
     end

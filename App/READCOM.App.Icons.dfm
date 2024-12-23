@@ -1,11 +1,6 @@
-object Globals: TGlobals
-  Height = 201
-  Width = 389
-  object Lang: TLang
-    Lang = 'el'
-    Left = 32
-    Top = 58
-  end
+object Icons: TIcons
+  Height = 154
+  Width = 175
   object SVGIconImageList: TSVGIconImageList
     Source = <
       item
@@ -2045,7 +2040,7 @@ object Globals: TGlobals
           end>
       end>
     Size = 136
-    Left = 275
-    Top = 58
+    Left = 59
+    Top = 50
   end
 end

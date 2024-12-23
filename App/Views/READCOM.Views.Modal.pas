@@ -6,7 +6,7 @@ unit READCOM.Views.Modal;
 interface
 
 uses
-  READCOM.App.Globals, //for Globals.SVGIconImageList
+  READCOM.App.Icons, //for Icons.SVGIconImageList
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,

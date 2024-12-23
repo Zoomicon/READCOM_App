@@ -12,7 +12,7 @@ uses
   FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts, System.Actions,
   FMX.ActnList,
   //
-  READCOM.App.Globals, //for Globals.SVGIconImageList
+  READCOM.App.Icons, //for Icons.SVGIconImageList
   READCOM.Views.Modal, //for TModalFrame
   Zoomicon.Media.FMX.ClickableGlyph; //for TClickableGlyph
 

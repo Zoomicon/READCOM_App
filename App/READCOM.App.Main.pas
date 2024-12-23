@@ -33,7 +33,7 @@ implementation
     READCOM.Models, //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT, DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT
     READCOM.Views.Main,
     READCOM.App.Debugging,
-    READCOM.App.Globals, //for TGlobals
+    READCOM.App.Icons, //for TIcons
     READCOM.App.Themes, //for TThemes
     READCOM.App.Messages;
   {$endregion}
@@ -97,7 +97,7 @@ implementation
 
     Application.Initialize; //FMX app template has this before creation of form(s) - probably the order plays some role
 
-    Application.CreateForm(TGlobals, Globals); //create before MainForm, it's a DataModule it uses
+    Application.CreateForm(TIcons, Icons); //create before MainForm, it's a DataModule it uses
     Application.CreateForm(TThemes, Themes); //create before MainForm, it's a DataModule it uses
     Application.CreateForm(TMainForm, MainForm); //note that CreateForm doesn't immediately create and assign the form object to the variable (depends on platform, may delay till Application.Run)
 

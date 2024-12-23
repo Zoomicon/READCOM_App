@@ -8,10 +8,12 @@ unit READCOM.Views.Main;
 interface
   {$region 'Used units'}
   uses
-    System.Actions, System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+    System.Actions, System.SysUtils, System.Types, System.UITypes,
+    System.Classes, System.Variants,
     //
     FMX.Objects, FMX.Controls, FMX.Controls.Presentation, FMX.StdCtrls,
-    FMX.Types, FMX.Forms, FMX.Graphics, FMX.Dialogs,
+    FMX.Types, //for TLang
+    FMX.Forms, FMX.Graphics, FMX.Dialogs,
     FMX.Layouts,
     FMX.ActnList,
     //
@@ -661,52 +663,22 @@ implementation
 
   {$REGION 'Events'}
 
-  {$region 'StructureView'}
-
-  procedure TMainForm.StructureViewShowFilter(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean);
-  begin
-    if (StoryMode <> EditMode) and (TheObject is TStoryItem) then //when in non-Edit mode...
-      with TStoryItem(TheObject) do
-        ShowObject := StoryPoint or Home; //...only show StoryPoints and Home //IMPORTANT: assuming StructureView's FilterMode=tfFlatten since we're in non-Edit mode
-  end;
-
-  procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
-  begin
-    ActiveStoryItem := TStoryItem(Selection); //Make active (may also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
-  end;
-
-  {$endregion}
-
-  {$region 'Timer'}
-
-  procedure TMainForm.StoryTimerTimer(Sender: TObject); //TODO: should show some timer animation at top-right when the story timer is enabled (AnimatedStoryMode)
-  begin
-    //special case used at app startup
-    if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
-    begin
-      StoryTimer.Enabled := false;
-
-      ZoomTo; //TODO: temp fix, else showing some undrawn text when loading from temp state and till one [un]zooms or resizes (seems 0.3.1 didn't have the issue this fixes, but 0.3.0 and 0.3.2+ had it)
-      ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
-
-      //ActivateHomeStoryItem; //apply the home //TODO: text doesn't render yet at this point
-
-      //CheckCommandLineActions;
-
-      exit;
-    end;
-
-    ActivateNextStoryPoint;
-
-    if Assigned(ActiveStoryItem) and ActiveStoryItem.Home then
-      HUD.UseStoryTimer := false; //TODO: should instead define EndStoryPoint(s) and stop the timer once the end is reached
-  end;
-
-  {$endregion}
-
-  {$region 'Actions'}
-
   {$region 'File actions'}
+
+  procedure TMainForm.NewRootStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
+  begin
+    RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
+    var newRootStoryItemView := TImageStoryItem.Create(Self); //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
+    with newRootStoryItemView do
+      begin
+      //ClipChildren := true; //Empty RootStoryItem should maybe clip its children (not doing at SetRootStoryItem since we may have loaded a template there - anyway commenting out here too in case one wants to design a template from scratch)
+      Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
+      EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
+      end;
+    RootStoryItemView := newRootStoryItemView;
+  end;
+
+  //
 
   procedure TMainForm.HUDactionNewExecute(Sender: TObject);
   begin
@@ -747,29 +719,7 @@ implementation
 
   {$endregion}
 
-  {$region 'Light-Dark mode'}
-
-  procedure TMainForm.HUDactionNextThemeExecute(Sender: TObject);
-  begin
-    if not Assigned(Themes) then exit; //Note: safety check (useful when debugging with loading of Themes data module commented-out [had some issues loading the main form on Android when that was loaded too])
-
-    var switchToLightMode: Boolean;
-    with Themes do
-    begin
-      switchToLightMode := DarkTheme.UseStyleManager; //don't use "LightTheme.UseStyleManager" this seems to return false, even though it's set to true in the designer (the default style is white)
-      LightTheme.UseStyleManager := switchToLightMode;
-      DarkTheme.UseStyleManager := not switchToLightMode;
-    end;
-
-    if switchToLightMode then //the code above isn't enough to switch theme, so switching the MainForm's theme directly //TODO: this won't work for extra forms, try TStyleManager instead
-      StyleBook := Themes.LightTheme
-    else
-      StyleBook := Themes.DarkTheme;
-  end;
-
-  {$endregion}
-
-  {$region 'Edit actions'}
+  {$region 'Edit-mode actions'}
 
   procedure TMainForm.HUDEditModeChanged(Sender: TObject; const Value: Boolean);
   begin
@@ -779,43 +729,7 @@ implementation
       StoryMode := TStoryMode.InteractiveStoryMode; //TODO: should remember previous mode to restore or make EditMode a separate situation
   end;
 
-  procedure TMainForm.HUDactionAddExecute(Sender: TObject);
-  begin
-    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
-
-    ActiveStoryItem.Options.ActAdd;
-    UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
-  end;
-
-  procedure TMainForm.HUDactionAddImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
-  begin
-    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
-
-    AddChildStoryItem(TImageStoryItem, 'ImageStoryItem'); //will also update the StructureView //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
-    //problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like older PanelStoryItem
-  end;
-
-  procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
-  begin
-    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
-
-    AddChildStoryItem(TTextStoryItem, 'TextStoryItem'); //will also update the StructureView
-  end;
-
-  {$region 'Action Helpers'}
-
-  procedure TMainForm.NewRootStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
-  begin
-    RootStoryItemView := nil; //must do first to free the previous one (to avoid naming clashes)
-    var newRootStoryItemView := TImageStoryItem.Create(Self); //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
-    with newRootStoryItemView do
-      begin
-      //ClipChildren := true; //Empty RootStoryItem should maybe clip its children (not doing at SetRootStoryItem since we may have loaded a template there - anyway commenting out here too in case one wants to design a template from scratch)
-      Size.Size := TSizeF.Create(ZoomFrame.Width, ZoomFrame.Height);
-      EditMode := HUD.EditMode; //TODO: add EditMode property to IStory or use its originally intended mode one
-      end;
-    RootStoryItemView := newRootStoryItemView;
-  end;
+  {$region 'Add actions'}
 
   procedure TMainForm.AddChildStoryItem(const TheStoryItemClass: TStoryItemClass; const TheName: String);
   begin
@@ -850,6 +764,35 @@ implementation
     UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
   end;
 
+  //
+
+  procedure TMainForm.HUDactionAddExecute(Sender: TObject);
+  begin
+    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
+
+    ActiveStoryItem.Options.ActAdd;
+    UpdateStructureView; //TODO: should instead have some notification from inside a StoryItem towards the StructureView that children were added to it (similar to how StructureView listens for children removal)
+  end;
+
+  procedure TMainForm.HUDactionAddImageStoryItemExecute(Sender: TObject); //TODO: should change to add a VisualStoryItem that will support any kind of visual item
+  begin
+    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
+
+    AddChildStoryItem(TImageStoryItem, 'ImageStoryItem'); //will also update the StructureView //Note: very old versions may expect a TBitmapImageStoryItem instead, ignoring them to keep design clean
+    //problem is they don't show border when in non-Edit mode, but could have option to show border for any StoryItem and/or style the border color/width, clip children etc. to make like older PanelStoryItem
+  end;
+
+  procedure TMainForm.HUDactionAddTextStoryItemExecute(Sender: TObject);
+  begin
+    if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
+
+    AddChildStoryItem(TTextStoryItem, 'TextStoryItem'); //will also update the StructureView
+  end;
+
+  {$endregion}
+
+  {$region 'Edit actions'}
+
   procedure TMainForm.DeleteActiveStoryItem; //Note: make sure any keyboard actions call the action event handlers since only those do confirmation
   begin
     if not Assigned(ActiveStoryItem) then exit;
@@ -873,7 +816,7 @@ implementation
       ActiveStoryItem.Cut; //this makes ParentStoryItem active (which updates StructureView)
   end;
 
-  {$endregion}
+  //
 
   procedure TMainForm.HUDactionDeleteExecute(Sender: TObject);
   begin
@@ -926,6 +869,10 @@ implementation
     UpdateStructureView; //TODO: should do similar to deletion by somehow notifying from inside the StoryItem itself the StructureView that items have been added
   end;
 
+  {$endregion}
+
+  {$region 'Flip actions'}
+
   procedure TMainForm.HUDactionFlipHorizontallyExecute(Sender: TObject);
   begin
     if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode and when an ActiveStoryItem is assigned
@@ -941,6 +888,10 @@ implementation
     ActiveStoryItem.FlippedVertically := not ActiveStoryItem.FlippedVertically;
     UpdateStructureView; //TODO: should maybe only update the tree of thumbs from the ActiveStoryItem up to the root by somehow notifying from inside the StoryItem itself the StructureView our graphics have changed
   end;
+
+  {$endregion}
+
+  {$region 'Color actions'}
 
   procedure TMainForm.HUDcomboForeColorChange(Sender: TObject);
   begin
@@ -958,6 +909,10 @@ implementation
     LActive.BackgroundColor := HUD.comboBackColor.Color; //TODO: could check for some interface (IBackgroundColor interface)
   end;
 
+  {$endregion}
+
+  {$region 'Options action'}
+
   procedure TMainForm.HUDactionOptionsExecute(Sender: TObject);
   begin
     if Assigned(ActiveStoryItem) then
@@ -966,23 +921,9 @@ implementation
 
   {$endregion}
 
+  {$endregion}
+
   {$region 'View actions'}
-
-  procedure TMainForm.HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
-  begin
-    if Value then
-    begin
-      HUD.MultiViewFrameStand.CloseAllExcept(TStructureView); //TODO: ???
-      UpdateStructureView; //in case the RootStoryItem has changed
-      FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't (the side-panel has already opened, show the StructureView frame in it)
-    end;
-
-    with StructureView do //TODO: see why we need those for the hidden StructureView to not grab mouse events from the area it was before collapse on the form (Probably a MultiView bug with or without the combination of TFrameStand to put a frame at the side tray)
-    begin
-      Enabled := Value;
-      HitTest := Value;
-    end;
-  end;
 
   procedure TMainForm.UpdateStructureView;
   begin
@@ -1007,12 +948,72 @@ implementation
     StopTiming_msec; //this will Log elapsed msec at DEBUG builds
   end;
 
+  //
+
+  procedure TMainForm.HUDStructureVisibleChanged(Sender: TObject; const Value: Boolean);
+  begin
+    if Value then
+    begin
+      HUD.MultiViewFrameStand.CloseAllExcept(TStructureView); //TODO: ???
+      UpdateStructureView; //in case the RootStoryItem has changed
+      FStructureViewFrameInfo.Show; //this will have been assigned by the StructureView getter if it wasn't (the side-panel has already opened, show the StructureView frame in it)
+    end;
+
+    with StructureView do //TODO: see why we need those for the hidden StructureView to not grab mouse events from the area it was before collapse on the form (Probably a MultiView bug with or without the combination of TFrameStand to put a frame at the side tray)
+    begin
+      Enabled := Value;
+      HitTest := Value;
+    end;
+  end;
+
   procedure TMainForm.HUDTargetsVisibleChanged(Sender: TObject; const Value: Boolean);
   begin
     if HUD.TargetsVisible then
       if Assigned(ActiveStoryItem) then
         ActiveStoryItem.TargetsVisible := Value;
   end;
+
+  {$endregion}
+
+  {$region 'Light-Dark mode actions'}
+
+  procedure TMainForm.HUDactionNextThemeExecute(Sender: TObject);
+  begin
+    if not Assigned(Themes) then exit; //Note: safety check (useful when debugging with loading of Themes data module commented-out [had some issues loading the main form on Android when that was loaded too])
+
+    var switchToLightMode: Boolean;
+    with Themes do
+    begin
+      switchToLightMode := DarkTheme.UseStyleManager; //don't use "LightTheme.UseStyleManager" this seems to return false, even though it's set to true in the designer (the default style is white)
+      LightTheme.UseStyleManager := switchToLightMode;
+      DarkTheme.UseStyleManager := not switchToLightMode;
+    end;
+
+    if switchToLightMode then //the code above isn't enough to switch theme, so switching the MainForm's theme directly //TODO: this won't work for extra forms, try TStyleManager instead
+      StyleBook := Themes.LightTheme
+    else
+      StyleBook := Themes.DarkTheme;
+  end;
+
+  {$endregion}
+
+  {$region 'StructureView'}
+
+  procedure TMainForm.StructureViewShowFilter(Sender: TObject; const TheObject: TObject; var ShowObject: Boolean);
+  begin
+    if (StoryMode <> EditMode) and (TheObject is TStoryItem) then //when in non-Edit mode...
+      with TStoryItem(TheObject) do
+        ShowObject := StoryPoint or Home; //...only show StoryPoints and Home //IMPORTANT: assuming StructureView's FilterMode=tfFlatten since we're in non-Edit mode
+  end;
+
+  procedure TMainForm.StructureViewSelection(Sender: TObject; const Selection: TObject);
+  begin
+    ActiveStoryItem := TStoryItem(Selection); //Make active (may also zoom to it) - assuming this is a TStoryItem since StructureView was filtering for such class //also accepts "nil" (for no selection)
+  end;
+
+  {$endregion}
+
+  {$region 'Timer'}
 
   procedure TMainForm.HUDUseStoryTimerChanged(Sender: TObject; const Value: Boolean);
   begin
@@ -1022,6 +1023,29 @@ implementation
       Enabled := Value;
       Interval := 8000; //proceed ever 8sec (TODO: should be easily adjustable)
     end;
+  end;
+
+  procedure TMainForm.StoryTimerTimer(Sender: TObject); //TODO: should show some timer animation at top-right when the story timer is enabled (AnimatedStoryMode)
+  begin
+    //special case used at app startup
+    if not FTimerStarted then //TODO: should check if we loaded from saved state and remember if we were playing the timer and continue [see CCR.PrefsIniFile github repo maybe to keep app settings])
+    begin
+      StoryTimer.Enabled := false;
+
+      ZoomTo; //TODO: temp fix, else showing some undrawn text when loading from temp state and till one [un]zooms or resizes (seems 0.3.1 didn't have the issue this fixes, but 0.3.0 and 0.3.2+ had it)
+      ZoomToActiveStoryPointOrHome; //needed upon app first loading to ZoomTo Active StoryPoint or Home from loaded saved state
+
+      //ActivateHomeStoryItem; //apply the home //TODO: text doesn't render yet at this point
+
+      //CheckCommandLineActions;
+
+      exit;
+    end;
+
+    ActivateNextStoryPoint;
+
+    if Assigned(ActiveStoryItem) and ActiveStoryItem.Home then
+      HUD.UseStoryTimer := false; //TODO: should instead define EndStoryPoint(s) and stop the timer once the end is reached
   end;
 
   {$endregion}
@@ -1042,8 +1066,6 @@ implementation
   begin
     ActivateNextStoryPoint;
   end;
-
-  {$endregion}
 
   {$endregion}
 
@@ -1128,20 +1150,20 @@ implementation
 
   {$endregion}
 
-  {$ENDREGION}
-
   {$region 'Idle'}
 
-  procedure TMainForm.Idle(Sender: TObject; var Done: Boolean);
+  procedure TMainForm.Idle(Sender: TObject; var Done: Boolean); //only process command-line actions after app enters idle mode (to be sure its GUI is ready to capture screenshots) //TODO: probably there exists other better event, sometimes have to move the mouse for command-line processing to occur
   begin
     if not FCheckedCommandLineActions then
     begin
-      FCheckedCommandLineActions := true;
-      CheckCommandLineActions;
+      FCheckedCommandLineActions := true; //should process command-line once
+      CheckCommandLineActions; //do the processing
     end;
   end;
 
   {$endregion}
+
+  {$ENDREGION}
 
   {$region 'Loading / SavedState'}
 

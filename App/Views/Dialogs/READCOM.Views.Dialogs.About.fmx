@@ -58,7 +58,7 @@ inherited AboutFrame: TAboutFrame
       Size.Height = 109.000000000000000000
       Size.PlatformDefault = False
       ImageIndex = 24
-      Images = Globals.SVGIconImageList
+      Images = Icons.SVGIconImageList
       Cursor = crHandPoint
       OnClick = GlyphLogoClick
     end
@@ -146,7 +146,7 @@ inherited AboutFrame: TAboutFrame
     object btnHelp: TSpeedButton
       Action = actionHelp
       Anchors = [akRight, akBottom]
-      Images = Globals.SVGIconImageList
+      Images = Icons.SVGIconImageList
       ImageIndex = 16
       Margins.Left = 3.000000000000000000
       Margins.Top = 3.000000000000000000
@@ -163,7 +163,7 @@ inherited AboutFrame: TAboutFrame
     object btnClose: TSpeedButton
       Action = actionClose
       Anchors = [akTop, akRight]
-      Images = Globals.SVGIconImageList
+      Images = Icons.SVGIconImageList
       ImageIndex = 36
       Position.X = 405.000000000000000000
       Position.Y = 10.000000000000000000
@@ -175,7 +175,7 @@ inherited AboutFrame: TAboutFrame
     end
   end
   object ActionList: TActionList
-    Images = Globals.SVGIconImageList
+    Images = Icons.SVGIconImageList
     Left = 432
     Top = 184
     object actionHelp: TAction

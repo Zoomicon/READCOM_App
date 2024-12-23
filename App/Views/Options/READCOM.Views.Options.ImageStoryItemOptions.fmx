@@ -30,7 +30,7 @@ inherited ImageStoryItemOptions: TImageStoryItemOptions
       object btnCamera: TSpeedButton
         Action = TakePhotoFromCameraAction
         Align = Client
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 11
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000

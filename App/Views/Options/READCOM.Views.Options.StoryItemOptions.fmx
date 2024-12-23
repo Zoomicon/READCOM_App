@@ -53,7 +53,7 @@ object StoryItemOptions: TStoryItemOptions
         Hint = 
           'Toggle Home'#13#13'Sets/Unsets the Active StoryItem as the Home one, w' +
           'hich is activated when the Story is loaded'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 13
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -70,7 +70,7 @@ object StoryItemOptions: TStoryItemOptions
         Hint = 
           'Toggle StoryPoint'#13#13'Sets/unsets the Active StoryItem as a StoryPo' +
           'int, taking part in normal flow of the Story (via Previous/Next)'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 14
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -87,7 +87,7 @@ object StoryItemOptions: TStoryItemOptions
         Hint = 
           'Toggle Snapping'#13#13'Enables/Disables snapping of dropped StoryItems' +
           ' to the center of this StoryItem when in non-Edit mode'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 30
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -104,7 +104,7 @@ object StoryItemOptions: TStoryItemOptions
         Hint = 
           'Toggle Anchored'#13#13'Enables/Disables dragging of the Active StoryIt' +
           'em in non-Edit mode'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 5
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -122,7 +122,7 @@ object StoryItemOptions: TStoryItemOptions
           'Set Tags'#13#13'Defines Tags used to match unanchored (moveable) Story' +
           'Items to anchored (non-moveable) target StoryItems to allow proc' +
           'eeding to Next StoryPoint'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 27
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -139,7 +139,7 @@ object StoryItemOptions: TStoryItemOptions
         Hint = 
           'Set action URL'#13#13'Defines URL to be opened in web browser when the' +
           ' Active StoryItem is clicked in non-Edit mode'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 9
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -153,7 +153,7 @@ object StoryItemOptions: TStoryItemOptions
         Action = actionLoad
         Align = Client
         Hint = 'Load Content'#13#13'Replaces Content of Active StoryItem'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 6
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -165,7 +165,7 @@ object StoryItemOptions: TStoryItemOptions
         Action = actionSave
         Align = Client
         Hint = 'Save StoryItem'#13#13'Saves Content of Active StoryItem'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 7
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -182,7 +182,7 @@ object StoryItemOptions: TStoryItemOptions
     end
   end
   object ActionList: TActionList
-    Images = Globals.SVGIconImageList
+    Images = Icons.SVGIconImageList
     Left = 216
     Top = 112
     object actionLoad: TAction

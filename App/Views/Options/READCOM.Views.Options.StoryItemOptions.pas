@@ -3,7 +3,7 @@ unit READCOM.Views.Options.StoryItemOptions;
 interface
 
 uses
-  READCOM.App.Globals, //for Globals.SVGIconImageList
+  READCOM.App.Icons, //for Icons.SVGIconImageList
   READCOM.Models.Stories, //for IStoryItemOptions
   System.SysUtils, System.Types,
   System.UITypes, //for TOpenOption

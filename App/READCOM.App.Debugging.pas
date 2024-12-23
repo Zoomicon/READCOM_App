@@ -121,6 +121,7 @@ end;
 
 procedure Log(const Msg: String);
 begin
+  FMX.Types.log.d(Msg);
   {$IFDEF DEBUG}{$IF defined(MSWINDOWS)}
   try
     CodeSite.Send(Msg);

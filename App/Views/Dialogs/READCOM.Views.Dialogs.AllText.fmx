@@ -47,7 +47,7 @@ object AllTextFrame: TAllTextFrame
           Align = MostRight
           Anchors = [akTop, akRight]
           Hint = 'Apply'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 7
           Position.X = 443.000000000000000000
           Size.Width = 25.000000000000000000
@@ -58,7 +58,7 @@ object AllTextFrame: TAllTextFrame
         end
       end
       object btnClose: TSpeedButton
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 36
         Size.Width = 24.000000000000000000
         Size.Height = 24.000000000000000000

@@ -35,7 +35,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
         Align = Client
         Anchors = []
         Hint = 'Toggle Editable'#13#13'Enable/Disable text editing in non-Edit mode.'
-        Images = Globals.SVGIconImageList
+        Images = Icons.SVGIconImageList
         ImageIndex = 28
         Size.Width = 64.000000000000000000
         Size.Height = 57.000000000000000000
@@ -62,7 +62,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Hint = 
             'Leading Horizontal Alignment'#13#13'Set horizontal text alignment to t' +
             'he beginning of the TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 38
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -80,7 +80,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Hint = 
             'Center Horizontal Alignment'#13#13'Set horizontal text alignment to th' +
             'e center of the TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 37
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -98,7 +98,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Hint = 
             'Trailing Horizontal Alignment'#13#13'Set horizontal text alignment to ' +
             'the end of the TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 39
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -123,7 +123,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Align = Client
           Anchors = []
           Hint = 'Toggle Bold'#13#13'Sets/Unsets bold style to TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 40
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -138,7 +138,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Align = Client
           Anchors = []
           Hint = 'Toggle Italic'#13#13'Sets/Unsets italic style to TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 41
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -153,7 +153,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Align = Client
           Anchors = []
           Hint = 'Toggle Underline'#13#13'Sets/Unsets underline style to TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 42
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000
@@ -168,7 +168,7 @@ inherited TextStoryItemOptions: TTextStoryItemOptions
           Align = Client
           Anchors = []
           Hint = 'Toggle Strikeout'#13#13'Sets/Unsets strikeout style to TextStoryItem.'
-          Images = Globals.SVGIconImageList
+          Images = Icons.SVGIconImageList
           ImageIndex = 43
           Size.Width = 64.000000000000000000
           Size.Height = 57.000000000000000000

@@ -6,16 +6,21 @@
 unit READCOM.Views.Menu.HUD;
 
 interface
- {$region 'Used units'}
+  {$region 'Used units'}
   uses
     System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-    FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
+    System.Actions,
+    //
+    FMX.Types, //for TLang
+    FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
     FMX.Controls.Presentation, System.ImageList, FMX.ImgList,
-    FMX.Layouts, System.Actions, FMX.ActnList,
+    FMX.Layouts, FMX.ActnList,
+    FMX.Colors,
+    //
     FMX.MultiView, SubjectStand, FrameStand,
+    //
     READCOM.Views.Dialogs.About, //for TAboutFrame
-    READCOM.App.Globals, //for Globals.SVGIconImageList
-    FMX.Colors;
+    READCOM.App.Icons; //for Icons.SVGIconImageList
   {$endregion}
 
   type
@@ -76,6 +81,7 @@ interface
       actionNextTheme: TAction;
       actionOptions: TAction;
       btnOptions: TSpeedButton;
+      Localizations: TLang;
       procedure actionAboutExecute(Sender: TObject);
       procedure actionMenuExecute(Sender: TObject);
       procedure btnToggleStructureVisibleClick(Sender: TObject);
@@ -177,7 +183,7 @@ implementation
 
   {$endregion}
 
-  {$region 'StrucureViewVisible'}
+  {$region 'StrucureVisible'}
 
   procedure TStoryHUD.SetStructureVisible(const Value: Boolean);
   begin

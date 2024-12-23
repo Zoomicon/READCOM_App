@@ -1,4 +1,4 @@
-unit READCOM.App.Globals;
+unit READCOM.App.Icons;
 
 interface
 
@@ -13,13 +13,12 @@ uses
 
 type
 
-  TGlobals = class(TDataModule)
-    Lang: TLang;
+  TIcons = class(TDataModule)
     SVGIconImageList: TSVGIconImageList;
   end;
 
 var
-  Globals: TGlobals;
+  Icons: TIcons;
 
 implementation
 
