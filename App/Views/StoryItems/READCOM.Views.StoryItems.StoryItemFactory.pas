@@ -18,13 +18,13 @@ interface
 
 implementation
 
-type
-  TStoryItemFactoryRegistry = TFactoryRegistry<String, IStoryItem>;
+  type
+    TStoryItemFactoryRegistry = TFactoryRegistry<String, IStoryItem>;
 
-function AddStoryItemFileFilter(const Title: String; const Exts: String): String;
-begin
-  StoryItemFileFilters.Add(TPair<String, String>.Create(Title, Exts));
-end;
+  function AddStoryItemFileFilter(const Title: String; const Exts: String): String;
+  begin
+    StoryItemFileFilters.Add(TPair<String, String>.Create(Title, Exts));
+  end;
 
 initialization
   StoryItemFileFilters := TList<TPair<String, String>>.Create;

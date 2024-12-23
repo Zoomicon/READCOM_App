@@ -3,7 +3,7 @@
 
 {-$DEFINE NOSTYLE}
 
-unit READCOM.Views.Menu.HUD;
+unit READCOM.Views.HUD;
 
 interface
   {$region 'Used units'}

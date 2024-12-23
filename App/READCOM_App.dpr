@@ -50,7 +50,7 @@ program READCOM_App;
   READCOM.Views.Prompts.Wait in 'Views\Prompts\READCOM.Views.Prompts.Wait.pas' {WaitFrame: TFrame},
   READCOM.Views.Prompts.Rotate in 'Views\Prompts\READCOM.Views.Prompts.Rotate.pas' {RotateFrame: TFrame},
   READCOM.Views.Prompts.Lock in 'Views\Prompts\READCOM.Views.Prompts.Lock.pas' {LockFrame: TFrame},
-  READCOM.Views.Menu.HUD in 'Views\READCOM.Views.Menu.HUD.pas' {StoryHUD: TFrame},
+  READCOM.Views.HUD in 'Views\READCOM.Views.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
   READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',

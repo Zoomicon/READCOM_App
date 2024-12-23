@@ -26,7 +26,7 @@ interface
     //
     READCOM.Models.Stories, //for IStory, IStoryItem
     READCOM.Views.StoryItems.StoryItem, //for TStoryItem
-    READCOM.Views.Menu.HUD;
+    READCOM.Views.HUD; //for TStoryHUD
   {$endregion}
 
   type

@@ -544,7 +544,7 @@
             <Form>LockFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\READCOM.Views.Menu.HUD.pas">
+        <DCCReference Include="Views\READCOM.Views.HUD.pas">
             <Form>StoryHUD</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
