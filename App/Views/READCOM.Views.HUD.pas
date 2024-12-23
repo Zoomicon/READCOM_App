@@ -139,10 +139,12 @@ interface
     end;
 
 implementation
+  {$IF DEFINED(MSWINDOWS)}
   uses
     System.RTLConsts, System.Generics.Collections; //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+  {$ENDIF}
 
-{$R *.fmx}
+  {$R *.fmx}
 
   constructor TStoryHUD.Create(AOwner: TComponent);
   begin
@@ -277,6 +279,7 @@ implementation
 
   {$region 'Fullscreen fix'} //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
 
+  {$IF DEFINED(MSWINDOWS)}
   type //copied from FMX.Platform.Win
     TFullScreenSavedState = record
       BorderStyle: TFmxFormBorderStyle;
@@ -286,7 +289,7 @@ implementation
       IsFullscreen: Boolean;
     end;
 
-  var FFullScreenSupport : TDictionary<TCommonCustomForm, TFullScreenSavedState>;
+  var FFullScreenSupport : TDictionary<TCommonCustomForm, TFullScreenSavedState>; //copied from FMX.Platform.Win (was a class field, here we create/destroy it at initialization and finalization section of this unit below)
 
   procedure RaiseIfNil(const AObject: TObject; const AArgumentName: string); //copied from FMX.Platform.Win
   begin
@@ -335,13 +338,17 @@ implementation
       FFullScreenSupport.Items[AForm] := SavedState; // Update saved state to reflect not fullscreen
     end;
   end;
+  {$ENDIF}
 
   {$endregion}
 
   procedure TStoryHUD.btnToggleFullscreenClick(Sender: TObject);
   begin
+    {$IF DEFINED(MSWINDOWS)}
     WorkingServiceSetFullscreen(Application.MainForm, btnToggleFullscreen.IsPressed); //Note: don't use Pressed //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
-    //Application.MainForm.FullScreen := not Application.MainForm.FullScreen;
+    {$ELSE}
+    Application.MainForm.FullScreen := not Application.MainForm.FullScreen;
+    {$ENDIF}
   end;
 
   {$endregion}
@@ -358,9 +365,13 @@ implementation
   {$ENDREGION}
 
 initialization
+  {$IF DEFINED(MSWINDOWS)}
   FFullScreenSupport := TDictionary<TCommonCustomForm, TFullScreenSavedState>.Create; //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+  {$ENDIF}
 
 finalization
+  {$IF DEFINED(MSWINDOWS)}
   FreeAndNil(FFullScreenSupport); //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+  {$ENDIF}
 
 end.
