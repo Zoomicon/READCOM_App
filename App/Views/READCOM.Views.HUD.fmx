@@ -192,6 +192,25 @@ object StoryHUD: TStoryHUD
         StyleLookup = 'actiontoolbutton'
         TextSettings.Trimming = None
       end
+      object btnToggleFullscreen: TSpeedButton
+        StaysPressed = True
+        Hint = 'Toggle Fullscreen mode'#13#13'Resize view to/from full screen size'
+        Images = Icons.SVGIconImageList
+        ImageIndex = 44
+        Margins.Left = 3.000000000000000000
+        Margins.Top = 3.000000000000000000
+        Margins.Right = 3.000000000000000000
+        Margins.Bottom = 6.000000000000000000
+        Position.X = 3.000000000000000000
+        Position.Y = 371.000000000000000000
+        Size.Width = 40.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'playtoolbutton'
+        Text = 'Fullscreen'
+        TextSettings.Trimming = None
+        OnClick = btnToggleFullscreenClick
+      end
       object btnAbout: TSpeedButton
         Action = actionAbout
         Images = Icons.SVGIconImageList
@@ -201,7 +220,7 @@ object StoryHUD: TStoryHUD
         Margins.Right = 3.000000000000000000
         Margins.Bottom = 3.000000000000000000
         Position.X = 3.000000000000000000
-        Position.Y = 371.000000000000000000
+        Position.Y = 420.000000000000000000
         Size.Width = 40.000000000000000000
         Size.Height = 40.000000000000000000
         Size.PlatformDefault = False

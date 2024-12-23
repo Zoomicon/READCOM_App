@@ -37,11 +37,6 @@ interface
       btnNext: TSpeedButton;
       layoutButtonsNavigation: TLayout;
       ActionList: TActionList;
-      actionPrevious: TAction;
-      actionNext: TAction;
-      actionAddTextStoryItem: TAction;
-      actionAbout: TAction;
-      actionMenu: TAction;
       layoutButtons: TLayout;
       MultiView: TMultiView;
       btnToggleStructureVisible: TSpeedButton;
@@ -50,37 +45,52 @@ interface
       btnToggleTargetsVisible: TSpeedButton;
       layoutButtonsMain: TFlowLayout;
       layoutButtonsEdit: TFlowLayout;
+
+      actionMenu: TAction;
+
+      actionPrevious: TAction;
+      actionHome: TAction;
+      actionNext: TAction;
+
+      actionNew: TAction;
       actionLoad: TAction;
       actionSave: TAction;
-      btnLoad: TSpeedButton;
-      btnSave: TSpeedButton;
-      actionNew: TAction;
-      btnNew: TSpeedButton;
-      actionHome: TAction;
-      btnHome: TSpeedButton;
-      btnAbout: TSpeedButton;
+      actionNextTheme: TAction;
+      actionOptions: TAction;
+      actionAbout: TAction;
+
+      actionAdd: TAction;
+      actionAddImageStoryItem: TAction;
+      actionAddTextStoryItem: TAction;
+
+      actionCut: TAction;
       actionCopy: TAction;
       actionPaste: TAction;
       actionDelete: TAction;
+
+      btnHome: TSpeedButton;
+
+      btnNew: TSpeedButton;
+      btnLoad: TSpeedButton;
+      btnSave: TSpeedButton;
       btnToggleUseStoryTimer: TSpeedButton;
-      actionAddImageStoryItem: TAction;
+      btnNextTheme: TSpeedButton;
+      btnAbout: TSpeedButton;
+      btnToggleFullscreen: TSpeedButton;
+
+      btnAdd: TSpeedButton;
+      btnAddImageStoryItem: TSpeedButton;
       btnAddTextStoryItem: TSpeedButton;
-      btnCopy: TSpeedButton;
       btnDelete: TSpeedButton;
+      btnCut: TSpeedButton;
+      btnCopy: TSpeedButton;
+      btnPaste: TSpeedButton;
       btnFlipHorizontally: TSpeedButton;
       btnFlipVertically: TSpeedButton;
-      btnPaste: TSpeedButton;
-      btnAddImageStoryItem: TSpeedButton;
-      btnCut: TSpeedButton;
-      actionCut: TAction;
-      btnAdd: TSpeedButton;
-      actionAdd: TAction;
       comboForeColor: TComboColorBox;
       comboBackColor: TComboColorBox;
-      btnNextTheme: TSpeedButton;
-      actionNextTheme: TAction;
-      actionOptions: TAction;
       btnOptions: TSpeedButton;
+
       Localizations: TLang;
       procedure actionAboutExecute(Sender: TObject);
       procedure actionMenuExecute(Sender: TObject);
@@ -88,6 +98,7 @@ interface
       procedure btnToggleEditModeClick(Sender: TObject);
       procedure btnToggleTargetsVisibleClick(Sender: TObject);
       procedure btnToggleUseStoryTimerClick(Sender: TObject);
+      procedure btnToggleFullscreenClick(Sender: TObject);
 
     protected
       FAboutFrame: TAboutFrame;
@@ -243,7 +254,7 @@ implementation
     EditMode := not EditMode; //don't use "btnToggleEditMode.Pressed", returns inconsistent values
   end;
 
-  {$endregion}
+{$endregion}
 
   {$region 'View actions'}
 
@@ -260,6 +271,11 @@ implementation
   procedure TStoryHUD.btnToggleUseStoryTimerClick(Sender: TObject);
   begin
     UseStoryTimer := not UseStoryTimer; //don't use "btnToggleUseStoryTimer.Pressed", returns inconsistent values
+  end;
+
+  procedure TStoryHUD.btnToggleFullscreenClick(Sender: TObject);
+  begin
+    Application.MainForm.FullScreen := not Application.MainForm.FullScreen;
   end;
 
   {$endregion}

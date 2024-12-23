@@ -38,17 +38,18 @@ inherited AboutFrame: TAboutFrame
         'Using SVG icons from:'
         'https://openmoji.org'
         'https://oNlineWebFonts.com'
-        'https://SVGrepo.com')
+        'https://SVGrepo.com'
+        'for attributions see .yaml files at READ-COM Gallery folders')
       ReadOnly = True
       Anchors = [akLeft, akTop, akRight, akBottom]
       Position.X = 8.000000000000000000
-      Position.Y = 125.000000000000000000
-      Size.Width = 423.669555664062500000
-      Size.Height = 308.476318359375000000
+      Position.Y = 124.000000000000000000
+      Size.Width = 424.000000000000000000
+      Size.Height = 308.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 423.700000000000000000
-      Viewport.Height = 308.500000000000000000
+      Viewport.Width = 404.000000000000000000
+      Viewport.Height = 304.000000000000000000
     end
     object GlyphLogo: TClickableGlyph
       OnTap = GlyphLogoTap
