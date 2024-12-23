@@ -139,6 +139,8 @@ interface
     end;
 
 implementation
+  uses
+    System.RTLConsts, System.Generics.Collections; //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
 
 {$R *.fmx}
 
@@ -273,9 +275,73 @@ implementation
     UseStoryTimer := not UseStoryTimer; //don't use "btnToggleUseStoryTimer.Pressed", returns inconsistent values
   end;
 
+  {$region 'Fullscreen fix'} //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+
+  type //copied from FMX.Platform.Win
+    TFullScreenSavedState = record
+      BorderStyle: TFmxFormBorderStyle;
+      WindowState: TWindowState;
+      Position: TPointF;
+      Size: TSizeF;
+      IsFullscreen: Boolean;
+    end;
+
+  var FFullScreenSupport : TDictionary<TCommonCustomForm, TFullScreenSavedState>;
+
+  procedure RaiseIfNil(const AObject: TObject; const AArgumentName: string); //copied from FMX.Platform.Win
+  begin
+    if AObject = nil then
+      raise EArgumentException.CreateFmt(SParamIsNil, [AArgumentName]);
+  end;
+
+  procedure WorkingServiceSetFullScreen(const AForm: TCommonCustomForm; const AValue: Boolean);
+  var
+    SavedState: TFullScreenSavedState;
+  begin
+    RaiseIfNil(AForm, 'AForm');
+
+    if AValue and not (TFmxFormState.Showing in AForm.FormState) then
+      AForm.Visible := True;
+
+    if not FFullScreenSupport.TryGetValue(AForm, SavedState) then
+    begin
+      FillChar(SavedState, SizeOf(SavedState), 0);
+      FFullScreenSupport.Add(AForm, SavedState);
+    end;
+
+    if AValue and (AForm.Visible or (TFmxFormState.Showing in AForm.FormState)) then
+    begin
+      SavedState.IsFullscreen := AValue;
+      SavedState.WindowState := AForm.WindowState;
+      SavedState.BorderStyle := AForm.BorderStyle;
+      if AForm.WindowState = TWindowState.wsNormal then
+      begin
+        SavedState.Size := TSizeF.Create(AForm.Width, AForm.Height);
+        SavedState.Position := TPointF.Create(AForm.Left, AForm.Top);
+      end;
+      FFullScreenSupport.Items[AForm] := SavedState;
+      if AForm.WindowState = TWindowState.wsMinimized then
+        AForm.WindowState := TWindowState.wsMaximized;
+      AForm.BorderStyle := TFmxFormBorderStyle.None;
+      AForm.WindowState := TWindowState.wsMaximized;
+    end
+    else if SavedState.IsFullscreen then
+    begin
+      // Restore the saved state
+      AForm.BorderStyle := SavedState.BorderStyle;
+      AForm.SetBoundsF(SavedState.Position.X, SavedState.Position.Y, SavedState.Size.Width, SavedState.Size.Height);
+      AForm.WindowState := SavedState.WindowState;
+      SavedState.IsFullscreen := False;
+      FFullScreenSupport.Items[AForm] := SavedState; // Update saved state to reflect not fullscreen
+    end;
+  end;
+
+  {$endregion}
+
   procedure TStoryHUD.btnToggleFullscreenClick(Sender: TObject);
   begin
-    Application.MainForm.FullScreen := not Application.MainForm.FullScreen;
+    WorkingServiceSetFullscreen(Application.MainForm, btnToggleFullscreen.IsPressed); //Note: don't use Pressed //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+    //Application.MainForm.FullScreen := not Application.MainForm.FullScreen;
   end;
 
   {$endregion}
@@ -290,5 +356,11 @@ implementation
   {$endregion}
 
   {$ENDREGION}
+
+initialization
+  FFullScreenSupport := TDictionary<TCommonCustomForm, TFullScreenSavedState>.Create; //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
+
+finalization
+  FreeAndNil(FFullScreenSupport); //TODO: temp fullscreen fix for Delphi 12.2 which can't exit fullscreen
 
 end.
