@@ -2018,3 +2018,4 @@ initialization
   AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXTS); //should make sure this is used first
 
 end.
+
