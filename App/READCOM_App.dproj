@@ -510,10 +510,6 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.StoryItemFactory.pas"/>
-        <DCCReference Include="Views\READCOM.Views.Modal.pas">
-            <Form>ModalFrame</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="Views\Dialogs\READCOM.Views.Dialogs.About.pas">
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
@@ -544,6 +540,11 @@
         <DCCReference Include="READCOM.App.Debugging.pas"/>
         <DCCReference Include="READCOM.App.Messages.pas"/>
         <DCCReference Include="READCOM.App.Main.pas"/>
+        <DCCReference Include="modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas">
+            <Form>ModalFrame</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

@@ -3,7 +3,7 @@
 
     "description": "READ-COM - Reading Communities app",
 
-    "version": "0.7.5",
+    "version": "0.7.6",
 
     "homepage": "https://github.com/Zoomicon/READCOM_App",
 
@@ -20,7 +20,7 @@
         "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=3.2.0",
         "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=3.0.0",
         "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=3.0.0",
-        "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=3.4.0",
+        "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=3.7.0",
         "github.com/zoomicon/zoomicon.zui.fmx.delphi": ">=3.0.0",
         "github.com/birbilis/Object-Debugger-for-FireMonkey": ">=6.0.0",
         "github.com/zoomicon/readcom.core.delphi": ">=3.0.0"

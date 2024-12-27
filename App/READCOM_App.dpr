@@ -30,7 +30,8 @@ program READCOM_App;
   {$region 'Used units' ---------------------------------------------------------} //TODO: D12.2 doesn't seem to fold/expand regions in .dpr files
   uses
   System.StartUpCopy,
-  Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
+  Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame}, //TODO: need this for IDE designers to work correctly, not sure why
+  Zoomicon.Media.FMX.ModalFrame in 'modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas' {ModalFrame: TFrame}, //TODO: need this for IDE designers to work correctly, not sure why
   READCOM.App.Icons in 'READCOM.App.Icons.pas' {Icons: TDataModule},
   READCOM.App.Themes in 'READCOM.App.Themes.pas' {Themes: TDataModule},
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
@@ -41,7 +42,6 @@ program READCOM_App;
   READCOM.Views.StoryItems.AudioStoryItem in 'Views\StoryItems\READCOM.Views.StoryItems.AudioStoryItem.pas' {AudioStoryItem: TFrame},
   READCOM.Views.StoryItems.TextStoryItem in 'Views\StoryItems\READCOM.Views.StoryItems.TextStoryItem.pas' {TextStoryItem: TFrame},
   READCOM.Views.StoryItems.StoryItemFactory in 'Views\StoryItems\READCOM.Views.StoryItems.StoryItemFactory.pas',
-  READCOM.Views.Modal in 'Views\READCOM.Views.Modal.pas' {ModalFrame: TFrame},
   READCOM.Views.Dialogs.About in 'Views\Dialogs\READCOM.Views.Dialogs.About.pas' {AboutFrame: TFrame},
   READCOM.Views.Dialogs.AllText in 'Views\Dialogs\READCOM.Views.Dialogs.AllText.pas' {AllTextFrame: TFrame},
   READCOM.Views.Prompts.Wait in 'Views\Prompts\READCOM.Views.Prompts.Wait.pas' {WaitFrame: TFrame},

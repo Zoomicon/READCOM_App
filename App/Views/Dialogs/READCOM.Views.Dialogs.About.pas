@@ -13,9 +13,9 @@ interface
     FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts,
     FMX.ActnList,
     //
-    READCOM.App.Icons, //for Icons.SVGIconImageList
-    READCOM.Views.Modal, //for TModalFrame
-    Zoomicon.Media.FMX.ClickableGlyph; //for TClickableGlyph
+    Zoomicon.Media.FMX.ModalFrame, //for TModalFrame
+    Zoomicon.Media.FMX.ClickableGlyph, //for TClickableGlyph
+    READCOM.App.Icons; //for Icons.SVGIconImageList
   {$endregion}
 
   type

@@ -14,7 +14,7 @@ interface
     FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts,
     FMX.ActnList,
     //
-    READCOM.Views.Modal, //for TModalFrame
+    Zoomicon.Media.FMX.ModalFrame, //for TModalFrame
     READCOM.App.Icons, //for Icons.SVGIconImageList
     READCOM.Models.Stories; //for IStoryItem
   {$endregion}
@@ -35,7 +35,7 @@ interface
     public
       destructor Destroy; override;
 
-      class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
+      class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true);
     end;
 
 implementation

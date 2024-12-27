@@ -41,8 +41,8 @@ inherited AllTextFrame: TAllTextFrame
       TextSettings.Font.StyleExt = {00070000000000000004000000}
       TextSettings.WordWrap = False
       Text = 
-        'Replace text below respecting separator (~) and order of text bl' +
-        'ocks'
+        'Edit/Replace text below respecting order and separators of text ' +
+        'blocks'
       TabOrder = 1
     end
     object btnClose: TSpeedButton
