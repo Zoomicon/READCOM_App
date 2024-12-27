@@ -15,7 +15,6 @@ object ModalFrame: TModalFrame
       Size.Width = 240.000000000000000000
       Size.Height = 216.000000000000000000
       Size.PlatformDefault = False
-      Images = Icons.SVGIconImageList
     end
   end
 end

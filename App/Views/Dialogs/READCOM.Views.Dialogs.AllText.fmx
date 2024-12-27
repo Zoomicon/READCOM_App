@@ -1,73 +1,77 @@
-object AllTextFrame: TAllTextFrame
-  Left = 0
-  Top = 0
-  ClientHeight = 480
-  ClientWidth = 640
-  FormFactor.Width = 320
-  FormFactor.Height = 480
-  FormFactor.Devices = [Desktop, iPhone, iPad]
-  DesignerMasterStyle = 0
-  object rectBackground: TRectangle
-    Align = Contents
-    Fill.Color = xBBE0E0E0
-    Size.Width = 640.000000000000000000
-    Size.Height = 480.000000000000000000
+inherited AllTextFrame: TAllTextFrame
+  Size.Width = 529.000000000000000000
+  Size.Height = 572.000000000000000000
+  inherited rectBackground: TRectangle
+    Size.Width = 529.000000000000000000
+    Size.Height = 572.000000000000000000
+    inherited GlyphIcon: TGlyph
+      Size.Width = 1172.618041992188000000
+      Size.Height = 1390.280395507813000000
+    end
+  end
+  object rectBorder: TRectangle
+    Align = Scale
+    Position.X = 33.856002807617190000
+    Position.Y = 34.772037506103520000
+    Size.Width = 461.287841796875000000
+    Size.Height = 501.586914062500000000
     Size.PlatformDefault = False
-    Stroke.Thickness = 0.000000000000000000
-    object rectBorder: TRectangle
-      Align = Center
-      Size.Width = 508.000000000000000000
-      Size.Height = 320.000000000000000000
+    object MemoAllText: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      StyledSettings = []
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Position.X = 8.000000000000000000
+      Position.Y = 56.000000000000000000
+      Size.Width = 445.000000000000000000
+      Size.Height = 438.000000000000000000
       Size.PlatformDefault = False
-      object MemoAllText: TMemo
-        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
-        DataDetectorTypes = []
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Position.X = 8.000000000000000000
-        Position.Y = 32.000000000000000000
-        Size.Width = 492.000000000000000000
-        Size.Height = 280.000000000000000000
-        Size.PlatformDefault = False
-        TabOrder = 0
-        Viewport.Width = 488.000000000000000000
-        Viewport.Height = 276.000000000000000000
-      end
-      object lblInstructions: TLabel
-        Anchors = [akLeft, akTop, akRight]
-        StyledSettings = [Family, Size, FontColor]
-        Position.X = 32.000000000000000000
-        Position.Y = 7.000000000000000000
-        Size.Width = 468.000000000000000000
-        Size.Height = 17.000000000000000000
-        Size.PlatformDefault = False
-        TextSettings.Font.StyleExt = {00070000000000000004000000}
-        Text = 'Replace text respecting ~ separator and order of text blocks'
-        TabOrder = 1
-        object btnApply: TSpeedButton
-          Align = MostRight
-          Anchors = [akTop, akRight]
-          Hint = 'Apply'
-          Images = Icons.SVGIconImageList
-          ImageIndex = 7
-          Position.X = 443.000000000000000000
-          Size.Width = 25.000000000000000000
-          Size.Height = 17.000000000000000000
-          Size.PlatformDefault = False
-          TextSettings.Trimming = None
-          OnClick = btnApplyClick
-        end
-      end
-      object btnClose: TSpeedButton
-        Images = Icons.SVGIconImageList
-        ImageIndex = 36
-        Size.Width = 24.000000000000000000
-        Size.Height = 24.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'stoptoolbutton'
-        Text = 'stoptoolbutton'
-        TextSettings.Trimming = None
-        OnClick = btnCloseClick
-      end
+      TabOrder = 0
+      Viewport.Width = 441.000000000000000000
+      Viewport.Height = 434.000000000000000000
+    end
+    object lblInstructions: TLabel
+      Anchors = [akLeft, akTop, akRight]
+      StyledSettings = [Family, Size, FontColor]
+      Position.X = 8.000000000000000000
+      Position.Y = 32.000000000000000000
+      Size.Width = 445.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.WordWrap = False
+      Text = 
+        'Replace text below respecting separator (~) and order of text bl' +
+        'ocks'
+      TabOrder = 1
+    end
+    object btnClose: TSpeedButton
+      Hint = 'Cancel'
+      Images = Icons.SVGIconImageList
+      ImageIndex = 36
+      Size.Width = 33.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      ParentShowHint = False
+      ShowHint = True
+      StyleLookup = 'stoptoolbutton'
+      Text = 'stoptoolbutton'
+      TextSettings.Trimming = None
+      OnClick = btnCloseClick
+    end
+    object btnApply: TSpeedButton
+      Hint = 'Apply'
+      Images = Icons.SVGIconImageList
+      ImageIndex = 7
+      Position.X = 28.000000000000000000
+      Size.Width = 33.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      ParentShowHint = False
+      ShowHint = True
+      StyleLookup = 'organizetoolbutton'
+      TextSettings.Trimming = None
+      OnClick = btnApplyClick
     end
   end
 end

@@ -4,54 +4,56 @@
 unit READCOM.Views.Dialogs.About;
 
 interface
+  {$region 'Used units'}
+  uses
+    System.Types, System.UITypes, System.Classes,
+    System.Actions,
+    FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
+    FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
+    FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts,
+    FMX.ActnList,
+    //
+    READCOM.App.Icons, //for Icons.SVGIconImageList
+    READCOM.Views.Modal, //for TModalFrame
+    Zoomicon.Media.FMX.ClickableGlyph; //for TClickableGlyph
+  {$endregion}
 
-uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Controls.Presentation,
-  FMX.Objects, FMX.SVGIconImage, FMX.ImgList, FMX.Layouts, System.Actions,
-  FMX.ActnList,
-  //
-  READCOM.App.Icons, //for Icons.SVGIconImageList
-  READCOM.Views.Modal, //for TModalFrame
-  Zoomicon.Media.FMX.ClickableGlyph; //for TClickableGlyph
+  type
+    TAboutFrame = class(TModalFrame)
+      ActionList: TActionList;
+      actionHelp: TAction;
+      rectBorder: TRectangle;
+      MemoInfo: TMemo;
+      btnHelp: TSpeedButton;
+      GlyphLogo: TClickableGlyph;
+      PanelTitleVersion: TPanel;
+      TitleAndVersionLayout: TFlowLayout;
+      lblTitle: TLabel;
+      NewLine1: TFlowLayoutBreak;
+      lblBlankRow: TLabel;
+      NewLine2: TFlowLayoutBreak;
+      VersionLayout: TFlowLayout;
+      lblVersion: TLabel;
+      lblVersionValue: TLabel;
+      btnClose: TSpeedButton;
+      actionClose: TAction;
+      procedure GlyphLogoClick(Sender: TObject);
+      procedure actionCloseExecute(Sender: TObject);
+      procedure actionHelpExecute(Sender: TObject);
+      procedure GlyphLogoTap(Sender: TObject; const Point: TPointF);
 
-type
-  TAboutFrame = class(TModalFrame)
-    ActionList: TActionList;
-    actionHelp: TAction;
-    rectBorder: TRectangle;
-    MemoInfo: TMemo;
-    btnHelp: TSpeedButton;
-    GlyphLogo: TClickableGlyph;
-    PanelTitleVersion: TPanel;
-    TitleAndVersionLayout: TFlowLayout;
-    lblTitle: TLabel;
-    NewLine1: TFlowLayoutBreak;
-    lblBlankRow: TLabel;
-    NewLine2: TFlowLayoutBreak;
-    VersionLayout: TFlowLayout;
-    lblVersion: TLabel;
-    lblVersionValue: TLabel;
-    btnClose: TSpeedButton;
-    actionClose: TAction;
-    procedure GlyphLogoClick(Sender: TObject);
-    procedure actionCloseExecute(Sender: TObject);
-    procedure actionHelpExecute(Sender: TObject);
-    procedure GlyphLogoTap(Sender: TObject; const Point: TPointF);
-
-  protected
-    class var
-      Frame: TFrame;
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;
+    public
+      constructor Create(AOwner: TComponent); override;
+    end;
 
 implementation
+  {$region 'Used units'}
   uses
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.AppVersion, TApplication.OpenURL
-    READCOM.App.Main,
+    //
+    READCOM.App.Main, //for ShowHelp
     READCOM.App.Messages;
+  {$endregion}
 
 {$R *.fmx}
 

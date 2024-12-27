@@ -11,10 +11,10 @@ inherited AboutFrame: TAboutFrame
   end
   object rectBorder: TRectangle
     Align = Scale
-    Position.X = 43.966934204101560000
-    Position.Y = 47.619064331054690000
-    Size.Width = 439.669555664062500000
-    Size.Height = 440.476318359375000000
+    Position.X = 44.000000000000000000
+    Position.Y = 40.000000000000000000
+    Size.Width = 440.000000000000000000
+    Size.Height = 448.000000000000000000
     Size.PlatformDefault = False
     object MemoInfo: TMemo
       Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
@@ -44,12 +44,12 @@ inherited AboutFrame: TAboutFrame
       Anchors = [akLeft, akTop, akRight, akBottom]
       Position.X = 8.000000000000000000
       Position.Y = 124.000000000000000000
-      Size.Width = 424.000000000000000000
-      Size.Height = 308.000000000000000000
+      Size.Width = 424.330444335937500000
+      Size.Height = 315.523681640625000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 404.000000000000000000
-      Viewport.Height = 304.000000000000000000
+      Viewport.Width = 404.300000000000000000
+      Viewport.Height = 311.500000000000000000
     end
     object GlyphLogo: TClickableGlyph
       OnTap = GlyphLogoTap
@@ -67,14 +67,14 @@ inherited AboutFrame: TAboutFrame
       Anchors = [akLeft, akTop, akRight]
       Position.X = 125.000000000000000000
       Position.Y = 8.000000000000000000
-      Size.Width = 306.669555664062500000
+      Size.Width = 307.000000000000000000
       Size.Height = 109.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object TitleAndVersionLayout: TFlowLayout
         Align = Contents
         Padding.Top = 20.000000000000000000
-        Size.Width = 306.669555664062500000
+        Size.Width = 307.000000000000000000
         Size.Height = 109.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
@@ -84,7 +84,7 @@ inherited AboutFrame: TAboutFrame
         object lblTitle: TLabel
           Align = Horizontal
           StyledSettings = [Family, Size, FontColor]
-          Position.X = -8.665222167968750000
+          Position.X = -8.500000000000000000
           Position.Y = 20.000000000000000000
           Size.Width = 324.000000000000000000
           Size.Height = 16.000000000000000000
@@ -101,7 +101,7 @@ inherited AboutFrame: TAboutFrame
           FlowDirection = LeftToRight
         end
         object lblBlankRow: TLabel
-          Position.X = 93.334777832031250000
+          Position.X = 93.500000000000000000
           Position.Y = 36.000000000000000000
           TabOrder = 3
         end
@@ -114,7 +114,7 @@ inherited AboutFrame: TAboutFrame
         object VersionLayout: TFlowLayout
           Align = Horizontal
           Padding.Left = 20.000000000000000000
-          Position.X = -11.665222167968750000
+          Position.X = -11.500000000000000000
           Position.Y = 53.000000000000000000
           Size.Width = 330.000000000000000000
           Size.Height = 25.000000000000000000
@@ -153,8 +153,8 @@ inherited AboutFrame: TAboutFrame
       Margins.Top = 3.000000000000000000
       Margins.Right = 3.000000000000000000
       Margins.Bottom = 3.000000000000000000
-      Position.X = 377.000000000000000000
-      Position.Y = 380.000000000000000000
+      Position.X = 377.330444335937500000
+      Position.Y = 387.523681640625000000
       Size.Width = 45.000000000000000000
       Size.Height = 53.000000000000000000
       Size.PlatformDefault = False
@@ -166,7 +166,7 @@ inherited AboutFrame: TAboutFrame
       Anchors = [akTop, akRight]
       Images = Icons.SVGIconImageList
       ImageIndex = 36
-      Position.X = 405.000000000000000000
+      Position.X = 405.330444335937500000
       Position.Y = 10.000000000000000000
       Size.Width = 24.000000000000000000
       Size.Height = 24.000000000000000000

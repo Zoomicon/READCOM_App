@@ -22,7 +22,6 @@ interface
   type
     TAllTextFrame = class(TModalFrame)
       MemoAllText: TMemo;
-      rectBackground: TRectangle;
       btnClose: TSpeedButton;
       rectBorder: TRectangle;
       lblInstructions: TLabel;
@@ -31,17 +30,12 @@ interface
       procedure btnApplyClick(Sender: TObject);
 
     protected
-      class var
-        Frame: TFrame;
-        FStoryItem: IStoryItem;
-
-      class function IsShown: Boolean; static;
+      FStoryItem: IStoryItem;
 
     public
-      constructor Create(AOwner: TComponent); override;
-      class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
+      destructor Destroy; override;
 
-      class property Shown: Boolean read IsShown;
+      class procedure ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true); //TODO: abstract design into a reusable ModalFrame class (see TWaitFrame too)
     end;
 
 implementation
@@ -51,80 +45,88 @@ implementation
     READCOM.App.Messages;
   {$endregion}
 
-{$R *.fmx}
+  {$R *.fmx}
 
-{$region 'Initialization'}
+  {$region 'Life-time management'}
 
-constructor TAllTextFrame.Create(AOwner: TComponent);
-begin
-  inherited;
-
-  //...
-end;
-
-{$endregion}
-
-class function TAllTextFrame.IsShown: Boolean;
-begin
-  result := Assigned(Frame); //assuming ShowModal kills the frame when closing
-end;
-
-
-class procedure TAllTextFrame.ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true);
-begin
-  if not Assigned(Frame) then //on Creation-Showing
+  destructor TAllTextFrame.Destroy;
   begin
-    Frame := Create(Application); //use Application as the Owner since we reuse the same WaitFrame instance
-    //Frame.Align := TAlignLayout.Content; //already set at frame designer (could be a property [Content, Center, Scale etc.])
+    FStoryItem := nil; //don't call FreeAndNil since we don't own that (plus it's an interface and does ref counting)
+    inherited;
+  end;
 
-    if Assigned(AStoryItem) then
+  {$endregion}
+
+  class procedure TAllTextFrame.ShowModal(const TheParent: TFmxObject; const AStoryItem: IStoryItem; const VisibleFlag: Boolean = true);
+
+    procedure Opening;
     begin
-      FStoryItem := AStoryItem;
-
       with TAllTextFrame(Frame) do
       begin
-        var LReadOnly := not AStoryItem.EditMode;
-        btnApply.Visible := not LReadOnly;
-        if LReadOnly then
-          lblInstructions.Text := '';
-        with MemoAllText do
+        FStoryItem := AStoryItem;
+
+        if Assigned(AStoryItem) then
         begin
-          var LLines := AStoryItem.AllText;
-          Lines := LLines; //this does Assign under the hood
-          FreeAndNil(LLines); //must free these to not do memory leak
-          ReadOnly := LReadOnly;
+          var LReadOnly := not AStoryItem.EditMode;
+          btnApply.Visible := not LReadOnly;
+          if LReadOnly then
+            lblInstructions.Text := '';
+          with MemoAllText do
+          begin
+            var LLines := AStoryItem.AllText;
+            try
+              Lines := LLines; //this does Assign under the hood
+            finally
+              FreeAndNil(LLines); //must free these to not do memory leak
+            end;
+            ReadOnly := LReadOnly;
+          end;
         end;
+
+      end;
+    end;
+
+    procedure Closing;
+    begin
+      with TAllTextFrame(Frame) do
+        if not MemoAllText.ReadOnly and Assigned(AStoryItem) then //if AllText memo wasn't ReadOnly
+          AStoryItem.AllText := MemoAllText.Lines; //Apply text changes
+    end;
+
+  begin
+     //TODO: (*) maybe have TModalFrame.ShowModal accept optional callback procs for code to execute at opening/creation and at closing/destruction and call that here passing references to "Opening" and "Closing" inner methods
+    if not Assigned(Frame) then //on Creation-Showing
+    begin
+      Frame := Create(Application); //use Application as the Owner since we reuse the same WaitFrame instance
+      //Frame.Align := TAlignLayout.Content; //already set at frame designer (could be a property [Content, Center, Scale etc.])
+    end;
+
+    with Frame do
+    begin
+      Parent := TheParent;
+      if VisibleFlag then
+        Opening //(*)
+      else //on Cleanup-Hiding
+      begin
+        Closing; //(*)
+        Close; //don't just call FreeAndNil(Frame), would fail on other platformns than MSWindows, TModalFrame.Close class method closes the frame and frees later on via the main thread's event queue
       end;
     end;
   end;
 
-  with TAllTextFrame(Frame) do
+  {$region 'Events'}
+
+  procedure TAllTextFrame.btnApplyClick(Sender: TObject);
   begin
-    Parent := TheParent;
-
-    //Visible := VisibleFlag;
-    if not VisibleFlag then //on Cleanup-Hiding
-    begin
-      if not MemoAllText.ReadOnly and Assigned(AStoryItem) then //if AllText memo wasn't ReadOnly
-        AStoryItem.AllText := MemoAllText.Lines; //Apply text changes
-
-      FreeAndNil(Frame); //destroy instead of hiding to save memory
-    end;
+    TAllTextFrame.ShowModal(Parent, FStoryItem, false); //close and apply changes
   end;
-end;
 
-{$region 'Events'}
+  procedure TAllTextFrame.btnCloseClick(Sender: TObject);
+  begin
+    FStoryItem := nil;
+    Close; //close ignoring changes
+  end;
 
-procedure TAllTextFrame.btnApplyClick(Sender: TObject);
-begin
-  TAllTextFrame.ShowModal(Parent, FStoryItem, false);
-end;
-
-procedure TAllTextFrame.btnCloseClick(Sender: TObject);
-begin
-  TAllTextFrame.ShowModal(Parent, nil, false);
-end;
-
-{$endregion}
+  {$endregion}
 
 end.
