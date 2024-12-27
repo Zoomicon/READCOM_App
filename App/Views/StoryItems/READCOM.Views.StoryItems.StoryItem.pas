@@ -112,7 +112,7 @@ interface
       procedure SetBorderVisible(const Value: Boolean); virtual;
 
       {View}
-      function GetView: TControl;
+      function GetView: TControl; //get a TStoryItem descendant from IStoryItem //Note: could return TStoryItem type here, but maybe other controls implement IStoryItem too in the future
 
       {ParentStoryItem}
       function GetParentStoryItem: IStoryItem;
@@ -993,7 +993,7 @@ implementation
 
   function TStoryItem.GetAllText: TStrings; //Note: the output order of the strings may look strange, it's not in StoryPoint-related groups
   begin
-    result := TStringList.Create(false); //set to not own objects
+    result := TStringList.Create(false); //set to not own objects //Note: caller will need to free this TStringList
 
     //Append our own text
     var LTextStoryItem: ITextStoryItem;
@@ -1007,8 +1007,12 @@ implementation
     for var LStoryItem in StoryItems do
     begin
       var LStoryItemAllText := LStoryItem.AllText; //does recursion, resulting in a depth-first traversal of the subtree
-      if Assigned(LStoryItemAllText) then
-        result.AddStrings(LStoryItemAllText); //append strings from child
+      try
+        if Assigned(LStoryItemAllText) then
+          result.AddStrings(LStoryItemAllText); //append strings from child
+      finally
+        FreeAndNil(LStoryItemAllText); //freeing the TStringList returned by AllText property of child StoryItem
+      end;
     end;
   end;
 
