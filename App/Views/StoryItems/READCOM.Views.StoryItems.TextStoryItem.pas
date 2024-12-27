@@ -154,14 +154,15 @@ implementation
   {$region 'Used units'}
   uses
     IOUtils, //for TFile
+    //
     FMX.Styles.Objects, //for TActiveStyleObject
     //
     //Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.RealAllText
     Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.SetFontSizeToFit
+    Zoomicon.Introspection.FMX.Debugging, //for Log
     //
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
-    READCOM.Views.StoryItems.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter
-    READCOM.App.Debugging; //for Log
+    READCOM.Views.StoryItems.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
     {$endregion}
 
   {$R *.fmx}

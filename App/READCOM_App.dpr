@@ -30,8 +30,8 @@ program READCOM_App;
   {$region 'Used units' ---------------------------------------------------------} //TODO: D12.2 doesn't seem to fold/expand regions in .dpr files
   uses
   System.StartUpCopy,
-  Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame}, //TODO: need this for IDE designers to work correctly, not sure why
-  Zoomicon.Media.FMX.ModalFrame in 'modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas' {ModalFrame: TFrame}, //TODO: need this for IDE designers to work correctly, not sure why
+  Zoomicon.Manipulation.FMX.CustomManipulator in 'modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas' {CustomManipulator: TFrame},
+  Zoomicon.Media.FMX.ModalFrame in 'modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas' {ModalFrame: TFrame},
   READCOM.App.Icons in 'READCOM.App.Icons.pas' {Icons: TDataModule},
   READCOM.App.Themes in 'READCOM.App.Themes.pas' {Themes: TDataModule},
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
@@ -49,7 +49,6 @@ program READCOM_App;
   READCOM.Views.Prompts.Lock in 'Views\Prompts\READCOM.Views.Prompts.Lock.pas' {LockFrame: TFrame},
   READCOM.Views.HUD in 'Views\READCOM.Views.HUD.pas' {StoryHUD: TFrame},
   READCOM.Views.Main in 'Views\READCOM.Views.Main.pas' {MainForm},
-  READCOM.App.Debugging in 'READCOM.App.Debugging.pas',
   READCOM.App.Messages in 'READCOM.App.Messages.pas',
   READCOM.App.Main in 'READCOM.App.Main.pas';
 

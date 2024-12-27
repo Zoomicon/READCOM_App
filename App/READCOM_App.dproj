@@ -265,7 +265,7 @@
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Release>6</VerInfo_Release>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -334,8 +334,8 @@
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.5.0);FileVersion=0.7.5.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.5.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>5</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities;FileVersion=0.7.6.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>6</VerInfo_Release>
         <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
@@ -345,8 +345,8 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.5.0;FileVersion=0.7.5.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.5.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>5</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities;FileVersion=0.7.6.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>6</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -447,12 +447,12 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.5.0);FileVersion=0.7.5.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.5.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities;FileVersion=0.7.6.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.6.0;Comments=</VerInfo_Keys>
         <PF_UWPPublisher>CN=E1504C07-F970-414E-A706-87A64B47C12B</PF_UWPPublisher>
         <PF_UWPPackageName>17029Zoomicon.READ-COMReadingCommunities</PF_UWPPackageName>
         <PF_UWPPackageDisplayName>READ-COM: Reading Communities</PF_UWPPackageDisplayName>
         <PF_UWPPublisherDisplayName>Zoomicon</PF_UWPPublisherDisplayName>
-        <VerInfo_Release>5</VerInfo_Release>
+        <VerInfo_Release>6</VerInfo_Release>
         <PF_UWPDistributionType>Store</PF_UWPDistributionType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
@@ -462,8 +462,8 @@
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
         <VerInfo_MinorVer>7</VerInfo_MinorVer>
         <VerInfo_PreRelease>true</VerInfo_PreRelease>
-        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities (0.7.5.0);FileVersion=0.7.5.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.5.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>5</VerInfo_Release>
+        <VerInfo_Keys>CompanyName=Zoomicon;FileDescription=READ-COM: Reading Communities;FileVersion=0.7.6.0;InternalName=READCOM_App;LegalCopyright=Zoomicon;LegalTrademarks=;OriginalFilename=;ProgramID=com.zoomicon.readcom.app;ProductName=READ-COM: Reading Communities;ProductVersion=0.7.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>6</VerInfo_Release>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -471,6 +471,11 @@
         </DelphiCompile>
         <DCCReference Include="modules\zoomicon.manipulation.fmx.delphi\Source\Zoomicon.Manipulation.FMX.CustomManipulator.pas">
             <Form>CustomManipulator</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas">
+            <Form>ModalFrame</Form>
+            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Icons.pas">
@@ -537,14 +542,8 @@
         <DCCReference Include="Views\READCOM.Views.Main.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="READCOM.App.Debugging.pas"/>
         <DCCReference Include="READCOM.App.Messages.pas"/>
         <DCCReference Include="READCOM.App.Main.pas"/>
-        <DCCReference Include="modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas">
-            <Form>ModalFrame</Form>
-            <FormType>fmx</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

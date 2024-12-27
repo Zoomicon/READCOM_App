@@ -29,10 +29,10 @@ implementation
     FMX.Forms, //for Application
     //
     Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.ExeName, TApplication.OpenURL
+    Zoomicon.Introspection.FMX.Debugging, //for CheckSafeMode
     //
     READCOM.Models, //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT, DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT
     READCOM.Views.Main,
-    READCOM.App.Debugging,
     READCOM.App.Icons, //for TIcons
     READCOM.App.Themes, //for TThemes
     READCOM.App.Messages;
