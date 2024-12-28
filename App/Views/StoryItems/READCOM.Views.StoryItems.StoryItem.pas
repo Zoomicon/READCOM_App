@@ -337,6 +337,7 @@ implementation
     Zoomicon.Helpers.RTL.ComponentHelpers, //for TComponent.FindSafeName
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.ReadComponent
     Zoomicon.Helpers.RTL.StringsHelpers, //for TStrings.GetLines
+    //Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for IsURI
     Zoomicon.Introspection.FMX.Debugging, //for Log
     Zoomicon.Media.FMX.Models, //for EXT_XX constants
     //
@@ -1837,11 +1838,18 @@ implementation
 
   function TStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
   begin
+    //TODO: how do we check for other opaque file formats (filepath?) on clipboard?
+    //TODO: add support for pasting a URL from clipboard if there's custom format for it
+
     if Clipboard.HasText then
     begin
       var LText := Trim(Clipboard.GetText); //Trimming since we may have pasted an indented object from a .readcom file
+
       if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem
-        Exit(LoadFromString(LText, CreateNew)); //Create new object if we don't know from beforehand what exact type it is
+        Exit(LoadFromString(LText, CreateNew)) //Create new object if we don't know from beforehand what exact type it is
+
+      //else if IsURI(LText) then
+      //  LoadFromURI(LText); //TODO: see code from MainForm (and move here with callbacks if needed for its custom processing)
     end;
 
     result := nil;
@@ -2042,6 +2050,7 @@ implementation
 
 initialization
   StoryItemFactories.Add([EXT_READCOM], nil); //special case, class information is in the serialization stream
+
   AddStoryItemFileFilter(FILTER_READCOM_TITLE, FILTER_READCOM_EXTS); //should make sure this is used first
 
 end.
