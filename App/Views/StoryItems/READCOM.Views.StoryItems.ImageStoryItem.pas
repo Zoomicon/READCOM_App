@@ -3,6 +3,8 @@
 
 unit READCOM.Views.StoryItems.ImageStoryItem;
 
+//TODO: check if Skia is enabled before registering file types (also do at TMediaDisplay's Load etc. [else no errors are thrown, but nothing shows up])
+
 interface
   {$region 'Used units'}
   uses
@@ -36,7 +38,7 @@ interface
   {$REGION 'CONSTANTS'}
 
   const
-    FILTER_VECTOR_IMAGE_TITLE = 'Vector images (*.svg)';
+    FILTER_VECTOR_IMAGE_TITLE = 'Vector images (*.svg)'; //TODO: add .svgz (Gzipped SVG when MediaDisplay control adds such)
     FILTER_VECTOR_IMAGE_EXTS = '*' + EXT_SVG;
     FILTER_VECTOR_IMAGE = FILTER_VECTOR_IMAGE_TITLE + '|' + FILTER_VECTOR_IMAGE_EXTS;
 
@@ -44,8 +46,12 @@ interface
     FILTER_BITMAP_IMAGE_EXTS = '*' + EXT_PNG + ';*' + EXT_JPG + ';*' + EXT_JPEG;
     FILTER_BITMAP_IMAGE = FILTER_BITMAP_IMAGE_TITLE + '|' + FILTER_BITMAP_IMAGE_EXTS;
 
-    FILTER_IMAGE_TITLE = 'Images (*.svg, *.png, *.jpg, *.jpeg)';
-    FILTER_IMAGE_EXTS = FILTER_VECTOR_IMAGE_EXTS + ';' + FILTER_BITMAP_IMAGE_EXTS;
+    FILTER_ANIMATED_IMAGE_TITLE = 'Animated images (*.lottie, *.json, *.tgs, *.gif, *.webp)'; //TODO: should auto-construct the file extensions list for display
+    FILTER_ANIMATED_IMAGE_EXTS = '*' + EXT_LOTTIE + ';*' + EXT_LOTTIE_JSON + ';*' + EXT_TELEGRAM_STICKER + ';*' + EXT_GIF + ';*' + EXT_WEBP;
+    FILTER_ANIMATED_IMAGE = FILTER_ANIMATED_IMAGE_TITLE + '|' + FILTER_ANIMATED_IMAGE_EXTS;
+
+    FILTER_IMAGE_TITLE = 'Images (*.svg, *.png, *.jpg, *.jpeg, *.lottie, *.json, *.tgs, *.gif, *.webp)';
+    FILTER_IMAGE_EXTS = FILTER_VECTOR_IMAGE_EXTS + ';' + FILTER_BITMAP_IMAGE_EXTS + ';' + FILTER_ANIMATED_IMAGE_EXTS;
     FILTER_IMAGE = FILTER_IMAGE_TITLE + '|' + FILTER_IMAGE_EXTS;
 
   {$ENDREGION CONSTANTS}
@@ -90,8 +96,9 @@ interface
       {$region 'IStoreable'}
       function GetLoadFilesFilter: String; override;
       function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
-      function LoadSVG(const Stream: TStream): TObject; virtual;
+      function LoadSVG(const Stream: TStream; Const ContentFormat: String): TObject; virtual;
       function LoadBitmap(const Stream: TStream; Const ContentFormat: String): TObject; virtual;
+      function LoadAnimation(const Stream: TStream; Const ContentFormat: String): TObject; virtual;
       function Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject; overload; override;
       {$endregion}
 
@@ -150,22 +157,26 @@ implementation
     result := FILTER_IMAGE + '|' + //all images
               FILTER_VECTOR_IMAGE + '|' + //vector images only
               FILTER_BITMAP_IMAGE + '|' + //bitmap images only
+              FILTER_ANIMATED_IMAGE + '|' + //animated images only
               inherited; //filters defined by ancestor (e.g. for readcom files)
   end;
 
   function TImageStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
   begin //TODO: maybe honor CreateNew by making and returning a new instance if true
-    if (ContentFormat = EXT_SVG) then //load EXT_SVG
-      result := LoadSVG(Stream)
-    else if (ContentFormat = EXT_PNG) or (ContentFormat = EXT_JPG) or (ContentFormat = EXT_JPEG) then //load EXT_PNG, EXT_JPG, EXT_JPEG
+    //TODO: to make this simpler, could call TMediaDisplay.Load (which has almost identical logic) and catch exception to do result := inherited, but then descendents wouldn't be able to override behaviour by overriding LoadSVG/LoadBitmap/LoadAnimation methods (though they could override this one instead)
+    if TMediaDisplay.IsContentFormatSVG(ContentFormat) then //load EXT_SVG //TODO: support SVGZ
+      result := LoadSVG(Stream, ContentFormat)
+    else if TMediaDisplay.IsContentFormatAnimation(ContentFormat) then //since some bitmap formats (like GIF, WEBP) also support animation, better check first
+      result := LoadAnimation(Stream, ContentFormat)
+    else if TMediaDisplay.IsContentFormatBitmap(ContentFormat) then //load EXT_PNG, EXT_JPG, EXT_JPEG //TODO: should exclute EXT_BMP unless we're using Skia if it does it cross-platform
       result := LoadBitmap(Stream, ContentFormat)
     else
       result := inherited; //load formats supported by ancestor (e.g. EXT_READCOM)
   end;
 
-  function TImageStoryItem.LoadSVG(const Stream: TStream): TObject;
+  function TImageStoryItem.LoadSVG(const Stream: TStream; Const ContentFormat: String): TObject;
   begin
-    Glyph.LoadSVG(Stream);
+    Glyph.LoadSVG(Stream, ContentFormat);
     result := Self;
   end;
 
@@ -175,10 +186,16 @@ implementation
     result := Self;
   end;
 
+  function TImageStoryItem.LoadAnimation(const Stream: TStream; Const ContentFormat: String): TObject;
+  begin
+    Glyph.LoadAnimation(Stream, ContentFormat);
+    result := Self;
+  end;
+
   function TImageStoryItem.Load(const Clipboard: IFMXExtendedClipboardService; const CreateNew: Boolean = false): TObject;
   begin
     //check for Bitmap image
-    if Clipboard.HasImage then
+    if Clipboard.HasImage then //TODO: does SKIA4Delphi extend this too to support animated images?
     begin
       var BitmapSurface := Clipboard.GetImage;
       try
@@ -190,9 +207,10 @@ implementation
     end
 
     //check for SVG markup
-    else if Clipboard.HasText then
+    else if Clipboard.HasText then //TODO: should we support LOTTIE/LOTTIE_JSON through this one?
     begin
       var LText := TrimLeft(Clipboard.GetText); //Trimming since we may have pasted some SVG markup with extra spaces before and after
+
       if LText.StartsWith('<svg ') and LText.EndsWith('</svg>') then
       begin
         SVGText := LText;
@@ -299,6 +317,8 @@ implementation
 
   {$endregion}
 
+  //TODO: implement storage for animated images, most probably should do via an opaque TStoryItem.Content (array of byte) property (and reuse for saving everywhere [and keep old properties - update to store into Content - as non-storable for loading old serialized content])
+
   {$ENDREGION PROPERTIES}
 
   (*
@@ -309,6 +329,7 @@ implementation
     var tmp := SVGText;
     SVGText := '';
     SVGText := tmp; //recalculate bitmap from the SVG //TODO: not sure if the "tmp" step is needed, or if it recalculates the buffer at all (probably doesn't have the new size at this point?)
+    //SEE COMMENT AT SIZE CALCULATION IN TMEDIADISPLAY IN CASE IT'S RELATED. MAYBE ENDS UP WITH 0x0 CONTROL AND FOR SOME REASON THAT IS NOT ALLOWED IN FMX? (OR ANY SCALING/ZOOMING FUNCTIONS END UP DIVING WITH ZERO WIDTH OR HEIGHT AND FAIL?)
   end;
   *)
 
@@ -345,10 +366,19 @@ implementation
   {$endregion}
 
 initialization
-  StoryItemFactories.Add([EXT_SVG, EXT_PNG, EXT_JPG, EXT_JPEG], TImageStoryItemFactory.Create);
+  StoryItemFactories.Add([
+    //Vector images//
+    EXT_SVG, //TODO: Add SVGZ when TMediaDisplay supports it
+    //Bitmap images//
+    EXT_PNG, EXT_JPG, EXT_JPEG,
+    //Animated images//
+    EXT_LOTTIE, EXT_LOTTIE_JSON, EXT_TELEGRAM_STICKER, EXT_GIF, EXT_WEBP
+  ], TImageStoryItemFactory.Create);
+
   AddStoryItemFileFilter(FILTER_IMAGE_TITLE, FILTER_IMAGE_EXTS);
   AddStoryItemFileFilter(FILTER_VECTOR_IMAGE_TITLE, FILTER_VECTOR_IMAGE_EXTS);
   AddStoryItemFileFilter(FILTER_BITMAP_IMAGE_TITLE, FILTER_BITMAP_IMAGE_EXTS);
+  AddStoryItemFileFilter(FILTER_ANIMATED_IMAGE_TITLE, FILTER_ANIMATED_IMAGE_EXTS);
 
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
 
