@@ -197,6 +197,7 @@ implementation
     if (not FIsPlayOnce) or (not FPlayedOnce) then //equivalent to "if not (FIsPlayOnce and FPlayedOnce)"
       if Assigned(MediaPlayer) then
       begin
+        //TODO: add an optional PlayFromStart boolean parameter to TMediaPlayerEx.Play so that we don't need to call Rewind first (btw, if already playing should just do Rewind in that case, not stop, nor ignore the action)
         MediaPlayer.Rewind; //TODO: seems to need to move to start even when finished playing (maybe change MediaPlayerEx to do it automatically)
         MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
         FPlayedOnce := true;
