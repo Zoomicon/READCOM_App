@@ -34,27 +34,14 @@ interface
     TAudioStoryItem = class(TStoryItem, IAudioStoryItem, IStoryItem, IClipboardEnabled, IStoreable)
       MediaPlayer: TMediaPlayerEx;
 
-    //--- Methods ---
-    public
-      constructor Create(AOwner: TComponent); override;
-
-      {$region 'IStoreable'}
-      function GetLoadFilesFilter: String; override;
-      function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
-      function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload; override;
-      function LoadMP3(const Stream: TStream): TObject; virtual;
-      {$endregion}
-
-      {$region 'IPlayable'}
-      procedure Play;
-      procedure Pause;
-      procedure Stop;
-      {$endregion}
-
+    {$region '--- Fields ---'}
     protected
       FPlayedOnce: Boolean;
       FIsPlayOnce: Boolean;
+    {$endregion}
 
+    {$region '--- Methods ---'}
+    protected
       {DefaultSize}
       function GetDefaultSize: TSizeF; override;
 
@@ -84,20 +71,40 @@ interface
       function GetAudio: IMediaPlayer;
       procedure SetAudio(const Value: IMediaPlayer);
 
-    //--- Events ---
+    public
+      {$region 'Life-time management'}
+      constructor Create(AOwner: TComponent); override;
+      destructor Destroy; override;
+      {$endregion}
 
+      {$region 'IStoreable'}
+      function GetLoadFilesFilter: String; override;
+      function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
+      function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload; override;
+      function LoadMP3(const Stream: TStream): TObject; virtual;
+      {$endregion}
+
+      {$region 'IPlayable'}
+      procedure Play;
+      procedure Pause;
+      procedure Stop;
+      {$endregion}
+    {$endregion}
+
+    {$region '--- Events ---'}
     protected
       procedure MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single); override; //preferring overriden methods instead of event handlers that get stored with saved state
       procedure Tap(const Point:TPointF); override;
+    {$endregion}
 
-    //--- Properties ---
-
+    {$region '--- Properties ---'}
     published
       property Hidden default true; //set to true in overriden constructor
       property Muted: Boolean read IsMuted write SetMuted stored false; //shouldn't store this so that interacting with the story won't store it disabled
       property AutoPlaying: Boolean read IsAutoPlaying write SetAutoPlaying;
       property PlayOnce: Boolean read IsPlayOnce write SetPlayOnce;
       property Audio: IMediaPlayer read GetAudio write SetAudio stored false; //TODO: make the MediaPlayerEx a subcomponent and persist its content together with the AudioStoryItem's so that audio data are also persisted)
+    {$endregion}
     end;
 
     {$ENDREGION .......................................................................}
@@ -120,6 +127,8 @@ implementation
 
   {$REGION 'TAudioStoryItem'}
 
+  {$region 'Life-time management'}
+
   constructor TAudioStoryItem.Create(AOwner: TComponent);
   begin
     inherited;
@@ -135,6 +144,16 @@ implementation
 
     Hidden := true;
   end;
+
+  destructor TAudioStoryItem.Destroy;
+  begin
+    if Assigned(MediaPlayer) then
+      MediaPlayer.Stream := nil; //this also does MediaPlayer.Stop
+
+    inherited;
+  end;
+
+  {$endregion}
 
   {$region 'IStoreable'}
 
@@ -178,6 +197,7 @@ implementation
     if (not FIsPlayOnce) or (not FPlayedOnce) then //equivalent to "if not (FIsPlayOnce and FPlayedOnce)"
       if Assigned(MediaPlayer) then
       begin
+        MediaPlayer.Rewind; //TODO: seems to need to move to start even when finished playing (maybe change MediaPlayerEx to do it automatically)
         MediaPlayer.Play; //TODO: if Disabled don't play (play random child?)
         FPlayedOnce := true;
       end;

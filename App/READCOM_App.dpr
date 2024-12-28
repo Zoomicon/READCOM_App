@@ -13,7 +13,7 @@ Dependencies:
   - Zoomicon.Generics
   - Zoomicon.Helpers.RTL
   - Zoomicon.Helpers.FMX
-  - Zoomicon.Introspection.FMX
+  - Zoomicon.Introspection.FMX (also wraps Object-Debugger-for-Firemonkey)
   - Zoomicon.Manipulation.FMX
   - Zoomicon.Media.FMX
   - Zoomicon.ZUI.FMX

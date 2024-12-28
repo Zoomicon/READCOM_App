@@ -338,6 +338,7 @@ implementation
     Zoomicon.Helpers.RTL.StreamHelpers, //for TStream.ReadComponent
     Zoomicon.Helpers.RTL.StringsHelpers, //for TStrings.GetLines
     Zoomicon.Introspection.FMX.Debugging, //for Log
+    Zoomicon.Media.FMX.Models, //for EXT_XX constants
     //
     READCOM.Views.StoryItems.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
@@ -543,9 +544,12 @@ implementation
 
   procedure TStoryItem.PlayRandomAudioStoryItem;
   begin
-    var RandomAudioStoryItem := AudioStoryItems.GetRandom;
-    if RandomAudioStoryItem <> nil then
-      RandomAudioStoryItem.Play;
+    if not Assigned(FAudioStoryItems) then
+      exit;
+
+    var LRandomAudioStoryItem := FAudioStoryItems.GetRandom;
+    if Assigned(LRandomAudioStoryItem) then
+      LRandomAudioStoryItem.Play;
   end;
 
   {$region 'Z-order'}
@@ -735,13 +739,14 @@ implementation
         FActiveStoryItem.Active := false; //deactivate the previously active StoryItem
 
       FActiveStoryItem := Self;
+
+      PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
+      //PlayNextAudioStoryItem;
     end
     else //make inactive
       FActiveStoryItem := nil;
 
     ActiveChanged;
-
-    PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
   end;
 
   function TStoryItem.IsRoot: Boolean;
@@ -1361,6 +1366,11 @@ implementation
 
   procedure TStoryItem.MouseClick(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 
+    function HasUrlAction: Boolean;
+    begin
+      result := (FUrlAction <> '');
+    end;
+
     function HasActiveChildStoryItem: Boolean;
     begin
       if not Assigned(ActiveStoryItem) then exit(false); //no ActiveStoryItem
@@ -1398,20 +1408,28 @@ implementation
           TStoryItem(LObj.GetObject).Active := true //make CTRL or RIGHT clicked child the ActiveStoryItem
         else
           Options.ShowPopup; //if no child at this position show options popup
-      end;
+      end
+      else
+        PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
+        //PlayNextAudioStoryItem;
     end
 
     else //non-Edit mode
 
     begin
+      //TODO: should traverse down parents to find the nearest parent StoryItem in the containment chain and see if it's active or not, if not should ignore all mouse actions (not consume them)
       if (((ssCtrl in Shift) or (ssRight in Shift)) and //either Ctrl+LeftClick or just RightClick //TODO: this allows to bypass riddles, maybe remove? (however selecting from StructureView also allows to bypass a riddle check as done by ActivateNextStoryPoint, could keep as a feature)
           (HasActiveChildStoryItem or HasActiveSiblingStoryItem)) then //and (one of our children is the ActiveStoryItem or we're its Sibling)...
+        //TODO: does this bypass riddles (constrained navigation)? It shouldn't
         Active := true //...make us (the parent of the ActiveStoryItem) the Active one (so that we can go back to the parent level by right-clicking it without using the keyboard's ESC key)
       else
       begin
-        var LParent := ParentStoryItem;
-        if ((FUrlAction <> '')
-            and (Story.StoryMode <> TStoryMode.EditMode) //make sure we don't do UrlActions when editing a story
+        PlayRandomAudioStoryItem; //TODO: maybe should play AudioStoryItems in the order they exist in their parent StoryItem (but would need to remember last one played in that case which may be problematic if they are reordered etc.)
+        //PlayNextAudioStoryItem;
+
+        //var LParent := ParentStoryItem;
+        if (HasUrlAction
+            and (Story.StoryMode <> TStoryMode.EditMode) //make sure we don't do UrlActions when editing a story //should we use EditMode property instead? it doesn't seem to check StoryMode, but seems to store to local storable field
             {and //TODO: should have URLs clickable only for children of ActiveStoryItem (and for itself if it's the RootStoryItem maybe) //in non-EditMode should disable HitTest though at everything that isn't the current StoryItem or direct child of the ActiveStoryItem apart from the TextStoryItems maybe (could maybe just disble HitTest at all siblings of ActiveStoryItem and have everything under ActiveStoryItem HitTest-enabled)
             ((Assigned(LParent) and LParent.Active) or
             ((not Assigned(LParent)) and Active))}) then //only when ParentStoryItem is the ActiveStoryItem //assuming short-circuit evaluation //if no LParent then it's the RootStoryItem, allowing it to have URLAction too
@@ -1497,14 +1515,15 @@ implementation
     begin
       var LText := Trim(Clipboard.GetText); //Trimming since we may have pasted an indented object from a .readcom file or some SVG markup with extra spaces before and after
       if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem //TODO: add method to check if text contains object
-        FileExt := '.readcom'
+        FileExt := EXT_READCOM
       else if LText.StartsWith('<svg ') and LText.EndsWith('</svg>') then
-        FileExt := '.svg'
+        FileExt := EXT_SVG
       else
-        FileExt := '.txt'
+        FileExt := '.txt' //TODO: should maybe add EXT_TXT to Zoomicon.Media.FMX.Models unit (of respective BOSS package)
     end
     else if Clipboard.HasImage then
-      FileExt := '.png' //could set to any image file extension the app knows here, clipboard images are not really in PNG format
+      FileExt := EXT_PNG //could set to any image file extension the app knows here, clipboard images are not really in PNG format
+    //TODO: would be nice to also have a Clipboard.HasAudio (we'd set FileExt := EXT_MP3 then [or any sound ext], so that TAudioStoryItem gets instantiated to handle that clipboard content)
     else
       raise Exception.Create('Unknown Clipboard format');
 
@@ -1515,7 +1534,7 @@ implementation
         var StoryItemFactory := StoryItemFactories.Get(FileExt);
 
         var StoryItem: TStoryItem;
-        if Assigned(StoryItemFactory) then
+        if Assigned(StoryItemFactory) then //a FileExt that has a specific TStoryItem subclass assigned to it
         begin
           StoryItem := StoryItemFactory.New(Self).View as TStoryItem;
           StoryItem.Name := 'Clipboard' + IntToStr(Random(maxint)); //TODO: use a GUID
@@ -1820,7 +1839,7 @@ implementation
   begin
     if Clipboard.HasText then
     begin
-      var LText := TrimLeft(Clipboard.GetText); //Left-trimming since we may have pasted an indented object from a .readcom file
+      var LText := Trim(Clipboard.GetText); //Trimming since we may have pasted an indented object from a .readcom file
       if LText.StartsWith('object ') then //ignore if not Delphi serialization format (its text-based form), handle other text at descendents like TextStoryItem
         Exit(LoadFromString(LText, CreateNew)); //Create new object if we don't know from beforehand what exact type it is
     end;
