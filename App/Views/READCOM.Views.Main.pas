@@ -203,7 +203,7 @@ implementation
     Zoomicon.Helpers.RTL.ClassListHelpers, //for TClassList.Create(TClassArray)
     Zoomicon.Helpers.FMX.ActnList, //for SafeTextToShortcut
     Zoomicon.Helpers.FMX.Controls.ControlHelper, //for TControl.Orientation, TControl.FlipHorizontally, TControl.FlipVertically
-    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm, TApplication.OpenURL
+    Zoomicon.Helpers.FMX.Forms.ApplicationHelper, //for TApplication.Confirm, TApplication.OpenURL, IsURI
     Zoomicon.Helpers.FMX.Forms.FormHelper, //for TForm.Orientation
     Zoomicon.Helpers.FMX.Memo.MemoHelpers, //for TMemo.DisableFontSizeToFit
     Zoomicon.Introspection.FMX.Debugging, //for ToggleObjectDebuggerVisibility
