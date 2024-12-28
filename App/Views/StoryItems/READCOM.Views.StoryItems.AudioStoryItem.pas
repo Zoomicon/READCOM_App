@@ -380,6 +380,7 @@ implementation
 
 initialization
   StoryItemFactories.Add([EXT_MP3], TAudioStoryItemFactory.Create);
+
   AddStoryItemFileFilter(FILTER_AUDIO_TITLE, FILTER_AUDIO_EXTS);
 
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)

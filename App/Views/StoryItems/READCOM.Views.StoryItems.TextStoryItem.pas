@@ -519,6 +519,7 @@ implementation
 
 initialization
   StoryItemFactories.Add([EXT_TXT], TTextStoryItemFactory.Create);
+
   AddStoryItemFileFilter(FILTER_TEXT_TITLE, FILTER_TEXT_EXTS);
 
   RegisterSerializationClasses; //don't call Register here, it's called by the IDE automatically on a package installation (fails at runtime)
