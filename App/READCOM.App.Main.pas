@@ -5,8 +5,7 @@ unit READCOM.App.Main;
 
 interface
   uses
-    System.Math, //for Min
-    READCOM.Models.Stories; //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT
+    System.Math; //for Min
 
   procedure Main;
   procedure ShowHelp;
@@ -88,7 +87,7 @@ implementation
 
   procedure Main;
   begin
-    CheckSafeMode;
+    CheckSafeMode; //must do before Application.Initialize //this also configures Graphics settings (e.g. when SHIFT key isn't held down at startup, replaces FMX rendering engine with Skia, disables Skia rasterizer, uses Metal on OS-X/iOS, uses Vulkan on Windows/Android)
 
     Randomize; //initializes the built-in random number generator with a random value (obtained from the system clock)
 
