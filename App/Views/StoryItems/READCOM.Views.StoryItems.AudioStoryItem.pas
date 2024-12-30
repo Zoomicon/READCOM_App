@@ -149,6 +149,9 @@ implementation
     end;
 
     Hidden := true;
+
+    Size.Size := DefaultSize; //setting to default size
+    //Size.DefaultValue := DefaultSize; //TODO: should we set this? Maybe used to avoid storing the size when it's the default?
   end;
 
   destructor TAudioStoryItem.Destroy;
