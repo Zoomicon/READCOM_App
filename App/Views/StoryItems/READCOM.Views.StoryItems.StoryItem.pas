@@ -488,7 +488,7 @@ implementation
       if (ContentExt <> '') then
         Load(LContentStream, ContentExt); //will call overriden method (if any) when at descendant class
     finally
-      FreeAndNil(LBytesStream);
+      FreeAndNil(LContentStream);
     end;
 
     inherited;
