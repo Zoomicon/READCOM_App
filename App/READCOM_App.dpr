@@ -41,7 +41,6 @@ program READCOM_App;
   READCOM.Views.StoryItems.ImageStoryItem in 'Views\StoryItems\READCOM.Views.StoryItems.ImageStoryItem.pas' {ImageStoryItem: TFrame},
   READCOM.Views.StoryItems.AudioStoryItem in 'Views\StoryItems\READCOM.Views.StoryItems.AudioStoryItem.pas' {AudioStoryItem: TFrame},
   READCOM.Views.StoryItems.TextStoryItem in 'Views\StoryItems\READCOM.Views.StoryItems.TextStoryItem.pas' {TextStoryItem: TFrame},
-  READCOM.Views.StoryItems.StoryItemFactory in 'Views\StoryItems\READCOM.Views.StoryItems.StoryItemFactory.pas',
   READCOM.Views.Dialogs.About in 'Views\Dialogs\READCOM.Views.Dialogs.About.pas' {AboutFrame: TFrame},
   READCOM.Views.Dialogs.AllText in 'Views\Dialogs\READCOM.Views.Dialogs.AllText.pas' {AllTextFrame: TFrame},
   READCOM.Views.Prompts.Wait in 'Views\Prompts\READCOM.Views.Prompts.Wait.pas' {WaitFrame: TFrame},

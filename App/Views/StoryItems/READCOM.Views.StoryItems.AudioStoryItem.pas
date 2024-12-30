@@ -71,6 +71,9 @@ interface
       function GetAudio: IMediaPlayer;
       procedure SetAudio(const Value: IMediaPlayer);
 
+      {Options}
+      //function GetOptions: IStoryItemOptions; override; //TODO
+
     public
       {$region 'Life-time management'}
       constructor Create(AOwner: TComponent); override;
@@ -80,7 +83,6 @@ interface
       {$region 'IStoreable'}
       function GetLoadFilesFilter: String; override;
       function Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject; overload; override;
-      function Load(const Filepath: String; const CreateNew: Boolean = false): TObject; overload; override;
       function LoadMP3(const Stream: TStream): TObject; virtual;
       {$endregion}
 
@@ -121,7 +123,8 @@ interface
 
 implementation
   uses
-    READCOM.Views.StoryItems.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
+    Zoomicon.Helpers.RTL.StreamHelpers,//for TStream.ReadAllBytes
+    READCOM.Factories.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
 
   {$R *.fmx}
 
@@ -170,21 +173,15 @@ implementation
       result := inherited; //load EXT_READCOM
   end;
 
-  function TAudioStoryItem.Load(const Filepath: String; const CreateNew: Boolean = false): TObject;
-  begin
-    var FileExt := ExtractFileExt(Filepath);
-    if (FileExt = EXT_MP3) then
-    begin
-      MediaPlayer.Filename := Filepath;
-      result := Self;
-    end
-    else
-      result := inherited; //load EXT_READCOM
-  end;
-
   function TAudioStoryItem.LoadMP3(const Stream: TStream): TObject; //TODO: do we need to have this to persist audio in .readcom files?
   begin
     MediaPlayer.Stream := Stream;
+
+    //Store audio file data at Content property
+    Stream.Position := 0; //rewind the stream
+    Content := Stream.ReadAllBytes; //this will leave the stream positioned at its end
+    ContentExt := EXT_MP3;
+
     result := Self;
   end;
 

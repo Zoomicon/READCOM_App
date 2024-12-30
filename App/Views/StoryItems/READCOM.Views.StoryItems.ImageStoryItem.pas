@@ -62,23 +62,13 @@ interface
 
     TImageStoryItem = class abstract(TStoryItem, IImageStoryItem, IStoryItem, IClipboardEnabled, IStoreable)
     private
-      FDummyImage: TImage;
+      FDummyImage: TImage; //for compatibility with older saved content
 
     //--- Methods ---
 
     protected
-      function GetStoreBitmap: Boolean;
-
-      {$region 'Overrides'}
-
-      procedure Loaded; override;
-
-      {Options}
-      function GetOptions: IStoryItemOptions; override;
-
-      {$endregion}
-
       {Image}
+      function GetStoreBitmap: Boolean;
       function GetImage: TImage; virtual;
       procedure SetImage(const Value: TImage); overload; virtual;
       procedure SetImage(const Value: TBitmap); overload; virtual;
@@ -88,6 +78,10 @@ interface
       function GetSVGText: String;
       procedure SetSVGText(const Value: String);
 
+      {Options}
+      function GetOptions: IStoryItemOptions; override;
+
+      procedure Loaded; override;
       //procedure Resize; override; //TODO: remove (see comments in implementation)
 
     public
@@ -131,7 +125,7 @@ interface
 implementation
   uses
     READCOM.Views.Options.ImageStoryItemOptions, //for TImageStoryItemOptions
-    READCOM.Views.StoryItems.StoryItemFactory; //for StoryItemFactories, StoryItemAddFileFilter
+    READCOM.Factories.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
 
   {$R *.fmx}
 
@@ -231,7 +225,7 @@ implementation
   begin
     inherited;
 
-    if Assigned(FDummyImage) then
+    if Assigned(FDummyImage) then //TODO: is this related to the comment in GetImage regarding compatibility with older saved content?
     begin
       if Assigned(FDummyImage.Bitmap.Image) and (FDummyImage.Bitmap.Image.Width <> 0) and (FDummyImage.Bitmap.Height <> 0) then
         SetImage(FDummyImage); //this should copy the bitmap

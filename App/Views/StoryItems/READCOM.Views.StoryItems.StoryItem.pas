@@ -44,6 +44,8 @@ interface
 
     protected
       //FID: TGUID;
+      FContent: TBytes; //opaque content storage (dynamic array of bytes)
+      FContentExt: String;
       FStoryPoint: Boolean;
       FHidden: Boolean;
       FSnapping: Boolean;
@@ -77,7 +79,7 @@ interface
     protected
       class destructor Destroy;
 
-      //procedure Loaded; override;
+      procedure Loaded; override;
       //procedure Updated; override;
       procedure DoAddObject(const AObject: TFmxObject); override;
       procedure DoInsertObject(Index: Integer; const AObject: TFmxObject); override;
@@ -161,6 +163,14 @@ interface
       function GetPreviousSiblingStoryPoint: IStoryItem;
       function GetNextSiblingStoryPoint: IStoryItem;
 
+      {Content}
+      function GetContent: TBytes; virtual;
+      procedure SetContent(const Value: TBytes); virtual;
+
+      {ContentExt}
+      function GetContentExt: String; virtual;
+      procedure SetContentExt(const Value: String); virtual;
+
       {AllText}
       function GetAllText: TStrings;
       procedure SetAllText(const Value: TStrings);
@@ -209,6 +219,11 @@ interface
 
       {Options}
       function GetOptions: IStoryItemOptions; virtual;
+
+      {Serialization}
+      procedure DefineProperties(Filer: TFiler); override; //for persisting Content property's binary data
+      procedure ReadContent(Stream: TStream);
+      procedure WriteContent(Stream: TStream);
 
     public
       constructor Create(AOwner: TComponent); overload; override;
@@ -310,6 +325,8 @@ interface
       property StoryPoint: Boolean read IsStoryPoint write SetStoryPoint default DEFAULT_STORYPOINT;
       property PreviousStoryPoint: IStoryItem read GetPreviousStoryPoint stored false;
       property NextStoryPoint: IStoryItem read GetNextStoryPoint stored false;
+      property Content: TBytes read GetContent write SetContent stored false; //seems Delphi (at least till v12.2) doesn't stream TBytes, so serializing it via DefineProperties as "ContentBin" //TODO: defining as published instead of public in case a Property Editor is implemented in the future
+      property ContentExt: String read GetContentExt write SetContentExt; //default nil
       property AllText: TStrings read GetAllText write SetAllText stored false; //Note: used to replace Text at applicable items in StoryItem's whole subtree (to be used recursively) //Note: need to free returned object when done, isn't cached by the StoryItem
       property ForegroundColor: TAlphaColor read GetForegroundColor write SetForegroundColor default DEFAULT_FOREGROUND_COLOR;
       property BackgroundColor: TAlphaColor read GetBackgroundColor write SetBackgroundColor default DEFAULT_BACKGROUND_COLOR;
@@ -341,7 +358,7 @@ implementation
     Zoomicon.Introspection.FMX.Debugging, //for Log
     Zoomicon.Media.FMX.Models, //for EXT_XX constants
     //
-    READCOM.Views.StoryItems.StoryItemFactory, //for AddStoryItemFileFilter, StoryItemFileFilters
+    READCOM.Factories.StoryItemFactory, //for StoryItemFactories, AddStoryItemFileFilter, StoryItemFileFilters
     READCOM.Views.Options.StoryItemOptions; //for TStoryItemOptions
   {$endregion}
 
@@ -464,6 +481,19 @@ implementation
     inherited; //do last
   end;
 
+  procedure TStoryItem.Loaded;
+  begin
+    var LContentStream := TBytesStream.Create(Content);
+    try
+      if (ContentExt <> '') then
+        Load(LContentStream, ContentExt); //will call overriden method (if any) when at descendant class
+    finally
+      FreeAndNil(LBytesStream);
+    end;
+
+    inherited;
+  end;
+
   {$endregion}
 
   procedure TStoryItem.DoAddObject(const AObject: TFmxObject);
@@ -557,7 +587,7 @@ implementation
 
   function TStoryItem.GetBackIndex: Integer;
   begin
-    result := inherited;
+    Result := inherited;
     if Assigned(Background) and Background.Visible then
       inc(result); //reserve one more place at the bottom for Background
     if Assigned(Glyph) and Glyph.Visible then
@@ -628,7 +658,7 @@ implementation
 
   function TStoryItem.IsBorderVisible: Boolean;
   begin
-    result := Assigned(Border) and Border.Visible;
+    Result := Assigned(Border) and Border.Visible;
     //result := Assigned(Border) and Assigned(Border.Stroke); //TODO: allow to hide outline of Border subcomponent (maybe rename it to Background since it will also be used for fill)
   end;
 
@@ -650,7 +680,7 @@ implementation
 
   function TStoryItem.GetView: TControl;
   begin
-    result := Self;
+    Result := Self;
   end;
 
   {$endregion}
@@ -673,7 +703,7 @@ implementation
 
   function TStoryItem.GetStoryItems: TIStoryItemList;
   begin
-    result := FStoryItems;
+    Result := FStoryItems;
   end;
 
   procedure TStoryItem.SetStoryItems(const Value: TIStoryItemList);
@@ -688,7 +718,7 @@ implementation
 
   function TStoryItem.GetImageStoryItems: TIImageStoryItemList;
   begin
-    result := TObjectListEx<TControl>.GetAllInterface<IImageStoryItem>(Controls);
+    Result := TObjectListEx<TControl>.GetAllInterface<IImageStoryItem>(Controls);
   end;
 
   {$endregion}
@@ -697,7 +727,7 @@ implementation
 
   function TStoryItem.GetAudioStoryItems: TIAudioStoryItemList;
   begin
-    result := FAudioStoryItems;
+    Result := FAudioStoryItems;
   end;
 
   {$endregion}
@@ -706,7 +736,7 @@ implementation
 
   function TStoryItem.GetTextStoryItems: TITextStoryItemList;
   begin
-    result := TObjectListEx<TControl>.GetAllInterface<ITextStoryItem>(Controls);
+    Result := TObjectListEx<TControl>.GetAllInterface<ITextStoryItem>(Controls);
   end;
 
   {$endregion}
@@ -727,7 +757,7 @@ implementation
 
   function TStoryItem.IsActive: Boolean;
   begin
-    result := Assigned(FActiveStoryItem) and (FActiveStoryItem.View = Self);
+    Result := Assigned(FActiveStoryItem) and (FActiveStoryItem.View = Self);
   end;
 
   procedure TStoryItem.SetActive(const Value: Boolean);
@@ -752,7 +782,7 @@ implementation
 
   function TStoryItem.IsRoot: Boolean;
   begin
-    result := not Assigned(ParentStoryItem);
+    Result := not Assigned(ParentStoryItem);
   end;
 
   procedure TStoryItem.ActivateRootStoryItem;
@@ -820,7 +850,7 @@ implementation
 
   function TStoryItem.IsHome: Boolean;
   begin
-    result := Assigned(FHomeStoryItem) and (FHomeStoryItem.View = Self);
+    Result := Assigned(FHomeStoryItem) and (FHomeStoryItem.View = Self);
   end;
 
   procedure TStoryItem.SetHome(const Value: Boolean);
@@ -856,7 +886,7 @@ implementation
 
   function TStoryItem.IsStoryPoint: Boolean;
   begin
-    result := FStoryPoint;
+    Result := FStoryPoint;
   end;
 
   procedure TStoryItem.SetStoryPoint(const Value: Boolean);
@@ -892,7 +922,7 @@ implementation
       exit(ancestorStoryPoint);
 
     //Loop in siblings (checking next siblings from the end)
-    result := parentItem.GetLastChildStoryPoint; //this may end up returning Self
+    Result := parentItem.GetLastChildStoryPoint; //this may end up returning Self
   end;
 
   function TStoryItem.GetNextStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
@@ -919,7 +949,7 @@ implementation
       exit(ancestorStoryPoint); //TODO: this won't work since if we go up then Next will bring us back inside
 
     //Loop in siblings (checking previous siblings from the start)
-    result := parentItem.GetFirstChildStoryPoint; //this may end up returning Self
+    Result := parentItem.GetFirstChildStoryPoint; //this may end up returning Self
   end;
 
   function TStoryItem.GetAncestorStoryPoint: IStoryItem;
@@ -944,7 +974,7 @@ implementation
         exit(child);
     end;
 
-    result := nil;
+    Result := nil;
   end;
 
   function TStoryItem.GetLastChildStoryPoint: IStoryItem;
@@ -958,7 +988,7 @@ implementation
         exit(child);
     end;
 
-    result := nil;
+    Result := nil;
   end;
 
   function TStoryItem.GetPreviousSiblingStoryPoint: IStoryItem;
@@ -976,7 +1006,7 @@ implementation
         exit(sibling);
     end;
 
-    result := nil;
+    Result := nil;
   end;
 
   function TStoryItem.GetNextSiblingStoryPoint: IStoryItem;
@@ -994,7 +1024,35 @@ implementation
         exit(sibling);
     end;
 
-    result := nil;
+    Result := nil;
+  end;
+
+  {$endregion}
+
+  {$region 'Content'}
+
+  function TStoryItem.GetContent: TBytes;
+  begin
+    Result := FContent;
+  end;
+
+  procedure TStoryItem.SetContent(const Value: TBytes); //Note: descendents should override this method to act upon change of content
+  begin
+    FContent := Value;
+  end;
+
+  {$endregion}
+
+  {$region 'ContentExt'}
+
+  function TStoryItem.GetContentExt: String;
+  begin
+    Result := FContentExt;
+  end;
+
+  procedure TStoryItem.SetContentExt(const Value: String);
+  begin
+    FContentExt := Value;
   end;
 
   {$endregion}
@@ -1003,7 +1061,7 @@ implementation
 
   function TStoryItem.GetAllText: TStrings; //Note: the output order of the strings may look strange, it's not in StoryPoint-related groups
   begin
-    result := TStringList.Create(false); //set to not own objects //Note: caller will need to free this TStringList
+    Result := TStringList.Create(false); //set to not own objects //Note: caller will need to free this TStringList
 
     //Append our own text
     var LTextStoryItem: ITextStoryItem;
@@ -1061,7 +1119,7 @@ implementation
 
   function TStoryItem.GetForegroundColor: TAlphaColor;
   begin
-    result := Glyph.ForegroundColor;
+    Result := Glyph.ForegroundColor;
   end;
 
   procedure TStoryItem.SetForegroundColor(const Value: TAlphaColor);
@@ -1076,9 +1134,9 @@ implementation
   function TStoryItem.GetBackgroundColor: TAlphaColor;
   begin
     if Assigned(Background) then
-      result := Background.Fill.Color
+      Result := Background.Fill.Color
     else
-      result := TAlphaColorRec.Null;
+      Result := TAlphaColorRec.Null;
   end;
 
   procedure TStoryItem.SetBackgroundColor(const Value: TAlphaColor);
@@ -1097,7 +1155,7 @@ implementation
 
   function TStoryItem.IsFlippedHorizontally: Boolean;
   begin
-    result := (Scale.X < 0);
+    Result := (Scale.X < 0);
   end;
 
   procedure TStoryItem.SetFlippedHorizontally(const Value: Boolean);
@@ -1112,7 +1170,7 @@ implementation
 
   function TStoryItem.IsFlippedVertically: Boolean;
   begin
-    result := (Scale.Y < 0);
+    Result := (Scale.Y < 0);
   end;
 
   procedure TStoryItem.SetFlippedVertically(const Value: Boolean);
@@ -1127,7 +1185,7 @@ implementation
 
   function TStoryItem.IsHidden: Boolean;
   begin
-    result := FHidden;
+    Result := FHidden;
   end;
 
   procedure TStoryItem.SetHidden(const Value: Boolean);
@@ -1142,7 +1200,7 @@ implementation
 
   function TStoryItem.IsSnapping: Boolean;
   begin
-    result := FSnapping;
+    Result := FSnapping;
   end;
 
   procedure TStoryItem.SetSnapping(const Value: Boolean);
@@ -1177,7 +1235,7 @@ implementation
 
   function TStoryItem.IsAnchored: Boolean;
   begin
-    result := Locked;
+    Result := Locked;
   end;
 
   procedure TStoryItem.SetAnchored(const Value: Boolean);
@@ -1192,7 +1250,7 @@ implementation
 
   function TStoryItem.GetUrlAction: String;
   begin
-    result := FUrlAction;
+    Result := FUrlAction;
   end;
 
   procedure TStoryItem.SetUrlAction(const Value: String);
@@ -1207,7 +1265,7 @@ implementation
 
   function TStoryItem.GetTags: String;
   begin
-    result := TagString;
+    Result := TagString;
   end;
 
   procedure TStoryItem.SetTags(const Value: String);
@@ -1219,11 +1277,11 @@ implementation
 
     function GetTagged(const AnchoredValue: Boolean): TIStoryItemList;
     begin
-      result := StoryItems.GetAll(
+      Result := StoryItems.GetAll(
         function(StoryItem: IStoryItem): Boolean
         begin
           with StoryItem do
-            result := (Tags <> '') and (Anchored = AnchoredValue);
+            Result := (Tags <> '') and (Anchored = AnchoredValue);
         end
       );
     end;
@@ -1238,15 +1296,15 @@ implementation
       TargetsWithTags := GetTagged(true); //anchored with tags (targets)
       Log('TargetsWithTags.Count=%d', [TargetsWithTags.Count]);
 
-      result :=
+      Result :=
         TargetsWithTags.All( //looping over all targets, not over moveables since we'll remove every matched moveables (a moveable can be matched to a single target, but a target can be matched to multiple moveables)
           function(LTarget: IStoryItem): Boolean
             function CheckMatchingTags(const Tags1, Tags2: String): Boolean;
             begin
-              result := (Tags1 = Tags2); //TODO: maybe do more complex matching in the future, allowing lists of tags where a Target can define multiple Moveable item Tags it accepts and a Moveable can have multiple identities defined at its Tags
+              Result := (Tags1 = Tags2); //TODO: maybe do more complex matching in the future, allowing lists of tags where a Target can define multiple Moveable item Tags it accepts and a Moveable can have multiple identities defined at its Tags
             end;
           begin
-            result := false; //consider a Target unmatched initially //Note: must set this here outside of the "for" loop, since no MoveablesWithTags may have been configured (by author's mistake) - else compiler will show warning that function may have undefined result
+            Result := false; //consider a Target unmatched initially //Note: must set this here outside of the "for" loop, since no MoveablesWithTags may have been configured (by author's mistake) - else compiler will show warning that function may have undefined result
             for var i := MoveablesWithTags.Count - 1 downto 0 do //count backwards since we'll remove each matched moveable //TODO: add Remove function to Generics to do this item removal (counting backwards) using an optional (else remove all) predicate
             begin
               var LMoveable := MoveablesWithTags[i];
@@ -1255,7 +1313,7 @@ implementation
               begin
                 MoveablesWithTags.RemoveItem(LMoveable, TDirection.FromEnd);
                 Log('Tag match: "%s" and "%s"', [LTarget.Tags, LMoveable.Tags]);
-                result := true; //a Target has to be matched by at least one Moveable (but need to check and remove all from the MoveablesWithTags list to see when finished if any moveables have been left unmatched to any targets)
+                Result := true; //a Target has to be matched by at least one Moveable (but need to check and remove all from the MoveablesWithTags list to see when finished if any moveables have been left unmatched to any targets)
               end;
             end;
           end
@@ -1275,7 +1333,7 @@ implementation
 
   function TStoryItem.GetTargetsVisible: Boolean;
   begin
-    result := FTargetsVisible;
+    Result := FTargetsVisible;
   end;
 
   procedure TStoryItem.SetTargetsVisible(const Value: Boolean);
@@ -1296,7 +1354,34 @@ implementation
       FOptions.StoryItem := Self;
       end;
 
-    result := FOptions;
+    Result := FOptions;
+  end;
+
+  {$endregion}
+
+  {$region 'Serialization'}
+
+  //based on https://stackoverflow.com/a/60978501/903783 (but without the PByte casting and pointer dereferencing)
+
+  procedure TStoryItem.DefineProperties(Filer: TFiler);
+  begin
+    inherited DefineProperties(Filer);
+    Filer.DefineBinaryProperty('ContentBin', ReadContent, WriteContent, Length(FContent) > 0); //assuming "ContentBin" is not a published property (to avoid any naming conflicts). It should be safe if it's "public" instead of "published", but if one wants to have a property editor in the IDE they need it published, so adding suffix "Bin" and marking the published property "stored false" is safest
+  end;
+
+  procedure TStoryItem.ReadContent(Stream: TStream);
+  var
+    BinSize: Integer;
+  begin
+    BinSize := Stream.Size;
+    SetLength(FContent, BinSize);
+    if BinSize > 0 then
+      Stream.ReadBuffer(FContent, BinSize);
+  end;
+
+  procedure TStoryItem.WriteContent(Stream: TStream);
+  begin
+    Stream.WriteBuffer(FContent, Length(FContent));
   end;
 
   {$endregion}
@@ -1369,7 +1454,7 @@ implementation
 
     function HasUrlAction: Boolean;
     begin
-      result := (FUrlAction <> '');
+      Result := (FUrlAction <> '');
     end;
 
     function HasActiveChildStoryItem: Boolean;
@@ -1379,7 +1464,7 @@ implementation
       var LActiveStoryItemParent := ActiveStoryItem.ParentStoryItem;
       if not Assigned(LActiveStoryItemParent) then exit(false); //ActiveStoryItem is the RootStoryItem, so we can't be its ParentStoryItem
 
-      result := (LActiveStoryItemParent.View = Self); //check if we're the parent of the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
+      Result := (LActiveStoryItemParent.View = Self); //check if we're the parent of the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
     end;
 
     function HasActiveSiblingStoryItem: Boolean;
@@ -1392,7 +1477,7 @@ implementation
       var LParent := ParentStoryItem;
       if not Assigned(LParent) then exit(false); //we're the RootStoryItem, so we can't have Siblings
 
-      result := (LActiveStoryItemParent.View = LParent.View); //check if we have the same parent as the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
+      Result := (LActiveStoryItemParent.View = LParent.View); //check if we have the same parent as the ActiveStoryItem //Note: we can't compare the IStoryPoint interfaces directly, must compare the TStoryPoint objects they wrap (the views)
     end;
 
   begin
@@ -1597,7 +1682,7 @@ implementation
 
   function RemoveNonAllowedIdentifierChars(const s: String): String; //TODO: move to some utility library?
   begin
-    result := '';
+    Result := '';
 
     var count := s.Length;
     if (count <> 0) then
@@ -1605,11 +1690,11 @@ implementation
       begin
         var c := s[i];
         if IsValidIdent(result + c) then //keep only characters that don't cause the identifier to be invalid //TODO: this seems to allow Unicode alphabetic characters instead of just English ones (need to somehow convert maybe to English)
-          result := result + c;
+          Result := result + c;
       end;
 
     if (result.Length = 0) then
-      result := 'Item'; //NOTE: don't localize
+      Result := 'Item'; //NOTE: don't localize
   end;
 
   {$region 'Add'}
@@ -1635,7 +1720,7 @@ implementation
     listExt.Delimiter := ','; //There's no way to use ', ' (aka a String separator instead of a char, to also have space after comma), could concatenate with for loop instead, but the entry is long anyway, so skip the extra spaces
     listFilters.Insert(0, 'READ-COM StoryItems, Images, Audio, Text (' + listExt.DelimitedText + ')'); //TODO: ideally the key should only contain the text (not *.xx too) so that we could concatenate the names (even if in singular) instead of hard-coding known type names here //Seems if we don't add the file extensions in parentheses in the name, Delphi or Win11 adds them with ";" format to the text of the entry (so it would be better if we auto-add them with ", ")
 
-    result := listFilters.DelimitedText;
+    Result := listFilters.DelimitedText;
 
     FreeAndNil(listExt);
     FreeAndNil(listFilters);
@@ -1728,7 +1813,7 @@ implementation
 
   function TStoryItem.GetLoadFilesFilter: String;
   begin
-    result := FILTER_READCOM;
+    Result := FILTER_READCOM;
   end;
 
   class function TStoryItem.LoadNew(const Stream: TStream; const ContentFormat: String): TStoryItem;
@@ -1736,7 +1821,7 @@ implementation
     var tempStoryItem: TStoryItem := nil; //local vars not auto-initialized, safeguarding FreeAndNil
     try
       tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
-      result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
+      Result := TStoryItem(tempStoryItem.Load(Stream, ContentFormat, True)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
     finally
       FreeAndNil(tempStoryItem); //releasing the tempStoryItem
     end;
@@ -1747,7 +1832,7 @@ implementation
     var tempStoryItem: TStoryItem := nil; //local vars not auto-initialized, safeguarding FreeAndNil
     try
       tempStoryItem := TStoryItem.Create(nil); //creating since we need an instance to call Load //TODO: add a class
-      result := TStoryItem(tempStoryItem.Load(Filepath, true)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
+      Result := TStoryItem(tempStoryItem.Load(Filepath, true)); //passing True to load new TStoryItem descendent instance based on serialization information in the stream
     finally
       FreeAndNil(tempStoryItem); //releasing the tempStoryItem
     end;
@@ -1765,7 +1850,7 @@ implementation
       ObjectTextToBinary(StrStream, BinStream); //may throw exception here
 
       BinStream.Seek(0, soFromBeginning); //position back to start of stream
-      result := LoadReadComBin(BinStream, CreateNew).View;
+      Result := LoadReadComBin(BinStream, CreateNew).View;
     finally
       //freeing (will check internally if not nil) in reverse order
       FreeAndNil(BinStream);
@@ -1778,7 +1863,7 @@ implementation
     var reader: TStreamReader := nil; //local vars not auto-initialized, safeguarding FreeAndNil
     try
       reader := TStreamReader.Create(Stream);
-      result := TStoryItem(LoadFromString(reader.ReadToEnd, CreateNew)) as IStoryItem;
+      Result := TStoryItem(LoadFromString(reader.ReadToEnd, CreateNew)) as IStoryItem;
     finally
       FreeAndNil(reader); //the reader doesn't own the stream by default, so this won't close the stream
     end;
@@ -1809,7 +1894,7 @@ implementation
 
     var obj := Stream.ReadComponent(Instance, ReaderError);
     if obj is TStoryItem then //at current implementation only supporting TStoryItems
-      result := obj as IStoryItem //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties, but that won't work by itself (so passing ErrorHandler here too via TStreamErrorHelper.CreateComponent method) if "CreateNew=true" is used, since we pass nil in that case so ReadState is called on TComponent, not on TStoryItem
+      Result := obj as IStoryItem //note that we have overriden ReadState so that it can set a custom Reader error handler to ignore specific deprecated properties, but that won't work by itself (so passing ErrorHandler here too via TStreamErrorHelper.CreateComponent method) if "CreateNew=true" is used, since we pass nil in that case so ReadState is called on TComponent, not on TStoryItem
     else
     begin
       FreeAndNil(obj);
@@ -1820,7 +1905,7 @@ implementation
   function TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
   begin
     if ContentFormat = EXT_READCOM then
-      result := LoadReadCom(Stream, CreateNew).View
+      Result := LoadReadCom(Stream, CreateNew).View
     else
       raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);
   end;
@@ -1830,7 +1915,7 @@ implementation
     var InputFileStream: TFileStream := nil; //local vars not auto-initialized, safeguarding FreeAndNil
     try
       InputFileStream := TFileStream.Create(Filepath, fmOpenRead {or fmShareDenyNone}); //TODO: fmShareDenyNote probably needed for Android
-      result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
+      Result := Load(InputFileStream, ExtractFileExt(Filepath).ToLowerInvariant, CreateNew);
     finally
       FreeAndNil(InputFileStream);
     end;
@@ -1852,7 +1937,7 @@ implementation
       //  LoadFromURI(LText); //TODO: see code from MainForm (and move here with callbacks if needed for its custom processing)
     end;
 
-    result := nil;
+    Result := nil;
   end;
 
   {$endregion}
@@ -1861,7 +1946,7 @@ implementation
 
   function TStoryItem.GetSaveFilesFilter: String;
   begin
-    result := FILTER_READCOM + '|' +
+    Result := FILTER_READCOM + '|' +
               FILTER_HTML;
   end;
 

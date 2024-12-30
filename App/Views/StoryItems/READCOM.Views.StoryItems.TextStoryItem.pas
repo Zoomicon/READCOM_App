@@ -162,7 +162,7 @@ implementation
     Zoomicon.Introspection.FMX.Debugging, //for Log
     //
     READCOM.Views.Options.TextStoryItemOptions, //for TTextStoryItemOptions
-    READCOM.Views.StoryItems.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
+    READCOM.Factories.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
     {$endregion}
 
   {$R *.fmx}

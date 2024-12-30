@@ -158,7 +158,7 @@
         <Icon_MainIcon>READCOM_App\LaunchGen\Icon_MainIcon.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>READCOM_App</SanitizedProjectName>
-        <DCC_UnitSearchPath>modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.helpers.rtl.delphi\Source;modules\zoomicon.helpers.fmx.delphi\Source;modules\zoomicon.introspection.fmx.delphi\Source;modules\zoomicon.manipulation.fmx.delphi\Source;modules\zoomicon.media.fmx.delphi\Source;modules\zoomicon.zui.fmx.delphi\Source;modules\readcom.core.delphi\Source\Models;modules\Object-Debugger-for-FireMonkey;modules\Object-Debugger-for-FireMonkey\DemoDesktop;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.helpers.rtl.delphi\Source;modules\zoomicon.helpers.fmx.delphi\Source;modules\zoomicon.introspection.fmx.delphi\Source;modules\zoomicon.manipulation.fmx.delphi\Source;modules\zoomicon.media.fmx.delphi\Source;modules\zoomicon.zui.fmx.delphi\Source;modules\readcom.core.delphi\Source\Models;modules\readcom.core.delphi\Source\Factories;modules\Object-Debugger-for-FireMonkey;modules\Object-Debugger-for-FireMonkey\DemoDesktop;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_Define>SKIA;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android64)'!=''">
@@ -476,7 +476,6 @@
         </DCCReference>
         <DCCReference Include="modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas">
             <Form>ModalFrame</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="READCOM.App.Icons.pas">
@@ -515,7 +514,6 @@
             <Form>TextStoryItem</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Views\StoryItems\READCOM.Views.StoryItems.StoryItemFactory.pas"/>
         <DCCReference Include="Views\Dialogs\READCOM.Views.Dialogs.About.pas">
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
