@@ -481,14 +481,20 @@ implementation
     inherited; //do last
   end;
 
-  procedure TStoryItem.Loaded;
+  procedure TStoryItem.Loaded; //this gets called when component has fully deserialized
   begin
-    var LContentStream := TBytesStream.Create(Content);
-    try
-      if (ContentExt <> '') then
-        Load(LContentStream, ContentExt); //will call overriden method (if any) when at descendant class
-    finally
-      FreeAndNil(LContentStream);
+    var LContent := Content;
+    if Assigned(LContent) then //if there are saved Content data
+    begin
+      var LContentStream := TBytesStream.Create(LContent);
+      try
+        if (ContentExt <> '') then
+          Load(LContentStream, ContentExt); //will call overriden method (if any) when at descendant class
+          //Note: this should result in Content property being set again by descendent (if they want to store via the Content property)...
+          //...we shouldn't store the Content at TStoryItem.Load(Stream) base implementation, since descendents may opt to use other property for more efficient storage instead of keeping the whole assigned file with its headers, metadata etc.
+      finally
+        FreeAndNil(LContentStream);
+      end;
     end;
 
     inherited;
@@ -1904,7 +1910,7 @@ implementation
 
   function TStoryItem.Load(const Stream: TStream; const ContentFormat: String = EXT_READCOM; const CreateNew: Boolean = false): TObject;
   begin
-    if ContentFormat = EXT_READCOM then
+    if ContentFormat = EXT_READCOM then //descendents should override this method to handle more ContentFormat (file extensions) values and call inherited if there's any they can't handle (e.g. to handle EXT_READCOM)
       Result := LoadReadCom(Stream, CreateNew).View
     else
       raise EInvalidOperation.CreateFmt(MSG_CONTENT_FORMAT_NOT_SUPPORTED, [ContentFormat]);

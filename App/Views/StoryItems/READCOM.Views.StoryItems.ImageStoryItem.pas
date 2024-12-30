@@ -123,9 +123,13 @@ interface
     {$ENDREGION}
 
 implementation
+  {$region 'Used units'}
   uses
+    Zoomicon.Helpers.RTL.StreamHelpers,//for TStream.ReadAllBytes
+    //
     READCOM.Views.Options.ImageStoryItemOptions, //for TImageStoryItemOptions
     READCOM.Factories.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
+  {$endregion}
 
   {$R *.fmx}
 
@@ -183,6 +187,12 @@ implementation
   function TImageStoryItem.LoadAnimation(const Stream: TStream; Const ContentFormat: String): TObject;
   begin
     Glyph.LoadAnimation(Stream, ContentFormat);
+
+    //Store audio file data at Content property
+    Stream.Position := 0; //rewind the stream
+    Content := Stream.ReadAllBytes; //this will leave the stream positioned at its end
+    ContentExt := ContentFormat;
+
     result := Self;
   end;
 

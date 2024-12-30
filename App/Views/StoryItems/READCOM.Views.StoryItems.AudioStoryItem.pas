@@ -122,9 +122,12 @@ interface
     procedure Register;
 
 implementation
+  {$region 'Used units'}
   uses
     Zoomicon.Helpers.RTL.StreamHelpers,//for TStream.ReadAllBytes
+    //
     READCOM.Factories.StoryItemFactory; //for StoryItemFactories, AddStoryItemFileFilter
+  {$endregion}
 
   {$R *.fmx}
 
