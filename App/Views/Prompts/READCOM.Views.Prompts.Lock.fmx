@@ -1,8 +1,0 @@
-inherited LockFrame: TLockFrame
-  inherited rectBackground: TRectangle
-    inherited GlyphIcon: TGlyph
-      ImageIndex = 32
-      Images = Icons.SVGIconImageList
-    end
-  end
-end

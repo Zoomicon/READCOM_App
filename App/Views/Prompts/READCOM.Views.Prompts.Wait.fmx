@@ -1,8 +1,0 @@
-inherited WaitFrame: TWaitFrame
-  inherited rectBackground: TRectangle
-    inherited GlyphIcon: TGlyph
-      ImageIndex = 31
-      Images = Icons.SVGIconImageList
-    end
-  end
-end

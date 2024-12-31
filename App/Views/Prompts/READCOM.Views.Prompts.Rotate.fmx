@@ -1,8 +1,0 @@
-inherited RotateFrame: TRotateFrame
-  inherited rectBackground: TRectangle
-    inherited GlyphIcon: TGlyph
-      ImageIndex = 35
-      Images = Icons.SVGIconImageList
-    end
-  end
-end

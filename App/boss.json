@@ -23,7 +23,7 @@
     "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=3.0.0",
     "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=3.10.0",
     "github.com/zoomicon/zoomicon.zui.fmx.delphi": ">=3.0.0",
-    "github.com/zoomicon/readcom.core.delphi": ">=3.3.0"
+    "github.com/zoomicon/readcom.core.delphi": ">=3.7.0"
   }
 
 }

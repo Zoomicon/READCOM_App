@@ -175,21 +175,22 @@ implementation
 
     procedure InitMemo;
     begin
-      with Memo do
-      begin
-        Stored := false; //don't store state, should use state from designed .FMX resource
-        SetSubComponent(true);
-        Align := TAlignLayout.Contents;
-        SetMemoZOrder;
-        WordWrap := true;
-        TextAlign := DEFAULT_HORZ_ALIGN;
-        DisableMouseWheel := true;
-        EnabledScroll := false;
-        ShowScrollBars := false;
-        ReadOnly := not DEFAULT_EDITABLE;
-        StyledSettings := []; //don't overload any TextSetting with those from Style
-        OnChangeTracking := MemoChangeTracking;
-      end;
+      if Assigned(Memo) then
+        with Memo do
+        begin
+          Stored := false; //don't store state, should use state from designed .FMX resource
+          SetSubComponent(true);
+          Align := TAlignLayout.Contents;
+          SetMemoZOrder;
+          WordWrap := true;
+          TextAlign := DEFAULT_HORZ_ALIGN;
+          DisableMouseWheel := true;
+          EnabledScroll := false;
+          ShowScrollBars := false;
+          ReadOnly := not DEFAULT_EDITABLE;
+          StyledSettings := []; //don't overload any TextSetting with those from Style
+          OnChangeTracking := MemoChangeTracking;
+        end;
     end;
 
   begin
@@ -342,7 +343,8 @@ implementation
 
   procedure TTextStoryItem.SetText(const Value: String);
   begin
-    Memo.Text := Value;
+    if Assigned(Memo) then
+      Memo.Text := Value;
   end;
 
   {$endregion}
