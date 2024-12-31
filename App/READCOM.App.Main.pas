@@ -1,4 +1,4 @@
-//Description: READ-COM App startup
+//Description: App startup
 //Author: George Birbilis (http://zoomicon.com)
 
 unit READCOM.App.Main;

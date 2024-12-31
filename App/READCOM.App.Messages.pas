@@ -1,3 +1,6 @@
+//Description: Global constants and variables
+//Author: George Birbilis (http://zoomicon.com)
+
 unit READCOM.App.Messages;
 
 interface
