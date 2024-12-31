@@ -80,3 +80,5 @@ modules/
 *.pkg
 *.ipa
 /App/*.old
+/App/Win32/READCOM_App_Windows.zip
+/App/Win64/READCOM_App_Windows.x64.zip

@@ -1,29 +1,29 @@
 {
-    "name": "READCOM_App",
+  "name": "READCOM_App",
 
-    "description": "READ-COM - Reading Communities app",
+  "description": "READ-COM - Reading Communities app",
 
-    "version": "0.7.6",
+  "version": "0.7.6",
 
-    "homepage": "https://github.com/Zoomicon/READCOM_App",
+  "homepage": "https://github.com/Zoomicon/READCOM_App",
 
-    "main": "READCOM_App.dproj",
-    "mainsrc": ".",
+  "main": "READCOM_App.dproj",
+  "mainsrc": ".",
 
-    "projects": [
-        "READCOM_App.dproj"
-    ],
+  "projects": [
+    "READCOM_App.dproj"
+  ],
 
-    "dependencies": {
-        "github.com/zoomicon/zoomicon.generics.delphi": ">=3.0.0",
-        "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.1.0",
-        "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=3.2.0",
-        "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=3.2.0",
-            "github.com/birbilis/object-debugger-for-firemonkey": ">=6.1.0",
-        "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=3.0.0",
-        "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=3.10.0",
-        "github.com/zoomicon/zoomicon.zui.fmx.delphi": ">=3.0.0",
-        "github.com/zoomicon/readcom.core.delphi": ">=3.3.0"
-    }
+  "dependencies": {
+    "github.com/zoomicon/zoomicon.generics.delphi": ">=3.0.0",
+    "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.1.0",
+    "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=3.2.0",
+    "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=3.3.0",
+      "github.com/birbilis/object-debugger-for-firemonkey": ">=6.1.0",
+    "github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=3.0.0",
+    "github.com/zoomicon/zoomicon.media.fmx.delphi": ">=3.10.0",
+    "github.com/zoomicon/zoomicon.zui.fmx.delphi": ">=3.0.0",
+    "github.com/zoomicon/readcom.core.delphi": ">=3.3.0"
+  }
 
 }
