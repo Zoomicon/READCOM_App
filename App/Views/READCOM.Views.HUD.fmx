@@ -45,7 +45,7 @@ object StoryHUD: TStoryHUD
       object btnNew: TSpeedButton
         Action = actionNew
         Images = Icons.SVGIconImageList
-        ImageIndex = 24
+        ImageIndex = 9
         Margins.Left = 3.000000000000000000
         Margins.Top = 3.000000000000000000
         Margins.Right = 3.000000000000000000
@@ -660,9 +660,9 @@ object StoryHUD: TStoryHUD
       Hint = 
         'Load Default Story'#13#13'Clears current contents and loads the Defaul' +
         't Story'
-      ImageIndex = 24
+      ImageIndex = 9
       ShortCut = 16462
-      ImageIndex = 24
+      ImageIndex = 9
     end
     object actionLoad: TAction
       Category = 'File'
