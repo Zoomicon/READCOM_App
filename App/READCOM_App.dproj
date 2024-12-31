@@ -526,11 +526,11 @@
             <Form>ModalFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="READCOM.App.Icons.pas">
+        <DCCReference Include="READCOM.Resources.Icons.pas">
             <Form>Icons</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="READCOM.App.Themes.pas">
+        <DCCReference Include="READCOM.Resources.Themes.pas">
             <Form>Themes</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>

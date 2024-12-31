@@ -20,7 +20,7 @@ interface
     FMX.MultiView, SubjectStand, FrameStand,
     //
     READCOM.Views.Dialogs.About, //for TAboutFrame
-    READCOM.App.Icons; //for Icons.SVGIconImageList
+    READCOM.Resources.Icons; //for Icons.SVGIconImageList
   {$endregion}
 
   type

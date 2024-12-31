@@ -1,4 +1,4 @@
-unit READCOM.App.Icons;
+unit READCOM.Resources.Icons;
 
 interface
 

@@ -15,7 +15,7 @@ interface
     //
     Zoomicon.Media.FMX.ModalFrame, //for TModalFrame
     Zoomicon.Media.FMX.ClickableGlyph, //for TClickableGlyph
-    READCOM.App.Icons; //for Icons.SVGIconImageList
+    READCOM.Resources.Icons; //for Icons.SVGIconImageList
   {$endregion}
 
   type

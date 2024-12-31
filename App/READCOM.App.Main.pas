@@ -32,8 +32,8 @@ implementation
     //
     READCOM.Models, //for DEFAULT_THUMB_WIDTH, DEFAULT_THUMB_HEIGHT, DEFAULT_HTML_IMAGE_WIDTH, DEFAULT_HTML_IMAGE_HEIGHT
     READCOM.Views.Main,
-    READCOM.App.Icons, //for TIcons
-    READCOM.App.Themes, //for TThemes
+    READCOM.Resources.Icons, //for TIcons
+    READCOM.Resources.Themes, //for TThemes
     READCOM.App.Messages;
   {$endregion}
 

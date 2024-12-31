@@ -15,7 +15,7 @@ interface
     FMX.ActnList,
     //
     Zoomicon.Media.FMX.ModalFrame, //for TModalFrame
-    READCOM.App.Icons, //for Icons.SVGIconImageList
+    READCOM.Resources.Icons, //for Icons.SVGIconImageList
     READCOM.Models.Stories; //for IStoryItem
   {$endregion}
 

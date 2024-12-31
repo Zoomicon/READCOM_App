@@ -1,4 +1,4 @@
-unit READCOM.App.Themes;
+unit READCOM.Resources.Themes;
 
 interface
 

@@ -211,7 +211,7 @@ implementation
     READCOM.Models, //for EXT_READCOM
     READCOM.App.Main, //for StorySource
     READCOM.App.Messages,
-    READCOM.App.Themes, //for Themes.LightTheme, Themes.DarkTheme
+    READCOM.Resources.Themes, //for Themes.LightTheme, Themes.DarkTheme
     READCOM.Views.StoryItems.ImageStoryItem, //for TImageStoryItem
     READCOM.Views.StoryItems.TextStoryItem, //for TTextStoryItem
     READCOM.Views.Dialogs.AllText, //for TAllTextFrame
