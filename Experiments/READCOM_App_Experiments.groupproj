@@ -12,12 +12,6 @@
         <Projects Include="SizeableFrame\SizeableFrame.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="StructureViewer\StructureViewer.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="ZoomableContainer\ZoomableContainer.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="MoveToTarget\MoveToTarget.dproj">
             <Dependencies/>
         </Projects>
@@ -25,12 +19,6 @@
             <Dependencies/>
         </Projects>
         <Projects Include="Translation\Translation.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="FileChooser\FileChooser.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="ColorPicker\ColorPicker.dproj">
@@ -71,24 +59,6 @@
     <Target Name="SizeableFrame:Make">
         <MSBuild Projects="SizeableFrame\SizeableFrame.dproj" Targets="Make"/>
     </Target>
-    <Target Name="StructureViewer">
-        <MSBuild Projects="StructureViewer\StructureViewer.dproj"/>
-    </Target>
-    <Target Name="StructureViewer:Clean">
-        <MSBuild Projects="StructureViewer\StructureViewer.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="StructureViewer:Make">
-        <MSBuild Projects="StructureViewer\StructureViewer.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="ZoomableContainer">
-        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj"/>
-    </Target>
-    <Target Name="ZoomableContainer:Clean">
-        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ZoomableContainer:Make">
-        <MSBuild Projects="ZoomableContainer\ZoomableContainer.dproj" Targets="Make"/>
-    </Target>
     <Target Name="MoveToTarget">
         <MSBuild Projects="MoveToTarget\MoveToTarget.dproj"/>
     </Target>
@@ -116,24 +86,6 @@
     <Target Name="Translation:Make">
         <MSBuild Projects="Translation\Translation.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Zoomicon_Media_FMX">
-        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj"/>
-    </Target>
-    <Target Name="Zoomicon_Media_FMX:Clean">
-        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Zoomicon_Media_FMX:Make">
-        <MSBuild Projects="..\Zoomicon.Media\Zoomicon.Media.FMX.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="FileChooser">
-        <MSBuild Projects="FileChooser\FileChooser.dproj"/>
-    </Target>
-    <Target Name="FileChooser:Clean">
-        <MSBuild Projects="FileChooser\FileChooser.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="FileChooser:Make">
-        <MSBuild Projects="FileChooser\FileChooser.dproj" Targets="Make"/>
-    </Target>
     <Target Name="ColorPicker">
         <MSBuild Projects="ColorPicker\ColorPicker.dproj"/>
     </Target>
@@ -144,13 +96,13 @@
         <MSBuild Projects="ColorPicker\ColorPicker.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;StructureViewer;ZoomableContainer;MoveToTarget;SVGViewer;Translation;Zoomicon_Media_FMX;FileChooser;ColorPicker"/>
+        <CallTarget Targets="DropFiles;NestedClicks;SizeableFrame;MoveToTarget;SVGViewer;Translation;ColorPicker"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;StructureViewer:Clean;ZoomableContainer:Clean;MoveToTarget:Clean;SVGViewer:Clean;Translation:Clean;Zoomicon_Media_FMX:Clean;FileChooser:Clean;ColorPicker:Clean"/>
+        <CallTarget Targets="DropFiles:Clean;NestedClicks:Clean;SizeableFrame:Clean;MoveToTarget:Clean;SVGViewer:Clean;Translation:Clean;ColorPicker:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;StructureViewer:Make;ZoomableContainer:Make;MoveToTarget:Make;SVGViewer:Make;Translation:Make;Zoomicon_Media_FMX:Make;FileChooser:Make;ColorPicker:Make"/>
+        <CallTarget Targets="DropFiles:Make;NestedClicks:Make;SizeableFrame:Make;MoveToTarget:Make;SVGViewer:Make;Translation:Make;ColorPicker:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
