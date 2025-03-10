@@ -16,7 +16,7 @@
 
   "dependencies": {
     "github.com/zoomicon/zoomicon.generics.delphi": ">=3.0.0",
-    "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.1.0",
+    "github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.2.0",
     "github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=3.2.0",
     "github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=3.3.0",
       "github.com/birbilis/object-debugger-for-firemonkey": ">=6.1.0",
