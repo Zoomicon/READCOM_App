@@ -594,7 +594,6 @@
             <Form>ImageStoryItemOptions</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="FullScreenService_iOS.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

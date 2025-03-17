@@ -15,7 +15,7 @@
 		"github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.2.0",
 		"github.com/zoomicon/zoomicon.introspection.fmx.delphi": ">=3.3.0",
 		"github.com/zoomicon/zoomicon.manipulation.fmx.delphi": ">=3.0.0",
-		"github.com/zoomicon/zoomicon.media.fmx.delphi": ">=4.0.0",
+		"github.com/zoomicon/zoomicon.media.fmx.delphi": ">=4.2.0",
 		"github.com/zoomicon/zoomicon.zui.fmx.delphi": ">=3.0.0"
 	}
 }
