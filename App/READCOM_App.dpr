@@ -2,27 +2,7 @@
 //Source: https://github.com/zoomicon/READCOM_App
 //Author: George Birbilis (http://zoomicon.com)
 
-(*
-Dependencies:
-+ GetIt Packages (install via GetIt Package Manager, included in Delphi IDE):
-  - TFrameStand
-  - SVGIconImageList
-  - CodeSite Express
-  - Boss Experts (optional)
-+ Boss Packages (install via Boss Package Manager [use Boss command-line tool and optionally Boss Experts for IDE] - configuration is in boss.json):
-  - Zoomicon.Generics
-  - Zoomicon.Helpers.RTL
-  - Zoomicon.Helpers.FMX
-  - Zoomicon.Introspection.FMX (also wraps Object-Debugger-for-Firemonkey)
-  - Zoomicon.Manipulation.FMX
-  - Zoomicon.Media.FMX
-  - Zoomicon.ZUI.FMX
-  - READCOM.Core
-  Notes:
-  - at Build/Compiler/Search path/All configurations - All platforms, using relative search paths to respective Boss cache folders (see App/modules folder)
-  - will need to manually install the BOSS packages (see modules subfolder that it creates) if BOSS doesn't install them as design packages
-*)
-
+//Dependencies: see <DEPENDENCIES.md>
 program READCOM_App;
 
   {$R *.dres}
@@ -46,7 +26,8 @@ program READCOM_App;
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
   READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame},
   READCOM.Views.Options.ImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.ImageStoryItemOptions.pas' {ImageStoryItemOptions: TFrame};
-  {$endregion}
+
+{$endregion}
 
   {$R *.res}
 
