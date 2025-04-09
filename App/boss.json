@@ -1,7 +1,7 @@
 {
 	"name": "READCOM_App",
 	"description": "READ-COM - Reading Communities app",
-	"version": "0.7.6",
+	"version": "0.7.7",
 	"homepage": "https://github.com/Zoomicon/READCOM_App",
 	"mainsrc": ".",
 	"projects": [

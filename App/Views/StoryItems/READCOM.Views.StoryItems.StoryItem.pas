@@ -906,18 +906,16 @@ implementation
 
   function TStoryItem.GetPreviousStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
   begin
-    var parentItem := ParentStoryItem;
-
     //Check children
     var lastChildStoryPoint := GetLastChildStoryPoint; //TODO: should have option to do it recursively (with param to not go upwards) so that we can find grandchildren
     if Assigned(lastChildStoryPoint) then
       exit(lastChildStoryPoint);
 
-    //Check if RootStoryItem with no StoryItem (grand)children
-    if not Assigned(parentItem) then
+    var parentItem := ParentStoryItem;
+    if not Assigned(parentItem) then //If RootStoryItem with no StoryItem children
       exit(nil); //none found
 
-    //Check previous siblings
+    //Check previous siblings //TODO: won't navigate directly into grand*-children if siblings aren't StoryPoints (though we could consider this a feature to be able to create isolated StoryPoints that are navigable only by name)
     var previousSiblingStoryPoint := GetPreviousSiblingStoryPoint;
     if Assigned(previousSiblingStoryPoint) then
       exit(previousSiblingStoryPoint);
@@ -925,37 +923,73 @@ implementation
     //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
     var ancestorStoryPoint := GetAncestorStoryPoint;
     if Assigned(ancestorStoryPoint) then
-      exit(ancestorStoryPoint);
+    begin
+      var ancestorPreviousSiblingStoryPoint := ancestorStoryPoint.GetPreviousSiblingStoryPoint;
+      if Assigned(ancestorPreviousSiblingStoryPoint) then
+        exit(ancestorPreviousSiblingStoryPoint);
+    end;
 
-    //Loop in siblings (checking next siblings from the end)
-    Result := parentItem.GetLastChildStoryPoint; //this may end up returning Self
+    //Loop to end of story
+    if Assigned(Story) then //TODO: we should be able to find the RootStoryItem without Story being assigned (though it would need traversing up the tree)
+    begin
+      var rootStoryItem := Story.RootStoryItem;
+      if Assigned(rootStoryItem) then
+        if rootStoryItem.StoryPoint then //if RootStoryItem is a StoryPoint return that
+          exit(rootStoryItem)
+        else
+          exit(rootStoryItem.PreviousStoryPoint); //return last StoryPoint found (checking from RootStoryItem)
+    end;
+
+    //If we're the topmost StoryPoint
+    if StoryPoint then
+      result := Self
+    else
+      result := nil; //no StoryPoint found
   end;
 
   function TStoryItem.GetNextStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
   begin
-    var parentItem := ParentStoryItem;
-
     //Check children
     var firstChildStoryPoint := GetFirstChildStoryPoint; //TODO: should have option to do it recursively (with param to not go upwards) so that we can find grandchildren
     if Assigned(firstChildStoryPoint) then
       exit(firstChildStoryPoint);
 
-    //If RootStoryItem with no StoryItem (grand)children
-    if not Assigned(parentItem) then
+    var parentItem := ParentStoryItem;
+    if not Assigned(parentItem) then //If RootStoryItem with no StoryItem children
       exit(nil); //none found
 
-    //Check next siblings
+    //Check next siblings //TODO: won't navigate directly into grand*-children if siblings aren't StoryPoints (though we could consider this a feature to be able to create isolated StoryPoints that are navigable only by name)
     var nextSiblingStoryPoint := GetNextSiblingStoryPoint;
     if Assigned(nextSiblingStoryPoint) then
       exit(nextSiblingStoryPoint);
 
     //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
     var ancestorStoryPoint := GetAncestorStoryPoint;
-    if Assigned(ancestorStoryPoint) then
-      exit(ancestorStoryPoint); //TODO: this won't work since if we go up then Next will bring us back inside
+    while Assigned(ancestorStoryPoint) do
+    begin
+      var ancestorNextSiblingStoryPoint := ancestorStoryPoint.GetNextSiblingStoryPoint;
+      if Assigned(ancestorNextSiblingStoryPoint) then
+        exit(ancestorNextSiblingStoryPoint)
+      else
+        ancestorStoryPoint := ancestorStoryPoint.GetAncestorStoryPoint; //try going even more up the Story tree (till we reach the root)
+    end;
 
-    //Loop in siblings (checking previous siblings from the start)
-    Result := parentItem.GetFirstChildStoryPoint; //this may end up returning Self
+    //Loop to start of story
+    if Assigned(Story) then //TODO: we should be able to find the RootStoryItem without Story being assigned (though it would need traversing up the tree)
+    begin
+      var rootStoryItem := Story.RootStoryItem;
+      if Assigned(rootStoryItem) then
+        if rootStoryItem.StoryPoint then //if RootStoryItem is a StoryPoint return that
+          exit(rootStoryItem)
+        else
+          exit(rootStoryItem.NextStoryPoint); //return first StoryPoint found (checking from RootStoryItem)
+    end;
+
+    //If we're the topmost StoryPoint
+    if StoryPoint then
+      result := Self
+    else
+      result := nil; //no StoryPoint found
   end;
 
   function TStoryItem.GetAncestorStoryPoint: IStoryItem;
@@ -966,7 +1000,7 @@ implementation
     if parentItem.StoryPoint then
       exit(parentItem)
     else
-      exit(parentItem.GetAncestorStoryPoint);
+      exit(parentItem.GetAncestorStoryPoint); //recurse outwards till we find an ancestor that is a StoryPoint or reach the root
   end;
 
   function TStoryItem.GetFirstChildStoryPoint: IStoryItem;
@@ -1002,12 +1036,12 @@ implementation
     var parentItem := ParentStoryItem;
     if not Assigned(parentItem) then exit(nil);
 
-    var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
-    var siblings := parentItem.StoryItems;
+    var parentChildren := parentItem.StoryItems; //TODO: could ask only for StoryPoints here
+    var storyItemIndex := parentChildren.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
 
     for var i := (storyItemIndex - 1) downto 0 do //0-based array index
     begin
-      var sibling := siblings.Items[i];
+      var sibling := parentChildren.Items[i];
       if sibling.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
         exit(sibling);
     end;
@@ -1020,12 +1054,12 @@ implementation
     var parentItem := ParentStoryItem;
     if not Assigned(parentItem) then exit(nil);
 
-    var storyItemIndex := parentItem.StoryItems.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
-    var siblings := parentItem.StoryItems;
+    var parentChildren := parentItem.StoryItems; //TODO: could ask only for StoryPoints here
+    var storyItemIndex := parentChildren.IndexOf(Self as IStoryItem); //must use "as" here, else it won't always find it
 
-    for var i := (storyItemIndex + 1) to (siblings.Count - 1) do //0-based array index
+    for var i := (storyItemIndex + 1) to (parentChildren.Count - 1) do //0-based array index
     begin
-      var sibling := siblings.Items[i];
+      var sibling := parentChildren.Items[i];
       if sibling.IsStoryPoint then //note: not considering if result is Hidden, caller should show it if they want to activate it
         exit(sibling);
     end;
