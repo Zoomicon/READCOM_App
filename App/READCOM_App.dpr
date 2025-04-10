@@ -1,11 +1,11 @@
 //Description: READ-COM App
-//Source: https://github.com/zoomicon/READCOM_App
-//Author: George Birbilis (http://zoomicon.com)
+//Source: https://github.com/Zoomicon/READCOM_App
+//Author: George Birbilis (https://zoomicon.com)
 
 //Dependencies: see <DEPENDENCIES.md>
 program READCOM_App;
 
-  {$R *.dres}
+  {$R *.dres} //for Windows resources added via Resources and Images (includes 'Default.readcom' startup story document)
 
   {$region 'Used units' ---------------------------------------------------------} //Note: D12.2 can't fold/expand regions in .dpr files
   uses
@@ -26,10 +26,9 @@ program READCOM_App;
   READCOM.Views.Options.StoryItemOptions in 'Views\Options\READCOM.Views.Options.StoryItemOptions.pas' {StoryItemOptions: TFrame},
   READCOM.Views.Options.TextStoryItemOptions in 'Views\Options\READCOM.Views.Options.TextStoryItemOptions.pas' {TextStoryItemOptions: TFrame},
   READCOM.Views.Options.ImageStoryItemOptions in 'Views\Options\READCOM.Views.Options.ImageStoryItemOptions.pas' {ImageStoryItemOptions: TFrame};
+  {$endregion}
 
-{$endregion}
-
-  {$R *.res}
+  {$R *.res} //for Windows App metadata defined via Project Options (App Icon, Versioning Info)
 
 begin
   Main;
