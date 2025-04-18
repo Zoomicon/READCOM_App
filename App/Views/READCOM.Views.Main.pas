@@ -86,8 +86,10 @@ interface
       procedure FormResize(Sender: TObject);
 
       procedure FormShow(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: WideChar; Shift: TShiftState);
 
     protected
+      FShiftDown: Boolean; //set by event handlers for OnFormKeyDown, OnFormKeyUp to monitor SHIFT key standalone presses
       FShortcutCut, FShortcutCopy, FShortcutPaste: TShortCut;
       FTimerStarted: Boolean;
       FCheckedCommandLineActions: Boolean;
@@ -132,13 +134,19 @@ interface
       {ActiveStoryItem}
       function GetActiveStoryItem: IStoryItem;
       procedure SetActiveStoryItem(const Value: IStoryItem);
+      procedure SetActiveStoryItemIfAssigned(const Value: IStoryItem);
       procedure HandleActiveStoryItemChanged(Sender: TObject);
 
+      {Navigation}
       procedure ActivateRootStoryItem;
       procedure ActivateParentStoryItem;
       procedure ActivateHomeStoryItem;
+      //
+      procedure ActivateAncestorStoryPoint;
       procedure ActivatePreviousStoryPoint;
       procedure ActivateNextStoryPoint;
+      //
+      procedure NavigateUp;
 
       {Orientation}
       procedure CheckProperOrientation;
@@ -438,6 +446,12 @@ implementation
     TStoryItem.ActiveStoryItem := Value;
   end;
 
+  procedure TMainForm.SetActiveStoryItemIfAssigned(const Value: IStoryItem);
+  begin
+    if Assigned(Value) then
+      SetActiveStoryItem(Value);
+  end;
+
   procedure TMainForm.HandleActiveStoryItemChanged(Sender: TObject);
 
     procedure RecursiveClearEditMode(const partialRoot: IStoryItem);
@@ -521,26 +535,33 @@ implementation
 
   procedure TMainForm.ActivateRootStoryItem;
   begin
-    ActiveStoryItem := RootStoryItem;
+    ActiveStoryItem := RootStoryItem; //there's always a RootStoryItem
   end;
 
   procedure TMainForm.ActivateParentStoryItem;
   begin
     var activeItem := ActiveStoryItem;
     if Assigned(activeItem) then
-      activeItem.ActivateParentStoryItem;
+      activeItem.ActivateParentStoryItem; //this checks if ParentStoryItem is nil and does nothing in that case
   end;
 
   procedure TMainForm.ActivateHomeStoryItem;
   begin
-    ActiveStoryItem := HomeStoryItem;
+    ActiveStoryItem := HomeStoryItem; //there's always a HomeStoryItem (code that loads the story takes care of that if none found, setting the RootStoryItem as HomeStoryItem)
+  end;
+
+  procedure TMainForm.ActivateAncestorStoryPoint;
+  begin
+    var activeItem := ActiveStoryItem;
+    if Assigned(activeItem) then
+      SetActiveStoryItemIfAssigned(activeItem.GetAncestorStoryPoint);
   end;
 
   procedure TMainForm.ActivatePreviousStoryPoint;
   begin
     var activeItem := ActiveStoryItem;
     if Assigned(activeItem) then
-       ActiveStoryItem := activeItem.PreviousStoryPoint;
+      SetActiveStoryItemIfAssigned(activeItem.PreviousStoryPoint);
   end;
 
   procedure TMainForm.ActivateNextStoryPoint;
@@ -548,9 +569,21 @@ implementation
     var activeItem := ActiveStoryItem;
     if Assigned(activeItem) then
       if activeItem.TagsMatched then //also checking if Tags are matched (all moveables with Tags are over non-moveables with same Tags and vice-versa) to proceed
-        ActiveStoryItem := activeItem.NextStoryPoint
+        SetActiveStoryItemIfAssigned(activeItem.NextStoryPoint)
       else
-        TLockFrame.ShowModal(Self);
+        TLockFrame.ShowModal(Self); //warn user that they can't proceed (till Tags are matched)
+  end;
+
+  procedure TMainForm.NavigateUp;
+  begin
+    if (StoryMode <> EditMode) then //if not in Edit mode...
+      ActivateAncestorStoryPoint //go to (nearest) AncestorStoryPoint, if any
+
+    else //if in Edit mode...
+      if FShiftDown then //if SHIFT pressed, go to RootStoryItem
+        ActivateRootStoryItem
+      else
+        ActivateParentStoryItem //go to ParentStoryItem
   end;
 
   {$endregion}
@@ -840,6 +873,12 @@ implementation
 
   procedure TMainForm.HUDactionCutExecute(Sender: TObject);
   begin
+    if FShiftDown then //if Shift key is pressed...
+    begin
+      HUDactionDeleteExecute(Sender); //...do Delete instead of Cut
+      exit;
+    end;
+
     if not (HUD.EditMode and Assigned(ActiveStoryItem)) then exit; //only in Edit mode (plus safety check for ActiveStoryItem)
 
     //Not considering Cut a destructive action since one can Paste back. However when cutting the RootStoryItem, since it has no parent to be activated and a new RootStoryItem will be created, paste back means it will become a child of the new RootStoryItem, so asking for confirmation only when cutting the RootStoryItem
@@ -1074,12 +1113,11 @@ implementation
   procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState); //also see HUD Actions' shortcuts
   begin
     case Key of
+      vkSHIFT:
+        FShiftDown := True;
 
       vkEscape:
-        if ssShift in Shift then //go to RootStoryItem
-          ActivateRootStoryItem
-        else
-          ActivateParentStoryItem; //go to ParentStoryItem
+        NavigateUp;
 
       vkPrior, vkLeft, vkUp:     //go to PreviousStoryPoint
         ActivatePreviousStoryPoint;
@@ -1148,7 +1186,15 @@ implementation
     end;
   end;
 
-  {$endregion}
+  procedure TMainForm.FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: WideChar; Shift: TShiftState);
+  begin
+    case Key of
+      vkSHIFT:
+        FShiftDown := False;
+    end;
+  end;
+
+{$endregion}
 
   {$region 'Idle'}
 

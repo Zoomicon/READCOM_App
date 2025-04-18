@@ -695,7 +695,8 @@ implementation
 
   function TStoryItem.GetParentStoryItem: IStoryItem;
   begin
-    Supports(Parent, IStoryItem, result); //don't just do "Parent as IStoryItem", will fail if Parent doesn't support the interface, want nil result in that case
+    result := nil; //Note: if Supports first parameter is nil then it returns false and the last (out) parameter is undefined (not necesserily nil)
+    Supports(Parent, IStoryItem, result) //don't just do "Parent as IStoryItem", will fail if Parent doesn't support the interface, want nil result in that case
   end;
 
   procedure TStoryItem.SetParentStoryItem(const Value: IStoryItem);
@@ -906,15 +907,6 @@ implementation
 
   function TStoryItem.GetPreviousStoryPoint: IStoryItem; //TODO: this logic doesn't work ok when there is an isolated StoryPoint deep in the hierarchy (it's ignored)
   begin
-    //Check children
-    var lastChildStoryPoint := GetLastChildStoryPoint; //TODO: should have option to do it recursively (with param to not go upwards) so that we can find grandchildren
-    if Assigned(lastChildStoryPoint) then
-      exit(lastChildStoryPoint);
-
-    var parentItem := ParentStoryItem;
-    if not Assigned(parentItem) then //If RootStoryItem with no StoryItem children
-      exit(nil); //none found
-
     //Check previous siblings //TODO: won't navigate directly into grand*-children if siblings aren't StoryPoints (though we could consider this a feature to be able to create isolated StoryPoints that are navigable only by name)
     var previousSiblingStoryPoint := GetPreviousSiblingStoryPoint;
     if Assigned(previousSiblingStoryPoint) then
@@ -923,11 +915,7 @@ implementation
     //Check parent, grandparent etc. (parent may not be a StoryPoint if we navigated directly to a StoryItem via a target-link)
     var ancestorStoryPoint := GetAncestorStoryPoint;
     if Assigned(ancestorStoryPoint) then
-    begin
-      var ancestorPreviousSiblingStoryPoint := ancestorStoryPoint.GetPreviousSiblingStoryPoint;
-      if Assigned(ancestorPreviousSiblingStoryPoint) then
-        exit(ancestorPreviousSiblingStoryPoint);
-    end;
+      exit(ancestorStoryPoint);
 
     //Loop to end of story
     if Assigned(Story) then //TODO: we should be able to find the RootStoryItem without Story being assigned (though it would need traversing up the tree)
@@ -995,7 +983,8 @@ implementation
   function TStoryItem.GetAncestorStoryPoint: IStoryItem;
   begin
     var parentItem := ParentStoryItem;
-    if not Assigned(parentItem) then exit(nil);
+    if not Assigned(parentItem) then
+      exit(nil); //reached the RootStoryItem without finding a StoryPoint
 
     if parentItem.StoryPoint then
       exit(parentItem)
