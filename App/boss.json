@@ -1,7 +1,7 @@
 {
 	"name": "READCOM_App",
 	"description": "READ-COM - Reading Communities app",
-	"version": "0.7.7",
+	"version": "0.7.8",
 	"homepage": "https://github.com/Zoomicon/READCOM_App",
 	"mainsrc": ".",
 	"projects": [
@@ -9,7 +9,7 @@
 	],
 	"dependencies": {
 		"github.com/birbilis/object-debugger-for-firemonkey": ">=6.1.0",
-		"github.com/zoomicon/readcom.core.delphi": ">=3.7.0",
+		"github.com/zoomicon/readcom.core.delphi": ">=3.9.0",
 		"github.com/zoomicon/zoomicon.generics.delphi": ">=3.0.0",
 		"github.com/zoomicon/zoomicon.helpers.fmx.delphi": ">=3.2.0",
 		"github.com/zoomicon/zoomicon.helpers.rtl.delphi": ">=3.2.0",
