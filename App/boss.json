@@ -8,7 +8,6 @@
 		"READCOM_App.dproj"
 	],
 	"dependencies": {
-		"github.com/zoomicon/readcom.core.delphi": ">=5.0",
-		"github.com/zoomicon/zoomicon.media.fmx.delphi": ">=4.3.0"
+		"github.com/zoomicon/readcom.core.delphi": ">=5.0"
 	}
 }

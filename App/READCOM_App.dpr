@@ -7,13 +7,14 @@ program READCOM_App;
 
   {$R *.dres} //for Windows resources added via Resources and Images (includes 'Default.readcom' startup story document)
 
+  //TODO: should explicitly reference AudioStoryItem (and any other StoryItem types) in READCOM.Core to avoid having to use it here - possibly at Factory class there
+
   {$region 'Used units' ---------------------------------------------------------} //Note: D12.3 can't fold/expand regions in .dpr files
   uses
   System.StartUpCopy,
   READCOM.App.Main,
-  //
+  READCOM.Views.StoryItems.AudioStoryItem,
   READCOM.App.MessageOverrides in 'READCOM.App.MessageOverrides.pas', //can override app title and other strings here
-  //
   Zoomicon.Media.FMX.ModalFrame in 'modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas' {ModalFrame: TFrame}, //needed to correctly open About frame in IDE designer
   READCOM.Resources.Icons in 'modules\readcom.core.delphi\Source\Resources\READCOM.Resources.Icons.pas' {Icons: TDataModule}, //needed to correctly open About frame in IDE designer
   READCOM.Views.Dialogs.About in 'Views\Dialogs\READCOM.Views.Dialogs.About.pas' {AboutFrame: TFrame};
