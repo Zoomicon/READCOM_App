@@ -4,9 +4,11 @@
 
 //Dependencies: see <DEPENDENCIES.md>
 
-//WARNING:
-//BOSS update commnand corrupts modules\Zoomicon.Introspection.FMX.Delphi\Zoomicon.Introspection.FMX.dpk
-//Must repair by copying correct file from https://github.com/Zoomicon/Zoomicon.Introspection.FMX.Delphi/Source before building (else implicit units and packages will be added which will corrupt the project)
+//WARNINGs:
+//BOSS update commnand corrupts modules\zoomicon.introspection.fmx.delphi\Source\Zoomicon.Introspection.FMX.dpk
+//...must repair by copying correct file from https://github.com/Zoomicon/Zoomicon.Introspection.FMX.Delphi/Source before building (else implicit units and packages will be added which will corrupt the project)
+//BOSS update commnand corrupts modules\zoomicon.introspection.fmx.delphi\Source\Zoomicon.Introspection.FMX.dpk
+//...must repair by copying correct file from https://github.com/Zoomicon/READCOM.Core.Delphi/Source before building (else implicit units and packages will be added which will corrupt the project)
 
 program READCOM_App;
 
