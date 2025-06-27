@@ -4,12 +4,6 @@
 
 //Dependencies: see <DEPENDENCIES.md>
 
-//WARNINGs:
-//BOSS update commnand corrupts modules\zoomicon.introspection.fmx.delphi\Source\Zoomicon.Introspection.FMX.dpk
-//...must repair by copying correct file from https://github.com/Zoomicon/Zoomicon.Introspection.FMX.Delphi/Source before building (else implicit units and packages will be added which will corrupt the project)
-//BOSS update commnand corrupts modules\zoomicon.introspection.fmx.delphi\Source\Zoomicon.Introspection.FMX.dpk
-//...must repair by copying correct file from https://github.com/Zoomicon/READCOM.Core.Delphi/Source before building (else implicit units and packages will be added which will corrupt the project)
-
 program READCOM_App;
 
   {$R *.dres} //for Windows resources added via Resources and Images (includes 'Default.readcom' startup story document)
