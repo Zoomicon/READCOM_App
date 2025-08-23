@@ -6,6 +6,7 @@ The READ-COM project is about improving the Reading habits at home and at school
 Its Reading Communities app is about reading, interacting with, editing / remixing, and authoring shareable Stories.
 
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE.txt)
+[![Engine](https://img.shields.io/badge/Uses-READCOM.Core-blue)](https://github.com/Zoomicon/READCOM.Core.Delphi)
 
 ## Wiki
 https://github.com/Zoomicon/READCOM_App/wiki
