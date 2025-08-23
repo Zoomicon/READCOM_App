@@ -8,6 +8,14 @@ Its Reading Communities app is about reading, interacting with, editing / remixi
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE.txt)
 [![Engine](https://img.shields.io/badge/Uses-READCOM.Core-blue)](https://github.com/Zoomicon/READCOM.Core.Delphi)
 
+## Supported platforms
+* Windows 7+
+* Android 5.0+
+* iOS 10+
+* MacOS-X
+
+see available [Releases](https://github.com/Zoomicon/READCOM_App/releases)
+
 ## Wiki
 https://github.com/Zoomicon/READCOM_App/wiki
 
