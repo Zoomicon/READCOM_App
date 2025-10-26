@@ -1,9 +1,7 @@
 # Dependencies
 
 + GetIt Packages (install via GetIt Package Manager, included in Delphi IDE):
-    - TFrameStand
-    - SVGIconImageList
-    - CodeSite Express
+    - SVGIconImageList (if not available on GetIt, download and install from https://github.com/EtheaDev/SVGIconImageList/releases)
     - Boss Experts (optional)
 
 + Boss Packages (can install via command-line with Boss Package Manager update command [or place boss.exe in PATH and use Boss Experts from IDE] - configuration is in boss.json):
