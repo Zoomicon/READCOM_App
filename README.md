@@ -10,7 +10,7 @@ Its Reading Communities app is about reading, interacting with, editing / remixi
 
 ## Supported platforms
 * [Windows](https://apps.microsoft.com/detail/9nvm0chrn7ph) 7+
-* Android 5.0+
+* [Android](https://play.google.com/store/apps/details?id=com.zoomicon.readcom.app) 5.0+
 * iOS 10+
 * MacOS-X
 
