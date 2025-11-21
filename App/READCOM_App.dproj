@@ -5,12 +5,10 @@
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">Android64</Platform>
         <TargetedPlatforms>693267</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>READCOM_App.dpr</MainSource>
-        <PlatformSDK Condition="'$(PlatformSDK)'=='' And '$(Platform)'=='Android64'">AndroidSDK25.2.5_64bit.sdk</PlatformSDK>
-        <ProjectName Condition="'$(ProjectName)'==''">READCOM_App</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -181,7 +179,7 @@
         <Icon_MainIcon>READCOM_App\LaunchGen\Icon_MainIcon.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>READCOM_App</SanitizedProjectName>
-        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\.bpl;..\modules\object-debugger-for-firemonkey\DemoDesktop;..\modules\object-debugger-for-firemonkey\DemoMobile;..\modules\object-debugger-for-firemonkey;..\modules\object-debugger-for-firemonkey\Test;..\modules\readcom.core.delphi\Source\Factories;..\modules\readcom.core.delphi\Source\Models;..\modules\readcom.core.delphi\Source\Resources;..\modules\readcom.core.delphi\Source\Views\Dialogs;..\modules\readcom.core.delphi\Source\Views\Options;..\modules\readcom.core.delphi\Source\Views\Prompts;..\modules\readcom.core.delphi\Source\Views\StoryItems;..\modules\zoomicon.generics.delphi\Source\Collections;..\modules\zoomicon.generics.delphi\Source\Factories;..\modules\zoomicon.generics.delphi\Source\Functors;..\modules\zoomicon.generics.delphi\Test;..\modules\zoomicon.helpers.fmx.delphi\Source;..\modules\zoomicon.helpers.rtl.delphi\Source;..\modules\zoomicon.introspection.fmx.delphi\Demo;..\modules\zoomicon.introspection.fmx.delphi\Source;..\modules\zoomicon.manipulation.fmx.delphi\Source;..\modules\zoomicon.media.fmx.delphi\Demo\Views;..\modules\zoomicon.media.fmx.delphi\Source;..\modules\zoomicon.zui.fmx.delphi\Demo;..\modules\zoomicon.zui.fmx.delphi\Source;..\modules\readcom.core.delphi\Source\App;..\modules\readcom.core.delphi\Source\Views;..\modules\readcom.core.delphi\Demo;..\modules\readcom.core.delphi\Demo\Views\Dialogs;$(DCC_UnitSearchPath);..\modules\readcom.core.delphi\Source\Registration;..\modules\zoomicon.manipulation.fmx.delphi\Source\Registration;modules\.dcp;modules\.dcu;modules;modules\.bpl;modules\object-debugger-for-firemonkey\DemoDesktop;modules\object-debugger-for-firemonkey\DemoMobile;modules\object-debugger-for-firemonkey;modules\object-debugger-for-firemonkey\Test;modules\readcom.core.delphi\Demo;modules\readcom.core.delphi\Demo\Views\Dialogs;modules\readcom.core.delphi\Source\App;modules\readcom.core.delphi\Source\Factories;modules\readcom.core.delphi\Source\Models;modules\readcom.core.delphi\Source\Registration;modules\readcom.core.delphi\Source\Resources;modules\readcom.core.delphi\Source\Views\Dialogs;modules\readcom.core.delphi\Source\Views\Options;modules\readcom.core.delphi\Source\Views\Prompts;modules\readcom.core.delphi\Source\Views;modules\readcom.core.delphi\Source\Views\StoryItems;modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.generics.delphi\Test;modules\zoomicon.helpers.fmx.delphi\Source;modules\zoomicon.helpers.rtl.delphi\Source;modules\zoomicon.introspection.fmx.delphi\Demo;modules\zoomicon.introspection.fmx.delphi\Source;modules\zoomicon.manipulation.fmx.delphi\Source\Registration;modules\zoomicon.manipulation.fmx.delphi\Source;modules\zoomicon.media.fmx.delphi\Demo\Views;modules\zoomicon.media.fmx.delphi\Source;modules\zoomicon.zui.fmx.delphi\Demo;modules\zoomicon.zui.fmx.delphi\Source</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\.bpl;..\modules\object-debugger-for-firemonkey\DemoDesktop;..\modules\object-debugger-for-firemonkey\DemoMobile;..\modules\object-debugger-for-firemonkey;..\modules\object-debugger-for-firemonkey\Test;..\modules\readcom.core.delphi\Source\Factories;..\modules\readcom.core.delphi\Source\Models;..\modules\readcom.core.delphi\Source\Resources;..\modules\readcom.core.delphi\Source\Views\Dialogs;..\modules\readcom.core.delphi\Source\Views\Options;..\modules\readcom.core.delphi\Source\Views\Prompts;..\modules\readcom.core.delphi\Source\Views\StoryItems;..\modules\zoomicon.generics.delphi\Source\Collections;..\modules\zoomicon.generics.delphi\Source\Factories;..\modules\zoomicon.generics.delphi\Source\Functors;..\modules\zoomicon.generics.delphi\Test;..\modules\zoomicon.helpers.fmx.delphi\Source;..\modules\zoomicon.helpers.rtl.delphi\Source;..\modules\zoomicon.introspection.fmx.delphi\Demo;..\modules\zoomicon.introspection.fmx.delphi\Source;..\modules\zoomicon.manipulation.fmx.delphi\Source;..\modules\zoomicon.media.fmx.delphi\Demo\Views;..\modules\zoomicon.media.fmx.delphi\Source;..\modules\zoomicon.zui.fmx.delphi\Demo;..\modules\zoomicon.zui.fmx.delphi\Source;..\modules\readcom.core.delphi\Source\App;..\modules\readcom.core.delphi\Source\Views;..\modules\readcom.core.delphi\Demo;..\modules\readcom.core.delphi\Demo\Views\Dialogs;..\modules\readcom.core.delphi\Source\Registration;..\modules\zoomicon.manipulation.fmx.delphi\Source\Registration;$(DCC_UnitSearchPath);modules\.dcp;modules\.dcu;modules;modules\object-debugger-for-firemonkey\DemoDesktop;modules\object-debugger-for-firemonkey\DemoMobile;modules\object-debugger-for-firemonkey;modules\object-debugger-for-firemonkey\Test;modules\readcom.core.delphi\Demo;modules\readcom.core.delphi\Demo\Views\Dialogs;modules\readcom.core.delphi\Source\App;modules\readcom.core.delphi\Source\Factories;modules\readcom.core.delphi\Source\Models;modules\readcom.core.delphi\Source\Registration;modules\readcom.core.delphi\Source\Resources;modules\readcom.core.delphi\Source\Views\Dialogs;modules\readcom.core.delphi\Source\Views\Options;modules\readcom.core.delphi\Source\Views\Prompts;modules\readcom.core.delphi\Source\Views;modules\readcom.core.delphi\Source\Views\StoryItems;modules\zoomicon.generics.delphi\Source\Collections;modules\zoomicon.generics.delphi\Source\Factories;modules\zoomicon.generics.delphi\Source\Functors;modules\zoomicon.generics.delphi\Test;modules\zoomicon.helpers.fmx.delphi\Source;modules\zoomicon.helpers.rtl.delphi\Source;modules\zoomicon.introspection.fmx.delphi\Demo;modules\zoomicon.introspection.fmx.delphi\Source;modules\zoomicon.manipulation.fmx.delphi\Source\Registration;modules\zoomicon.manipulation.fmx.delphi\Source;modules\zoomicon.media.fmx.delphi\Demo\Views;modules\zoomicon.media.fmx.delphi\Source;modules\zoomicon.zui.fmx.delphi\Demo;modules\zoomicon.zui.fmx.delphi\Source</DCC_UnitSearchPath>
         <DCC_Define>SKIA;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
@@ -345,7 +343,7 @@
         <Android_BackgroundColor>#FFFFFF</Android_BackgroundColor>
         <Android_DarkBackgroundColor>#000000</Android_DarkBackgroundColor>
         <Debugger_RunParams>-cleaninstall</Debugger_RunParams>
-        <BT_BuildType>Debug</BT_BuildType>
+        <BT_BuildType>AppStore</BT_BuildType>
         <Android_NotificationAccentColor>#000000</Android_NotificationAccentColor>
         <VerInfo_MinSdkVersion>21</VerInfo_MinSdkVersion>
     </PropertyGroup>
@@ -536,7 +534,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="READCOM.App.MessageOverrides.pas"/>
         <DCCReference Include="modules\zoomicon.media.fmx.delphi\Source\Zoomicon.Media.FMX.ModalFrame.pas">
             <Form>ModalFrame</Form>
             <DesignClass>TFrame</DesignClass>
@@ -549,6 +546,8 @@
             <Form>AboutFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="READCOM.App.MessageOverrides.pas"/>
+        <DCCReference Include="READCOM.App.EventOverrides.pas"/>
         <RcItem Include="Default.readcom">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

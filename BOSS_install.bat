@@ -41,6 +41,9 @@ rd /s/q modules
 echo Running boss install in %JUNCTION%...
 boss install
 
+echo Removing .dcp subfolders under modules
+for /d /r modules %%d in (.dcp) do if exist "%%d" rd /s /q "%%d"
+
 echo Removing junction: %JUNCTION%
 rmdir "%JUNCTION%"
 

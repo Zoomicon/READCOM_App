@@ -31,6 +31,9 @@ cd /d "%JUNCTION%"
 echo Running boss update in %JUNCTION%...
 boss update
 
+echo Removing .dcp subfolders under modules
+for /d /r modules %%d in (.dcp) do if exist "%%d" rd /s /q "%%d"
+
 echo Removing junction: %JUNCTION%
 rmdir "%JUNCTION%"
 
