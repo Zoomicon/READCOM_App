@@ -1,13 +1,13 @@
 {
 	"name": "READCOM_App",
 	"description": "READ-COM - Reading Communities app",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"homepage": "https://github.com/Zoomicon/READCOM_App",
 	"mainsrc": ".",
 	"projects": [
 		"READCOM_App.dproj"
 	],
 	"dependencies": {
-		"github.com/zoomicon/readcom.core.delphi": ">=11.0.0"
+		"github.com/zoomicon/readcom.core.delphi": ">=12.0.0"
 	}
 }
