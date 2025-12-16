@@ -21,11 +21,22 @@ implementation
   begin
     //Application.MainForm := StoryForm; //do this since it may have not been done yet and code we call may expect it to have been done
 
-    (* //NOT USES, SHOWING MENU AND NAVIGATION BUTTONS BY DEFAULT
+    (* //Not used yet, do when all content has navigation buttons added to it
     //Untoggle actionMenu / hide layoutButtons by default (assuming content has its own navigation StoryItems with UrlAction set)
     StoryForm.HUD.actionMenu.Checked := false; //don't just do StoryForm.HUD.layoutButtons.Visible := false since that would make the menu toggle button unsync
     StoryForm.HUD.layoutButtons.Visible := false;
     *)
+
+    //Hiding editing-related buttons on mobile platforms
+    {$IF DEFINED(IOS) OR DEFINED(ANDROID)}
+    with StoryForm.HUD do
+    begin
+      btnNew.Visible := false;
+      btnLoad.Visible := false;
+      btnSave.Visible := false;
+      btnToggleEditMode.Visible := false;
+    end;
+    {$ENDIF}
 
     //Use fullscreen by default
     {$IF Defined(Android)} //FullScreen still has issues on Windows (e.g. color popups don't show), only do on Android
