@@ -1,0 +1,35 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Glow Demo'
+  ClientHeight = 400
+  ClientWidth = 600
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  ShowFullScreenIcon = True
+  DesignerMasterStyle = 0
+  object Rectangle1: TRectangle
+    Fill.Kind = None
+    Position.X = 80.000000000000000000
+    Position.Y = 56.000000000000000000
+    Size.Width = 433.000000000000000000
+    Size.Height = 297.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Color = claWhite
+    Stroke.Thickness = 3.000000000000000000
+    object GlowEffect1: TGlowEffect
+      Softness = 0.800000011920929000
+      GlowColor = xFFFFAA00
+      Opacity = 0.900000035762786900
+    end
+    object FloatAnimation1: TFloatAnimation
+      Duration = 0.400000005960464500
+      PropertyName = 'GlowEffect1.Opacity'
+      StartValue = 0.300000011920929000
+      StopValue = 1.000000000000000000
+      Trigger = 'IsMouseOver=true'
+      TriggerInverse = 'IsMouseOver=false'
+    end
+  end
+end
